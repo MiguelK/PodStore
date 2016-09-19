@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Toplevel TestNG configuration" verbose="10">
+
+      <test name="all" parallel="false">
+
+          <groups>
+              <run>
+                  <exclude name="slow" />
+              </run>
+          </groups>
+
+          <packages>
+              <package name="com.podcastcatalog.*"/>
+          </packages>
+
+   </test>
+</suite>

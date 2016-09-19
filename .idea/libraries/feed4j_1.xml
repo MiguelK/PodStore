@@ -1,0 +1,20 @@
+<component name="libraryTable">
+  <library name="feed4j-1">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lib/feed4j-1.0" />
+      <root url="jar://$PROJECT_DIR$/lib/feed4j-1.0/lib/dom4j-1.6.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/feed4j-1.0/lib/nekohtml.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/feed4j-1.0/lib/xercesImpl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/feed4j-1.0/lib/xml-apis.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="file://$PROJECT_DIR$/lib/feed4j-1.0/javadoc" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/lib/feed4j-1.0/examples/example1/src" />
+      <root url="file://$PROJECT_DIR$/lib/feed4j-1.0/examples/example2/src" />
+      <root url="file://$PROJECT_DIR$/lib/feed4j-1.0/src" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/lib/feed4j-1.0" recursive="false" />
+  </library>
+</component>
