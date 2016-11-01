@@ -17,7 +17,6 @@ import com.podcastcatalog.builder.collector.okihika.PodCastCategoryCollectorOkih
 import com.podcastcatalog.builder.podcastfether.ItunesSearchAPITest;
 import com.podcastcatalog.builder.podcastfether.PodCastCollectorOkihikaTest;
 import com.podcastcatalog.builder.podcastfether.PodCastFeedParserTest;
-import com.podcastcatalog.builder.podcastfether.PodCastID;
 import com.podcastcatalog.builder.podcastfether.PodCastIDTest;
 import com.podcastcatalog.store.DiscStorageTest;
 import org.apache.commons.lang.ClassUtils;
@@ -74,7 +73,6 @@ public class TestUtil {
                 ItunesSearchAPITest.class,
                 PodCastCollectorOkihikaTest.class,
                 PodCastFeedParserTest.class,
-                PodCastID.class,
                 PodCastIDTest.class,
                 PodCastBundle1TaskTest.class,
                 PodCastBundleBuilderTest.class,

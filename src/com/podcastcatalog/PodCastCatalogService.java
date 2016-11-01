@@ -96,8 +96,8 @@ public class PodCastCatalogService {
 
     public PodCastCatalog buildPodcastCatalog(PodCastCatalogBuilder podCastCatalogBuilder){
 
-        Set<BundleBuilder> bundles = podCastCatalogBuilder.getBundleBuilders();
-        List<Bundle> podCastBundle1s = invoke(bundles);
+        Set<BundleBuilder> bundleBuilders = podCastCatalogBuilder.getBundleBuilders();
+        List<Bundle> podCastBundle1s = invoke(bundleBuilders);
 
         return PodCastCatalog.create(podCastCatalogBuilder.getPodCastCatalogLang(), podCastBundle1s);
     }
