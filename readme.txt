@@ -1,1 +1,8 @@
-Halllo todo
+
+API
+getPodCastCatalog()
+
+http://localhost:10080/PodStore/api/podCastCatalog?lang='SV'
+
+getPodCastCatalogStatus()
+http://localhost:10080/PodStore/api/podCastCatalog/stat
