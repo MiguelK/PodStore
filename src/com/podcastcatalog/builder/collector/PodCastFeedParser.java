@@ -279,8 +279,7 @@ public class PodCastFeedParser {
             RawNode node = rawElement.getNode(i);
             nodes.add(node);
         }
-        List<RawElement>  rawElements = nodes.stream().filter(n -> n instanceof RawElement).map(r -> (RawElement) r).collect(Collectors.toList());
-        return rawElements;
+        return nodes.stream().filter(n -> n instanceof RawElement).map(r -> (RawElement) r).collect(Collectors.toList());
     }
 
      private static LocalDateTime toLocalDateTime(Date datum) {
