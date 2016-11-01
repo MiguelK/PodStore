@@ -70,19 +70,12 @@ public class PodCastCatalogService {
                     podCastCatalogByLang.put(lang, catalog);
                 }
             }
-            //Start runner that rebuilds each catalog periodically once a day?
+            //Start runner that rebuilds each catalog periodically once a day? //FIXME
         } finally {
             writeLock.unlock();
 
         }
     }
-
-   /* @Override
-    public void handleNewCatalog(PodCastCatalog podCastCatalog) {
-        //FIXME new catalog is recived
-        PodCastCatalogLanguage podCastCatalogLanguage = podCastCatalog.getPodCastCatalogLanguage();
-        podCastCatalogByLang.put(podCastCatalogLanguage, podCastCatalog);//FIXME lock
-    }*/
 
     public PodCastCatalog getPodCastCatalog(PodCastCatalogLanguage podCastCatalogLanguage) {
         readLock.lock();

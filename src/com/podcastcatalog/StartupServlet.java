@@ -21,7 +21,7 @@ public class StartupServlet extends HttpServlet {
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
-        File catalogDir = new File("/home/krantmig/tools/temp");
+        File catalogDir = new File("/home/krantmig/tools/temp");//FIXME
         LOG.info("Starting PodCastCatalog..., working dir= " + catalogDir.getAbsolutePath());
 
         Storage discStorage = new DiscStorage(catalogDir);

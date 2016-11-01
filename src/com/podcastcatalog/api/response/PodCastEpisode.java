@@ -128,7 +128,7 @@ public class PodCastEpisode extends BundleItem implements Serializable{
 
 
         public Builder title(String title) {
-            this.title = StringUtils.trimToNull(title);;
+            this.title = StringUtils.trimToNull(title);
             return this;
         }
 

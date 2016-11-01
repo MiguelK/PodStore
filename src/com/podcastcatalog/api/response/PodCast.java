@@ -87,19 +87,16 @@ public class PodCast extends BundleItem {
 
         public Builder title(String title) {
             this.title = StringUtils.trimToNull(title);
-            ;
             return this;
         }
 
         public Builder publisher(String publisher) {
             this.publisher = StringUtils.trimToNull(publisher);
-            ;
             return this;
         }
 
         public Builder description(String description) {
             this.description = StringUtils.trimToNull(description);
-            ;
             return this;
         }
 

@@ -17,23 +17,16 @@ public class PodCastCatalog {
 
     private final static Logger LOG = Logger.getLogger(PodCastCatalog.class.getName());
 
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStation(@QueryParam("lang") String lang) {
 
-        //LOG.fine("getStation() stationId =" + stationId);
-
-       // StationDTO stationDTO = InMemoryCache.getInstance().getStationById(stationId);
-
         com.podcastcatalog.api.response.PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
 
         if(podCastCatalog==null){
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Not ready yes").build();
+            LOG.info("podCastCatalog for lang " + lang + " is not loaded yet?");
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Not ready yet").build();
         }
-        //if podCastCatalog null?
-        LOG.info("podCastCatalog=" + podCastCatalog);
-
 
         return Response.status(Response.Status.OK).entity(podCastCatalog).build();
     }
@@ -41,17 +34,15 @@ public class PodCastCatalog {
     @GET
     @Path("/stat")
     @Produces(MediaType.TEXT_HTML)
-    public Response getStatistics() {
+    public Response getStatistics(@QueryParam("lang") String lang) {
 
-//        PodCastCatalogService.getInstance().rebuildCatalog(...)
+//        PodCastCatalogService.getInstance().rebuildCatalog(...)//Action
         com.podcastcatalog.api.response.PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
 
-
         if(podCastCatalog==null){
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Not ready yes").build();
+            return Response.status(Response.Status.OK).entity("No statistics exist for " + lang + " yet.?").build();
         }
 
-        return Response.status(Response.Status.OK).entity("podCastCatalog stattsitcs " + podCastCatalog.getBundles().size()).build();
+        return Response.status(Response.Status.OK).entity(podCastCatalog.toString()).build();
     }
-
 }

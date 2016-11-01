@@ -123,15 +123,15 @@ public class ItunesSearchAPI implements PodCastCollector {
     }
 
     private class PodCastSearchResult {
-        int resultCount;
-        List<Row> results = new ArrayList<>();
+         int resultCount;
+        final List<Row> results = new ArrayList<>();
 
         private class Row{
-            String kind;
-            String collectionName;
-            String feedUrl;
-            String artworkUrl30;
-            String artworkUrl100;
+             String kind;
+             String collectionName;
+             String feedUrl;
+             String artworkUrl30;
+             String artworkUrl100;
 
             @Override
             public String toString() {
