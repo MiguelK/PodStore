@@ -19,7 +19,7 @@ import com.podcastcatalog.builder.podcastfether.PodCastCollectorOkihikaTest;
 import com.podcastcatalog.builder.podcastfether.PodCastFeedParserTest;
 import com.podcastcatalog.builder.podcastfether.PodCastID;
 import com.podcastcatalog.builder.podcastfether.PodCastIDTest;
-import com.podcastcatalog.store.StorageTest;
+import com.podcastcatalog.store.DiscStorageTest;
 import org.apache.commons.lang.ClassUtils;
 import org.testng.Assert;
 import org.testng.ITestResult;
@@ -27,10 +27,15 @@ import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
 public class TestUtil {
+
+    private static final String TEMP_FILE_PATH = System.getProperty("java.io.tmpdir");
+    public static File IO_TEMP_DATA_DIRECTORY = new File(TEMP_FILE_PATH);
+
 
     public static final String SLOW_TEST = "slow";
 
@@ -74,7 +79,7 @@ public class TestUtil {
                 PodCastBundle1TaskTest.class,
                 PodCastBundleBuilderTest.class,
                 PodCastCatalogBuilderServiceTest.class,
-                StorageTest.class,
+                DiscStorageTest.class,
                 DataProviderTestData.class,
                 PodCastCatalogServiceTest.class,
                 TestUtil.class});

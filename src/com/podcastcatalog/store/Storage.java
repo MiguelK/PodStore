@@ -3,14 +3,13 @@ package com.podcastcatalog.store;
 import com.podcastcatalog.api.response.PodCastCatalog;
 import com.podcastcatalog.api.response.PodCastCatalogLanguage;
 
-import java.io.IOException;
 import java.util.Optional;
 
 public interface Storage {
 
-    Storage storageStrategy = new DiscStorage();
+//    Storage storageStrategy = new DiscStorage();
 
-    static Optional<PodCastCatalog> load(PodCastCatalogLanguage podCastCatalogLanguage){
+    /*static Optional<PodCastCatalog> load(PodCastCatalogLanguage podCastCatalogLanguage){
 
        String assetName = getFileName(podCastCatalogLanguage);
 
@@ -33,20 +32,13 @@ public interface Storage {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
-    static void delete(PodCastCatalogLanguage podCastCatalogLanguage) {
-        String assetName = getFileName(podCastCatalogLanguage);
+    void delete(PodCastCatalogLanguage podCastCatalogLanguage);
 
-        try {
-            storageStrategy.delete(assetName);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    Optional<PodCastCatalog> load(PodCastCatalogLanguage podCastCatalogLanguage);
 
-    Optional<PodCastCatalog> load(String fileName) throws Exception;
-    void save(String assetName, PodCastCatalog podCastCatalog) throws IOException;
-    void delete(String fileName);
+    void save(PodCastCatalog podCastCatalog);
+//    void delete(String fileName);
 
 }

@@ -14,16 +14,6 @@ public class PodCastCatalogBuilderService {
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    private Callback callback;
-
-    public void registerListener(Callback callback) {
-        this.callback = callback;
-    }
-
-    public interface Callback{
-        void handleNewCatalog(PodCastCatalog podCastCatalog);
-    }
-
     public PodCastCatalog buildPodcastCatalog(PodCastCatalogBuilder podCastCatalogBuilder){
 
         Set<BundleBuilder> bundles = podCastCatalogBuilder.getBundleBuilders();

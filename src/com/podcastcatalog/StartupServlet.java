@@ -1,10 +1,15 @@
 package com.podcastcatalog;
 
+import com.podcastcatalog.builder.PodCastCatalogBuilderSE;
+import com.podcastcatalog.store.DiscStorage;
+import com.podcastcatalog.store.Storage;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -16,8 +21,14 @@ public class StartupServlet extends HttpServlet {
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
-        LOG.info("Starting PodCastCatalog...");
+        File catalogDir = new File("/home/krantmig/tools/temp");
+        LOG.info("Starting PodCastCatalog..., working dir= " + catalogDir.getAbsolutePath());
 
+        Storage discStorage = new DiscStorage(catalogDir);
+        PodCastCatalogService.getInstance().setStorage(discStorage);
+        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());//FIXME English
+
+        //FIXME validate
         PodCastCatalogService.getInstance().startAsync();
     }
 
