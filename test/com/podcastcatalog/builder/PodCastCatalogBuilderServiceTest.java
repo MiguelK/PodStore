@@ -10,7 +10,6 @@ public class PodCastCatalogBuilderServiceTest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void fetchBuildCatalog() throws Exception {
-//        PodCastCatalogBuilderService service = new PodCastCatalogBuilderService();
 
         PodCastCatalogBuilderSE podCastCatalogBuilderSE = new PodCastCatalogBuilderSE();
 
