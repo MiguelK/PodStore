@@ -24,7 +24,7 @@ public class PodCastCatalogBuilderService {
         void handleNewCatalog(PodCastCatalog podCastCatalog);
     }
 
-    public PodCastCatalog fetchCatalog(PodCastCatalogBuilder podCastCatalogBuilder){
+    public PodCastCatalog buildPodcastCatalog(PodCastCatalogBuilder podCastCatalogBuilder){
 
         Set<BundleBuilder> bundles = podCastCatalogBuilder.getBundleBuilders();
         List<Bundle> podCastBundle1s = invoke(bundles);

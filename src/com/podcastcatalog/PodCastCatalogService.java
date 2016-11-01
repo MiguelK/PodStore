@@ -37,7 +37,6 @@ public class PodCastCatalogService implements PodCastCatalogBuilderService.Callb
 
     public static final PodCastCatalogService INSTANCE = new PodCastCatalogService();
 
-
     public static PodCastCatalogService getInstance() {
         return INSTANCE;
     }
@@ -57,7 +56,7 @@ public class PodCastCatalogService implements PodCastCatalogBuilderService.Callb
                 } else {
                     LOG.info("Start building PodCastCatalog " + podCastCatalogLanguage + " ...");
 
-                    PodCastCatalog catalog = podCastCatalogBuilderService.fetchCatalog(podCastCatalogBuilder);
+                    PodCastCatalog catalog = podCastCatalogBuilderService.buildPodcastCatalog(podCastCatalogBuilder);
 
                     Storage.save(catalog);
 

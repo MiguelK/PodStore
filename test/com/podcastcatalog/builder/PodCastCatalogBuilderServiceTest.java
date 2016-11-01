@@ -21,7 +21,7 @@ public class PodCastCatalogBuilderServiceTest {
             System.out.println(bundle);
         }
 
-// /        PodCastCatalog podCastCatalog = service.fetchCatalog(new PodCastCatalogBuilderSE());
+// /        PodCastCatalog podCastCatalog = service.buildPodcastCatalog(new PodCastCatalogBuilderSE());
 
 //        System.out.println("" + podCastCatalog);
 //        Assert.assertNotNull(podCastCatalog);

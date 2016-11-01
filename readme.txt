@@ -2,6 +2,7 @@
 API
 getPodCastCatalog()
 
+http://localhost:10080/PodStore/api/podCastCatalog?
 http://localhost:10080/PodStore/api/podCastCatalog?lang='SV'
 
 getPodCastCatalogStatus()
