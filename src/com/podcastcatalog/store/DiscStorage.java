@@ -6,6 +6,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DiscStorage implements Storage {
@@ -14,48 +15,44 @@ public class DiscStorage implements Storage {
 
     private final File dataDirectory;
 
-    public  DiscStorage(File dataDirectory) {
-        if(dataDirectory==null){
+    public DiscStorage(File dataDirectory) {
+        if (dataDirectory == null) {
             throw new IllegalArgumentException("dataDirectory is null");
         }
-        if(!dataDirectory.isDirectory()){
+        if (!dataDirectory.isDirectory()) {
             throw new IllegalArgumentException("dataDirectory is not a dir " + dataDirectory.getAbsolutePath());
         }
 
         this.dataDirectory = dataDirectory;
     }
 
-    private String getFileName(PodCastCatalogLanguage podCastCatalogLanguage) {
-        return podCastCatalogLanguage.name() + ".dat";
+    private File getFileName(PodCastCatalogLanguage podCastCatalogLanguage) {
+        String fileName = podCastCatalogLanguage.name() + ".dat";
+        File file = new File(dataDirectory, fileName);
+        return file;
     }
 
     @Override
     public Optional<PodCastCatalog> load(PodCastCatalogLanguage podCastCatalogLanguage) {
 
-        String fileName = getFileName(podCastCatalogLanguage);
-
-        File file = getFile(fileName);
+        File file = getFileName(podCastCatalogLanguage);
 
         ObjectInputStream in = null;
-        FileInputStream fileIn=null;
+        FileInputStream fileIn = null;
         try {
             try {
                 fileIn = new FileInputStream(file);
                 in = new ObjectInputStream(fileIn);
                 return Optional.of((PodCastCatalog) in.readObject());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            } catch (IOException | ClassNotFoundException e) {
+                LOG.log(Level.SEVERE, "Unable to load PodCastCatalog=" + file.getAbsolutePath(), e);
             }
 
-        }finally {
-            if(in!=null){
-              IOUtils.closeQuietly(in);
+        } finally {
+            if (in != null) {
+                IOUtils.closeQuietly(in);
             }
-            if(fileIn!=null){
+            if (fileIn != null) {
                 IOUtils.closeQuietly(fileIn);
             }
         }
@@ -63,66 +60,33 @@ public class DiscStorage implements Storage {
         return Optional.empty();
     }
 
-    private File getFile(String fileName) {
-        File file = new File(dataDirectory, fileName);
-
-        if(!file.exists()){
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();//FIXME
-            }
-        }
-
-        return file;
-    }
 
     @Override
     public void delete(PodCastCatalogLanguage podCastCatalogLanguage) {
-        String fileName = getFileName(podCastCatalogLanguage);
-
-        File file = getFile(fileName);
+        File file = getFileName(podCastCatalogLanguage);
 
         file.delete(); //FIXME
     }
 
-  /*  @Override
-    public void delete(String fileName) {
-        File file = getFile(fileName);*/
-
-   /*     {
-            String assetName = getFileName(podCastCatalogLanguage);
-
-            try {
-                storageStrategy.delete(assetName);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }*/
-
-   /*     file.delete(); //FIXME
-    }*/
-
-
     @Override
-    public void save(PodCastCatalog podCastCatalog)  {
-        String fileName = getFileName(podCastCatalog.getPodCastCatalogLanguage());
-
-        File file = getFile(fileName);
-
-//        File file = getFile(fileName);
+    public void save(PodCastCatalog podCastCatalog) {
+        File file = getFileName(podCastCatalog.getPodCastCatalogLanguage());
 
         FileOutputStream fileOut = null;
         ObjectOutputStream out = null;
-        try{
+        try {
+
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
             fileOut =
                     new FileOutputStream(file);
             out = new ObjectOutputStream(fileOut);
             out.writeObject(podCastCatalog);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+            LOG.log(Level.SEVERE, "Unable to save PodCastCatalog " + file.getAbsolutePath(), e);
         } finally {
             IOUtils.closeQuietly(out);
             IOUtils.closeQuietly(fileOut);
@@ -130,6 +94,4 @@ public class DiscStorage implements Storage {
 
         LOG.info("Saved " + podCastCatalog.getPodCastCatalogLanguage() + " to " + file.getAbsolutePath());
     }
-
-
 }

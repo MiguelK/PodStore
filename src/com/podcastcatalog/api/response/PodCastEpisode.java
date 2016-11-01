@@ -186,7 +186,7 @@ public class PodCastEpisode extends BundleItem implements Serializable{
                 throw  new IllegalArgumentException("Invalid id " + id + " mus be > 0");
             }
 
-            if(podCastId<=0l){
+            if(podCastId<= 0L){
                 throw new IllegalArgumentException("podCastId not set for this Episode");
             }
 

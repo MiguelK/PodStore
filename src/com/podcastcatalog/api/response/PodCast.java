@@ -77,7 +77,7 @@ public class PodCast extends BundleItem {
         private String description;
         private LocalDateTime createdDate;
         private String feedURL;
-        private List<PodCastEpisode> podCastEpisodes = new ArrayList<PodCastEpisode>();
+        private List<PodCastEpisode> podCastEpisodes = new ArrayList<>();
         private List<PodCastCategoryType> podCastCategories = new ArrayList<>();
 
         public Builder id(int id) {

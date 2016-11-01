@@ -55,7 +55,7 @@ public class PodCastCatalogServiceTest {
 
     }
 
-    @Test(groups = TestUtil.SLOW_TEST)
+ /*   @Test(groups = TestUtil.SLOW_TEST)
     public void build_load_catalog() {
 
 //        DiscStorage.setDataDirectory(); //Data dir in Open Shift?
@@ -69,14 +69,6 @@ public class PodCastCatalogServiceTest {
         //podCastCatalog.toJSON()->
 
         TestUtil.assertToJSONNotNull(podCastCatalog);
-
-        Assert.assertNotNull(podCastCatalog);
-/*
-        //2# search free text
-        List<PodCast> search =
-                PodCastCatalogService.getInstance().search("Some text");
-        //toJSON()*/
-    }
-
+     }*/
 
 }

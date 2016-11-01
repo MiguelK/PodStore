@@ -16,7 +16,8 @@ public class PodCastBundle extends Bundle {
         this.podCasts = Collections.unmodifiableList(podCasts);
     }
 
-    public List<PodCast> getPodCasts() {
+    @Override
+    public List<PodCast> getBundleItems() {
         return podCasts;
     }
 

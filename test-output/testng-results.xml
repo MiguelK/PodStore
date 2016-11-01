@@ -2,15 +2,15 @@
 <testng-results skipped="0" failed="0" total="1" passed="1">
   <reporter-output>
   </reporter-output>
-  <suite name="Command line suite" duration-ms="189" started-at="2016-11-01T14:04:31Z" finished-at="2016-11-01T14:04:32Z">
+  <suite name="Command line suite" duration-ms="182" started-at="2016-11-01T14:53:07Z" finished-at="2016-11-01T14:53:07Z">
     <groups>
       <group name="slow">
-        <method signature="PodCastBundleTest.to_JSON()[pri:0, instance:com.podcastcatalog.api.response.PodCastBundleTest@3c09711b]" name="to_JSON" class="com.podcastcatalog.api.response.PodCastBundleTest"/>
+        <method signature="PodCastBundleTest.to_JSON()[pri:0, instance:com.podcastcatalog.api.response.PodCastBundleTest@5cc7c2a6]" name="to_JSON" class="com.podcastcatalog.api.response.PodCastBundleTest"/>
       </group> <!-- slow -->
     </groups>
-    <test name="Command line test" duration-ms="189" started-at="2016-11-01T14:04:31Z" finished-at="2016-11-01T14:04:32Z">
+    <test name="Command line test" duration-ms="182" started-at="2016-11-01T14:53:07Z" finished-at="2016-11-01T14:53:07Z">
       <class name="com.podcastcatalog.api.response.PodCastBundleTest">
-        <test-method status="PASS" signature="to_JSON()[pri:0, instance:com.podcastcatalog.api.response.PodCastBundleTest@3c09711b]" name="to_JSON" duration-ms="187" started-at="2016-11-01T07:04:31Z" finished-at="2016-11-01T07:04:32Z">
+        <test-method status="PASS" signature="to_JSON()[pri:0, instance:com.podcastcatalog.api.response.PodCastBundleTest@5cc7c2a6]" name="to_JSON" duration-ms="181" started-at="2016-11-01T07:53:07Z" finished-at="2016-11-01T07:53:07Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- to_JSON -->

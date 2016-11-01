@@ -39,7 +39,7 @@ public class PodCastBundleTest {
 
     @Test(expectedExceptions = UnsupportedOperationException.class)
     public void podCasts_unmodifiable() {
-        createValid().build().getPodCasts().add(PodCastTest.createValid().build());
+        createValid().build().getBundleItems().add(PodCastTest.createValid().build());
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -104,21 +104,22 @@ public class PodCastBundleTest {
     @Test
     public void podCast() {
         PodCast podCast = PodCastTest.createValid().build();
-        Assert.assertTrue(createValid().podCast(podCast).build().getPodCasts().contains(podCast));
+        Assert.assertTrue(createValid().podCast(podCast).build().getBundleItems().contains(podCast));
     }
 
     @Test
     public void podCasts() {
         PodCast podCast = PodCastTest.createValid().build();
         List<PodCast> podCasts = Collections.singletonList(podCast);
-        Assert.assertTrue(createValid().podCasts(podCasts).build().getPodCasts().contains(podCast));
+        Assert.assertTrue(createValid().podCasts(podCasts).build().getBundleItems().contains(podCast));
     }
 
+
     /*@Test
-    public void numberOfPodCastsInBundele() {
-        Assert.assertEquals(createValid().build().getNumberOfPodCastsInBundele(), 1);
-    }
-*/
+        public void numberOfPodCastsInBundele() {
+            Assert.assertEquals(createValid().build().getNumberOfPodCastsInBundele(), 1);
+        }
+    */
     public static PodCastBundle.Builder createValid(){
         return PodCastBundle.newBuilder().title("dsdsd").description("dsdsds").imageURL("sdsdsd").
                 podCast(PodCastTest.createValid().build());

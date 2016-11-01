@@ -12,7 +12,8 @@ public class PodCastEpisodeBundle extends Bundle {
         this.podCastEpisodes = podCastEpisodes;
     }
 
-    public List<PodCastEpisode> getPodCastEpisodes() {
+    @Override
+    public List<PodCastEpisode> getBundleItems() {
         return podCastEpisodes;
     }
 }

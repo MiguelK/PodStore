@@ -16,7 +16,6 @@ import java.util.Optional;
 
 public class DiscStorageTest {
 
-
     private Storage storage;
 
     @BeforeMethod

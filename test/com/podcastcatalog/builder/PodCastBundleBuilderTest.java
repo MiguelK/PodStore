@@ -21,6 +21,12 @@ public class PodCastBundleBuilderTest {
     }
 
     @Test
+    public void toJSON() {
+
+
+    }
+
+    @Test
     public void testCreate() throws Exception {
 
      /*   PodCastBundleBuilder bundleBuilder = PodCastBundleBuilder.create("image", "4U", "recomended",

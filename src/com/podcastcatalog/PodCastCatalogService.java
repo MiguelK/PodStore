@@ -46,6 +46,9 @@ public class PodCastCatalogService {
 
     public void startAsync() {
         //FIXME valoidate state not asynch
+        if(storage==null){
+            throw new IllegalStateException("Configure storage");
+        }
 
         writeLock.lock();
         LOG.info("startAsync() podCastCatalogBuilders=" + podCastCatalogBuilders.size());
