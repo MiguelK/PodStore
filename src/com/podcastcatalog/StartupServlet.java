@@ -29,7 +29,7 @@ public class StartupServlet extends HttpServlet {
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());//FIXME English
 
         //FIXME validate
-        PodCastCatalogService.getInstance().buildPodCastCatalogs();
+        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

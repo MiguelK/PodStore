@@ -15,7 +15,7 @@ public abstract class Bundle implements Serializable  {
     private final String imageURL; //FIXME Many???
     private final BundleType bundleType;
 
-    public Bundle(String title, String description, String imageURL, BundleType bundleType) {
+    Bundle(String title, String description, String imageURL, BundleType bundleType) {
         this.title = title;
         this.description = description;
         this.imageURL = StringUtils.trim(imageURL);

@@ -8,9 +8,7 @@ import com.podcastcatalog.builder.PodCastCatalogBuilder;
 import com.podcastcatalog.store.Storage;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
@@ -51,9 +49,32 @@ public class PodCastCatalogService {
 
     public void buildPodCastCatalogsAsync() {
         //FIXME call from StartServlet..
+        rebuildCatalogs(); //FIXME
+//        executorService.submit(new RebuildCatalogAction());
     }
 
     public void buildPodCastCatalogs() {
+
+        rebuildCatalogs(); //FIXME
+       /* try {
+            executorService.submit(new RebuildCatalogAction()).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException("Unable to rebuild catalogs ",e);
+        }*/
+
+    }
+
+    private class RebuildCatalogAction implements Callable<Void> {
+
+        @Override
+        public Void call() throws Exception {
+
+            rebuildCatalogs();
+            return null;
+        }
+    }
+
+    private void rebuildCatalogs() {
         //FIXME valoidate state not asynch
         if (storage == null) {
             throw new IllegalStateException("Configure storage");

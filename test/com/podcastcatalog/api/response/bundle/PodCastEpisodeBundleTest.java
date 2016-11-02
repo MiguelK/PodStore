@@ -5,7 +5,8 @@ import com.podcastcatalog.api.response.PodCastEpisodeTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PodCastEpisodeBundleTest {
@@ -16,9 +17,17 @@ public class PodCastEpisodeBundleTest {
     }
 
     public static PodCastEpisodeBundle craeteValid(){
-        List<PodCastEpisode> podCastEpisodes = Arrays.asList(PodCastEpisodeTest.createValid().build());
-        PodCastEpisodeBundle episodeBundle = new PodCastEpisodeBundle("Title","Descr","www.url.se", podCastEpisodes);
-        return episodeBundle;
+        List<PodCastEpisode> podCastEpisodes = Collections.singletonList(PodCastEpisodeTest.createValid().build());
+        return new PodCastEpisodeBundle("Title","Descr","www.url.se", podCastEpisodes);
+    }
 
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void invalid_podcasts_null() {
+        new PodCastEpisodeBundle("Title","Descr","www.url.se", null);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void invalid_podcasts_empty() {
+        new PodCastEpisodeBundle("Title","Descr","www.url.se", new ArrayList<>());
     }
 }

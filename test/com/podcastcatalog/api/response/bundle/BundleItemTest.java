@@ -22,19 +22,4 @@ public class BundleItemTest {
         Assert.assertTrue(GSON.toJson(build).contains("Avsnitt B"));
     }
 
-    @Test
-    public void testGetDescription() {
-
-    }
-
-    @Test
-    public void testGetImageURL() {
-
-    }
-
-    @Test
-    public void testGetBundleType() {
-
-    }
-
 }

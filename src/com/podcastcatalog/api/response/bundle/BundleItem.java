@@ -11,7 +11,7 @@ public abstract class BundleItem implements Serializable{
     private String imageURL;
     private BundleType bundleType;
 
-    public BundleItem(String title, String description, String imageURL, BundleType bundleType) {
+    protected BundleItem(String title, String description, String imageURL, BundleType bundleType) {
         this.title = StringUtils.trimToNull(title);
         this.description = StringUtils.trimToNull(description);
         this.imageURL = StringUtils.trimToNull(imageURL);

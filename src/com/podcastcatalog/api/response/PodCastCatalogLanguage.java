@@ -8,7 +8,7 @@ public enum PodCastCatalogLanguage {
         this.lang = lang;
     }
 
-    public String getLang() {
+    private String getLang() {
         return lang;
     }
 

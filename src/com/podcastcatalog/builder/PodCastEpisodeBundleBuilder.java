@@ -11,12 +11,12 @@ class PodCastEpisodeBundleBuilder extends BundleBuilder {
 
     private List<PodCastEpisodeCollector> collectors;
 
-    public PodCastEpisodeBundleBuilder(String imageURL, String title, String description) {
+     PodCastEpisodeBundleBuilder(String imageURL, String title, String description) {
         super(imageURL, title, description);
         this.collectors = new ArrayList<>();
     }
 
-    public void addCollector(PodCastEpisodeCollector collector) {
+    void addCollector(PodCastEpisodeCollector collector) {
         collectors.add(collector);
     }
 
@@ -24,7 +24,7 @@ class PodCastEpisodeBundleBuilder extends BundleBuilder {
     protected PodCastEpisodeBundle createBundle(String imageURL, String title, String description) {
         List<PodCastEpisode> podCastEpisodes = new ArrayList<>();
 
-        for (PodCastEpisodeCollector podCastFetcher : collectors) {//FIXME abstract Parser
+        for (PodCastEpisodeCollector podCastFetcher : collectors) {
             podCastEpisodes.addAll(podCastFetcher.collectPodCastEpisodes());
         }
 

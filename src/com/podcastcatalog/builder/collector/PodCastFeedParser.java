@@ -42,7 +42,7 @@ public class PodCastFeedParser {
         this.feedURL = feedURL;
     }
 
-    public Optional<PodCast> parse() {
+    private Optional<PodCast> parse() {
         PodCast.Builder podCastBuilder = PodCast.newBuilder();
 
         int expectedEpisodeCount = -1;

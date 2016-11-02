@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 public class PodCastCollectorOkihika implements PodCastCollector {
 
     private final static Logger LOG = Logger.getLogger(PodCastCollectorOkihika.class.getName());
-    public static final int TIMEOUT_MILLIS = 5000;
-    public static final String ROOT_URL_OKIHIKA = "https://podcast.okihika.com/SE/";
+    private static final int TIMEOUT_MILLIS = 5000;
+    private static final String ROOT_URL_OKIHIKA = "https://podcast.okihika.com/SE/";
 
     private final String url;
     private final int resultSize;

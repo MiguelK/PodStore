@@ -19,8 +19,8 @@ public class PodCast extends BundleItem {
     private final List<PodCastEpisode> podCastEpisodes;
     private final List<PodCastCategoryType> podCastCategories;
 
-    public PodCast(int id, String title, String publisher, String description, LocalDateTime createdDate,
-                   String feedURL, List<PodCastEpisode> podCastEpisodes, List<PodCastCategoryType> podCastCategories) {
+    private PodCast(int id, String title, String publisher, String description, LocalDateTime createdDate,
+                    String feedURL, List<PodCastEpisode> podCastEpisodes, List<PodCastCategoryType> podCastCategories) {
         super(title, description, "Image 123",BundleType.PodCast);
         this.id = id;
         this.publisher = publisher;
