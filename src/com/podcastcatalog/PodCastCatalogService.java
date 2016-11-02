@@ -26,13 +26,15 @@ public class PodCastCatalogService {
     private final List<PodCastCatalogBuilder> podCastCatalogBuilders;
     private Storage storage;
     private final ExecutorService executorService;
+    private final ExecutorService ayncExecutor;
 
     private static final PodCastCatalogService INSTANCE = new PodCastCatalogService();
 
     private PodCastCatalogService() {
         podCastCatalogBuilders = new ArrayList<>();
         podCastCatalogByLang = new HashMap<>();
-        executorService = Executors.newSingleThreadExecutor();
+        ayncExecutor = Executors.newFixedThreadPool(5);
+        executorService = Executors.newSingleThreadExecutor();//Important single thread!
     }
 
     public static PodCastCatalogService getInstance() {
@@ -48,37 +50,36 @@ public class PodCastCatalogService {
     }
 
     public void buildPodCastCatalogsAsync() {
-        //FIXME call from StartServlet..
-        rebuildCatalogs(); //FIXME
-//        executorService.submit(new RebuildCatalogAction());
+        validateState();
+
+        ayncExecutor.submit(new RebuildCatalogAction());
+    }
+
+    private void validateState() {
+        if (storage == null) {
+            throw new IllegalStateException("Configure storage");
+        }
     }
 
     public void buildPodCastCatalogs() {
+        validateState();
 
-        rebuildCatalogs(); //FIXME
-       /* try {
-            executorService.submit(new RebuildCatalogAction()).get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Unable to rebuild catalogs ",e);
-        }*/
-
+        try {
+            ayncExecutor.submit(new RebuildCatalogAction()).get(60,TimeUnit.SECONDS);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to rebuild catalogs ", e);
+        }
     }
 
     private class RebuildCatalogAction implements Callable<Void> {
-
         @Override
         public Void call() throws Exception {
-
             rebuildCatalogs();
             return null;
         }
     }
 
     private void rebuildCatalogs() {
-        //FIXME valoidate state not asynch
-        if (storage == null) {
-            throw new IllegalStateException("Configure storage");
-        }
 
         writeLock.lock();
         LOG.info("buildPodCastCatalogs() podCastCatalogBuilders=" + podCastCatalogBuilders.size());

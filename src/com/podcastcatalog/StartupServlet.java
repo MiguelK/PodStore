@@ -28,7 +28,6 @@ public class StartupServlet extends HttpServlet {
         PodCastCatalogService.getInstance().setStorage(discStorage);
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());//FIXME English
 
-        //FIXME validate
         PodCastCatalogService.getInstance().buildPodCastCatalogsAsync();
     }
 

@@ -25,8 +25,7 @@ public class PodCastCatalogServiceTest {
     }
 
     @Test
-    public void testName() {
-
+    public void buildPodCastCatalogs() {
         PodCastCatalogService.getInstance().setStorage(storage);
 
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilder() {
