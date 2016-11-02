@@ -1,21 +1,12 @@
 package com.podcastcatalog;
 
 import com.google.gson.Gson;
-import com.podcastcatalog.api.response.PodCastBundleTest;
-import com.podcastcatalog.api.response.PodCastCatalogLanguageTest;
-import com.podcastcatalog.api.response.PodCastCatalogTest;
-import com.podcastcatalog.api.response.PodCastCategoryTest;
-import com.podcastcatalog.api.response.PodCastCategoryTypeTest;
-import com.podcastcatalog.api.response.PodCastEpisodeDurationTest;
-import com.podcastcatalog.api.response.PodCastEpisodeFileSizeTest;
-import com.podcastcatalog.api.response.PodCastEpisodeTest;
-import com.podcastcatalog.api.response.PodCastEpisodeTypeTest;
+import com.podcastcatalog.api.response.*;
 import com.podcastcatalog.builder.PodCastBundle1TaskTest;
 import com.podcastcatalog.builder.PodCastBundleBuilderTest;
 import com.podcastcatalog.builder.PodCastCatalogBuilderServiceTest;
 import com.podcastcatalog.builder.collector.okihika.PodCastCategoryCollectorOkihikaTest;
 import com.podcastcatalog.builder.podcastfether.ItunesSearchAPITest;
-import com.podcastcatalog.builder.podcastfether.PodCastCollectorOkihikaTest;
 import com.podcastcatalog.builder.podcastfether.PodCastFeedParserTest;
 import com.podcastcatalog.builder.podcastfether.PodCastIDTest;
 import com.podcastcatalog.store.DiscStorageTest;
@@ -71,7 +62,6 @@ public class TestUtil {
                 PodCastTest.class,
                 PodCastCategoryCollectorOkihikaTest.class,
                 ItunesSearchAPITest.class,
-                PodCastCollectorOkihikaTest.class,
                 PodCastFeedParserTest.class,
                 PodCastIDTest.class,
                 PodCastBundle1TaskTest.class,

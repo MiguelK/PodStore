@@ -31,7 +31,7 @@ public class ItunesSearchAPI implements PodCastCollector {
 
     private final URL request;
 
-    public static ItunesSearchAPI lookup(List<Integer> ids) {
+    public static ItunesSearchAPI lookup(List<Long> ids) {
 
         String join = StringUtils.join(ids, ",");
 

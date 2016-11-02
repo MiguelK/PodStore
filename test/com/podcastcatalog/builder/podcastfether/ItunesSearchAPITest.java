@@ -13,7 +13,7 @@ public class ItunesSearchAPITest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void lookup_2() {
-        ItunesSearchAPI lookup = ItunesSearchAPI.lookup(Arrays.asList(895602289, 1032687266));
+        ItunesSearchAPI lookup = ItunesSearchAPI.lookup(Arrays.asList(895602289L, 1032687266L));
         List<PodCast> podCasts = lookup.collect();
         System.out.println(podCasts);
         Assert.assertTrue(podCasts.size()==2);

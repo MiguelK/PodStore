@@ -1,7 +1,7 @@
 package com.podcastcatalog.builder.collector.okihika;
 
-import com.podcastcatalog.builder.collector.PodCastCollector;
 import com.podcastcatalog.api.response.PodCast;
+import com.podcastcatalog.builder.collector.PodCastCollector;
 import com.podcastcatalog.builder.collector.itunes.ItunesSearchAPI;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,7 +10,6 @@ import org.jsoup.select.Elements;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -21,11 +20,13 @@ import java.util.stream.Collectors;
 public class PodCastCollectorOkihika implements PodCastCollector {
 
     private final static Logger LOG = Logger.getLogger(PodCastCollectorOkihika.class.getName());
+    public static final int TIMEOUT_MILLIS = 5000;
+    public static final String ROOT_URL_OKIHIKA = "https://podcast.okihika.com/SE/";
 
     private final String url;
     private final int resultSize;
 
-    public enum TopList{
+    public enum TopList {
         ALL("0"),
         ARTS("1301"),
         DESIGN("1402"),
@@ -97,7 +98,7 @@ public class PodCastCollectorOkihika implements PodCastCollector {
         private final String url;
 
         TopList(String url) {
-            this.url = "https://podcast.okihika.com/SE/" +  url;
+            this.url = ROOT_URL_OKIHIKA + url;
         }
 
         public String getUrl() {
@@ -106,7 +107,7 @@ public class PodCastCollectorOkihika implements PodCastCollector {
     }
 
 
-     PodCastCollectorOkihika(TopList toplist, int resultSize) {
+    PodCastCollectorOkihika(TopList toplist, int resultSize) {
         this.url = toplist.getUrl();
         this.resultSize = resultSize;
     }
@@ -117,14 +118,14 @@ public class PodCastCollectorOkihika implements PodCastCollector {
     }
 
 
-     List<PodCast> getPodCasts() {
-        List<Integer> podCastIds = getPodCastIds();
+    List<PodCast> getPodCasts() {
+        List<Long> podCastIds = getPodCastIds();
 
-        if(podCastIds.isEmpty()){
+        if (podCastIds.isEmpty()) {
             return Collections.emptyList();
         }
 
-        if(podCastIds.size()>resultSize){
+        if (podCastIds.size() > resultSize) {
             podCastIds = podCastIds.subList(0, resultSize);
         }
 
@@ -135,52 +136,63 @@ public class PodCastCollectorOkihika implements PodCastCollector {
         return searchAPI.collect();
     }
 
-    private List<Integer> getPodCastIds() {
+    private List<Long> getPodCastIds() {
         try {
-
-            Document doc = Jsoup.parse(toURL(url), 5000);
+            Document doc = Jsoup.parse(toURL(url), TIMEOUT_MILLIS);
 
             Element table = doc.getElementById("itunes_result_table");
             Elements elements = table.getElementsByAttribute("href");
 
-            List<Integer> a = new ArrayList<>();
-
-            List<Integer> collect = elements.stream().filter(isItunesPodCastURL()).mapToInt((e) -> {
+            return elements.stream().filter(isValidItunesPodCastURL()).mapToLong((e) -> {
                         String toString = e.toString();
-                        int start = toString.indexOf("/id") + 3;
-                        String substring = toString.substring(start, toString.length());
-                        int end = substring.indexOf("?");
-                        String id = substring.substring(0, end);
-                        a.add(Integer.parseInt(id));
-                        return Integer.parseInt(id);
+                        return parseID(toString);
                     }
             ).boxed().collect(Collectors.toList());
 
-
-            System.out.println(a);
-            System.out.println(collect);
-            return collect;
-
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Unable to parse id from " + url,e);
+            LOG.log(Level.SEVERE, "Unable to parse id from " + url, e);
             return Collections.emptyList();
         }
     }
 
-    private URL toURL(String url){
+    Long parseID(String value) {
+        int start = value.indexOf("/id") + 3;
+        String substring = value.substring(start, value.length());
+
+        StringBuilder result = new StringBuilder();
+
+        for (char c : substring.toCharArray()) {
+            if (Character.isDigit(c)) {
+                result.append(c);
+            } else {
+                break;
+            }
+        }
+
         try {
-            return new URL(url);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(url,e);
+            return Long.parseLong(result.toString());
+        } catch (Exception e) {
+            LOG.info(getClass().getSimpleName() + " failed to parse Itunes id=" + value + ", id=" + result.toString());
+            return null;
         }
     }
 
-    private Predicate<Element> isItunesPodCastURL() {
-        return e->e.getElementsByAttribute("href")!=null && e.toString().contains("itunes.apple.com/se/podcast");
+    private URL toURL(String url) {
+        try {
+            return new URL(url);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(url, e);
+        }
+    }
+
+    private Predicate<Element> isValidItunesPodCastURL() {
+        return e -> e.getElementsByAttribute("href") != null &&
+                e.toString().contains("itunes.apple.com/se/podcast") &&
+                parseID(e.toString()) != null;
     }
 
     public static PodCastCollectorOkihika parse(TopList toplist, int resultSize) {
-        return new PodCastCollectorOkihika(toplist,resultSize);
+        return new PodCastCollectorOkihika(toplist, resultSize);
     }
 
 }
