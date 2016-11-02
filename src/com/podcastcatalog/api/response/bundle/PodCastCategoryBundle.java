@@ -4,6 +4,9 @@ import com.podcastcatalog.api.response.PodCastCategory;
 
 import java.util.List;
 
+/**
+ * Contains a list of {@link PodCastCategory}
+ */
 public class PodCastCategoryBundle extends Bundle {
 
     private List<PodCastCategory> podCastCategories;

@@ -37,6 +37,10 @@ public class DiscStorage implements Storage {
 
         File file = getFileName(podCastCatalogLanguage);
 
+        if(!file.exists() || !file.canRead()){
+            return Optional.empty();
+        }
+
         ObjectInputStream in = null;
         FileInputStream fileIn = null;
         try {

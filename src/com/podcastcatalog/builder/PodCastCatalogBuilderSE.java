@@ -14,25 +14,24 @@ public class PodCastCatalogBuilderSE implements PodCastCatalogBuilder{
 
     @Override
     public Set<BundleBuilder> getBundleBuilders() {
-
-        PodCastBundleBuilder.Builder topListBuilder = PodCastBundleBuilder.newBuilder("image", "Toplistan", "10 bästa podcas i Sverige");
+        //FIXME implement...
+        PodCastBundleBuilder topListBuilder = BundleBuilder.newPodCastBundleBuilder("image", "Toplistan", "10 bästa podcas i Sverige");
         topListBuilder.addCollector(ItunesSearchAPI.search("term=p3&entity=podcast"));
 
 
-        PodCastCategoryBundleBuilder.Builder builder = PodCastCategoryBundleBuilder.newBuilder("bundle image", "All Kategorier", "descr..");
-        builder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 3,"Konst", "descr","image", PodCastCategoryType.Arts )).
-        addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.MUSIC, 3,"Musik", "descr","image", PodCastCategoryType.Music ));
+        //CategoryBundleBuilder
+        PodCastCategoryBundleBuilder categoryBundle = BundleBuilder.newPodCastCategoryBundleBuilder("bundle image", "All Kategorier", "descr..");
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 3,"Konst", "descr","image", PodCastCategoryType.Arts ));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.MUSIC, 3,"Musik", "descr","image", PodCastCategoryType.Music ));
 
 
-        //FIXME Episode builder..
-        //BundleBuilder.newEpisode()
-        PodCastEpisodeBundleBuilder.Builder newBuilder = PodCastEpisodeBundleBuilder.newBuilder("bundle image", "Only for U", "descr..");
+        //EpisodeBundleBuilder
+        PodCastEpisodeBundleBuilder newBuilder = BundleBuilder.newPodCastEpisodeBundleBuilder("bundle image", "Only for U", "descr..");
         newBuilder.addCollector(new PodCastEpisodeCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 1));
-//        PodCastEpisodeBundleBuilder episodeBundleBuilder = PodCastEpisodeBundleBuilder.create("image", "5 avsnitt för dig", "descr", );
 
         Set<BundleBuilder> bundleBuilders = new HashSet<>();
-        bundleBuilders.add(topListBuilder.build());
-        bundleBuilders.add(builder.build());
+        bundleBuilders.add(topListBuilder);
+        bundleBuilders.add(categoryBundle);
 
         return bundleBuilders;
     }

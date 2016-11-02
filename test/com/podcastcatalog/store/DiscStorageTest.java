@@ -40,6 +40,11 @@ public class DiscStorageTest {
     }
 
     @Test
+    public void null_if_file_does_not_exist() {
+        Assert.assertFalse(storage.load(PodCastCatalogLanguage.Sweden).isPresent());
+    }
+
+    @Test
     public void load_not_existing() {
         Optional<PodCastCatalog> load = storage.load(PodCastCatalogLanguage.Sweden);
         Assert.assertFalse(load.isPresent());

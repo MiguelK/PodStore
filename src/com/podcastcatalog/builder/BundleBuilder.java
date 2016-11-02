@@ -1,7 +1,6 @@
 package com.podcastcatalog.builder;
 
 import com.podcastcatalog.api.response.bundle.Bundle;
-import com.podcastcatalog.api.response.bundle.BundleType;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.concurrent.Callable;
@@ -14,17 +13,30 @@ public abstract class BundleBuilder implements Callable<Bundle> {
     protected String title;
     protected String description;
     protected String imageURL;
-    private BundleType bundleType;
 
-     BundleBuilder(String imageURL, String title, String description, BundleType bundleType) {
-        if(StringUtils.isEmpty(title)){
+    public static PodCastBundleBuilder newPodCastBundleBuilder(String imageURL, String title, String description) {
+        return new PodCastBundleBuilder(imageURL, title, description);
+    }
+
+    public static PodCastCategoryBundleBuilder newPodCastCategoryBundleBuilder(String imageURL,
+                                                                               String title, String description) {
+        return new PodCastCategoryBundleBuilder(imageURL, title, description);
+    }
+
+    public static PodCastEpisodeBundleBuilder newPodCastEpisodeBundleBuilder(String imageURL,
+                                                                             String title, String description) {
+        return new PodCastEpisodeBundleBuilder(imageURL, title, description);
+    }
+
+
+    public BundleBuilder(String imageURL, String title, String description) {
+        if (StringUtils.isEmpty(title)) {
             throw new IllegalArgumentException();
         }
-        if(StringUtils.isEmpty(description)){
+        if (StringUtils.isEmpty(description)) {
             throw new IllegalArgumentException();
         }
 
-        this.bundleType = bundleType;
         this.imageURL = imageURL;
         this.title = title;
         this.description = description;
@@ -32,6 +44,8 @@ public abstract class BundleBuilder implements Callable<Bundle> {
 
     @Override
     public Bundle call() throws Exception {
-        return null;
+        return createBundle(imageURL, title, description);
     }
+
+    protected abstract Bundle createBundle(String imageURL, String title, String description);
 }

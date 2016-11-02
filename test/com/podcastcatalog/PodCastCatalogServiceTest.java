@@ -33,11 +33,11 @@ public class PodCastCatalogServiceTest {
             @Override
             public Set<BundleBuilder> getBundleBuilders() {
 
-                PodCastBundleBuilder.Builder topListBuilder = PodCastBundleBuilder.newBuilder("image", "Toplistan", "10 bästa podcas i Sverige");
+                PodCastBundleBuilder topListBuilder = BundleBuilder.newPodCastBundleBuilder("image", "Toplistan", "10 bästa podcas i Sverige");
                 topListBuilder.addCollector(ItunesSearchAPI.search("term=p3&entity=podcast&limit=1"));
 
                 Set<BundleBuilder> bundleBuilders = new HashSet<>();
-                bundleBuilders.add(topListBuilder.build());
+                bundleBuilders.add(topListBuilder);
 
                 return bundleBuilders;
             }
