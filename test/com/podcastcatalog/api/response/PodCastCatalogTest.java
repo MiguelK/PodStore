@@ -2,11 +2,14 @@ package com.podcastcatalog.api.response;
 
 import com.google.gson.Gson;
 import com.podcastcatalog.api.response.bundle.Bundle;
+import com.podcastcatalog.api.response.bundle.PodCastCategoryBundleTest;
+import com.podcastcatalog.api.response.bundle.PodCastEpisodeBundleTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +19,23 @@ public class PodCastCatalogTest {
     private static final Gson GSON = new Gson();
 
     @Test
-    public void to_JSON() {
+    public void all_bunlde_types_to_JSON() {
+        List<Bundle> bundles = new ArrayList<>();
+        bundles.add(PodCastEpisodeBundleTest.craeteValid());
+        bundles.add(PodCastBundleTest.createValid().build());
+        bundles.add(PodCastCategoryBundleTest.createValid());
+
+        PodCastCatalog podCastCatalog = PodCastCatalog.create(PodCastCatalogLanguage.Sweden, bundles);
+
+        Assert.assertTrue(podCastCatalog.getBundles().size() == 3);
+        String json = GSON.toJson(podCastCatalog);
+        Assert.assertTrue(json.contains("\"bundleType\":\"PodCast\""));
+        Assert.assertTrue(json.contains("\"bundleType\":\"Category\""));
+        Assert.assertTrue(json.contains("\"bundleType\":\"Episode\""));
+    }
+
+    @Test
+    public void createValid_to_JSON() {
         Assert.assertNotNull(GSON.toJson(createValid()));
     }
 
@@ -32,47 +51,47 @@ public class PodCastCatalogTest {
 
     @Test
     public void serializable() {
-       PodCastCatalog podCastCatalog = createValid();
-       List<? extends Class<?>> classes = Arrays.asList(podCastCatalog.getClass().getInterfaces());
+        PodCastCatalog podCastCatalog = createValid();
+        List<? extends Class<?>> classes = Arrays.asList(podCastCatalog.getClass().getInterfaces());
         Assert.assertTrue(classes.contains(Serializable.class));
     }
 
-   @Test(expectedExceptions = UnsupportedOperationException.class)
-   public void podCastBundleCategories_unmodifiable() {
-       createValid().getBundles().add(PodCastBundleTest.createValid().build());
-   }
+    @Test(expectedExceptions = UnsupportedOperationException.class)
+    public void podCastBundleCategories_unmodifiable() {
+        createValid().getBundles().add(PodCastBundleTest.createValid().build());
+    }
 
 
-        @Test
-        public void create_PodCastCatalog() {
-           Assert.assertNotNull(createValid());
-        }
+    @Test
+    public void create_PodCastCatalog() {
+        Assert.assertNotNull(createValid());
+    }
 
-        @Test(expectedExceptions = IllegalArgumentException.class)
-        public void invalid_podCastCatalogLanguage_null() {
-            List<Bundle> podCastBundle1s = Collections.singletonList(PodCastBundleTest.createValid().build());
-            PodCastCatalog.create(null, podCastBundle1s);
-        }
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void invalid_podCastCatalogLanguage_null() {
+        List<Bundle> podCastBundle1s = Collections.singletonList(PodCastBundleTest.createValid().build());
+        PodCastCatalog.create(null, podCastBundle1s);
+    }
 
-        @Test(expectedExceptions = IllegalArgumentException.class)
-        public void invalid_bundles_null() {
-            PodCastCatalog.create(PodCastCatalogLanguage.Sweden, null);
-        }
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void invalid_bundles_null() {
+        PodCastCatalog.create(PodCastCatalogLanguage.Sweden, null);
+    }
 
-        @Test(expectedExceptions = IllegalArgumentException.class)
-        public void invalid_bundles_empty() {
-            PodCastCatalog.create(PodCastCatalogLanguage.Sweden, Collections.emptyList());
-        }
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void invalid_bundles_empty() {
+        PodCastCatalog.create(PodCastCatalogLanguage.Sweden, Collections.emptyList());
+    }
 
-        @Test
-        public void podCastCatalogLanguage() {
-            Assert.assertEquals(createValid().getPodCastCatalogLanguage(),PodCastCatalogLanguage.Sweden);
-        }
+    @Test
+    public void podCastCatalogLanguage() {
+        Assert.assertEquals(createValid().getPodCastCatalogLanguage(), PodCastCatalogLanguage.Sweden);
+    }
 
-        @Test
-        public void testToSTring() {
-            Assert.assertNotNull(createValid().toString());
-        }
+    @Test
+    public void testToSTring() {
+        Assert.assertNotNull(createValid().toString());
+    }
 
     private PodCastCatalog createValid() {
         List<Bundle> podCastBundle1s = Collections.singletonList(PodCastBundleTest.createValid().build());

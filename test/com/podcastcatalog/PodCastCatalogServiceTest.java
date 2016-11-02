@@ -48,7 +48,7 @@ public class PodCastCatalogServiceTest {
             }
         });
 
-        PodCastCatalogService.getInstance().startLoadCatalogs();
+        PodCastCatalogService.getInstance().buildPodCastCatalogs();
         PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
         Assert.assertNotNull(podCastCatalog);
         Assert.assertFalse(podCastCatalog.getBundles().isEmpty());
@@ -61,7 +61,7 @@ public class PodCastCatalogServiceTest {
 //        DiscStorage.setDataDirectory(); //Data dir in Open Shift?
         //0#
         PodCastCatalogService
-                .getInstance().startLoadCatalogs();
+                .getInstance().buildPodCastCatalogs();
 
         //1# App start get current built catalog
         PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);

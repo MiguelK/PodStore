@@ -29,4 +29,9 @@ public abstract class BundleBuilder implements Callable<Bundle> {
         this.title = title;
         this.description = description;
     }
+
+    @Override
+    public Bundle call() throws Exception {
+        return null;
+    }
 }

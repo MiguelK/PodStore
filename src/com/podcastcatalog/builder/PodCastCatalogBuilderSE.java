@@ -25,6 +25,7 @@ public class PodCastCatalogBuilderSE implements PodCastCatalogBuilder{
 
 
         //FIXME Episode builder..
+        //BundleBuilder.newEpisode()
         PodCastEpisodeBundleBuilder.Builder newBuilder = PodCastEpisodeBundleBuilder.newBuilder("bundle image", "Only for U", "descr..");
         newBuilder.addCollector(new PodCastEpisodeCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 1));
 //        PodCastEpisodeBundleBuilder episodeBundleBuilder = PodCastEpisodeBundleBuilder.create("image", "5 avsnitt för dig", "descr", );
