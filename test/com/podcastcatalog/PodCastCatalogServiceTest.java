@@ -5,6 +5,7 @@ import com.podcastcatalog.api.response.PodCastCatalogLanguage;
 import com.podcastcatalog.builder.BundleBuilder;
 import com.podcastcatalog.builder.PodCastBundleBuilder;
 import com.podcastcatalog.builder.PodCastCatalogBuilder;
+import com.podcastcatalog.builder.PodCastCatalogBuilderSE;
 import com.podcastcatalog.builder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.store.DiscStorage;
 import com.podcastcatalog.store.Storage;
@@ -12,6 +13,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,20 +56,26 @@ public class PodCastCatalogServiceTest {
 
     }
 
- /*   @Test(groups = TestUtil.SLOW_TEST)
+//    @Test(groups = TestUtil.SLOW_TEST)
     public void build_load_catalog() {
 
-//        DiscStorage.setDataDirectory(); //Data dir in Open Shift?
-        //0#
+        File catalogDir = new File("/home/krantmig/tools/temp");//FIXME
+
+        Storage discStorage = new DiscStorage(catalogDir);
+
+        PodCastCatalogService.getInstance().setStorage(discStorage);
+        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());
+
         PodCastCatalogService
                 .getInstance().buildPodCastCatalogs();
 
         //1# App start get current built catalog
         PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
         System.out.println(podCastCatalog);
-        //podCastCatalog.toJSON()->
 
         TestUtil.assertToJSONNotNull(podCastCatalog);
-     }*/
+
+        discStorage.save(podCastCatalog);
+    }
 
 }

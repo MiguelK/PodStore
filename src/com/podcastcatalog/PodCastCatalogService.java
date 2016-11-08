@@ -49,6 +49,18 @@ public class PodCastCatalogService {
         this.storage = storage;
     }
 
+    public void loadPodCastCatalog(PodCastCatalog podCastCatalog) {
+
+        writeLock.lock();
+        LOG.info("Loading stored podCastCatalog " + podCastCatalog);
+
+        try {
+            podCastCatalogByLang.put(podCastCatalog.getPodCastCatalogLanguage(), podCastCatalog);
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
     public void buildPodCastCatalogsAsync() {
         validateState();
 
@@ -65,49 +77,41 @@ public class PodCastCatalogService {
         validateState();
 
         try {
-            ayncExecutor.submit(new RebuildCatalogAction()).get(60,TimeUnit.SECONDS);
+            ayncExecutor.submit(new RebuildCatalogAction()).get(3, TimeUnit. MINUTES);
         } catch (Exception e) {
             throw new RuntimeException("Unable to rebuild catalogs ", e);
         }
     }
 
+    public void start() {
+        //FIXME validate +
+        //Start runner that rebuilds each catalog periodically once a day? //FIXME
+
+    }
+
     private class RebuildCatalogAction implements Callable<Void> {
         @Override
         public Void call() throws Exception {
-            rebuildCatalogs();
-            return null;
-        }
-    }
 
-    private void rebuildCatalogs() {
+            writeLock.lock();
+            LOG.info("rebuildCatalogs() registered podCastCatalogBuilders=" + podCastCatalogBuilders.size());
 
-        writeLock.lock();
-        LOG.info("buildPodCastCatalogs() podCastCatalogBuilders=" + podCastCatalogBuilders.size());
-
-        try {
-            for (PodCastCatalogBuilder podCastCatalogBuilder : podCastCatalogBuilders) {
-
-                PodCastCatalogLanguage lang = podCastCatalogBuilder.getPodCastCatalogLang();
-
-                Optional<PodCastCatalog> podCastCatalog = storage.load(lang);
-
-                if (podCastCatalog.isPresent()) {
-                    podCastCatalogByLang.put(lang, podCastCatalog.get());
-                    LOG.info("Loaded PodCastCatalog " + lang + " from storage");
-                } else {
-                    LOG.info("Start building PodCastCatalog " + lang + " ...");
+            try {
+                for (PodCastCatalogBuilder podCastCatalogBuilder : podCastCatalogBuilders) {
+                    LOG.info("Start building PodCastCatalog " + podCastCatalogBuilder.getPodCastCatalogLang() + " ...");
 
                     PodCastCatalog catalog = buildPodcastCatalog(podCastCatalogBuilder);
 
                     if (catalog != null) {
+                        LOG.info("PodcastCatalo " + podCastCatalogBuilder.getPodCastCatalogLang() + " was updated with new version");
                         storage.save(catalog);
-                        podCastCatalogByLang.put(lang, catalog);
+                        podCastCatalogByLang.put(podCastCatalogBuilder.getPodCastCatalogLang(), catalog);
                     }
                 }
+            } finally {
+                writeLock.unlock();
             }
-            //Start runner that rebuilds each catalog periodically once a day? //FIXME
-        } finally {
-            writeLock.unlock();
+            return null;
         }
     }
 
@@ -126,9 +130,9 @@ public class PodCastCatalogService {
         Set<BundleBuilder> bundleBuilders = podCastCatalogBuilder.getBundleBuilders();
         List<Bundle> bundles = new ArrayList<>();
         try {
-            List<Future<Bundle>> futures = executorService.invokeAll(bundleBuilders);
-            for (Future<Bundle> future : futures) {
-                Bundle bundle = future.get();//FIXME Max timeout??
+            List<Future<Bundle>> futureBundles = executorService.invokeAll(bundleBuilders);
+            for (Future<Bundle> futureBundle : futureBundles) {
+                Bundle bundle = futureBundle.get();//FIXME Max timeout??
                 bundles.add(bundle);
             }
         } catch (Exception e) {

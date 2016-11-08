@@ -24,7 +24,7 @@ public class PodCastCategoryCollectorOkihika extends PodCastCollectorOkihika imp
     }
 
     @Override
-    public PodCastCategory collectPodCastCategory(){
+    public PodCastCategory collectCategories(){
         List<PodCast> podCasts = getPodCasts();
 
         return new PodCastCategory(title, description, image, podCasts,podCastCategoryType);

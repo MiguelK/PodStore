@@ -112,8 +112,12 @@ public class PodCastCollectorOkihika implements PodCastCollector {
         this.resultSize = resultSize;
     }
 
+    public int getResultSize() {
+        return resultSize;
+    }
+
     @Override
-    public List<PodCast> collect() {
+    public List<PodCast> collectPodCasts() {
         return getPodCasts();
     }
 
@@ -133,7 +137,7 @@ public class PodCastCollectorOkihika implements PodCastCollector {
 
         ItunesSearchAPI searchAPI = ItunesSearchAPI.lookup(podCastIds);
 
-        return searchAPI.collect();
+        return searchAPI.collectPodCasts();
     }
 
     private List<Long> getPodCastIds() {

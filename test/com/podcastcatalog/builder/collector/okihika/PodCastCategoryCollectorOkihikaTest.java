@@ -14,14 +14,14 @@ public class PodCastCategoryCollectorOkihikaTest {
     @Test(groups = TestUtil.SLOW_TEST)
     public void testName() {
         PodCastCollectorOkihika podCastCollectorOkihika =  PodCastCollectorOkihika.parse(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 3);
-        List<PodCast> podCasts = podCastCollectorOkihika.collect();
+        List<PodCast> podCasts = podCastCollectorOkihika.collectPodCasts();
         Assert.assertTrue(podCasts.size()==3," was=" + podCasts.size());
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void parse() {
         PodCastCollectorOkihika podCastCollectorOkihika =  PodCastCollectorOkihika.parse(PodCastCollectorOkihika.TopList.ARTS, 3);
-        List<PodCast> podCasts = podCastCollectorOkihika.collect();
+        List<PodCast> podCasts = podCastCollectorOkihika.collectPodCasts();
         Assert.assertFalse(podCasts.isEmpty());
     }
 
@@ -31,7 +31,7 @@ public class PodCastCategoryCollectorOkihikaTest {
         //FIXME MUSIC error parsing id
         PodCastCategoryCollectorOkihika collector = new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 3, "Musik", "descr", "image", PodCastCategoryType.Music);
 
-        PodCastCategory podCastCategory = collector.collectPodCastCategory();
+        PodCastCategory podCastCategory = collector.collectCategories();
 
         System.out.println(podCastCategory);
         Assert.assertFalse(podCastCategory.getPodCasts().isEmpty());

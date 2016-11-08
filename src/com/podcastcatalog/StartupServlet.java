@@ -1,5 +1,7 @@
 package com.podcastcatalog;
 
+import com.podcastcatalog.api.response.PodCastCatalog;
+import com.podcastcatalog.api.response.PodCastCatalogLanguage;
 import com.podcastcatalog.builder.PodCastCatalogBuilderSE;
 import com.podcastcatalog.store.DiscStorage;
 import com.podcastcatalog.store.Storage;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class StartupServlet extends HttpServlet {
@@ -28,7 +31,15 @@ public class StartupServlet extends HttpServlet {
         PodCastCatalogService.getInstance().setStorage(discStorage);
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());//FIXME English
 
-        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync();
+        Optional<PodCastCatalog> podCastCatalog = discStorage.load(PodCastCatalogLanguage.Sweden);
+        if (podCastCatalog.isPresent()) {
+            PodCastCatalogService.getInstance().loadPodCastCatalog(podCastCatalog.get());
+        } else {
+            PodCastCatalogService.getInstance().buildPodCastCatalogsAsync();
+        }
+        //        registerOrStartLoading(discStorage.load(PodCastCatalogLanguage.Sweden)); //FIXME English
+
+        PodCastCatalogService.getInstance().start();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

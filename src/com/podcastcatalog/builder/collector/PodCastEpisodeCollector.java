@@ -5,5 +5,5 @@ import com.podcastcatalog.api.response.PodCastEpisode;
 import java.util.List;
 
 public interface PodCastEpisodeCollector {
-    List<PodCastEpisode> collectPodCastEpisodes();
+    List<PodCastEpisode> collectEpisodes();
 }

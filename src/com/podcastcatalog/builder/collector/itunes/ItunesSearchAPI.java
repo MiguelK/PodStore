@@ -55,7 +55,7 @@ public class ItunesSearchAPI implements PodCastCollector {
     }
 
     @Override
-    public List<PodCast> collect() {
+    public List<PodCast> collectPodCasts() {
         PodCastSearchResult podCastSearchResult = performSearch();
 
         if(podCastSearchResult ==null){

@@ -24,7 +24,7 @@ public class PodCastBundleBuilder extends BundleBuilder {
         List<PodCast> podCasts = new ArrayList<>();
 
         for (PodCastCollector podCastFetcher : collectors) {//FIXME abstract Parser
-            podCasts.addAll(podCastFetcher.collect());
+            podCasts.addAll(podCastFetcher.collectPodCasts());
         }
 
         return new PodCastBundle(title, description, imageURL, podCasts);

@@ -25,7 +25,7 @@ class PodCastEpisodeBundleBuilder extends BundleBuilder {
         List<PodCastEpisode> podCastEpisodes = new ArrayList<>();
 
         for (PodCastEpisodeCollector podCastFetcher : collectors) {
-            podCastEpisodes.addAll(podCastFetcher.collectPodCastEpisodes());
+            podCastEpisodes.addAll(podCastFetcher.collectEpisodes());
         }
 
         return new PodCastEpisodeBundle(title, description, imageURL, podCastEpisodes);

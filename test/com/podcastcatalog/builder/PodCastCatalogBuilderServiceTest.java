@@ -1,29 +1,18 @@
 package com.podcastcatalog.builder;
 
-import com.podcastcatalog.TestUtil;
-import com.podcastcatalog.api.response.bundle.Bundle;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Set;
 
 public class PodCastCatalogBuilderServiceTest {
 
-    @Test(groups = TestUtil.SLOW_TEST)
+    @Test
     public void fetchBuildCatalog() throws Exception {
 
         PodCastCatalogBuilderSE podCastCatalogBuilderSE = new PodCastCatalogBuilderSE();
 
         Set<BundleBuilder> bundleBuilders = podCastCatalogBuilderSE.getBundleBuilders();
-
-        for (BundleBuilder bundleBuilder : bundleBuilders) {
-            Bundle bundle = bundleBuilder.call();
-            System.out.println(bundle);
-        }
-
-// /        PodCastCatalog podCastCatalog = service.buildPodcastCatalog(new PodCastCatalogBuilderSE());
-
-//        System.out.println("" + podCastCatalog);
-//        Assert.assertNotNull(podCastCatalog);
+        Assert.assertNotNull(bundleBuilders);
     }
-
 }

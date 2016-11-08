@@ -15,23 +15,28 @@ public class PodCastCatalogBuilderSE implements PodCastCatalogBuilder{
     @Override
     public Set<BundleBuilder> getBundleBuilders() {
         //FIXME implement...
-        PodCastBundleBuilder topListBuilder = BundleBuilder.newPodCastBundleBuilder("image", "Toplistan", "10 bästa podcas i Sverige");
-        topListBuilder.addCollector(ItunesSearchAPI.search("term=p3&entity=podcast"));
+        //PodCast
+        PodCastBundleBuilder podCastBundle = BundleBuilder.newPodCastBundleBuilder("image", "Toplistan", "10 bästa podcas i Sverige");
+        podCastBundle.addCollector(ItunesSearchAPI.search("term=p3&entity=podcast"));
 
 
-        //CategoryBundleBuilder
+        //Categories (List of PodCasts)
         PodCastCategoryBundleBuilder categoryBundle = BundleBuilder.newPodCastCategoryBundleBuilder("bundle image", "All Kategorier", "descr..");
-        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 3,"Konst", "descr","image", PodCastCategoryType.Arts ));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 3,"Konst", "descr","image", PodCastCategoryType.News_Politics ));
         categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.MUSIC, 3,"Musik", "descr","image", PodCastCategoryType.Music ));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.Tech_News, 3,"Musik", "descr","image", PodCastCategoryType.Tech_News ));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 3,"Musik", "descr","image", PodCastCategoryType.Arts ));
 
-
-        //EpisodeBundleBuilder
-        PodCastEpisodeBundleBuilder newBuilder = BundleBuilder.newPodCastEpisodeBundleBuilder("bundle image", "Only for U", "descr..");
-        newBuilder.addCollector(new PodCastEpisodeCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 1));
+        //Episodes
+        PodCastEpisodeBundleBuilder episodeBundle = BundleBuilder.newPodCastEpisodeBundleBuilder("bundle image", "Only for U", "descr..");
+        episodeBundle.addCollector(new PodCastEpisodeCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 1,1));
+        episodeBundle.addCollector(new PodCastEpisodeCollectorOkihika(PodCastCollectorOkihika.TopList.Tech_News, 2,2));
+        episodeBundle.addCollector(new PodCastEpisodeCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 2,2));
 
         Set<BundleBuilder> bundleBuilders = new HashSet<>();
-        bundleBuilders.add(topListBuilder);
+        bundleBuilders.add(podCastBundle);
         bundleBuilders.add(categoryBundle);
+        bundleBuilders.add(episodeBundle);
 
         return bundleBuilders;
     }
