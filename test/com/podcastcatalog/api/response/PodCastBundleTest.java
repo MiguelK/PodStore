@@ -21,7 +21,6 @@ public class PodCastBundleTest {
     public void to_JSON() {
         PodCastBundle bundle = createValid().build();
         String json = GSON.toJson(bundle);
-        System.out.println(json);
         Assert.assertNotNull(json);
     }
 

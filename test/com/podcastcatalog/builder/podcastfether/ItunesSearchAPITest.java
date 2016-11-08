@@ -15,7 +15,6 @@ public class ItunesSearchAPITest {
     public void lookup_2() {
         ItunesSearchAPI lookup = ItunesSearchAPI.lookup(Arrays.asList(895602289L, 1032687266L));
         List<PodCast> podCasts = lookup.collectPodCasts();
-        System.out.println(podCasts);
         Assert.assertTrue(podCasts.size()==2);
     }
 
@@ -29,12 +28,10 @@ public class ItunesSearchAPITest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void search_result_1() {
-//       ItunesSearchAPI query = ItunesSearchAPI.create("term=java&entity=podcast&limit=1");
        ItunesSearchAPI query = ItunesSearchAPI.search("term=sommar&entity=podcast&limit=1");
 
         List<PodCast> fetch = query.collectPodCasts();
-        System.out.println(fetch);
-//        Assert.assertTrue(fetch.size()==1);
+        Assert.assertTrue(fetch.size()==1);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
@@ -50,7 +47,6 @@ public class ItunesSearchAPITest {
     public void fetch_success() {
         ItunesSearchAPI searchAPI = ItunesSearchAPI.search("term=p3&entity=podcast");
         List<PodCast> fetch = searchAPI.collectPodCasts();
-        System.out.println("Fetch=" + fetch);
         Assert.assertFalse(fetch.isEmpty());
         Assert.assertTrue(fetch.size()==42, "Actual=" + fetch.size());
     }

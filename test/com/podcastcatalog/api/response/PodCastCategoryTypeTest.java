@@ -37,81 +37,81 @@ public class PodCastCategoryTypeTest {
 
     @Test
     public void categoriesLevel1() {
-        assertSize(1, PodCastCategoryType.Arts,"Arts","arts","ARTS"," ARts "," arts");
-        assertSize(1, PodCastCategoryType.Business,"Business"," Business ","business"," busiNess ");
-        assertSize(1, PodCastCategoryType.Comedy,"Comedy","comedy ","Comedy");
-        assertSize(1, PodCastCategoryType.Education,"Education"," Education  "," education");
-        assertSize(1, PodCastCategoryType.Games_Hobbies,"Games & Hobbies"," games & Hobbies  ","games & HObbies ");
-        assertSize(1, PodCastCategoryType.Government_Organizations,"Government & Organizations"," Government & OrganizationS  ");
-        assertSize(1, PodCastCategoryType.Health,"Health"," Health ", " HEALth");
-        assertSize(1, PodCastCategoryType.Music,"Music"," music ", " MUSIC");
-        assertSize(1, PodCastCategoryType.News_Politics,"News & Politics","  News & Politics  ", " news & Politics");
-        assertSize(1, PodCastCategoryType.Science_Medicine,"Science & Medicine","  Science & Medicine  ", " Science & MeDicine");
-        assertSize(1, PodCastCategoryType.Society_Culture,"Society & Culture","  Society & Culture  ", " SocieTy & Culture");
-        assertSize(1, PodCastCategoryType.Sports_Recreation,"Sports & Recreation","  Sports & Recreation  ", " SporTS & Recreation");
-        assertSize(1, PodCastCategoryType.Technology,"Technology","  technology  ", " TechnologY ");
+        assertSize(1, PodCastCategoryType.ARTS,"ARTS","arts","ARTS"," ARts "," arts");
+        assertSize(1, PodCastCategoryType.BUSINESS,"BUSINESS"," BUSINESS ","business"," busiNess ");
+        assertSize(1, PodCastCategoryType.COMEDY,"COMEDY","comedy ","COMEDY");
+        assertSize(1, PodCastCategoryType.EDUCATION,"EDUCATION"," EDUCATION  "," education");
+        assertSize(1, PodCastCategoryType.GAMES_HOBBIES,"Games & HOBBIES"," games & HOBBIES  ","games & HObbies ");
+        assertSize(1, PodCastCategoryType.GOVERNMENT_ORGANIZATIONS,"Government & Organizations"," Government & OrganizationS  ");
+        assertSize(1, PodCastCategoryType.HEALTH,"HEALTH"," HEALTH ", " HEALth");
+        assertSize(1, PodCastCategoryType.MUSIC,"MUSIC"," music ", " MUSIC");
+        assertSize(1, PodCastCategoryType.NEWS_POLITICS,"News & Politics","  News & Politics  ", " news & Politics");
+        assertSize(1, PodCastCategoryType.SCIENCE_MEDICINE,"Science & MEDICINE","  Science & MEDICINE  ", " Science & MeDicine");
+        assertSize(1, PodCastCategoryType.SOCIETY_CULTURE,"Society & Culture","  Society & Culture  ", " SocieTy & Culture");
+        assertSize(1, PodCastCategoryType.SPORTS_RECREATION,"Sports & Recreation","  Sports & Recreation  ", " SporTS & Recreation");
+        assertSize(1, PodCastCategoryType.TECHNOLOGY,"TECHNOLOGY","  technology  ", " TechnologY ");
     }
 
     @Test
     public void categoriesLevel2() {
-        assertSize(2, PodCastCategoryType.Gadgets,"Gadgets"," gadgets ");
-        assertSize(2, PodCastCategoryType.Podcasting,"Podcasting"," podcasting ");
-        assertSize(2, PodCastCategoryType.Software_How_To,"Software How-To"," software How-To ");
-        assertSize(2, PodCastCategoryType.Tech_News,"Tech News"," Tech news ");
-        assertSize(2, PodCastCategoryType.Amateur,"Amateur"," amateur ");
-        assertSize(2, PodCastCategoryType.College_High_School,"College & High School"," college & High School ");
-        assertSize(2, PodCastCategoryType.Outdoor,"Outdoor","Outdoor ");
-        assertSize(2, PodCastCategoryType.Professional,"Professional"," Professional ");
-        assertSize(2, PodCastCategoryType.TV_Film,"TV & Film"," TV & Film ","tv & film");
-        assertSize(2, PodCastCategoryType.History,"History"," History ");
-        assertSize(2, PodCastCategoryType.Personal_Journals,"Personal Journals"," Personal Journals ");
-        assertSize(2, PodCastCategoryType.Philosophy,"Philosophy"," Philosophy ");
-        assertSize(2, PodCastCategoryType.Places_Travel,"Places & Travel"," Places & Travel ");
-        assertSize(2, PodCastCategoryType.Medicine,"Medicine"," Medicine ");
-        assertSize(2, PodCastCategoryType.Natural_Sciences,"Natural Sciences"," Natural Sciences ");
-        assertSize(2, PodCastCategoryType.Social_Sciences,"Social Sciences"," Social Sciences ");
-        assertSize(2, PodCastCategoryType.Religion_Spirituality,"Religion & Spirituality","Religion & Spirituality ");
-        assertSize(2, PodCastCategoryType.Alternative_Health,"Alternative Health"," Alternative Health ");
-        assertSize(2, PodCastCategoryType.Fitness_Nutrition,"Fitness & Nutrition"," Fitness & Nutrition ");
-        assertSize(2, PodCastCategoryType.Self_Help,"Self-Help","Self-help ");
-        assertSize(2, PodCastCategoryType.Sexuality,"Sexuality"," Sexuality ");
-        assertSize(2, PodCastCategoryType.Kids_Family,"Kids & Family"," Kids & family ");
-        assertSize(2, PodCastCategoryType.Local,"Local"," Local ");
-        assertSize(2, PodCastCategoryType.National,"National"," National ");
-        assertSize(2, PodCastCategoryType.Non_Profit,"Non-Profit"," Non-ProfiT ");
-        assertSize(2, PodCastCategoryType.Regional,"Regional"," Regional ");
-        assertSize(2, PodCastCategoryType.Automotive,"Automotive"," Automotive ");
-        assertSize(2, PodCastCategoryType.Aviation,"Aviation"," Aviation ");
-        assertSize(2, PodCastCategoryType.Hobbies,"Hobbies"," Hobbies ");
-        assertSize(2, PodCastCategoryType.Other_Games,"Other Games"," Other Games ");
-        assertSize(2, PodCastCategoryType.Video_Games,"Video Games"," Video Games ");
-        assertSize(2, PodCastCategoryType.Educational_Technology,"Educational Technology"," Educational Technology ");
-        assertSize(2, PodCastCategoryType.Higher_Education,"Higher Education"," Higher EducatioN ");
+        assertSize(2, PodCastCategoryType.GADGETS,"GADGETS"," gadgets ");
+        assertSize(2, PodCastCategoryType.PODCASTING,"PODCASTING"," podcasting ");
+        assertSize(2, PodCastCategoryType.SOFTWARE_HOW_TO,"Software How-To"," software How-To ");
+        assertSize(2, PodCastCategoryType.TECH_NEWS,"Tech News"," Tech news ");
+        assertSize(2, PodCastCategoryType.AMATEUR,"AMATEUR"," amateur ");
+        assertSize(2, PodCastCategoryType.COLLEGE_HIGH_SCHOOL,"College & High School"," college & High School ");
+        assertSize(2, PodCastCategoryType.OUTDOOR,"OUTDOOR","OUTDOOR ");
+        assertSize(2, PodCastCategoryType.PROFESSIONAL,"PROFESSIONAL"," PROFESSIONAL ");
+        assertSize(2, PodCastCategoryType.TV_FILM,"TV & Film"," TV & Film ","tv & film");
+        assertSize(2, PodCastCategoryType.HISTORY,"HISTORY"," HISTORY ");
+        assertSize(2, PodCastCategoryType.PERSONAL_JOURNALS,"Personal Journals"," Personal Journals ");
+        assertSize(2, PodCastCategoryType.PHILOSOPHY,"PHILOSOPHY"," PHILOSOPHY ");
+        assertSize(2, PodCastCategoryType.PLACES_TRAVEL,"Places & Travel"," Places & Travel ");
+        assertSize(2, PodCastCategoryType.MEDICINE,"MEDICINE"," MEDICINE ");
+        assertSize(2, PodCastCategoryType.NATURAL_SCIENCES,"Natural Sciences"," Natural Sciences ");
+        assertSize(2, PodCastCategoryType.SOCIAL_SCIENCES,"Social Sciences"," Social Sciences ");
+        assertSize(2, PodCastCategoryType.RELIGION_SPIRITUALITY,"Religion & SPIRITUALITY","Religion & SPIRITUALITY ");
+        assertSize(2, PodCastCategoryType.ALTERNATIVE_HEALTH,"Alternative HEALTH"," Alternative HEALTH ");
+        assertSize(2, PodCastCategoryType.FITNESS_NUTRITION,"Fitness & Nutrition"," Fitness & Nutrition ");
+        assertSize(2, PodCastCategoryType.SELF_HELP,"Self-Help","Self-help ");
+        assertSize(2, PodCastCategoryType.SEXUALITY,"SEXUALITY"," SEXUALITY ");
+        assertSize(2, PodCastCategoryType.KIDS_FAMILY,"Kids & Family"," Kids & family ");
+        assertSize(2, PodCastCategoryType.LOCAL,"LOCAL"," LOCAL ");
+        assertSize(2, PodCastCategoryType.NATIONAL,"NATIONAL"," NATIONAL ");
+        assertSize(2, PodCastCategoryType.NON_PROFIT,"Non-Profit"," Non-ProfiT ");
+        assertSize(2, PodCastCategoryType.REGIONAL,"REGIONAL"," REGIONAL ");
+        assertSize(2, PodCastCategoryType.AUTOMOTIVE,"AUTOMOTIVE"," AUTOMOTIVE ");
+        assertSize(2, PodCastCategoryType.AVIATION,"AVIATION"," AVIATION ");
+        assertSize(2, PodCastCategoryType.HOBBIES,"HOBBIES"," HOBBIES ");
+        assertSize(2, PodCastCategoryType.OTHER_GAMES,"OTHER Games"," OTHER Games ");
+        assertSize(2, PodCastCategoryType.VIDEO_GAMES,"Video Games"," Video Games ");
+        assertSize(2, PodCastCategoryType.EDUCATIONAL_TECHNOLOGY,"Educational TECHNOLOGY"," Educational TECHNOLOGY ");
+        assertSize(2, PodCastCategoryType.HIGHER_EDUCATION,"Higher EDUCATION"," Higher EducatioN ");
         assertSize(2, PodCastCategoryType.K_12,"K-12"," K-12 ","k-12");
-        assertSize(2, PodCastCategoryType.Language_Courses,"Language Courses"," Language Courses ");
-        assertSize(2, PodCastCategoryType.Training,"Training"," TrainIng ");
-        assertSize(2, PodCastCategoryType.Business_News,"Business News"," Business News ");
-        assertSize(2, PodCastCategoryType.Careers,"Careers"," Careers ");
-        assertSize(2, PodCastCategoryType.Investing,"Investing"," Investing");
-        assertSize(2, PodCastCategoryType.Management_Marketing,"Management & Marketing"," Management & Marketing ");
-        assertSize(2, PodCastCategoryType.Shopping,"Shopping"," ShoppinG ");
-        assertSize(2, PodCastCategoryType.Design,"Design"," Design ");
-        assertSize(2, PodCastCategoryType.Fashion_Beauty,"Fashion & Beauty"," Fashion & Beauty ");
-        assertSize(2, PodCastCategoryType.Food,"Food"," Food");
-        assertSize(2, PodCastCategoryType.Literature,"Literature"," Literature ");
-        assertSize(2, PodCastCategoryType.Performing_Arts,"Performing Arts"," performing Arts ");
-        assertSize(2, PodCastCategoryType.Visual_Arts,"Visual Arts"," Visual Arts ");
+        assertSize(2, PodCastCategoryType.LANGUAGE_COURSES,"Language Courses"," Language Courses ");
+        assertSize(2, PodCastCategoryType.TRAINING,"TRAINING"," TrainIng ");
+        assertSize(2, PodCastCategoryType.BUSINESS_NEWS,"BUSINESS News"," BUSINESS News ");
+        assertSize(2, PodCastCategoryType.CAREERS,"CAREERS"," CAREERS ");
+        assertSize(2, PodCastCategoryType.INVESTING,"INVESTING"," INVESTING");
+        assertSize(2, PodCastCategoryType.MANAGEMENT_MARKETING,"Management & Marketing"," Management & Marketing ");
+        assertSize(2, PodCastCategoryType.SHOPPING,"SHOPPING"," ShoppinG ");
+        assertSize(2, PodCastCategoryType.DESIGN,"DESIGN"," DESIGN ");
+        assertSize(2, PodCastCategoryType.FASHION_BEAUTY,"Fashion & Beauty"," Fashion & Beauty ");
+        assertSize(2, PodCastCategoryType.FOOD,"FOOD"," FOOD");
+        assertSize(2, PodCastCategoryType.LITERATURE,"LITERATURE"," LITERATURE ");
+        assertSize(2, PodCastCategoryType.PERFORMING_ARTS,"Performing ARTS"," performing ARTS ");
+        assertSize(2, PodCastCategoryType.VISUAL_ARTS,"Visual ARTS"," Visual ARTS ");
     }
 
     @Test
     public void categoriesLevel3() {
-        assertSize(3, PodCastCategoryType.Buddhism,"Buddhism"," Buddhism ");
-        assertSize(3, PodCastCategoryType.Christianity,"Christianity"," CHristianity ");
-        assertSize(3, PodCastCategoryType.Hinduism,"Hinduism"," Hinduism ");
-        assertSize(3, PodCastCategoryType.Islam,"Islam"," Islam ");
-        assertSize(3, PodCastCategoryType.Judaism,"Judaism"," Judaism ");
-        assertSize(3, PodCastCategoryType.Other,"Other"," Other ");
-        assertSize(3, PodCastCategoryType.Spirituality,"Spirituality"," SpiritualitY ");
+        assertSize(3, PodCastCategoryType.BUDDHISM,"BUDDHISM"," BUDDHISM ");
+        assertSize(3, PodCastCategoryType.CHRISTIANITY,"CHRISTIANITY"," CHristianity ");
+        assertSize(3, PodCastCategoryType.HINDUISM,"HINDUISM"," HINDUISM ");
+        assertSize(3, PodCastCategoryType.ISLAM,"ISLAM"," ISLAM ");
+        assertSize(3, PodCastCategoryType.JUDAISM,"JUDAISM"," JUDAISM ");
+        assertSize(3, PodCastCategoryType.OTHER,"OTHER"," OTHER ");
+        assertSize(3, PodCastCategoryType.SPIRITUALITY,"SPIRITUALITY"," SpiritualitY ");
     }
 
     private void assertSize(int size, PodCastCategoryType podCastCategoryType, String... rawNames){

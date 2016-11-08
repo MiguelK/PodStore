@@ -108,7 +108,7 @@ public class PodCastFeedParser {
                 RawElement rawElement = categoryElement.get();
                 int attributeCount = rawElement.getAttributeCount();
                 if (attributeCount > 1) {
-                    System.out.println("");//FIXME
+                    LOG.warning("What to do? " + rawElement.getAttributeCount() + " rawElement=" + rawElement);
                 }
                 if (attributeCount > 0) {
                     RawAttribute attribute = rawElement.getAttribute(0);//FIXME
@@ -117,7 +117,7 @@ public class PodCastFeedParser {
                 }
             }
 
-            return podCastCategories.isEmpty() ? PodCastCategoryType.Amateur.getCategories() : podCastCategories;
+            return podCastCategories.isEmpty() ? PodCastCategoryType.AMATEUR.getCategories() : podCastCategories;
 
         }
 

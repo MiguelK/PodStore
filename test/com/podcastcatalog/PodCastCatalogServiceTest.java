@@ -71,7 +71,6 @@ public class PodCastCatalogServiceTest {
 
         //1# App start get current built catalog
         PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
-        System.out.println(podCastCatalog);
 
         TestUtil.assertToJSONNotNull(podCastCatalog);
 

@@ -22,16 +22,16 @@ public class PodCastCatalogBuilderSE implements PodCastCatalogBuilder{
 
         //Categories (List of PodCasts)
         PodCastCategoryBundleBuilder categoryBundle = BundleBuilder.newPodCastCategoryBundleBuilder("bundle image", "All Kategorier", "descr..");
-        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 3,"Konst", "descr","image", PodCastCategoryType.News_Politics ));
-        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.MUSIC, 3,"Musik", "descr","image", PodCastCategoryType.Music ));
-        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.Tech_News, 3,"Musik", "descr","image", PodCastCategoryType.Tech_News ));
-        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 3,"Musik", "descr","image", PodCastCategoryType.Arts ));
-        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.HISTORY, 10,"Musik", "descr","image", PodCastCategoryType.History ));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 3,"Konst", "descr","image", PodCastCategoryType.NEWS_POLITICS));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.MUSIC, 3,"Musik", "descr","image", PodCastCategoryType.MUSIC));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TECH_NEWS, 3,"Musik", "descr","image", PodCastCategoryType.TECH_NEWS));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 3,"Musik", "descr","image", PodCastCategoryType.ARTS));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.HISTORY, 10,"Musik", "descr","image", PodCastCategoryType.HISTORY));
 
         //Episodes
         PodCastEpisodeBundleBuilder episodeBundle = BundleBuilder.newPodCastEpisodeBundleBuilder("bundle image", "Only for U", "descr..");
         episodeBundle.addCollector(new PodCastEpisodeCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 1,1));
-        episodeBundle.addCollector(new PodCastEpisodeCollectorOkihika(PodCastCollectorOkihika.TopList.Tech_News, 2,2));
+        episodeBundle.addCollector(new PodCastEpisodeCollectorOkihika(PodCastCollectorOkihika.TopList.TECH_NEWS, 2,2));
         episodeBundle.addCollector(new PodCastEpisodeCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 2,2));
 
         Set<BundleBuilder> bundleBuilders = new HashSet<>();

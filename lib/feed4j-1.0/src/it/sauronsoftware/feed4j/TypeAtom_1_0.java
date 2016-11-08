@@ -53,7 +53,7 @@ class TypeAtom_1_0 extends TypeAbstract {
 		if (language != null && isValidLanguageCode(language)) {
 			header.setLanguage(language);
 		}
-		// Other interesting informations...
+		// OTHER interesting informations...
 		for (int i = 0; i < header.getNodeCount(); i++) {
 			RawNode node = header.getNode(i);
 			if (node instanceof RawElement) {

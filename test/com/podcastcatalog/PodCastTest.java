@@ -82,7 +82,7 @@ public class PodCastTest {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalid_podCastEpisodes_empty() {
          PodCast.newBuilder().title("sdsds").description("dsdsdsd").createdDate(LocalDateTime.now()).
-                feedURL("sdsdsd").id(22).publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("Arts")).
+                feedURL("sdsdsd").id(22).publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("ARTS")).
                 addPodCastEpisodes(Collections.emptyList()).build();
     }
 
@@ -124,7 +124,7 @@ public class PodCastTest {
 
     @Test(expectedExceptions = UnsupportedOperationException.class)
     public void podCastCategories_unmodifiable() {
-        createValid().build().getPodCastCategories().add(PodCastCategoryType.Amateur);
+        createValid().build().getPodCastCategories().add(PodCastCategoryType.AMATEUR);
     }
 
     @Test(expectedExceptions = UnsupportedOperationException.class)
@@ -186,7 +186,7 @@ public class PodCastTest {
         podCastEpisode.add(PodCastEpisodeTest.createValid().build());
 
         return PodCast.newBuilder().title("sdsds").description("dsdsdsd").createdDate(LocalDateTime.now()).
-                feedURL("sdsdsd").id(22).publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("Arts")).
+                feedURL("sdsdsd").id(22).publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("ARTS")).
                 addPodCastEpisodes(podCastEpisode);
 
     }

@@ -35,7 +35,7 @@ public class ItunesSearchAPI implements PodCastCollector {
 
         String join = StringUtils.join(ids, ",");
 
-        return new ItunesSearchAPI(BASE_URL + join ); //FIXME
+        return new ItunesSearchAPI(BASE_URL + join); //FIXME
     }
 
     public static ItunesSearchAPI search(String parameters) {
@@ -43,14 +43,14 @@ public class ItunesSearchAPI implements PodCastCollector {
     }
 
     private ItunesSearchAPI(String url) {
-        this.request= buildURL(url);
+        this.request = buildURL(url);
     }
 
     private URL buildURL(String url) {
         try {
             return new URL(url);
         } catch (MalformedURLException e) {
-            throw  new IllegalArgumentException(e); //Only if schema is missing (https:)
+            throw new IllegalArgumentException(e); //Only if schema is missing (https:)
         }
     }
 
@@ -58,7 +58,7 @@ public class ItunesSearchAPI implements PodCastCollector {
     public List<PodCast> collectPodCasts() {
         PodCastSearchResult podCastSearchResult = performSearch();
 
-        if(podCastSearchResult ==null){
+        if (podCastSearchResult == null) {
             return Collections.emptyList();
         }
 
@@ -68,9 +68,9 @@ public class ItunesSearchAPI implements PodCastCollector {
 
         for (PodCastSearchResult.Row podCastRow : podCastSearchResult.results) {
             URL feedURL = toURL(podCastRow.feedUrl);
-            if(feedURL!=null){
+            if (feedURL != null) {
                 Optional<PodCast> podCast = PodCastFeedParser.parse(feedURL);
-                if(podCast.isPresent()){
+                if (podCast.isPresent()) {
                     podCasts.add(podCast.get());
                 }
             }
@@ -81,11 +81,11 @@ public class ItunesSearchAPI implements PodCastCollector {
         return podCasts;
     }
 
-    private PodCastSearchResult performSearch(){
+    private PodCastSearchResult performSearch() {
 
         HttpsURLConnection con;
         try {
-            con = (HttpsURLConnection)request.openConnection();
+            con = (HttpsURLConnection) request.openConnection();
             String content = getResultString(con);
             return GSON.fromJson(content, PodCastSearchResult.class);
         } catch (Exception e) {
@@ -95,43 +95,44 @@ public class ItunesSearchAPI implements PodCastCollector {
         return null;
     }
 
-    private String getResultString(HttpsURLConnection con){
+    private String getResultString(HttpsURLConnection connection) {
+        if (connection == null) {
+            throw new IllegalArgumentException("connection is null");
+        }
 
         StringBuilder stringBuilder = new StringBuilder();
-        if(con!=null){
-            BufferedReader bufferedReader=null;
-            try {
-                 bufferedReader =
-                        new BufferedReader(
-                                new InputStreamReader(con.getInputStream()));
+        BufferedReader bufferedReader = null;
 
-                String input;
+        try {
+            bufferedReader =
+                    new BufferedReader(
+                            new InputStreamReader(connection.getInputStream()));
 
-                while ((input = bufferedReader.readLine()) != null){
-                    System.out.println(input);
-                    stringBuilder.append(input);
-                }
-                bufferedReader.close();
+            String input;
 
-            } catch (IOException e) {
-                LOG.warning("Unable to read content from search API " + e.getMessage());
-                IOUtils.closeQuietly(bufferedReader);
+            while ((input = bufferedReader.readLine()) != null) {
+                stringBuilder.append(input);
             }
+
+        } catch (IOException e) {
+            LOG.warning("Unable to read content from search API " + e.getMessage());
+        }finally {
+            IOUtils.closeQuietly(bufferedReader);
         }
 
         return stringBuilder.toString();
     }
 
     private class PodCastSearchResult {
-         int resultCount;
+        int resultCount;
         final List<Row> results = new ArrayList<>();
 
-        private class Row{
-             String kind;
-             String collectionName;
-             String feedUrl;
-             String artworkUrl30;
-             String artworkUrl100;
+        private class Row {
+            String kind;
+            String collectionName;
+            String feedUrl;
+            String artworkUrl30;
+            String artworkUrl100;
 
             @Override
             public String toString() {
@@ -146,7 +147,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         }
     }
 
-    private URL toURL(String url){
+    private URL toURL(String url) {
 
         try {
             return new URL(url);

@@ -29,11 +29,10 @@ public class PodCastCategoryCollectorOkihikaTest {
     public void testCollectPodCastCategory_3() {
 
         //FIXME MUSIC error parsing id
-        PodCastCategoryCollectorOkihika collector = new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 3, "Musik", "descr", "image", PodCastCategoryType.Music);
+        PodCastCategoryCollectorOkihika collector = new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 3, "Musik", "descr", "image", PodCastCategoryType.MUSIC);
 
         PodCastCategory podCastCategory = collector.collectCategories();
 
-        System.out.println(podCastCategory);
         Assert.assertFalse(podCastCategory.getPodCasts().isEmpty());
     }
 

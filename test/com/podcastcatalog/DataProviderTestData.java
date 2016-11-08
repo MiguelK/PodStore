@@ -6,12 +6,12 @@ public class DataProviderTestData {
 
     @DataProvider(name = "fromString_Level_3_test_data")
     public static Object[][] fromString_Level_3_test_data() {
-        return new Object[][] {{"Buddhism"}, {" Buddhism"}, {" Buddhism "},{"buddhism"}};
+        return new Object[][] {{"BUDDHISM"}, {" BUDDHISM"}, {" BUDDHISM "},{"buddhism"}};
     }
 
     @DataProvider(name = "fromString_display_name_test_data")
     public static Object[][] fromString_display_name_test_data() {
-        return new Object[][] {{"Arts","Arts"},{"",""},{"",""},{"",""},{"",""},{"",""},
+        return new Object[][] {{"ARTS","ARTS"},{"",""},{"",""},{"",""},{"",""},{"",""},
                 {"",""},{"",""},{"",""},{"",""},{"",""},{"",""},{"",""},{"",""},{"",""},{"",""},
                 {"",""},{"",""},{"",""},{"",""},{"",""},{"",""},{"",""},{"",""},{"",""},{"",""}};
     }

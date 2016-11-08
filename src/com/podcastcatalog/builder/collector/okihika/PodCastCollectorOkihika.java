@@ -1,6 +1,7 @@
 package com.podcastcatalog.builder.collector.okihika;
 
 import com.podcastcatalog.api.response.PodCast;
+import com.podcastcatalog.api.response.PodCastCategoryType;
 import com.podcastcatalog.builder.collector.PodCastCollector;
 import com.podcastcatalog.builder.collector.itunes.ItunesSearchAPI;
 import org.jsoup.Jsoup;
@@ -27,70 +28,70 @@ public class PodCastCollectorOkihika implements PodCastCollector {
     private final int resultSize;
 
     public enum TopList {
-        ALL("0"),
+        All("0"),
         ARTS("1301"),
         DESIGN("1402"),
-        FACHIN_BEAUTY("1459"),
+        FASHION_BEAUTY("1459"),
         FOOD("1306"),
         LITERATURE("1401"),
         PERFORMING_ARTS("1405"),
-        VISUAL_ART("1406"),
+        VISUAL_ARTS("1406"),
         COMEDY("1303"),
         EDUCATION("1304"),
         EDUCATIONAL_TECHNOLOGY("1468"),
-        Higher_Education("1416"),
-        K12_SCHOOL("1415"),
-        Language_Courses("1469"),
-        Training("1470"),
-        Kids_Family("1305"),
-        Health("1307"),
-        Alternative_Health("1481"),
-        Fitness_Nutrition("1417"),
+        HIGHER_EDUCATION("1416"),
+        K_12("1415"),//K_12
+        LANGUAGE_COURSES("1469"),
+        TRAINING("1470"),
+        KIDS_FAMILY("1305"),
+        HEALTH("1307"),
+        ALTERNATIVE_HEALTH("1481"),
+        FITNESS_NUTRITION("1417"),
         SELF_HELP("1420"),
         SEXUALITY("1421"),
         TV_FILM("1309"),
         MUSIC("1310"),
         NEWS_POLITICS("1311"),
-        Religion_Spirituality("1314"),
-        Buddhism("1438"),
-        Christianity("1439"),
-        Hinduism("1463"),
+        RELIGION_SPIRITUALITY("1314"),
+        BUDDHISM("1438"),
+        CHRISTIANITY("1439"),
+        HINDUISM("1463"),
         ISLAM("1440"),
-        Judaism("1441"),
+        JUDAISM("1441"),
         OTHER("1464"),
-        Spirituality("1444"),
-        Science_Medicine("1315"),
-        Medicine("1478"),
-        Natural_Sciences("1477"),
-        Social_Sciences("1479"),
-        Sports_Recreation("1316"),
-        Amateur("1467"),
-        College_High_School("1466"),
-        Outdoor("1456"),
-        Professional("1465"),
-        Technology("1318"),
-        Gadgets("1446"),
-        Podcasting("1450"),
-        Software_How_To("1480"),
-        Tech_News("1448"),
-        Business("1321"),
-        Business_News("1471"),
-        Careers("1410"),
-        Investing("1412"),
-        Management_Marketing("1413"),
-        Shopping("1472"),
-        Games_Hobbies("1323"),
-        Automotive("1454"),
+        SPIRITUALITY("1444"),
+        SCIENCE_MEDICINE("1315"),
+        MEDICINE("1478"),
+        NATURAL_SCIENCES("1477"),
+        SOCIAL_SCIENCES("1479"),
+        SPORTS_RECREATION("1316"),
+        AMATEUR("1467"),
+        COLLEGE_HIGH_SCHOOL("1466"),
+        OUTDOOR("1456"),
+        PROFESSIONAL("1465"),
+        TECHNOLOGY("1318"),
+        GADGETS("1446"),
+        PODCASTING("1450"),
+        SOFTWARE_HOW_TO("1480"),
+        TECH_NEWS("1448"),
+        BUSINESS("1321"),
+        BUSINESS_NEWS("1471"),
+        CAREERS("1410"),
+        INVESTING("1412"),
+        MANAGEMENT_MARKETING("1413"),
+        SHOPPING("1472"),
+        GAMES_HOBBIES("1323"),
+        AUTOMOTIVE("1454"),
         AVIATION("1455"),
-        Hobbies("1460"),
+        HOBBIES("1460"),
         OTHER_GAMES("1461"),
         VIDEO_GAMES("1404"),
         SOCIETY_CULTURE("1324"),
         HISTORY("1462"),
-        Personal_Journals("1302"),
-        Philosophy("1443"),
-        Places_Travel("1320"),
-        Government_Organizations("1325"),
+        PERSONAL_JOURNALS("1302"),
+        PHILOSOPHY("1443"),
+        PLACES_TRAVEL("1320"),
+        GOVERNMENT_ORGANIZATIONS("1325"),
         LOCAL("1475"),
         NATIONAL("1473"),
         NON_PROFIT("1476"),
@@ -104,16 +105,16 @@ public class PodCastCollectorOkihika implements PodCastCollector {
         public String getUrl() {
             return url;
         }
+
+        public PodCastCategoryType toPodCastCategoryType() {
+            return PodCastCategoryType.valueOf(this.name());
+        }
     }
 
 
     PodCastCollectorOkihika(TopList toplist, int resultSize) {
         this.url = toplist.getUrl();
         this.resultSize = resultSize;
-    }
-
-    public int getResultSize() {
-        return resultSize;
     }
 
     @Override

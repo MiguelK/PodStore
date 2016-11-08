@@ -6,10 +6,10 @@ import java.io.Serializable;
 
 public abstract class BundleItem implements Serializable{
 
-    private String title;
-    private String description;
-    private String imageURL;
-    private BundleType bundleType;
+    private final String title;
+    private final String description;
+    private final String imageURL;
+    private final BundleType bundleType;
 
     protected BundleItem(String title, String description, String imageURL, BundleType bundleType) {
         this.title = StringUtils.trimToNull(title);

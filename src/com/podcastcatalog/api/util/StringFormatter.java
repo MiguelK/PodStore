@@ -28,32 +28,32 @@ public class StringFormatter {
         result.append(" Lang=").append(podCastCatalog.getPodCastCatalogLanguage()).append("<br>");
         result.append(" Created=").append(podCastCatalog.getCreated()).append("<br>");
         List<Bundle> bundles = podCastCatalog.getBundles();
-        result.append(" Bundle size=").append(bundles.size());
+        result.append(" Bundle size=").append(bundles.size()).append("<br>");
 
         for (Bundle bundle : bundles) {
             BundleType bundleType = bundle.getBundleType();
 
-            String s = "";
+            StringBuilder part = new StringBuilder();
+            result.append(" BundleType=").append(bundleType);
+            result.append(" size=").append(bundle.getBundleItems().size()).append("<br>");
+
             switch (bundle.getBundleType()) {
                 case Category:
                     List<PodCastCategory> bundleItems = (List<PodCastCategory>) bundle.getBundleItems();
                     for (PodCastCategory bundleItem : bundleItems) {
                         PodCastCategoryType categoryType = bundleItem.getPodCastCategoryType();
-                        int size = bundleItem.getPodCasts().size();
+                        part.append(categoryType).append(" podCasts = ").append(bundleItem.getPodCasts().size()).append("<br>");
                     }
                     break;
 
                 case Episode:
-
                     break;
 
                 case PodCast:
-
                     break;
             }
 
-            result.append(" BundleType=").append(bundleType);
-            result.append(" size=").append(bundle.getBundleItems().size()).append("<br>");
+            result.append(part.toString()).append("<br>");
         }
 
         return result.append("</body>").toString();

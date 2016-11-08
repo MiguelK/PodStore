@@ -28,8 +28,7 @@ public class DiscStorage implements Storage {
 
     private File getFileName(PodCastCatalogLanguage podCastCatalogLanguage) {
         String fileName = podCastCatalogLanguage.name() + ".dat";
-        File file = new File(dataDirectory, fileName);
-        return file;
+        return new File(dataDirectory, fileName);
     }
 
     @Override
