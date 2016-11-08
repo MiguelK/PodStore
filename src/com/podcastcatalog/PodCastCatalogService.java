@@ -77,7 +77,7 @@ public class PodCastCatalogService {
         validateState();
 
         try {
-            ayncExecutor.submit(new RebuildCatalogAction()).get(3, TimeUnit. MINUTES);
+            ayncExecutor.submit(new RebuildCatalogAction()).get(3, TimeUnit.MINUTES);
         } catch (Exception e) {
             throw new RuntimeException("Unable to rebuild catalogs ", e);
         }
@@ -93,24 +93,40 @@ public class PodCastCatalogService {
         @Override
         public Void call() throws Exception {
 
-            writeLock.lock();
+            readLock.lock();
             LOG.info("rebuildCatalogs() registered podCastCatalogBuilders=" + podCastCatalogBuilders.size());
 
+            List<PodCastCatalogBuilder> snapShot = new ArrayList<>(podCastCatalogBuilders);
+
+            Map<PodCastCatalogLanguage, PodCastCatalog> newCatalogs = new HashMap<>();
             try {
-                for (PodCastCatalogBuilder podCastCatalogBuilder : podCastCatalogBuilders) {
+                for (PodCastCatalogBuilder podCastCatalogBuilder : snapShot) {
                     LOG.info("Start building PodCastCatalog " + podCastCatalogBuilder.getPodCastCatalogLang() + " ...");
 
                     PodCastCatalog catalog = buildPodcastCatalog(podCastCatalogBuilder);
 
                     if (catalog != null) {
-                        LOG.info("PodcastCatalo " + podCastCatalogBuilder.getPodCastCatalogLang() + " was updated with new version");
                         storage.save(catalog);
-                        podCastCatalogByLang.put(podCastCatalogBuilder.getPodCastCatalogLang(), catalog);
+                        newCatalogs.put(podCastCatalogBuilder.getPodCastCatalogLang(), catalog);
                     }
                 }
             } finally {
+                readLock.unlock();
+            }
+
+            writeLock.lock();
+
+            try {
+                for (PodCastCatalogLanguage language : newCatalogs.keySet()) {
+                    LOG.info("PodCastCatalog " + language + " was updated with new version");
+                    podCastCatalogByLang.put(language,newCatalogs.get(language));
+                }
+
+            } finally {
                 writeLock.unlock();
             }
+
+
             return null;
         }
     }

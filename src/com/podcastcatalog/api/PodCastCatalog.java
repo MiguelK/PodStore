@@ -3,6 +3,7 @@ package com.podcastcatalog.api;
 
 import com.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.api.response.PodCastCatalogLanguage;
+import com.podcastcatalog.api.util.StringFormatter;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -43,6 +44,8 @@ public class PodCastCatalog {
             return Response.status(Response.Status.OK).entity("No statistics exist for " + lang + " yet.?").build();
         }
 
-        return Response.status(Response.Status.OK).entity(podCastCatalog.toString()).build();
+        StringFormatter stringFormatter = StringFormatter.create(podCastCatalog);
+
+        return Response.status(Response.Status.OK).entity(stringFormatter.format()).build();
     }
 }

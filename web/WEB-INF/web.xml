@@ -32,8 +32,8 @@
 
     <!--http://127.0.01:8080/FlowEngine_war_exploded/jsp/index.jsp OK-->
 
-   <!-- <welcome-file-list>
-        <welcome-file>/jsp/index.jsp</welcome-file>
-    </welcome-file-list>-->
+    <welcome-file-list>
+        <welcome-file>/jsp/admin.jsp</welcome-file>
+    </welcome-file-list>
 
 </web-app>

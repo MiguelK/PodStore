@@ -26,6 +26,7 @@ public class PodCastCatalogBuilderSE implements PodCastCatalogBuilder{
         categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.MUSIC, 3,"Musik", "descr","image", PodCastCategoryType.Music ));
         categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.Tech_News, 3,"Musik", "descr","image", PodCastCategoryType.Tech_News ));
         categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 3,"Musik", "descr","image", PodCastCategoryType.Arts ));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.HISTORY, 10,"Musik", "descr","image", PodCastCategoryType.History ));
 
         //Episodes
         PodCastEpisodeBundleBuilder episodeBundle = BundleBuilder.newPodCastEpisodeBundleBuilder("bundle image", "Only for U", "descr..");

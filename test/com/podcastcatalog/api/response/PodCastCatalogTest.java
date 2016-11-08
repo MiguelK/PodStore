@@ -93,7 +93,7 @@ public class PodCastCatalogTest {
         Assert.assertNotNull(createValid().toString());
     }
 
-    private PodCastCatalog createValid() {
+    public static PodCastCatalog createValid() {
         List<Bundle> podCastBundle1s = Collections.singletonList(PodCastBundleTest.createValid().build());
         return PodCastCatalog.create(PodCastCatalogLanguage.Sweden, podCastBundle1s);
     }
