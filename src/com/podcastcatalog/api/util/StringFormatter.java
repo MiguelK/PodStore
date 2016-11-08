@@ -21,6 +21,10 @@ public class StringFormatter {
 
     public String format() {
 
+        if(podCastCatalog==null){
+            return "PodCastCatalog not ready yet.?";
+        }
+
         StringBuilder result = new StringBuilder();
 
         result.append("<body>");

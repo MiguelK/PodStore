@@ -4,6 +4,7 @@ import com.podcastcatalog.api.response.PodCastCatalog;
 import com.podcastcatalog.api.response.PodCastCatalogLanguage;
 import com.podcastcatalog.builder.PodCastCatalogBuilderSE;
 import com.podcastcatalog.store.DiscStorage;
+import com.podcastcatalog.store.HomeDirectoryLocator;
 import com.podcastcatalog.store.Storage;
 
 import javax.servlet.ServletConfig;
@@ -24,7 +25,11 @@ public class StartupServlet extends HttpServlet {
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
-        File catalogDir = new File("/home/krantmig/tools/temp");//FIXME
+        HomeDirectoryLocator locator = new HomeDirectoryLocator();
+
+        File catalogDir = locator.locateDataDir();
+
+        //File catalogDir = new File("/home/krantmig/tools/temp");//FIXME
         LOG.info("Starting PodCastCatalog..., working dir= " + catalogDir.getAbsolutePath());
 
         Storage discStorage = new DiscStorage(catalogDir);

@@ -22,7 +22,7 @@ public class PodCastCollectorOkihika implements PodCastCollector {
 
     private final static Logger LOG = Logger.getLogger(PodCastCollectorOkihika.class.getName());
     private static final int TIMEOUT_MILLIS = 5000;
-    private static final String ROOT_URL_OKIHIKA = "https://podcast.okihika.com/SE/";
+    private static final String ROOT_URL_OKIHIKA = "http://podcast.okihika.com/SE/";
 
     private final String url;
     private final int resultSize;
