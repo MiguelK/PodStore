@@ -33,16 +33,16 @@ public class PodCastFeedParser {
     private final URL feedURL;
     private final static Logger LOG = Logger.getLogger(PodCastFeedParser.class.getName());
 
-    public static Optional<PodCast> parse(URL feedURL) {
+    public static Optional<PodCast> parse(URL feedURL,String artworkUrl100) {
         PodCastFeedParser podCastFeedParser = new PodCastFeedParser(feedURL);
-        return podCastFeedParser.parse();
+        return podCastFeedParser.parse(artworkUrl100);
     }
 
     private PodCastFeedParser(URL feedURL) {
         this.feedURL = feedURL;
     }
 
-    private Optional<PodCast> parse() {
+    private Optional<PodCast> parse(String artworkUrl100) {
         PodCast.Builder podCastBuilder = PodCast.newBuilder();
 
         int expectedEpisodeCount = -1;
@@ -51,7 +51,7 @@ public class PodCastFeedParser {
             LOG.info("Feed=" + feed);
             PodCastFeedHeader feedHeader = new PodCastFeedHeader(feed.getHeader());
 
-            podCastBuilder.title(feedHeader.getTitle()).
+            podCastBuilder.title(feedHeader.getTitle()).setArtworkUrl100(artworkUrl100).
                     description(feedHeader.getDescription()).id(122).
                     setPodCastCategories(feedHeader.getCategories())
                     .createdDate(feedHeader.getCreatedDate())
@@ -66,7 +66,7 @@ public class PodCastFeedParser {
 
                 //FIXME createdDate
                 PodCastEpisode.Builder episodeBuilder = PodCastEpisode.newBuilder();
-                episodeBuilder.title(podCastFeedItem.getTitle()).podCastId(9999). //FIXME
+                episodeBuilder.title(podCastFeedItem.getTitle()).podCastId(9999).artworkUrl100(artworkUrl100). //Same as PodCast ok?
                         createdDate(podCastFeedItem.getCreatedDate()).description(podCastFeedItem.getDescription()).id(3434).
                         duration(podCastFeedItem.getDuration()).fileSizeInMegaByte(podCastFeedItem.getFileSizeInMegaByte()).
                         targetURL(podCastFeedItem.getTargetURL()).podCastType(podCastFeedItem.getPodCastType()); //FIXME type?

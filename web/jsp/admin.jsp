@@ -50,6 +50,19 @@
             </form>
         </td>
     </tr>
+
+    <tr>
+
+        <td>
+            <form action="http://localhost:10080/PodStore/api/podCastCatalog?lang='SV'">
+                <button type="submit" value="refresh" title="refresh">
+                    API getPodCastCatalog() SE
+                </button>
+            </form>
+        </td>
+    </tr>
+
+
 </table>
 
 <br>

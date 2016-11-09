@@ -10,7 +10,7 @@ public enum PodCastEpisodeType {
         this.mimeType = mimeType;
     }
 
-    public String getMimeType() {
+    private String getMimeType() {
         return mimeType;
     }
 

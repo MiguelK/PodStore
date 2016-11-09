@@ -185,7 +185,7 @@ public class PodCastTest {
         List<PodCastEpisode> podCastEpisode = new ArrayList<>();
         podCastEpisode.add(PodCastEpisodeTest.createValid().build());
 
-        return PodCast.newBuilder().title("sdsds").description("dsdsdsd").createdDate(LocalDateTime.now()).
+        return PodCast.newBuilder().title("sdsds").description("dsdsdsd").createdDate(LocalDateTime.now()).setArtworkUrl100("www.dn.se/someimage.png").
                 feedURL("sdsdsd").id(22).publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("ARTS")).
                 addPodCastEpisodes(podCastEpisode);
 

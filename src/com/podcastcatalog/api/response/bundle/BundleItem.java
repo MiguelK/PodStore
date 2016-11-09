@@ -8,12 +8,12 @@ public abstract class BundleItem implements Serializable{
 
     private final String title;
     private final String description;
-    private final String imageURL;
+    private final String artworkUrl100;//FIXME Rename artworkUrl100? itemImage100
 
-    protected BundleItem(String title, String description, String imageURL) {
+    protected BundleItem(String title, String description, String artworkUrl100) {
         this.title = StringUtils.trimToNull(title);
         this.description = StringUtils.trimToNull(description);
-        this.imageURL = StringUtils.trimToNull(imageURL);
+        this.artworkUrl100 = StringUtils.trimToNull(artworkUrl100);
 
         if(this.title == null){
             throw  new IllegalArgumentException("title is requred");
@@ -21,8 +21,8 @@ public abstract class BundleItem implements Serializable{
         if(this.description == null){
             throw  new IllegalArgumentException("description is requred");
         }
-        if(this.imageURL == null){
-            throw  new IllegalArgumentException("imageURL is requred");
+        if(this.artworkUrl100 == null){
+            throw  new IllegalArgumentException("artworkUrl100 is requred");
         }
     }
 
@@ -34,7 +34,7 @@ public abstract class BundleItem implements Serializable{
         return description;
     }
 
-    public String getImageURL() {
-        return imageURL;
+    public String getArtworkUrl100() {
+        return artworkUrl100;
     }
 }

@@ -66,12 +66,16 @@ public class ItunesSearchAPI implements PodCastCollector {
 
         LOG.info("Start parsing " + podCastSearchResult.resultCount + " podcast(s)");
 
-        for (PodCastSearchResult.Row podCastRow : podCastSearchResult.results) {
-            URL feedURL = toURL(podCastRow.feedUrl);
+        for (PodCastSearchResult.Row podCastRow : podCastSearchResult.getResults()) {
+            LOG.info("Row " + podCastRow.getArtworkUrl100());
+
+            URL feedURL = toURL(podCastRow.getFeedUrl());
             if (feedURL != null) {
-                Optional<PodCast> podCast = PodCastFeedParser.parse(feedURL);
+                Optional<PodCast> podCast = PodCastFeedParser.parse(feedURL, podCastRow.getArtworkUrl100());
                 if (podCast.isPresent()) {
-                    podCasts.add(podCast.get());
+                    PodCast e = podCast.get();
+
+                    podCasts.add(e);
                 }
             }
         }
@@ -83,10 +87,10 @@ public class ItunesSearchAPI implements PodCastCollector {
 
     private PodCastSearchResult performSearch() {
 
-        HttpsURLConnection con;
+        HttpsURLConnection connection;
         try {
-            con = (HttpsURLConnection) request.openConnection();
-            String content = getResultString(con);
+            connection = (HttpsURLConnection) request.openConnection();
+            String content = getResultContent(connection);
             return GSON.fromJson(content, PodCastSearchResult.class);
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Unable to get Itunes Search API result using query=" + request, e);
@@ -95,7 +99,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         return null;
     }
 
-    private String getResultString(HttpsURLConnection connection) {
+    private String getResultContent(HttpsURLConnection connection) {
         if (connection == null) {
             throw new IllegalArgumentException("connection is null");
         }
@@ -125,14 +129,26 @@ public class ItunesSearchAPI implements PodCastCollector {
 
     private class PodCastSearchResult {
         int resultCount;
-        final List<Row> results = new ArrayList<>();
+        private final List<Row> results = new ArrayList<>();
+
+        List<Row> getResults(){
+            return results;
+        }
 
         private class Row {
-            String kind;
-            String collectionName;
-            String feedUrl;
-            String artworkUrl30;
-            String artworkUrl100;
+            private String kind;
+            private String collectionName;
+            private String feedUrl;
+            private String artworkUrl30;
+            private String artworkUrl100;
+
+            public String getFeedUrl() {
+                return feedUrl;
+            }
+
+            public String getArtworkUrl100() {
+                return artworkUrl100;
+            }
 
             @Override
             public String toString() {

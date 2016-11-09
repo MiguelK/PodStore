@@ -19,7 +19,7 @@ public class PodCastCategoryTest {
     public void trim() {
         Assert.assertEquals(new PodCastCategory(" sommar ","Description B","image URL", createPodCasts(), PodCastCategoryType.ARTS).getTitle(), "sommar");
         Assert.assertEquals(new PodCastCategory(" sommar "," Description B ","image URL", createPodCasts(), PodCastCategoryType.ARTS).getDescription(), "Description B");
-        Assert.assertEquals(new PodCastCategory(" sommar ","Description B","   img ", createPodCasts(), PodCastCategoryType.ARTS).getImageURL(), "img");
+        Assert.assertEquals(new PodCastCategory(" sommar ","Description B","   img ", createPodCasts(), PodCastCategoryType.ARTS).getArtworkUrl100(), "img");
     }
 
     @Test

@@ -17,10 +17,10 @@ public class PodCastEpisode extends BundleItem implements Serializable{
 
     private final int podCastId; //PodCast that contains this episode, used when subscribing after direct play
 
-    private PodCastEpisode(int id, String title, String description, String targetURL,PodCastEpisodeDuration duration,
-                           PodCastEpisodeFileSize fileSize, PodCastEpisodeType podCastType, LocalDateTime createdDate,int podCastId) {
-
-        super(title, description, "Image URL");
+    private PodCastEpisode(int id, String title, String description, String targetURL, PodCastEpisodeDuration duration,
+                           PodCastEpisodeFileSize fileSize, PodCastEpisodeType podCastType, LocalDateTime createdDate,
+                           int podCastId, String artworkUrl100) {
+        super(title, description, artworkUrl100);
         this.id = id;
         this.podCastId = podCastId;
         this.targetURL = targetURL;
@@ -106,6 +106,7 @@ public class PodCastEpisode extends BundleItem implements Serializable{
         private String title;
         private String description;
         private String targetURL;
+        private String artworkUrl100;
         private PodCastEpisodeDuration duration; //Optional?
         private PodCastEpisodeFileSize fileSize; //Optional?
         private PodCastEpisodeType podCastType;
@@ -155,6 +156,11 @@ public class PodCastEpisode extends BundleItem implements Serializable{
             return this;
         }
 
+        public Builder artworkUrl100(String artworkUrl100) {
+            this.artworkUrl100 = artworkUrl100;
+            return this;
+        }
+
         public boolean isValid() {
             try{
                 build();
@@ -178,6 +184,11 @@ public class PodCastEpisode extends BundleItem implements Serializable{
             if(targetURL==null){
                 throw new IllegalArgumentException("targetURL is mandatory");
             }
+
+            if(artworkUrl100==null){
+                throw new IllegalArgumentException("artworkUrl100 is mandatory");
+            }
+
             if(createdDate==null){
                 throw new IllegalArgumentException("createdDate is mandatory");
             }
@@ -189,7 +200,7 @@ public class PodCastEpisode extends BundleItem implements Serializable{
                 throw new IllegalArgumentException("podCastId not set for this Episode");
             }
 
-            return new PodCastEpisode(id,title,description,targetURL,duration,fileSize,podCastType, createdDate,podCastId);
+            return new PodCastEpisode(id,title,description,targetURL,duration,fileSize,podCastType, createdDate,podCastId, artworkUrl100);
         }
     }
 }
