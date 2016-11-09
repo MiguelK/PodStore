@@ -29,7 +29,6 @@ public class StartupServlet extends HttpServlet {
 
         File catalogDir = locator.locateDataDir();
 
-        //File catalogDir = new File("/home/krantmig/tools/temp");//FIXME
         LOG.info("Starting PodCastCatalog..., working dir= " + catalogDir.getAbsolutePath());
 
         Storage discStorage = new DiscStorage(catalogDir);
@@ -44,7 +43,6 @@ public class StartupServlet extends HttpServlet {
         }
         //        registerOrStartLoading(discStorage.load(PodCastCatalogLanguage.Sweden)); //FIXME English
 
-        PodCastCatalogService.getInstance().start();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

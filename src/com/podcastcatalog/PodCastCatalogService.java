@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 public class PodCastCatalogService {
 
+    private static final int THREADS = 5;
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
     private final Lock readLock = reentrantReadWriteLock.readLock();
     private final Lock writeLock = reentrantReadWriteLock.writeLock();
@@ -33,7 +34,7 @@ public class PodCastCatalogService {
     private PodCastCatalogService() {
         podCastCatalogBuilders = new ArrayList<>();
         podCastCatalogByLang = new HashMap<>();
-        ayncExecutor = Executors.newFixedThreadPool(5);
+        ayncExecutor = Executors.newFixedThreadPool(THREADS);
         executorService = Executors.newSingleThreadExecutor();//Important single thread!
     }
 
@@ -41,15 +42,15 @@ public class PodCastCatalogService {
         return INSTANCE;
     }
 
-    public void registerPodCastCatalogBuilder(PodCastCatalogBuilder builder) {
+    void registerPodCastCatalogBuilder(PodCastCatalogBuilder builder) {
         podCastCatalogBuilders.add(builder);
     }
 
-    public void setStorage(Storage storage) {
+    void setStorage(Storage storage) {
         this.storage = storage;
     }
 
-    public void loadPodCastCatalog(PodCastCatalog podCastCatalog) {
+    void loadPodCastCatalog(PodCastCatalog podCastCatalog) {
 
         writeLock.lock();
         LOG.info("Loading stored podCastCatalog " + podCastCatalog);
@@ -81,12 +82,6 @@ public class PodCastCatalogService {
         } catch (Exception e) {
             throw new RuntimeException("Unable to rebuild catalogs ", e);
         }
-    }
-
-    public void start() {
-        //FIXME validate +
-        //Start runner that rebuilds each catalog periodically once a day? //FIXME
-
     }
 
     private class RebuildCatalogAction implements Callable<Void> {

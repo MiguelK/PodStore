@@ -4,7 +4,6 @@ import com.podcastcatalog.builder.collector.okihika.PodCastCollectorOkihika;
 import com.podcastcatalog.builder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.builder.collector.okihika.PodCastCategoryCollectorOkihika;
 import com.podcastcatalog.api.response.PodCastCatalogLanguage;
-import com.podcastcatalog.api.response.PodCastCategoryType;
 import com.podcastcatalog.builder.collector.okihika.PodCastEpisodeCollectorOkihika;
 
 import java.util.HashSet;
@@ -19,14 +18,24 @@ public class PodCastCatalogBuilderSE implements PodCastCatalogBuilder{
         PodCastBundleBuilder podCastBundle = BundleBuilder.newPodCastBundleBuilder("image", "Toplistan", "10 bästa podcas i Sverige");
         podCastBundle.addCollector(ItunesSearchAPI.search("term=p3&entity=podcast"));
 
+        //Categories (List of PodCasts) //FIXME Kategory image 100?
+        PodCastCategoryBundleBuilder categoryBundle = BundleBuilder.newPodCastCategoryBundleBuilder("bundle image", "Alla Kategorier", "descr..");
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, "Nyheter och politik", "descr","image"));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.MUSIC,"Musik", "Musik","image"));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, "Konst", "descr","image"));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.BUSINESS, "Näringsliv", "descr","image"));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.COMEDY, "Komedi", "descr","image"));
 
-        //Categories (List of PodCasts)
-        PodCastCategoryBundleBuilder categoryBundle = BundleBuilder.newPodCastCategoryBundleBuilder("bundle image", "All Kategorier", "descr..");
-        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 3,"Konst", "descr","image", PodCastCategoryType.NEWS_POLITICS));
-        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.MUSIC, 3,"Musik", "descr","image", PodCastCategoryType.MUSIC));
-        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TECH_NEWS, 3,"Musik", "descr","image", PodCastCategoryType.TECH_NEWS));
-        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 3,"Musik", "descr","image", PodCastCategoryType.ARTS));
-        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.HISTORY, 10,"Musik", "descr","image", PodCastCategoryType.HISTORY));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.K_12, "Utbildning", "descr","image"));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.GAMES_HOBBIES, "Spel och hobbu", "descr","image"));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.GOVERNMENT_ORGANIZATIONS, "Myndigheter och organistaioner", "descr","image"));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.KIDS_FAMILY, "Barn och familj", "descr","image"));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.RELIGION_SPIRITUALITY, "Religion och andligh", "descr","image"));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.SCIENCE_MEDICINE, "Vetenskap och medecin", "descr","image"));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.SOCIETY_CULTURE, "Samhälle och kultur", "descr","image"));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.SPORTS_RECREATION, "Sport och fritid", "descr","image"));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TECHNOLOGY, "Teknologi", "descr","image"));
+        categoryBundle.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TV_FILM, "TV och film", "descr","image"));
 
         //Episodes
         PodCastEpisodeBundleBuilder episodeBundle = BundleBuilder.newPodCastEpisodeBundleBuilder("bundle image", "Only for U", "descr..");
