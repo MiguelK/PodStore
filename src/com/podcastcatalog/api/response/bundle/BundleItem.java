@@ -8,7 +8,7 @@ public abstract class BundleItem implements Serializable{
 
     private final String title;
     private final String description;
-    private final String artworkUrl100;//FIXME Rename artworkUrl100? itemImage100
+    private final String artworkUrl100;
 
     protected BundleItem(String title, String description, String artworkUrl100) {
         this.title = StringUtils.trimToNull(title);

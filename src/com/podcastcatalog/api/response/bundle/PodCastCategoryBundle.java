@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class PodCastCategoryBundle extends Bundle {
 
-    private List<PodCastCategory> podCastCategories;
+    private final List<PodCastCategory> podCastCategories;
 
     public PodCastCategoryBundle(String title, String description,
                                  String imageURL,List<PodCastCategory> podCastCategories) {

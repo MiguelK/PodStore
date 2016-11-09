@@ -12,8 +12,8 @@ public class PodCastCatalog implements Serializable {
     private final PodCastCatalogLanguage podCastCatalogLanguage;
     private final LocalDateTime created;
     private final List<Bundle> bundles;
-    private  PodCastCatalog(PodCastCatalogLanguage podCastCatalogLanguage, List<Bundle> bundles) {
 
+    private  PodCastCatalog(PodCastCatalogLanguage podCastCatalogLanguage, List<Bundle> bundles) {
         if(podCastCatalogLanguage==null){
             throw new IllegalArgumentException("podCastCatalogLanguage is mandatory");
         }

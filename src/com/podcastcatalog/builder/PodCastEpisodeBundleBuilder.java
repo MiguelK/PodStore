@@ -9,7 +9,7 @@ import java.util.List;
 
 class PodCastEpisodeBundleBuilder extends BundleBuilder {
 
-    private List<PodCastEpisodeCollector> collectors;
+    private final List<PodCastEpisodeCollector> collectors;
 
      PodCastEpisodeBundleBuilder(String imageURL, String title, String description) {
         super(imageURL, title, description);

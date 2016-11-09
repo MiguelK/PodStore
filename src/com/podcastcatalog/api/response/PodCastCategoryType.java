@@ -82,10 +82,9 @@ public enum PodCastCategoryType {
 
     //Acast Kid_Family
     private final int level;
-    private String displayName;
-    static List<PodCastCategoryType> sub_PodCast_category_Buddhism = Arrays.asList(NEWS_POLITICS, RELIGION_SPIRITUALITY, BUDDHISM);
+    private final String displayName;
 
-    List<PodCastCategoryType> cat = new ArrayList<>();
+    final List<PodCastCategoryType> cat = new ArrayList<>();
     PodCastCategoryType(String displayName, List<PodCastCategoryType> parents) {
         this.level = parents.size() + 1;
         this.displayName = displayName;

@@ -160,6 +160,16 @@ public class PodCastEpisodeTest {
         createValid().createdDate(null).build();
     }
 
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void inavlid_artworkUrl100_emptyl() {
+        createValid().artworkUrl100(" ").build();
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void inavlid_artworkUrl100_null() {
+        createValid().artworkUrl100(null).build();
+    }
+
     @Test
     public void title_and_targetURL_is_equal() {
         PodCastEpisode a = createValid().build();

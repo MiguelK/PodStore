@@ -1,29 +1,13 @@
 package com.podcastcatalog.builder.collector;
 
-import com.podcastcatalog.api.response.PodCastEpisodeDuration;
-import com.podcastcatalog.api.response.PodCast;
-import com.podcastcatalog.api.response.PodCastCategoryType;
-import com.podcastcatalog.api.response.PodCastEpisode;
-import com.podcastcatalog.api.response.PodCastEpisodeFileSize;
-import com.podcastcatalog.api.response.PodCastEpisodeType;
+import com.podcastcatalog.api.response.*;
 import it.sauronsoftware.feed4j.FeedParser;
-import it.sauronsoftware.feed4j.bean.Feed;
-import it.sauronsoftware.feed4j.bean.FeedEnclosure;
-import it.sauronsoftware.feed4j.bean.FeedHeader;
-import it.sauronsoftware.feed4j.bean.FeedImage;
-import it.sauronsoftware.feed4j.bean.FeedItem;
-import it.sauronsoftware.feed4j.bean.RawAttribute;
-import it.sauronsoftware.feed4j.bean.RawElement;
-import it.sauronsoftware.feed4j.bean.RawNode;
+import it.sauronsoftware.feed4j.bean.*;
 
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -52,6 +36,7 @@ public class PodCastFeedParser {
             PodCastFeedHeader feedHeader = new PodCastFeedHeader(feed.getHeader());
 
             podCastBuilder.title(feedHeader.getTitle()).setArtworkUrl100(artworkUrl100).
+                    artworkUrlLarge(feedHeader.getArtworkUrlLarge()).
                     description(feedHeader.getDescription()).id(122).
                     setPodCastCategories(feedHeader.getCategories())
                     .createdDate(feedHeader.getCreatedDate())
@@ -144,8 +129,22 @@ public class PodCastFeedParser {
             return feedHeader.getTitle();
         }
 
-        public FeedImage getImage() {
-            return feedHeader.getImage();
+        public String getArtworkUrlLarge() {
+            if(feedHeader==null){
+                return null;
+            }
+
+            FeedImage image = feedHeader.getImage();
+            if(image==null){
+                return null;
+            }
+
+            URL url = image.getURL();
+            if(url==null){
+                return null;
+            }
+
+            return url.toString();
         }
 
         public String getFeedURL() {

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class PodCastCategoryBundleBuilder extends BundleBuilder {
 
-    private List<PodCastCategoryCollector> collectors;
+    private final List<PodCastCategoryCollector> collectors;
 
     public PodCastCategoryBundleBuilder(String imageURL, String title, String description) {
         super(imageURL, title, description);

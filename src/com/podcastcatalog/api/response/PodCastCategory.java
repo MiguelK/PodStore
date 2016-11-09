@@ -6,9 +6,9 @@ import java.util.List;
 
 public class PodCastCategory extends BundleItem {
 
-    private List<PodCast> podCasts;
+    private final List<PodCast> podCasts;
 
-    private PodCastCategoryType podCastCategoryType;
+    private final PodCastCategoryType podCastCategoryType;
 
     public PodCastCategory(String title, String description,
                            String image, List<PodCast> podCasts, PodCastCategoryType podCastCategoryType) {

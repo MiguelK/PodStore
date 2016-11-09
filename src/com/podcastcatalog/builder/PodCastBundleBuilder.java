@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PodCastBundleBuilder extends BundleBuilder {
-    private List<PodCastCollector> collectors;
+    private final List<PodCastCollector> collectors;
 
     public PodCastBundleBuilder(String imageURL, String title, String description) {
         super(imageURL, title, description);

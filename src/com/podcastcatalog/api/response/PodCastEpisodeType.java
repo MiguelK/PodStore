@@ -5,7 +5,7 @@ import org.apache.commons.lang.StringUtils;
 public enum PodCastEpisodeType {
     Audio("audio/mpeg"),Video(""),PDF("application/pdf"),Unknown(null);
 
-    private String mimeType;
+    private final String mimeType;
     PodCastEpisodeType(String mimeType) {
         this.mimeType = mimeType;
     }

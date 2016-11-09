@@ -9,7 +9,7 @@ import java.util.List;
 
 public class PodCastBundle extends Bundle {
 
-    private List<PodCast> podCasts;
+    private final List<PodCast> podCasts;
 
     public PodCastBundle(String title, String description, String imageURL,List<PodCast> podCasts) {
         super(title, description, imageURL, BundleType.PodCast);
@@ -28,8 +28,8 @@ public class PodCastBundle extends Bundle {
     public static class Builder {
         private  String title;
         private  String description;
-        private  String imageURL; //FIXME Many???
-        private List<PodCast> podCasts = new ArrayList<>();
+        private  String imageURL;
+        private final List<PodCast> podCasts = new ArrayList<>();
 
         public Builder title(String title) {
             this.title = StringUtils.trimToNull(title);
@@ -66,7 +66,7 @@ public class PodCastBundle extends Bundle {
                 throw new IllegalArgumentException("imageURL is mandatory");
             }
 
-            if (podCasts == null || podCasts.isEmpty()) {
+            if (podCasts.isEmpty()) {
                 throw new IllegalArgumentException("No podCasts exists in this bundle");
             }
 
@@ -78,6 +78,5 @@ public class PodCastBundle extends Bundle {
 
             return new PodCastBundle(title, description, imageURL,podCasts);
         }
-
     }
 }

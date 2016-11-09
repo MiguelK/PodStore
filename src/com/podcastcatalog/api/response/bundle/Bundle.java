@@ -12,7 +12,7 @@ public abstract class Bundle implements Serializable  {
 
     private final String title;
     private final String description;
-    private final String imageURL; //FIXME Many???
+    private final String imageURL;
     private final BundleType bundleType;
 
     Bundle(String title, String description, String imageURL, BundleType bundleType) {
