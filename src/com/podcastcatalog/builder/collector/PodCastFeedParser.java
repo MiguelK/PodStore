@@ -17,7 +17,7 @@ public class PodCastFeedParser {
     private final URL feedURL;
     private final static Logger LOG = Logger.getLogger(PodCastFeedParser.class.getName());
 
-    public static Optional<PodCast> parse(URL feedURL,String artworkUrl100) {
+    public static Optional<PodCast> parse(URL feedURL, String artworkUrl100) {
         PodCastFeedParser podCastFeedParser = new PodCastFeedParser(feedURL);
         return podCastFeedParser.parse(artworkUrl100);
     }
@@ -43,7 +43,7 @@ public class PodCastFeedParser {
                     .publisher(feedHeader.getPublisher())
                     .feedURL(feedHeader.getFeedURL());//FIXME id?
 
-            expectedEpisodeCount = feed.getItemCount();
+            expectedEpisodeCount = feed.getItemCount() > 100 ? 100 : feed.getItemCount(); //FIXME
 
             for (int i = 0; i < expectedEpisodeCount; i++) {
                 FeedItem item = feed.getItem(i);
@@ -59,6 +59,11 @@ public class PodCastFeedParser {
                 if (episodeBuilder.isValid() && podCastFeedItem.getPodCastType() == PodCastEpisodeType.Audio) { //FIXME
                     podCastBuilder.addPodCastEpisode(episodeBuilder.build());
                 }
+
+                if (i % 10 == 0) {
+                    LOG.info("Parsing Episode=" + i + " of expectedEpisodeCount=" + expectedEpisodeCount);
+                }
+
             }
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Faild to parse PodCast from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount, e);
@@ -116,9 +121,9 @@ public class PodCastFeedParser {
             return LocalDateTime.now();
         }
 
-        String getPublisher(){
+        String getPublisher() {
             Optional<String> first = rawElements.stream().filter(r -> "author".equalsIgnoreCase(r.getName())).map(RawElement::getValue).findFirst();
-            return  first.isPresent() ? first.get() : "Unknown";
+            return first.isPresent() ? first.get() : "Unknown";
         }
 
         public String getDescription() {
@@ -130,17 +135,17 @@ public class PodCastFeedParser {
         }
 
         public String getArtworkUrlLarge() {
-            if(feedHeader==null){
+            if (feedHeader == null) {
                 return null;
             }
 
             FeedImage image = feedHeader.getImage();
-            if(image==null){
+            if (image == null) {
                 return null;
             }
 
             URL url = image.getURL();
-            if(url==null){
+            if (url == null) {
                 return null;
             }
 
