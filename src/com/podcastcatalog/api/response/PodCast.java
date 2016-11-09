@@ -1,7 +1,6 @@
 package com.podcastcatalog.api.response;
 
 import com.podcastcatalog.api.response.bundle.BundleItem;
-import com.podcastcatalog.api.response.bundle.BundleType;
 import org.apache.commons.lang.StringUtils;
 
 import java.time.LocalDateTime;
@@ -21,7 +20,7 @@ public class PodCast extends BundleItem {
 
     private PodCast(int id, String title, String publisher, String description, LocalDateTime createdDate,
                     String feedURL, List<PodCastEpisode> podCastEpisodes, List<PodCastCategoryType> podCastCategories) {
-        super(title, description, "Image 123",BundleType.PodCast);
+        super(title, description, "Image 123");
         this.id = id;
         this.publisher = publisher;
         this.createdDate = createdDate;

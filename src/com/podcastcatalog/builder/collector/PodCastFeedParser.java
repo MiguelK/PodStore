@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 public class PodCastFeedParser {
 
-    private URL feedURL;
+    private final URL feedURL;
     private final static Logger LOG = Logger.getLogger(PodCastFeedParser.class.getName());
 
     public static Optional<PodCast> parse(URL feedURL) {
@@ -92,7 +92,7 @@ public class PodCastFeedParser {
     }
 
     private static class PodCastFeedHeader {
-        private FeedHeader feedHeader;
+        private final FeedHeader feedHeader;
         private List<RawElement> rawElements = new ArrayList<>();
 
         PodCastFeedHeader(FeedHeader feedHeader) {
@@ -167,7 +167,7 @@ public class PodCastFeedParser {
 
     private static class PodCastFeedItem {
 
-        private FeedItem feedItem;
+        private final FeedItem feedItem;
         private List<RawElement> rawElements = new ArrayList<>();
         private List<RawAttribute> audioEnclosureAttributes = new ArrayList<>();
 

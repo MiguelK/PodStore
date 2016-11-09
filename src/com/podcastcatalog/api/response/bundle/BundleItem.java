@@ -9,13 +9,11 @@ public abstract class BundleItem implements Serializable{
     private final String title;
     private final String description;
     private final String imageURL;
-    private final BundleType bundleType;
 
-    protected BundleItem(String title, String description, String imageURL, BundleType bundleType) {
+    protected BundleItem(String title, String description, String imageURL) {
         this.title = StringUtils.trimToNull(title);
         this.description = StringUtils.trimToNull(description);
         this.imageURL = StringUtils.trimToNull(imageURL);
-        this.bundleType = bundleType;
 
         if(this.title == null){
             throw  new IllegalArgumentException("title is requred");
@@ -38,9 +36,5 @@ public abstract class BundleItem implements Serializable{
 
     public String getImageURL() {
         return imageURL;
-    }
-
-    public BundleType getBundleType() {
-        return bundleType;
     }
 }

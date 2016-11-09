@@ -1,7 +1,6 @@
 package com.podcastcatalog.api.response;
 
 import com.podcastcatalog.api.response.bundle.BundleItem;
-import com.podcastcatalog.api.response.bundle.BundleType;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ public class PodCastCategory extends BundleItem {
 
     public PodCastCategory(String title, String description,
                            String image, List<PodCast> podCasts, PodCastCategoryType podCastCategoryType) {
-        super(title, description, image, BundleType.Category);
+        super(title, description, image);
         this.podCasts = podCasts;
         this.podCastCategoryType = podCastCategoryType;
     }

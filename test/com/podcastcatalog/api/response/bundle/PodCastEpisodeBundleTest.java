@@ -21,6 +21,16 @@ public class PodCastEpisodeBundleTest {
         return new PodCastEpisodeBundle("Title","Descr","www.url.se", podCastEpisodes);
     }
 
+    @Test
+    public void getBundleItems() {
+        Assert.assertTrue(craeteValid().getBundleItems().size()==1);
+    }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class)
+    public void getBundleItems_should_be_unmodifiable() {
+        craeteValid().getBundleItems().add(PodCastEpisodeTest.createValid().build());
+    }
+
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalid_podcasts_null() {
         new PodCastEpisodeBundle("Title","Descr","www.url.se", null);

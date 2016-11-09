@@ -1,7 +1,7 @@
 package com.podcastcatalog.api.response;
 
 public enum PodCastCatalogLanguage {
-    Sweden("SE");
+    Sweden("SE"); //FIXME Add ENG?
 
     private String lang;
     PodCastCatalogLanguage(String lang) {

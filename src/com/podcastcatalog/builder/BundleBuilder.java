@@ -4,11 +4,8 @@ import com.podcastcatalog.api.response.bundle.Bundle;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.concurrent.Callable;
-import java.util.logging.Logger;
 
 public abstract class BundleBuilder implements Callable<Bundle> {
-
-    private final static Logger LOG = Logger.getLogger(BundleBuilder.class.getName());
 
     private String title;
     private String description;

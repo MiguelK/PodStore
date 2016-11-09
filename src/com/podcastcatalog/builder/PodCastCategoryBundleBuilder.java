@@ -6,6 +6,7 @@ import com.podcastcatalog.builder.collector.PodCastCategoryCollector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PodCastCategoryBundleBuilder extends BundleBuilder {
 
@@ -22,12 +23,10 @@ public class PodCastCategoryBundleBuilder extends BundleBuilder {
 
     @Override
     protected PodCastCategoryBundle createBundle(String imageURL, String title, String description) {
-        List<PodCastCategory> podCastCategories = new ArrayList<>();
+        List<PodCastCategory> podCastCategories = collectors.stream()
+                .map(PodCastCategoryCollector::collectCategories).collect(Collectors.toList());
 
-        for (PodCastCategoryCollector collector : collectors) {//FIXME abstract Parser
-            podCastCategories.add(collector.collectCategories());
-        }
-
+        //FIXME abstract Parser
         return new PodCastCategoryBundle(title, description, imageURL,podCastCategories);
     }
 }

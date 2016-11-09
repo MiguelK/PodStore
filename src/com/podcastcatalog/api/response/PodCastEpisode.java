@@ -1,7 +1,6 @@
 package com.podcastcatalog.api.response;
 
 import com.podcastcatalog.api.response.bundle.BundleItem;
-import com.podcastcatalog.api.response.bundle.BundleType;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
@@ -21,7 +20,7 @@ public class PodCastEpisode extends BundleItem implements Serializable{
     private PodCastEpisode(int id, String title, String description, String targetURL,PodCastEpisodeDuration duration,
                            PodCastEpisodeFileSize fileSize, PodCastEpisodeType podCastType, LocalDateTime createdDate,int podCastId) {
 
-        super(title, description, "Image URL", BundleType.Episode);
+        super(title, description, "Image URL");
         this.id = id;
         this.podCastId = podCastId;
         this.targetURL = targetURL;
