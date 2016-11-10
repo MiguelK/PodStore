@@ -22,7 +22,7 @@ public class PodCastCatalogServiceTest {
     @BeforeMethod
     public void setUp() {
         storage = new DataStorage(TestUtil.IO_TEMP_DATA_DIRECTORY);
-        storage.delete(PodCastCatalogLanguage.Sweden);
+        storage.deleteAll();
     }
 
     @Test

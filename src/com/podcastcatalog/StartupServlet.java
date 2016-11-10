@@ -1,7 +1,5 @@
 package com.podcastcatalog;
 
-import com.podcastcatalog.api.response.PodCastCatalog;
-import com.podcastcatalog.api.response.PodCastCatalogLanguage;
 import com.podcastcatalog.builder.PodCastCatalogBuilderSE;
 import com.podcastcatalog.store.DataStorage;
 
@@ -29,9 +27,10 @@ public class StartupServlet extends HttpServlet {
         PodCastCatalogService.getInstance().setStorage(dataStorage);
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());//FIXME English
 
-        Optional<PodCastCatalog> podCastCatalog = dataStorage.load(PodCastCatalogLanguage.Sweden);
-        if (podCastCatalog.isPresent()) {
-            PodCastCatalogService.getInstance().loadPodCastCatalog(podCastCatalog.get());
+        Optional<DataStorage.PodCastCatalogVersion> currentVersion = dataStorage.getCurrentVersion();
+
+        if (currentVersion.isPresent()) {
+            PodCastCatalogService.getInstance().loadPodCastCatalog(currentVersion.get().getPodCastCatalogSwedish());
         } else {
             PodCastCatalogService.getInstance().buildPodCastCatalogsAsync();
         }
