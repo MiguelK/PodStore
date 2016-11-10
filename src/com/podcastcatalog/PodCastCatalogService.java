@@ -5,7 +5,7 @@ import com.podcastcatalog.api.response.PodCastCatalogLanguage;
 import com.podcastcatalog.api.response.bundle.Bundle;
 import com.podcastcatalog.builder.BundleBuilder;
 import com.podcastcatalog.builder.PodCastCatalogBuilder;
-import com.podcastcatalog.store.Storage;
+import com.podcastcatalog.store.DataStorage;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -25,7 +25,7 @@ public class PodCastCatalogService {
 
     private final Map<PodCastCatalogLanguage, PodCastCatalog> podCastCatalogByLang;
     private final List<PodCastCatalogBuilder> podCastCatalogBuilders;
-    private Storage storage;
+    private DataStorage storage;
     private final ExecutorService executorService;
     private final ExecutorService ayncExecutor;
 
@@ -46,7 +46,7 @@ public class PodCastCatalogService {
         podCastCatalogBuilders.add(builder);
     }
 
-    void setStorage(Storage storage) {
+    void setStorage(DataStorage storage) {
         this.storage = storage;
     }
 

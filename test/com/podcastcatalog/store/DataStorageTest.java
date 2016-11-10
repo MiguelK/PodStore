@@ -14,26 +14,26 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Optional;
 
-public class DiscStorageTest {
+public class DataStorageTest {
 
-    private Storage storage;
+    private DataStorage storage;
 
     @BeforeMethod
     public void setUp() {
-        storage = new DiscStorage(TestUtil.IO_TEMP_DATA_DIRECTORY);
+        storage = new DataStorage(TestUtil.IO_TEMP_DATA_DIRECTORY);
         storage.delete(PodCastCatalogLanguage.Sweden);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalidDataDirectory_null() {
-        new DiscStorage(null);
+        new DataStorage(null);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalidDataDirectory_not_directory() throws IOException {
         Path tempFile = Files.createTempFile("prefix", "suffix");
         try {
-            new DiscStorage(tempFile.toFile());
+            new DataStorage(tempFile.toFile());
         } finally {
             Files.delete(tempFile);
         }
@@ -61,4 +61,15 @@ public class DiscStorageTest {
 
         Assert.assertTrue(storage.load(PodCastCatalogLanguage.Sweden).isPresent());
     }
+
+   /* @Test
+    public void podCastCatalogVersion() {
+        PodCastCatalog podCastCatalog = PodCastCatalogTest.createValid();
+
+        storage.save(podCastCatalog);
+        Optional<DataStorage.PodCastCatalogVersion> version = storage.getCurrentVersion();
+
+        Assert.assertTrue(version.isPresent());
+        Assert.assertTrue(version.orElseGet(null).getVersion()==1);
+    }*/
 }

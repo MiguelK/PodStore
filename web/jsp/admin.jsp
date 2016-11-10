@@ -62,6 +62,16 @@
         </td>
     </tr>
 
+    <tr>
+
+        <td>
+            <form action="http://localhost:10080/PodStore/jsonfile?lang='SV'">
+                <button type="submit" value="refresh" title="refresh">
+                   get ZIP file
+                </button>
+            </form>
+        </td>
+    </tr>
 
 </table>
 

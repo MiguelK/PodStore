@@ -7,8 +7,7 @@ import com.podcastcatalog.builder.PodCastBundleBuilder;
 import com.podcastcatalog.builder.PodCastCatalogBuilder;
 import com.podcastcatalog.builder.PodCastCatalogBuilderSE;
 import com.podcastcatalog.builder.collector.itunes.ItunesSearchAPI;
-import com.podcastcatalog.store.DiscStorage;
-import com.podcastcatalog.store.Storage;
+import com.podcastcatalog.store.DataStorage;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -18,11 +17,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class PodCastCatalogServiceTest {
-    private Storage storage;
+    private DataStorage storage;
 
     @BeforeMethod
     public void setUp() {
-        storage = new DiscStorage(TestUtil.IO_TEMP_DATA_DIRECTORY);
+        storage = new DataStorage(TestUtil.IO_TEMP_DATA_DIRECTORY);
         storage.delete(PodCastCatalogLanguage.Sweden);
     }
 
@@ -61,7 +60,7 @@ public class PodCastCatalogServiceTest {
 
         File catalogDir = new File("/home/krantmig/tools/temp");//FIXME
 
-        Storage discStorage = new DiscStorage(catalogDir);
+        DataStorage discStorage = new DataStorage(catalogDir);
 
         PodCastCatalogService.getInstance().setStorage(discStorage);
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());

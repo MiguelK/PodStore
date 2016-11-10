@@ -11,6 +11,7 @@ public class StringFormatterTest {
     @Test
     public void format() {
         PodCastCatalog valid = PodCastCatalogTest.createValid();
-        Assert.assertNotNull(StringFormatter.create(valid));
+        StringFormatter object = StringFormatter.create(valid);
+        Assert.assertNotNull(object.format());
     }
 }

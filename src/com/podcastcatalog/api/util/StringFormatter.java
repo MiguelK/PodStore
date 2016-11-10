@@ -1,10 +1,13 @@
 package com.podcastcatalog.api.util;
 
+import com.podcastcatalog.api.response.PodCast;
 import com.podcastcatalog.api.response.PodCastCatalog;
 import com.podcastcatalog.api.response.PodCastCategory;
 import com.podcastcatalog.api.response.PodCastCategoryType;
 import com.podcastcatalog.api.response.bundle.Bundle;
 import com.podcastcatalog.api.response.bundle.BundleType;
+import com.podcastcatalog.api.response.bundle.PodCastBundle;
+import com.podcastcatalog.api.response.bundle.PodCastCategoryBundle;
 
 import java.util.List;
 
@@ -28,6 +31,42 @@ public class StringFormatter {
         StringBuilder result = new StringBuilder();
 
         result.append("<body>");
+
+
+        int podcastCount = 0;
+        int episodeCount = 0;
+        for (Bundle bundle : podCastCatalog.getBundles()) {
+            switch (bundle.getBundleType()) {
+
+                case Category:
+                    PodCastCategoryBundle c = (PodCastCategoryBundle)bundle;
+                    for (PodCastCategory podCastCategory : c.getBundleItems()) {
+                        List<PodCast> podCasts = podCastCategory.getPodCasts();
+                        podcastCount += podCasts.size();
+                        for (PodCast podCast : podCasts) {
+                            episodeCount += podCast.getPodCastEpisodes().size();
+                        }
+                    }
+                    break;
+
+                case Episode:
+                    episodeCount +=  bundle.getBundleItems().size();
+                    break;
+
+                case PodCast:
+                    PodCastBundle podCastBundle = (PodCastBundle)bundle;
+                    List<PodCast> podCasts = podCastBundle.getBundleItems();
+                    podcastCount += podCasts.size();
+
+                    for (PodCast podCast : podCasts) {
+                        episodeCount += podCast.getPodCastEpisodes().size();
+                    }
+                    break;
+            }
+        }
+
+        result.append("Total PodCasts = ").append(podcastCount).append("<br>");
+        result.append("Total Episodes = ").append(episodeCount).append("<br>");
 
         result.append(" Lang=").append(podCastCatalog.getPodCastCatalogLanguage()).append("<br>");
         result.append(" Created=").append(podCastCatalog.getCreated()).append("<br>");

@@ -9,7 +9,7 @@ import com.podcastcatalog.builder.collector.okihika.PodCastCategoryCollectorOkih
 import com.podcastcatalog.builder.podcastfether.ItunesSearchAPITest;
 import com.podcastcatalog.builder.podcastfether.PodCastFeedParserTest;
 import com.podcastcatalog.builder.podcastfether.PodCastIDTest;
-import com.podcastcatalog.store.DiscStorageTest;
+import com.podcastcatalog.store.DataStorageTest;
 import org.apache.commons.lang.ClassUtils;
 import org.testng.Assert;
 import org.testng.ITestResult;
@@ -67,7 +67,7 @@ public class TestUtil {
                 PodCastBundle1TaskTest.class,
                 PodCastBundleBuilderTest.class,
                 PodCastCatalogBuilderServiceTest.class,
-                DiscStorageTest.class,
+                DataStorageTest.class,
                 DataProviderTestData.class,
                 PodCastCatalogServiceTest.class,
                 TestUtil.class});
