@@ -95,7 +95,7 @@ public class DataStorageTest {
     }
 
     @Test
-    public void verify_version_structure() {
+    public void verify_version_structure() throws IOException {
         storage.save(PodCastCatalogTest.createValid());
 
         File dataDirectory = TestUtil.IO_TEMP_DATA_DIRECTORY;
@@ -112,12 +112,15 @@ public class DataStorageTest {
 
         Assert.assertTrue(sweDat.isFile());
         Assert.assertTrue(sweDat.canRead());
+        Assert.assertTrue(Files.size(sweDat.toPath()) >100);
 
         Assert.assertTrue(sweJSON.isFile());
         Assert.assertTrue(sweJSON.canRead());
+        Assert.assertTrue(Files.size(sweJSON.toPath()) >100,"was=" + Files.size(sweJSON.toPath()));
 
         Assert.assertTrue(sweZIP.isFile());
         Assert.assertTrue(sweZIP.canRead());
+        Assert.assertTrue(Files.size(sweZIP.toPath()) >100);
     }
 
     @Test
@@ -166,6 +169,18 @@ public class DataStorageTest {
         storage.deleteAll();
 
         Assert.assertTrue(storage.getAllVersions().isEmpty());
+    }
+
+    @Test
+    public void zipJSON() throws IOException {
+        storage.save(PodCastCatalogTest.createValid());
+
+        File zipped = storage.getCurrentVersion().orElseGet(null).getSweJSONZipped();
+        Assert.assertNotNull(zipped);
+        Assert.assertTrue(zipped.isFile());
+        Assert.assertTrue(zipped.canRead());
+        Assert.assertTrue(zipped.getName().endsWith("_json.zip"));
+        Assert.assertTrue(Files.size(zipped.toPath()) >100);
     }
 
     private void assertDirectory(File file){

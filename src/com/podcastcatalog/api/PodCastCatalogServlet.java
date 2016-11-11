@@ -34,15 +34,20 @@ public class PodCastCatalogServlet extends HttpServlet {
             return;
         }
 
-
         DataStorage dataStorage = new DataStorage();
+
+        if(!dataStorage.getCurrentVersion().isPresent()){
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE,"No catalog version loaded yet. Loading in progress?");
+            return;
+        }
+
 
         com.podcastcatalog.api.response.PodCastCatalog podCastCatalog =
                 PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
 
         LOG.info("Writing podCastCatalog as JSON " + podCastCatalog);
 
-        File zipFile = dataStorage.get();
+        File zipFile = dataStorage.getCurrentVersion().orElseGet(null).getSweJSONZipped();
 
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "attachment; filename=" + zipFile.getName());

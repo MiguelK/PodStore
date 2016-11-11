@@ -2,13 +2,13 @@ package com.podcastcatalog.store;
 
 import java.io.File;
 
-public class HomeDirectoryLocator {
+class HomeDirectoryLocator {
 
     private static final String OPENSHIFT_DATA_DIR = "OPENSHIFT_DATA_DIR";
 
     private static final String PODDA_HOME_DIR = "POD_DATA";
 
-    public File locateDataDir() {
+     File locateDataDir() {
         File a = new File("/home/krantmig/tools/temp");
 
         if (isReadAndWriteDirectory(a)) {

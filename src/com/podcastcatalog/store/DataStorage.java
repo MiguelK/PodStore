@@ -69,16 +69,6 @@ public class DataStorage {
         return files;
     }
 
-    private File getLatestVersionDirectory() {
-        List<File> versionDirectories = getVersionDirectories();
-
-        if (versionDirectories.isEmpty()) {
-            return null;
-        }
-
-        return versionDirectories.get(0);
-    }
-
     private PodCastCatalogVersion createNewVersionDirectory() {
         File[] subdirs = rootDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 
@@ -96,9 +86,7 @@ public class DataStorage {
         File file = new File(rootDir, String.valueOf(nextVersionNumber));
         file.mkdirs();//FIXME
 
-        PodCastCatalogVersion podCastCatalogVersion = PodCastCatalogVersion.create(file);
-
-        return podCastCatalogVersion;
+        return PodCastCatalogVersion.create(file);
     }
 
     private boolean isVersionDirectory(File e) {
@@ -106,42 +94,6 @@ public class DataStorage {
         return i != -1;
     }
 
-    private File getFileName(PodCastCatalogLanguage podCastCatalogLanguage) {
-        String fileName = podCastCatalogLanguage.name() + ".dat";
-        return new File(rootDir, fileName);
-    }
-
-  /*  public Optional<PodCastCatalog> load(PodCastCatalogLanguage podCastCatalogLanguage) {
-
-        File file = getFileName(podCastCatalogLanguage);
-
-        if (!file.exists() || !file.canRead()) {
-            return Optional.empty();
-        }
-
-        ObjectInputStream in = null;
-        FileInputStream fileIn = null;
-        try {
-            try {
-                fileIn = new FileInputStream(file);
-                in = new ObjectInputStream(fileIn);
-                return Optional.of((PodCastCatalog) in.readObject());
-            } catch (IOException | ClassNotFoundException e) {
-                LOG.log(Level.SEVERE, "Unable to load PodCastCatalog=" + file.getAbsolutePath(), e);
-            }
-
-        } finally {
-            if (in != null) {
-                IOUtils.closeQuietly(in);
-            }
-            if (fileIn != null) {
-                IOUtils.closeQuietly(fileIn);
-            }
-        }
-
-        return Optional.empty();
-    }
-*/
     public void deleteAll() {
         if (!rootDir.exists() || !rootDir.isDirectory()) {
             return;
@@ -158,30 +110,13 @@ public class DataStorage {
         PodCastCatalogVersion versionDirectory = createNewVersionDirectory();
 
         saveAsObject(podCastCatalog, versionDirectory);
-        saveAsJSON(podCastCatalog, versionDirectory);
-        zipJSONFile();
+        File json = saveAsJSON(podCastCatalog, versionDirectory);
+
+        ZipFile.zip(json, versionDirectory.getSweJSONZipped());
     }
 
-    private void zipJSONFile() {
-        LOG.warning("FIXME zip json file... TODO");//FIXME
-
-    }
-
-   /* private static File createFile(File root, String fileName) {
-        File file = new File(root, fileName);
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return file;
-
-    }*/
 
     private void saveAsObject(PodCastCatalog podCastCatalog, PodCastCatalogVersion versionDirectory) {
-//        File file = createFile(versionDirectory, podCastCatalog.getPodCastCatalogLanguage() + ".dat");//FIXME
-
         FileOutputStream fileOut = null;
         ObjectOutputStream out = null;
         try {
@@ -198,7 +133,7 @@ public class DataStorage {
         }
     }
 
-    private void saveAsJSON(PodCastCatalog podCastCatalog, PodCastCatalogVersion versionDirectory) {
+    private File saveAsJSON(PodCastCatalog podCastCatalog, PodCastCatalogVersion versionDirectory) {
 
         try {
             try (Writer writer = new OutputStreamWriter(new FileOutputStream(versionDirectory.getSweJSON()), "UTF-8")) {
@@ -207,17 +142,14 @@ public class DataStorage {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
 
-    public File get() {
-        File zipFile = new File(rootDir, "Sweden.json.zip");
-        return zipFile;
+        return versionDirectory.getSweJSON();
     }
 
     public Optional<PodCastCatalogVersion> getCurrentVersion() {
         List<PodCastCatalogVersion> allVersions = getAllVersions();
 
-        if(allVersions.isEmpty()){
+        if (allVersions.isEmpty()) {
             return Optional.empty();
         }
 
@@ -239,9 +171,9 @@ public class DataStorage {
 
     public static class PodCastCatalogVersion {
         private int version;
-        private File sweJSON;
-        private File sweJSONZipped;
-        private File sweDat;
+        private final File sweJSON;
+        private final File sweJSONZipped;
+        private final File sweDat;
 
         private PodCastCatalogVersion(File versionRoot) {
             sweDat = new File(versionRoot, PodCastCatalogLanguage.Sweden.name() + ".dat");
@@ -262,13 +194,13 @@ public class DataStorage {
             }
         }
 
-        public static PodCastCatalogVersion create(File versionRoot){
+        public static PodCastCatalogVersion create(File versionRoot) {
             PodCastCatalogVersion podCastCatalogVersion = new PodCastCatalogVersion(versionRoot);
             podCastCatalogVersion.make(versionRoot);
             return podCastCatalogVersion;
         }
 
-        public static PodCastCatalogVersion load(File versionRoot){
+        public static PodCastCatalogVersion load(File versionRoot) {
 
 
             PodCastCatalogVersion podCastCatalogVersion = new PodCastCatalogVersion(versionRoot);
@@ -281,37 +213,26 @@ public class DataStorage {
         private PodCastCatalog podCastCatalog;
 
         private void loadV() {
-//            public Optional<PodCastCatalog> load(PodCastCatalogLanguage podCastCatalogLanguage) {
 
-//                File file = getFileName(podCastCatalogLanguage);
-
-               /* if (!file.exists() || !file.canRead()) {
-                    return Optional.empty();
-                }*/
-
-                ObjectInputStream in = null;
-                FileInputStream fileIn = null;
+            ObjectInputStream in = null;
+            FileInputStream fileIn = null;
+            try {
                 try {
-                    try {
-                        fileIn = new FileInputStream(sweDat);
-                        in = new ObjectInputStream(fileIn);
-                        podCastCatalog = ((PodCastCatalog) in.readObject());
-                    } catch (IOException | ClassNotFoundException e) {
-                        LOG.log(Level.SEVERE, "Unable to load PodCastCatalog=" + sweDat.getAbsolutePath(), e);
-                    }
-
-                } finally {
-                    if (in != null) {
-                        IOUtils.closeQuietly(in);
-                    }
-                    if (fileIn != null) {
-                        IOUtils.closeQuietly(fileIn);
-                    }
+                    fileIn = new FileInputStream(sweDat);
+                    in = new ObjectInputStream(fileIn);
+                    podCastCatalog = ((PodCastCatalog) in.readObject());
+                } catch (IOException | ClassNotFoundException e) {
+                    LOG.log(Level.SEVERE, "Unable to load PodCastCatalog=" + sweDat.getAbsolutePath(), e);
                 }
 
-//                return Optional.empty();
-//            }
-
+            } finally {
+                if (in != null) {
+                    IOUtils.closeQuietly(in);
+                }
+                if (fileIn != null) {
+                    IOUtils.closeQuietly(fileIn);
+                }
+            }
         }
 
         public File getSweJSON() {
