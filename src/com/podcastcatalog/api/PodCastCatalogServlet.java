@@ -4,7 +4,6 @@ import com.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.api.response.PodCastCatalogLanguage;
 import com.podcastcatalog.store.DataStorage;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -20,6 +19,7 @@ import java.util.logging.Logger;
 public class PodCastCatalogServlet extends HttpServlet {
 
     private final static Logger LOG = Logger.getLogger(PodCastCatalogServlet.class.getName());
+    private PodCastCatalogLanguage language;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         throw new UnsupportedOperationException();
@@ -27,10 +27,10 @@ public class PodCastCatalogServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String lang = StringUtils.trimToNull(request.getParameter("lang"));
+        PodCastCatalogLanguage language = PodCastCatalogLanguage.fromString(request.getParameter("lang"));
 
-        if(lang==null){
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Missing lang parameter");
+        if(language==null){
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Missing lang parameter? or invalid lang=" + request.getParameter("lang"));
             return;
         }
 
@@ -41,9 +41,8 @@ public class PodCastCatalogServlet extends HttpServlet {
             return;
         }
 
-
         com.podcastcatalog.api.response.PodCastCatalog podCastCatalog =
-                PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
+                PodCastCatalogService.getInstance().getPodCastCatalog(language);
 
         LOG.info("Writing podCastCatalog as JSON " + podCastCatalog);
 

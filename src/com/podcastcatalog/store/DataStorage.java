@@ -12,6 +12,7 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class DataStorage {
@@ -161,9 +162,8 @@ public class DataStorage {
         List<PodCastCatalogVersion> allVersions = new ArrayList<>();
         List<File> latestVersionDirectories = getVersionDirectories();
 
-        for (File versionRoot : latestVersionDirectories) {
-            allVersions.add(PodCastCatalogVersion.load(versionRoot));
-        }
+        allVersions.addAll(latestVersionDirectories.stream()
+                .map(PodCastCatalogVersion::load).collect(Collectors.toList()));
 
         return allVersions;
     }

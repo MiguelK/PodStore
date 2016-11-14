@@ -23,7 +23,7 @@ public class ItunesSearchAPITest {
                 ItunesSearchAPI query = ItunesSearchAPI.search("term=p3&entity=podcast&limit=1");
         int episodes = query.collectPodCasts().get(0).getPodCastEpisodes().size();
 
-        Assert.assertTrue(episodes>=260);
+        Assert.assertTrue(episodes>=100,"episodes=" + episodes);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)

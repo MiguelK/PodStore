@@ -11,12 +11,7 @@ import java.util.zip.ZipOutputStream;
 
 public class ZipFile {
 
-    /**
-     * This method compresses the single file to zip format
-     *
-     * @param file
-     * @param zipFileName
-     */
+
     public static void zip(File file, File zipFileName) {
 
         FileOutputStream fileOutputStream = null;

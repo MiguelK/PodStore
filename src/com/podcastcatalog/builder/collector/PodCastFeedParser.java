@@ -32,7 +32,7 @@ public class PodCastFeedParser {
         int expectedEpisodeCount = -1;
         try {
             Feed feed = FeedParser.parse(feedURL);
-            LOG.info("Feed=" + feed);
+//            LOG.info("Feed=" + feed);
             PodCastFeedHeader feedHeader = new PodCastFeedHeader(feed.getHeader());
 
             podCastBuilder.title(feedHeader.getTitle()).setArtworkUrl100(artworkUrl100).
@@ -76,7 +76,7 @@ public class PodCastFeedParser {
         }
 
         PodCast podCast = podCastBuilder.build();
-        LOG.info("Parsed New PodCast=" + podCast.getTitle());
+//        LOG.info("Parsed New PodCast=" + podCast.getTitle());
 
         return Optional.of(podCast);
     }

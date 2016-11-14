@@ -28,7 +28,7 @@ public class PodCastCollectorOkihika implements PodCastCollector {
     private final int resultSize;
 
     public enum TopList {
-        All("0"),
+        TOPLIST_SWEDEN("0"),
         ARTS("1301"),
         DESIGN("1402"),
         FASHION_BEAUTY("1459"),
@@ -112,7 +112,7 @@ public class PodCastCollectorOkihika implements PodCastCollector {
     }
 
 
-    PodCastCollectorOkihika(TopList toplist, int resultSize) {
+    public PodCastCollectorOkihika(TopList toplist, int resultSize) {
         this.url = toplist.getUrl();
         this.resultSize = resultSize;
     }

@@ -1,8 +1,11 @@
 package com.podcastcatalog.builder.collector.okihika;
 
+import com.podcastcatalog.api.response.PodCast;
 import com.podcastcatalog.api.response.PodCastCategoryType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 public class PodCastCollectorOkihikaTest {
     @Test
@@ -11,16 +14,21 @@ public class PodCastCollectorOkihikaTest {
 
         for (PodCastCollectorOkihika.TopList list : PodCastCollectorOkihika.TopList.values()) {
 
-            if(list== PodCastCollectorOkihika.TopList.All){
+            if(list== PodCastCollectorOkihika.TopList.TOPLIST_SWEDEN){
                 continue;
             }
 
             PodCastCategoryType a = list.toPodCastCategoryType();
 
             Assert.assertNotNull(a,list.name());
-//            list.to
         }
-
     }
 
+    @Test
+    public void toplist_Sweden() {
+        PodCastCollectorOkihika swe = new PodCastCollectorOkihika(PodCastCollectorOkihika.TopList.TOPLIST_SWEDEN,20);
+        List<PodCast> podCasts = swe.collectPodCasts();
+
+        Assert.assertTrue(podCasts.size()>10);
+    }
 }
