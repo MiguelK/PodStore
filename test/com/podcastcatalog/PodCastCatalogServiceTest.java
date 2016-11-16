@@ -21,7 +21,7 @@ public class PodCastCatalogServiceTest {
 
     @BeforeMethod
     public void setUp() {
-        storage = new DataStorage(TestUtil.IO_TEMP_DATA_DIRECTORY);
+        storage = new DataStorage(TestUtil.IO_TEMP_DATA_DIRECTORY_1);
         storage.deleteAll();
     }
 

@@ -24,7 +24,8 @@ import java.util.List;
 public class TestUtil {
 
     private static final String TEMP_FILE_PATH = System.getProperty("java.io.tmpdir");
-    public static File IO_TEMP_DATA_DIRECTORY = new File(TEMP_FILE_PATH);
+   // public static File IO_TEMP_DATA_DIRECTORY = new File(TEMP_FILE_PATH);
+    public static File IO_TEMP_DATA_DIRECTORY_1 = new File("/Users/miguelkrantz/Documents/temp/podda/testng-data");
 
 
     public static final String SLOW_TEST = "slow";

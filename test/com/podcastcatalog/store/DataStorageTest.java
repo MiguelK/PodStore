@@ -23,7 +23,7 @@ public class DataStorageTest {
 
     @BeforeMethod
     public void setUp() {
-        storage = new DataStorage(TestUtil.IO_TEMP_DATA_DIRECTORY);
+        storage = new DataStorage(TestUtil.IO_TEMP_DATA_DIRECTORY_1);
         storage.deleteAll();
     }
 
@@ -98,7 +98,7 @@ public class DataStorageTest {
     public void verify_version_structure() throws IOException {
         storage.save(PodCastCatalogTest.createValid());
 
-        File dataDirectory = TestUtil.IO_TEMP_DATA_DIRECTORY;
+        File dataDirectory = TestUtil.IO_TEMP_DATA_DIRECTORY_1;
         File root = new File(dataDirectory,"PodCastCatalogVersions");
         File one = new File(root,"1");
 
@@ -130,7 +130,7 @@ public class DataStorageTest {
         storage.save(PodCastCatalogTest.createValid());
         storage.save(PodCastCatalogTest.createValid());
 
-        File dataDirectory = TestUtil.IO_TEMP_DATA_DIRECTORY;
+        File dataDirectory = TestUtil.IO_TEMP_DATA_DIRECTORY_1;
         File root = new File(dataDirectory,"PodCastCatalogVersions");
 
         assertDirectory(new File(root,"1"));

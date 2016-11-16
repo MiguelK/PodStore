@@ -5,6 +5,13 @@ getPodCastCatalog()
 http://localhost:10080/PodStore/api/podCastCatalog?
 http://localhost:10080/PodStore/api/podCastCatalog?lang='SV'
 
+http://localhost:8080/PodStore/api/podCastCatalog?lang='SV'
+http://localhost:8080/PodStore_war_exploded/api/podCastCatalog?lang='SV'
+
+
+
+
+
 getPodCastCatalogStatus()
 http://localhost:10080/PodStore/api/podCastCatalog/stat
 

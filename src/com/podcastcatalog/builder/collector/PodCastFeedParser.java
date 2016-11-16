@@ -209,7 +209,8 @@ public class PodCastFeedParser {
 
         public PodCastEpisodeDuration getDuration() {
 
-            Optional<String> durationOptional = rawElements.stream().filter(r -> "duration".equalsIgnoreCase(r.getName())).map(RawElement::getValue).findFirst();
+            Optional<String> durationOptional = rawElements.stream().filter(r -> "duration".equalsIgnoreCase(r.getName())
+                    && r.getValue()!=null ).map(RawElement::getValue).findFirst();
 
             PodCastEpisodeDuration duration = null;
             if (durationOptional.isPresent()) {

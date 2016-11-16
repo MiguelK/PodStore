@@ -1,9 +1,7 @@
 package com.podcastcatalog.api.response;
 
 import com.google.gson.Gson;
-import com.podcastcatalog.api.response.bundle.Bundle;
-import com.podcastcatalog.api.response.bundle.PodCastCategoryBundleTest;
-import com.podcastcatalog.api.response.bundle.PodCastEpisodeBundleTest;
+import com.podcastcatalog.api.response.bundle.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -94,7 +92,12 @@ public class PodCastCatalogTest {
     }
 
     public static PodCastCatalog createValid() {
-        List<Bundle> podCastBundle1s = Collections.singletonList(PodCastBundleTest.createValid().build());
+        PodCastBundle build = PodCastBundleTest.createValid().build();
+        List<Bundle> podCastBundle1s = new ArrayList<>();
+        podCastBundle1s.add(build);
+        podCastBundle1s.add(PodCastEpisodeBundleTest.craeteValid());
+        podCastBundle1s.add(PodCastCategoryBundleTest.createValid());
+
         return PodCastCatalog.create(PodCastCatalogLanguage.Sweden, podCastBundle1s);
     }
 }

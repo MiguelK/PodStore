@@ -113,14 +113,9 @@ public class PodCastBundleTest {
         Assert.assertTrue(createValid().podCasts(podCasts).build().getBundleItems().contains(podCast));
     }
 
-
-    /*@Test
-        public void numberOfPodCastsInBundele() {
-            Assert.assertEquals(createValid().build().getNumberOfPodCastsInBundele(), 1);
-        }
-    */
     public static PodCastBundle.Builder createValid(){
-        return PodCastBundle.newBuilder().title("dsdsd").description("dsdsds").imageURL("sdsdsd").
+        return PodCastBundle.newBuilder().title("P3 PodCast").description("Lite beskrivnings text")
+                .imageURL("http://www.urasaif.se/wp-content/uploads/2013/04/Fotboll.jpeg").
                 podCast(PodCastTest.createValid().build());
     }
 }
