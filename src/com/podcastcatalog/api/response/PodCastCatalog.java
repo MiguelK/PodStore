@@ -48,7 +48,7 @@ public class PodCastCatalog implements Serializable {
         return "PodCastCatalog{" +
                 "podCastCatalogLanguage=" + podCastCatalogLanguage +
                 ", created=" + created +
-                ", bundles=" + bundles.size() +
+                ", bundles=" + bundles +
                 '}';
     }
 }

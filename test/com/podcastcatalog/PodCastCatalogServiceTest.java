@@ -2,17 +2,16 @@ package com.podcastcatalog;
 
 import com.podcastcatalog.api.response.PodCastCatalog;
 import com.podcastcatalog.api.response.PodCastCatalogLanguage;
-import com.podcastcatalog.builder.BundleBuilder;
-import com.podcastcatalog.builder.PodCastBundleBuilder;
-import com.podcastcatalog.builder.PodCastCatalogBuilder;
-import com.podcastcatalog.builder.PodCastCatalogBuilderSE;
+import com.podcastcatalog.builder.*;
 import com.podcastcatalog.builder.collector.itunes.ItunesSearchAPI;
+import com.podcastcatalog.builder.collector.okihika.PodCastCategoryCollectorOkihika;
+import com.podcastcatalog.builder.collector.okihika.PodCastCollectorOkihika;
+import com.podcastcatalog.builder.collector.okihika.PodCastEpisodeCollectorOkihika;
 import com.podcastcatalog.store.DataStorage;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,11 +20,11 @@ public class PodCastCatalogServiceTest {
 
     @BeforeMethod
     public void setUp() {
-        storage = new DataStorage(TestUtil.IO_TEMP_DATA_DIRECTORY_1);
+        storage = new DataStorage(TestUtil.IO_TEMP_DATA_DIRECTORY);
         storage.deleteAll();
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void buildPodCastCatalogs() {
         PodCastCatalogService.getInstance().setStorage(storage);
 
@@ -55,15 +54,38 @@ public class PodCastCatalogServiceTest {
 
     }
 
-//    @Test(groups = TestUtil.SLOW_TEST)
-    public void build_load_catalog() {
+    @Test(groups = TestUtil.SLOW_TEST)
+    public void build_hallo_world_catalog() {
 
-        File catalogDir = new File("/home/krantmig/tools/temp");//FIXME
+        PodCastCatalogService.getInstance().setStorage(storage);
 
-        DataStorage discStorage = new DataStorage(catalogDir);
+        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilder() {
+            @Override
+            public Set<BundleBuilder> getBundleBuilders() {
+                PodCastBundleBuilder podCastBundleBuilder = BundleBuilder.newPodCastBundleBuilder("image", "Toplistan", "10 bästa podcas i Sverige");
+                podCastBundleBuilder.addCollector(new PodCastCollectorOkihika(PodCastCollectorOkihika.TopList.TOPLIST_SWEDEN, 4));
 
-        PodCastCatalogService.getInstance().setStorage(discStorage);
-        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());
+                PodCastCategoryBundleBuilder categoryBundleBuilder = BundleBuilder.newPodCastCategoryBundleBuilder("bundle image", "Alla Kategorier", "???..");
+                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 2, "Nyheter och politik", "???", "image"));
+                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TECHNOLOGY,1, "Teknologi", "???","image"));
+                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TV_FILM,1, "TV och film", "???","image"));
+
+                PodCastEpisodeBundleBuilder episodeBundleBuilder = BundleBuilder.newPodCastEpisodeBundleBuilder("bundle image", "Only for U", "???..");
+                episodeBundleBuilder.addCollector(new PodCastEpisodeCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 3, 1));
+
+                Set<BundleBuilder> bundleBuilders = new HashSet<>();
+                bundleBuilders.add(podCastBundleBuilder);
+                bundleBuilders.add(categoryBundleBuilder);
+                bundleBuilders.add(episodeBundleBuilder);
+
+                return bundleBuilders;
+            }
+
+            @Override
+            public PodCastCatalogLanguage getPodCastCatalogLang() {
+                return PodCastCatalogLanguage.Sweden;
+            }
+        });
 
         PodCastCatalogService
                 .getInstance().buildPodCastCatalogs();
@@ -73,7 +95,6 @@ public class PodCastCatalogServiceTest {
 
         TestUtil.assertToJSONNotNull(podCastCatalog);
 
-        discStorage.save(podCastCatalog);
+        System.out.println("LocalCatalog = " + podCastCatalog);
     }
-
 }

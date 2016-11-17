@@ -40,4 +40,6 @@ public abstract class Bundle implements Serializable  {
         return bundleType;
     }
 
+    public abstract String toString();
+
 }

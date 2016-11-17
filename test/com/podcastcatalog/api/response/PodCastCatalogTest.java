@@ -89,12 +89,13 @@ public class PodCastCatalogTest {
     @Test
     public void testToSTring() {
         Assert.assertNotNull(createValid().toString());
+
+        System.out.println(createValid().toString());
     }
 
     public static PodCastCatalog createValid() {
-        PodCastBundle build = PodCastBundleTest.createValid().build();
         List<Bundle> podCastBundle1s = new ArrayList<>();
-        podCastBundle1s.add(build);
+        podCastBundle1s.add(PodCastBundleTest.createValid().build());
         podCastBundle1s.add(PodCastEpisodeBundleTest.craeteValid());
         podCastBundle1s.add(PodCastCategoryBundleTest.createValid());
 

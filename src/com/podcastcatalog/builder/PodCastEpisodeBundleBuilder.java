@@ -7,7 +7,7 @@ import com.podcastcatalog.builder.collector.PodCastEpisodeCollector;
 import java.util.ArrayList;
 import java.util.List;
 
-class PodCastEpisodeBundleBuilder extends BundleBuilder {
+public class PodCastEpisodeBundleBuilder extends BundleBuilder {
 
     private final List<PodCastEpisodeCollector> collectors;
 
@@ -16,7 +16,7 @@ class PodCastEpisodeBundleBuilder extends BundleBuilder {
         this.collectors = new ArrayList<>();
     }
 
-    void addCollector(PodCastEpisodeCollector collector) {
+    public void addCollector(PodCastEpisodeCollector collector) {
         collectors.add(collector);
     }
 

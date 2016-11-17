@@ -79,4 +79,11 @@ public class PodCastBundle extends Bundle {
             return new PodCastBundle(title, description, imageURL,podCasts);
         }
     }
+
+    @Override
+    public String toString() {
+        return "PodCastBundle{" +
+                "podCasts=" + podCasts.size() +
+                '}';
+    }
 }

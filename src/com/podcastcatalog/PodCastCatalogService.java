@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 public class PodCastCatalogService {
 
     private static final int THREADS = 5;
+    private static final int MAX_BUILD_CATALOG_TIMEOUT_IN_MINUTES = 15;
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
     private final Lock readLock = reentrantReadWriteLock.readLock();
     private final Lock writeLock = reentrantReadWriteLock.writeLock();
@@ -78,7 +79,7 @@ public class PodCastCatalogService {
         validateState();
 
         try {
-            ayncExecutor.submit(new RebuildCatalogAction()).get(3, TimeUnit.MINUTES);
+            ayncExecutor.submit(new RebuildCatalogAction()).get(MAX_BUILD_CATALOG_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
         } catch (Exception e) {
             throw new RuntimeException("Unable to rebuild catalogs ", e);
         }

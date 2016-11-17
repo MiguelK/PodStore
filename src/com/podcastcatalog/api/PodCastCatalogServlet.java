@@ -13,13 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 //Zipped JSON?
 public class PodCastCatalogServlet extends HttpServlet {
 
     private final static Logger LOG = Logger.getLogger(PodCastCatalogServlet.class.getName());
-    private PodCastCatalogLanguage language;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         throw new UnsupportedOperationException();
@@ -30,7 +30,8 @@ public class PodCastCatalogServlet extends HttpServlet {
         PodCastCatalogLanguage language = PodCastCatalogLanguage.fromString(request.getParameter("lang"));
 
         if(language==null){
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Missing lang parameter? or invalid lang=" + request.getParameter("lang"));
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Missing lang parameter? or invalid lang=" + request.getParameter("lang")
+                    + " valid values=" + Arrays.toString(PodCastCatalogLanguage.values()));
             return;
         }
 
@@ -52,8 +53,9 @@ public class PodCastCatalogServlet extends HttpServlet {
         response.setHeader("Content-Disposition", "attachment; filename=" + zipFile.getName());
 
         ServletOutputStream outputStream = response.getOutputStream();
+
         IOUtils.copy(new FileInputStream(zipFile),outputStream);
 
-        outputStream.flush();//Needed?
+        outputStream.flush();
     }
 }

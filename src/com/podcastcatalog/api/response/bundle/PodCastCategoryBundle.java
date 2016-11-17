@@ -21,4 +21,11 @@ public class PodCastCategoryBundle extends Bundle {
     public List<PodCastCategory> getBundleItems() {
         return podCastCategories;
     }
+
+    @Override
+    public String toString() {
+        return "PodCastCategoryBundle{" +
+                "podCastCategories=" + podCastCategories.size() +
+                '}';
+    }
 }
