@@ -22,4 +22,10 @@ https://itunes.apple.com/lookup?id=425654569
 PodCastCatalog
   - on per language, List<Bundle> bundles; created + language
 
-PodCastCatalogBuilder
+
+
+---
+# Episode has podCastRefId = unikt id inom samma catalog som pekar på PodCast
+Klient:
+Sör upp podcast innom samma ctaalog
+#EpisodeBuilder skalla baar ta från nerladdad PodCastBuilder! bättre perf
