@@ -184,9 +184,8 @@ public class PodCastEpisodeTest {
     }
 
     @Test
-    public void podCastCollectionId() {
-        PodCastEpisode b = createValid().id(55).build();
-
+    public void podCastCollectionId_trim() {
+        Assert.assertEquals(createValid().podCastCollectionId(" 55 ").build().getPodCastCollectionId(),"55");
     }
 
     @Test
@@ -198,11 +197,9 @@ public class PodCastEpisodeTest {
 
     public static PodCastEpisode.Builder createValid(){
 
-        PodCastEpisode.Builder builder = PodCastEpisode.newBuilder().description("sdsd").title("dsd").id(99).artworkUrl100("www.dn.se/image.png")
+        return PodCastEpisode.newBuilder().description("sdsd").title("dsd").id(99).artworkUrl100("www.dn.se/image.png")
                 .fileSizeInMegaByte(PodCastEpisodeFileSize.parse("9155554")).duration(PodCastEpisodeDuration.parse("01:24:15"))
                 .createdDate(LocalDateTime.now()).targetURL("dfdsdf").podCastType(PodCastEpisodeType.Audio).podCastCollectionId("8788");
-
-        return builder;
 
     }
 }

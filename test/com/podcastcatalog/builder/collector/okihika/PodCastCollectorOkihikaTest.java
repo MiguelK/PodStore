@@ -1,5 +1,6 @@
 package com.podcastcatalog.builder.collector.okihika;
 
+import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.api.response.PodCast;
 import com.podcastcatalog.api.response.PodCastCategoryType;
 import org.testng.Assert;
@@ -24,7 +25,7 @@ public class PodCastCollectorOkihikaTest {
         }
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void toplist_Sweden() {
         PodCastCollectorOkihika swe = new PodCastCollectorOkihika(PodCastCollectorOkihika.TopList.TOPLIST_SWEDEN,20);
         List<PodCast> podCasts = swe.collectPodCasts();

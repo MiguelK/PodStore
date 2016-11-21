@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ZipFile {
+class ZipFile {
 
 
-    public static void zip(File file, File zipFileName) {
+    static void zip(File file, File zipFileName) {
 
         FileOutputStream fileOutputStream = null;
 

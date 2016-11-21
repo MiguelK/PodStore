@@ -22,6 +22,7 @@ public class StringFormatter {
         return new StringFormatter(podCastCatalog);
     }
 
+    @SuppressWarnings("unchecked")
     public String format() {
 
         if(podCastCatalog==null){
