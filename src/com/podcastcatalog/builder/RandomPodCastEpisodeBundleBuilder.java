@@ -37,6 +37,6 @@ public class RandomPodCastEpisodeBundleBuilder {
             }
         }
 
-        return new PodCastEpisodeBundle("title", "description", "imageURL", podCastEpisodes);//FIXME
+        return new PodCastEpisodeBundle("?title?", "?description?", "imageURL", podCastEpisodes);//FIXME
     }
 }

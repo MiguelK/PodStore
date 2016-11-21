@@ -5,7 +5,7 @@ import com.podcastcatalog.api.response.PodCastCategoryTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class PodCastCategoryBundleTest {
@@ -16,7 +16,7 @@ public class PodCastCategoryBundleTest {
        }
 
     public static PodCastCategoryBundle createValid(){
-        List<PodCastCategory> podCastCategories = Arrays.asList(PodCastCategoryTest.createValid());
+        List<PodCastCategory> podCastCategories = Collections.singletonList(PodCastCategoryTest.createValid());
 
         return new PodCastCategoryBundle("Title","Description","url.se",podCastCategories);
     }

@@ -13,7 +13,10 @@ import com.podcastcatalog.store.DataStorage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class PodCastCatalogServiceTest {
 
@@ -71,13 +74,13 @@ public class PodCastCatalogServiceTest {
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilder() {
             @Override
             public Set<BundleBuilder> getBundleBuilders() {
-                PodCastBundleBuilder podCastBundleBuilder = BundleBuilder.newPodCastBundleBuilder("image", "Toplistan", "10 bästa podcas i Sverige");
+                PodCastBundleBuilder podCastBundleBuilder = BundleBuilder.newPodCastBundleBuilder("?image?", "Toplistan", "10 bästa podcas i Sverige");
                 podCastBundleBuilder.addCollector(new PodCastCollectorOkihika(PodCastCollectorOkihika.TopList.TOPLIST_SWEDEN, 4));
 
-                PodCastCategoryBundleBuilder categoryBundleBuilder = BundleBuilder.newPodCastCategoryBundleBuilder("bundle image", "Alla Kategorier", "???..");
-                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 2, "Nyheter och politik", "???", "image"));
-                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TECHNOLOGY,1, "Teknologi", "???","image"));
-                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TV_FILM,1, "TV och film", "???","image"));
+                PodCastCategoryBundleBuilder categoryBundleBuilder = BundleBuilder.newPodCastCategoryBundleBuilder("?image?", "Alla Kategorier", "???..");
+                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 2, "Nyheter och politik", "???"));
+                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TECHNOLOGY,2, "Teknologi", "???"));
+                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TV_FILM,1, "TV och film", "???"));
 
 
                 Set<BundleBuilder> bundleBuilders = new HashSet<>();

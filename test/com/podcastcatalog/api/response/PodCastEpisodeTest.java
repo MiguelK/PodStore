@@ -197,7 +197,7 @@ public class PodCastEpisodeTest {
 
     public static PodCastEpisode.Builder createValid(){
 
-        return PodCastEpisode.newBuilder().description("sdsd").title("dsd").id(99).artworkUrl100("www.dn.se/image.png")
+        return PodCastEpisode.newBuilder().description("sdsd").title("dsd").id(99).artworkUrl100("http://www.dn.se/image.png")
                 .fileSizeInMegaByte(PodCastEpisodeFileSize.parse("9155554")).duration(PodCastEpisodeDuration.parse("01:24:15"))
                 .createdDate(LocalDateTime.now()).targetURL("dfdsdf").podCastType(PodCastEpisodeType.Audio).podCastCollectionId("8788");
 

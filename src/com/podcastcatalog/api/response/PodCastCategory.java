@@ -11,8 +11,8 @@ public class PodCastCategory extends BundleItem {
     private final PodCastCategoryType podCastCategoryType;
 
     public PodCastCategory(String title, String description,
-                           String image, List<PodCast> podCasts, PodCastCategoryType podCastCategoryType) {
-        super(title, description, image);
+                           String artworkUrl100, List<PodCast> podCasts, PodCastCategoryType podCastCategoryType) {
+        super(title, description, artworkUrl100);
         this.podCasts = podCasts;
         this.podCastCategoryType = podCastCategoryType;
     }

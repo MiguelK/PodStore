@@ -17,9 +17,9 @@ public class PodCastCategoryTest {
 
     @Test
     public void trim() {
-        Assert.assertEquals(new PodCastCategory(" sommar ","Description B","image URL", createPodCasts(), PodCastCategoryType.ARTS).getTitle(), "sommar");
-        Assert.assertEquals(new PodCastCategory(" sommar "," Description B ","image URL", createPodCasts(), PodCastCategoryType.ARTS).getDescription(), "Description B");
-        Assert.assertEquals(new PodCastCategory(" sommar ","Description B","   img ", createPodCasts(), PodCastCategoryType.ARTS).getArtworkUrl100(), "img");
+        Assert.assertEquals(new PodCastCategory(" sommar ","Description B","http://wwww.dn.se/a.jpg", createPodCasts(), PodCastCategoryType.ARTS).getTitle(), "sommar");
+        Assert.assertEquals(new PodCastCategory(" sommar "," Description B ","http://wwww.dn.se/a.jpg", createPodCasts(), PodCastCategoryType.ARTS).getDescription(), "Description B");
+        Assert.assertEquals(new PodCastCategory(" sommar ","Description B","http://wwww.dn.se/a.jpg ", createPodCasts(), PodCastCategoryType.ARTS).getArtworkUrl100(), "http://wwww.dn.se/a.jpg");
     }
 
     @Test
@@ -73,6 +73,6 @@ public class PodCastCategoryTest {
 
     public static PodCastCategory createValid(){
         List<PodCast> podCasts = Arrays.asList(PodCastTest.createValid().build());
-        return new PodCastCategory("Title A","Description B","image URL",podCasts, PodCastCategoryType.ARTS);
+        return new PodCastCategory("Title A","Description B","http://www.test.se",podCasts, PodCastCategoryType.ARTS);
     }
 }

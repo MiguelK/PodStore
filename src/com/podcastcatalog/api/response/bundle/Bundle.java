@@ -10,9 +10,9 @@ import java.util.List;
  */
 public abstract class Bundle implements Serializable  {
 
-    private final String title;
-    private final String description;
-    private final String imageURL;
+    private final String title; //Not used e.g "Alla Kategorier" //FIXME Remove?
+    private final String description; //Not used //FIXME Remove?
+    private final String imageURL; //Not used ? //FIXME Remove?
     private final BundleType bundleType;
 
     Bundle(String title, String description, String imageURL, BundleType bundleType) {

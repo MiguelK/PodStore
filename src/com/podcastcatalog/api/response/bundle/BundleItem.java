@@ -24,6 +24,11 @@ public abstract class BundleItem implements Serializable{
         if(this.artworkUrl100 == null){
             throw  new IllegalArgumentException("artworkUrl100 is requred");
         }
+
+        if(!artworkUrl100.startsWith("http")){
+            throw  new IllegalArgumentException("Invalid artworkUrl100 " + artworkUrl100);
+        }
+
     }
 
     public String getTitle() {
