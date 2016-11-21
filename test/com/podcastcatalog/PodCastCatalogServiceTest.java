@@ -1,18 +1,19 @@
 package com.podcastcatalog;
 
+import com.podcastcatalog.api.response.PodCast;
 import com.podcastcatalog.api.response.PodCastCatalog;
 import com.podcastcatalog.api.response.PodCastCatalogLanguage;
+import com.podcastcatalog.api.response.PodCastCategory;
+import com.podcastcatalog.api.response.bundle.Bundle;
 import com.podcastcatalog.builder.*;
 import com.podcastcatalog.builder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.builder.collector.okihika.PodCastCategoryCollectorOkihika;
 import com.podcastcatalog.builder.collector.okihika.PodCastCollectorOkihika;
-import com.podcastcatalog.builder.collector.okihika.PodCastEpisodeCollectorOkihika;
 import com.podcastcatalog.store.DataStorage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class PodCastCatalogServiceTest {
 
@@ -23,6 +24,12 @@ public class PodCastCatalogServiceTest {
         setUpStorage();
 
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilder() {
+            @Override
+            public List<Bundle> createFromFetchedData(List<PodCast> podCas,
+                                                      List<PodCastCategory> PodCastCategories) {
+                return Collections.emptyList();
+            }
+
             @Override
             public Set<BundleBuilder> getBundleBuilders() {
 
@@ -40,6 +47,7 @@ public class PodCastCatalogServiceTest {
                 return PodCastCatalogLanguage.Sweden;
             }
         });
+
 
         PodCastCatalogService.getInstance().buildPodCastCatalogs();
         PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
@@ -71,15 +79,22 @@ public class PodCastCatalogServiceTest {
                 categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TECHNOLOGY,1, "Teknologi", "???","image"));
                 categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TV_FILM,1, "TV och film", "???","image"));
 
-                PodCastEpisodeBundleBuilder episodeBundleBuilder = BundleBuilder.newPodCastEpisodeBundleBuilder("bundle image", "Only for U", "???..");
-                episodeBundleBuilder.addCollector(new PodCastEpisodeCollectorOkihika(PodCastCollectorOkihika.TopList.ARTS, 3, 1));
 
                 Set<BundleBuilder> bundleBuilders = new HashSet<>();
                 bundleBuilders.add(podCastBundleBuilder);
                 bundleBuilders.add(categoryBundleBuilder);
-                bundleBuilders.add(episodeBundleBuilder);
 
                 return bundleBuilders;
+            }
+
+            @Override
+            public List<Bundle> createFromFetchedData(List<PodCast> podCas,
+                                                      List<PodCastCategory> podCastCategories) {
+
+                RandomPodCastEpisodeBundleBuilder bundleBuilder = new RandomPodCastEpisodeBundleBuilder(podCas, podCastCategories);
+                Bundle episodeBundle = bundleBuilder.createEpisodeBundle();
+
+                return Collections.singletonList(episodeBundle);
             }
 
             @Override

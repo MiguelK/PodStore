@@ -1,8 +1,12 @@
 package com.podcastcatalog;
 
+import com.podcastcatalog.api.response.PodCast;
 import com.podcastcatalog.api.response.PodCastCatalog;
 import com.podcastcatalog.api.response.PodCastCatalogLanguage;
+import com.podcastcatalog.api.response.PodCastCategory;
 import com.podcastcatalog.api.response.bundle.Bundle;
+import com.podcastcatalog.api.response.bundle.PodCastBundle;
+import com.podcastcatalog.api.response.bundle.PodCastCategoryBundle;
 import com.podcastcatalog.builder.BundleBuilder;
 import com.podcastcatalog.builder.PodCastCatalogBuilder;
 import com.podcastcatalog.store.DataStorage;
@@ -115,7 +119,7 @@ public class PodCastCatalogService {
             try {
                 for (PodCastCatalogLanguage language : newCatalogs.keySet()) {
                     LOG.info("PodCastCatalog " + language + " was updated with new version");
-                    podCastCatalogByLang.put(language,newCatalogs.get(language));
+                    podCastCatalogByLang.put(language, newCatalogs.get(language));
                 }
 
             } finally {
@@ -147,6 +151,16 @@ public class PodCastCatalogService {
                 Bundle bundle = futureBundle.get();//FIXME Max timeout??
                 bundles.add(bundle);
             }
+
+
+            List<PodCast> podCasts = new ArrayList<>();
+            bundles.stream().filter(b -> b instanceof PodCastBundle).forEach(e -> podCasts.addAll(((PodCastBundle) e).getBundleItems()));
+
+            List<PodCastCategory> podCastCategories = new ArrayList<>();
+            bundles.stream().filter(b -> b instanceof PodCastCategoryBundle).forEach(e -> podCastCategories.addAll(((PodCastCategoryBundle) e).getBundleItems()));
+
+            bundles.addAll(podCastCatalogBuilder.createFromFetchedData(podCasts, podCastCategories));
+
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Failed building catalog " + podCastCatalogBuilder.getPodCastCatalogLang(), e);
             return null;
