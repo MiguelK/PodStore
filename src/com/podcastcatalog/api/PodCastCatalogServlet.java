@@ -47,7 +47,7 @@ public class PodCastCatalogServlet extends HttpServlet {
 
         LOG.info("Writing podCastCatalog as JSON " + podCastCatalog);
 
-        File zipFile = dataStorage.getCurrentVersion().orElseGet(null).getSweJSONZipped();
+        File zipFile = dataStorage.getCurrentVersion().orElseGet(null).getSweJSONZipped();//FIXME Only SWE
 
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "attachment; filename=" + zipFile.getName());

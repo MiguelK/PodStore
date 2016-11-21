@@ -1,23 +1,20 @@
 
-API
-getPodCastCatalog()
-
-http://localhost:10080/PodStore/api/podCastCatalog?
+----   API ------
+getPodCastCatalog
 http://localhost:10080/PodStore/api/podCastCatalog?lang='SV'
 
-http://localhost:8080/PodStore/api/podCastCatalog?lang='SV'
-http://localhost:8080/PodStore_war_exploded/api/podCastCatalog?lang='SV'
+search
+http://localhost:10080/PodStore/api/podCastCatalog/search?lang=SE&query=Java
 
+http://localhost:10080/PodStore/api/podCastCatalog/search?lang=SE&query=term=p3&entity=podcast&limit=3
 
-
-
-
-getPodCastCatalogStatus()
-http://localhost:10080/PodStore/api/podCastCatalog/stat
 
 
 Itunes Search API
 https://itunes.apple.com/lookup?id=308339623
+
+
+https://itunes.apple.com/search?term=p3&entity=podcast&limit=3
 
 
 search

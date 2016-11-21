@@ -1,9 +1,13 @@
 package com.podcastcatalog.builder.collector;
 
 import com.podcastcatalog.api.response.*;
+import it.sauronsoftware.feed4j.FeedIOException;
 import it.sauronsoftware.feed4j.FeedParser;
+import it.sauronsoftware.feed4j.FeedXMLParseException;
+import it.sauronsoftware.feed4j.UnsupportedFeedException;
 import it.sauronsoftware.feed4j.bean.*;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -25,8 +29,40 @@ public class PodCastFeedParser {
         return podCastFeedParser.parse(artworkUrl100, collectionId);
     }
 
+    private static URL toURL(String url) {
+
+        try {
+            return new URL(url);
+        } catch (MalformedURLException e) {
+            LOG.warning("Unable to create URL " + url + " message=" + e.getMessage());
+        }
+        return null;
+    }
+
     private PodCastFeedParser(URL feedURL) {
         this.feedURL = feedURL;
+    }
+
+    public static String parse(String url){
+
+        URL feedURL = toURL(url);
+
+        try {
+            Feed feed = FeedParser.parse(feedURL);
+            PodCastFeedHeader feedHeader = new PodCastFeedHeader(feed.getHeader());
+            String description = feedHeader.getDescription();
+
+            return description;
+
+        } catch (FeedIOException e) {
+            e.printStackTrace();
+        } catch (FeedXMLParseException e) {
+            e.printStackTrace();
+        } catch (UnsupportedFeedException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     private Optional<PodCast> parse(String artworkUrl100, String collectionId) {
