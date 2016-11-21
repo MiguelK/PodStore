@@ -10,7 +10,7 @@ import java.util.List;
 
 public class PodCast extends BundleItem {
     //FIXME stars,relations, recentioner etc ???
-    private final int id; //FIXME ? collectionId?
+    private final String collectionId;
     private final String publisher; //Sveriges Radio
     private final LocalDateTime createdDate;
     private final String feedURL; //Get all episodes from this url
@@ -18,12 +18,12 @@ public class PodCast extends BundleItem {
     private final List<PodCastCategoryType> podCastCategories;
     private final String artworkUrlLarge; //Can be null
 
-    private PodCast(int id, String title, String publisher, String description, LocalDateTime createdDate,
+    private PodCast(String collectionId, String title, String publisher, String description, LocalDateTime createdDate,
                     String feedURL, List<PodCastEpisode> podCastEpisodes, List<PodCastCategoryType> podCastCategories,
                     String artworkUrl100, String artworkUrlLarge) {
         super(title, description, artworkUrl100);
         this.artworkUrlLarge = artworkUrlLarge;
-        this.id = id;
+        this.collectionId = collectionId;
         this.publisher = publisher;
         this.createdDate = createdDate;
         this.feedURL = feedURL;
@@ -35,8 +35,8 @@ public class PodCast extends BundleItem {
         return artworkUrlLarge;
     }
 
-    public int getId() {
-        return id;
+    public String getCollectionId() {
+        return collectionId;
     }
 
     public String getPublisher() {
@@ -77,7 +77,7 @@ public class PodCast extends BundleItem {
 
 
     public static class Builder {
-        private int id;//FIXME Not used?
+        private String collectionId;
         private String title;
         private String publisher;
         private String description;
@@ -88,8 +88,8 @@ public class PodCast extends BundleItem {
         private final List<PodCastEpisode> podCastEpisodes = new ArrayList<>();
         private List<PodCastCategoryType> podCastCategories = new ArrayList<>();
 
-        public Builder id(int id) {
-            this.id = id;
+        public Builder collectionId(String collectionId) {
+            this.collectionId = StringUtils.trimToNull(collectionId);
             return this;
         }
 
@@ -157,8 +157,8 @@ public class PodCast extends BundleItem {
             if (feedURL == null) {
                 throw new IllegalArgumentException("feedURL is mandatory");
             }
-            if (id == 0 || id < 0) {
-                throw new IllegalArgumentException("Invalid id " + id + " mus be > 0");
+            if (collectionId == null) {
+                throw new IllegalArgumentException("Invalid collectionId " + collectionId + " null ");
             }
             if (podCastEpisodes.isEmpty()) {
                 throw new IllegalArgumentException("Invalid addPodCastEpisodes");
@@ -168,7 +168,7 @@ public class PodCast extends BundleItem {
             }
 
 
-            return new PodCast(id, title, publisher, description, createdDate, feedURL, podCastEpisodes, podCastCategories, artworkUrl100, artworkUrlLarge);
+            return new PodCast(collectionId, title, publisher, description, createdDate, feedURL, podCastEpisodes, podCastCategories, artworkUrl100, artworkUrlLarge);
         }
 
         public boolean isValid() {

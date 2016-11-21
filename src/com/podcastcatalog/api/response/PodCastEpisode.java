@@ -15,14 +15,14 @@ public class PodCastEpisode extends BundleItem implements Serializable{
     private final LocalDateTime createdDate;
     private final PodCastEpisodeDuration duration; //Optional can be null
 
-    private final int podCastId; //PodCast that contains this episode, used when subscribing after direct play
+    private final String podCastCollectionId; //PodCast that contains this episode, used when subscribing after direct play
 
     private PodCastEpisode(int id, String title, String description, String targetURL, PodCastEpisodeDuration duration,
                            PodCastEpisodeFileSize fileSize, PodCastEpisodeType podCastType, LocalDateTime createdDate,
-                           int podCastId, String artworkUrl100) {
+                           String podCastCollectionId, String artworkUrl100) {
         super(title, description, artworkUrl100);
         this.id = id;
-        this.podCastId = podCastId;
+        this.podCastCollectionId = podCastCollectionId;
         this.targetURL = targetURL;
         this.fileSize= fileSize;
         this.podCastType = podCastType;
@@ -30,8 +30,8 @@ public class PodCastEpisode extends BundleItem implements Serializable{
         this.duration = duration;
     }
 
-    public int getPodCastId() {
-        return podCastId;
+    public String getPodCastCollectionId() {
+        return podCastCollectionId;
     }
 
     public PodCastEpisodeDuration getDuration() {
@@ -87,6 +87,7 @@ public class PodCastEpisode extends BundleItem implements Serializable{
                 ", targetURL='" + targetURL + '\'' +
                 ", duration=" + duration +
                 ", fileSize=" + fileSize +
+                ", podCastCollectionId=" + podCastCollectionId +
                 ", podCastType=" + podCastType +
                 ", createdDate=" + createdDate +
                 '}';
@@ -98,11 +99,9 @@ public class PodCastEpisode extends BundleItem implements Serializable{
         return new Builder();
     }
 
-
-
     public static class Builder{
         private int id; //FIXME ? episode-id?
-        private int podCastId;
+        private String podCastCollectionId;
         private String title;
         private String description;
         private String targetURL;
@@ -142,8 +141,8 @@ public class PodCastEpisode extends BundleItem implements Serializable{
             return this;
         }
 
-        public Builder podCastId(int podCastId) {
-            this.podCastId = podCastId;
+        public Builder podCastCollectionId(String podCastCollectionId) {
+            this.podCastCollectionId = StringUtils.trimToNull(podCastCollectionId);
             return this;
         }
         public Builder podCastType(PodCastEpisodeType podCastType) {
@@ -196,11 +195,11 @@ public class PodCastEpisode extends BundleItem implements Serializable{
                 throw  new IllegalArgumentException("Invalid id " + id + " mus be > 0");
             }
 
-            if(podCastId<= 0L){
-                throw new IllegalArgumentException("podCastId not set for this Episode");
+            if(podCastCollectionId==null){
+                throw new IllegalArgumentException("podCastCollectionId is null");
             }
 
-            return new PodCastEpisode(id,title,description,targetURL,duration,fileSize,podCastType, createdDate,podCastId, artworkUrl100);
+            return new PodCastEpisode(id,title,description,targetURL,duration,fileSize,podCastType, createdDate,podCastCollectionId, artworkUrl100);
         }
     }
 }

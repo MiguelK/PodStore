@@ -26,13 +26,13 @@ public class PodCastTest {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void invalid_id_negative() {
-        createValid().id(-12).build();
+    public void invalid_collectionId_empty() {
+        createValid().collectionId(" ").build();
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void invalid_id_zero() {
-        createValid().id(0).build();
+    public void invalid_id_null() {
+        createValid().collectionId(null).build();
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -82,7 +82,7 @@ public class PodCastTest {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalid_podCastEpisodes_empty() {
          PodCast.newBuilder().title("sdsds").description("dsdsdsd").createdDate(LocalDateTime.now()).
-                feedURL("sdsdsd").id(22).publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("ARTS")).
+                feedURL("sdsdsd").collectionId("3434").publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("ARTS")).
                 addPodCastEpisodes(Collections.emptyList()).build();
     }
 
@@ -154,7 +154,7 @@ public class PodCastTest {
 
     @Test
     public void id() {
-        Assert.assertEquals(createValid().id(343).build().getId(),343);
+        Assert.assertEquals(createValid().collectionId("3333").build().getCollectionId(),"3333");
     }
 
     @Test
@@ -186,7 +186,7 @@ public class PodCastTest {
         podCastEpisode.add(PodCastEpisodeTest.createValid().build());
 
         return PodCast.newBuilder().title("sdsds").description("dsdsdsd").createdDate(LocalDateTime.now()).setArtworkUrl100("www.dn.se/someimage.png").
-                feedURL("sdsdsd").id(22).publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("ARTS")).
+                feedURL("sdsdsd").collectionId("4444").publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("ARTS")).
                 addPodCastEpisodes(podCastEpisode);
 
     }

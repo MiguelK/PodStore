@@ -69,7 +69,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         for (PodCastSearchResult.Row podCastRow : podCastSearchResult.getResults()) {
             URL feedURL = toURL(podCastRow.getFeedUrl());
             if (feedURL != null) {
-                Optional<PodCast> podCast = PodCastFeedParser.parse(feedURL, podCastRow.getArtworkUrl100());
+                Optional<PodCast> podCast = PodCastFeedParser.parse(feedURL, podCastRow.getArtworkUrl100(),podCastRow.getCollectionId());
                 if (podCast.isPresent()) {
                     PodCast e = podCast.get();
 
@@ -139,6 +139,11 @@ public class ItunesSearchAPI implements PodCastCollector {
             private String feedUrl;
             private String artworkUrl30;
             private String artworkUrl100;
+            private String collectionId;
+
+            public String getCollectionId() {
+                return collectionId;
+            }
 
             public String getFeedUrl() {
                 return feedUrl;

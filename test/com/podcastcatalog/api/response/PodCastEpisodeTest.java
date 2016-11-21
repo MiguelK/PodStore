@@ -30,22 +30,22 @@ public class PodCastEpisodeTest {
         Assert.assertTrue(s.contains("fileSize"));
         Assert.assertTrue(s.contains("description"));
         Assert.assertTrue(s.contains("podCastType"));
+        Assert.assertTrue(s.contains("podCastCollectionId"));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void invalid_podCastId() {
-        createValid().podCastId(-12).build();
+    public void invalid_podCastCollectionId_empty() {
+        createValid().podCastCollectionId(" ").build();
     }
 
-
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void invalid_podCastId_zero() {
-        createValid().podCastId(0).build();
+    public void invalid_podCastId_null() {
+        createValid().podCastCollectionId(null).build();
     }
 
     @Test
-    public void valid_podCastId() {
-       Assert.assertEquals(createValid().podCastId(450).build().getPodCastId(),450);
+    public void valid_podCastCollectionId() {
+       Assert.assertEquals(createValid().podCastCollectionId("450").build().getPodCastCollectionId(),"450");
     }
 
     @Test
@@ -184,6 +184,12 @@ public class PodCastEpisodeTest {
     }
 
     @Test
+    public void podCastCollectionId() {
+        PodCastEpisode b = createValid().id(55).build();
+
+    }
+
+    @Test
     public void not_equal_targetURL() {
         PodCastEpisode a = createValid().targetURL("Some other target").build();
         PodCastEpisode b = createValid().build();
@@ -194,7 +200,7 @@ public class PodCastEpisodeTest {
 
         PodCastEpisode.Builder builder = PodCastEpisode.newBuilder().description("sdsd").title("dsd").id(99).artworkUrl100("www.dn.se/image.png")
                 .fileSizeInMegaByte(PodCastEpisodeFileSize.parse("9155554")).duration(PodCastEpisodeDuration.parse("01:24:15"))
-                .createdDate(LocalDateTime.now()).targetURL("dfdsdf").podCastType(PodCastEpisodeType.Audio).podCastId(8788);
+                .createdDate(LocalDateTime.now()).targetURL("dfdsdf").podCastType(PodCastEpisodeType.Audio).podCastCollectionId("8788");
 
         return builder;
 

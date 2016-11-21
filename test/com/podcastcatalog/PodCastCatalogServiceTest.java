@@ -9,24 +9,18 @@ import com.podcastcatalog.builder.collector.okihika.PodCastCollectorOkihika;
 import com.podcastcatalog.builder.collector.okihika.PodCastEpisodeCollectorOkihika;
 import com.podcastcatalog.store.DataStorage;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class PodCastCatalogServiceTest {
-    private DataStorage storage;
 
-    @BeforeMethod
-    public void setUp() {
-        storage = new DataStorage(TestUtil.IO_TEMP_DATA_DIRECTORY);
-        storage.deleteAll();
-    }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void buildPodCastCatalogs() {
-        PodCastCatalogService.getInstance().setStorage(storage);
+
+        setUpStorage();
 
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilder() {
             @Override
@@ -54,10 +48,17 @@ public class PodCastCatalogServiceTest {
 
     }
 
+    private void setUpStorage() {
+        DataStorage storage = new DataStorage(TestUtil.IO_TEMP_DATA_DIRECTORY);
+        storage.deleteAll();
+
+        PodCastCatalogService.getInstance().setStorage(storage);
+    }
+
     @Test(groups = TestUtil.SLOW_TEST)
     public void build_hallo_world_catalog() {
 
-        PodCastCatalogService.getInstance().setStorage(storage);
+        setUpStorage();
 
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilder() {
             @Override

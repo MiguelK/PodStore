@@ -18,7 +18,8 @@ public class PodCastFeedParserTest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void parse_p3_dokumentar() throws MalformedURLException {
-        PodCast podCast = PodCastFeedParser.parse(new URL("http://api.sr.se/api/rss/pod/3966"),artworkUrl100).get();
+        String collectionId = "22233";
+        PodCast podCast = PodCastFeedParser.parse(new URL("http://api.sr.se/api/rss/pod/3966"),artworkUrl100, collectionId).get();
 
         Assert.assertNotNull(podCast);
         for (PodCastCategoryType podCastCategoryType : podCast.getPodCastCategories()) {
@@ -28,10 +29,13 @@ public class PodCastFeedParserTest {
         for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodes()) {
             System.out.println(podCastEpisode);
         }
+
+        Assert.assertEquals(podCast.getCollectionId(),collectionId);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void parse_invalid_url() throws MalformedURLException {
-        Assert.assertFalse(PodCastFeedParser.parse(new URL("http://api.sr.se/api/rssx/pod/396676"),artworkUrl100).isPresent());
+        Assert.assertFalse(PodCastFeedParser.parse(new URL("http://api.sr.se/api/rssx/pod/396676"),artworkUrl100, "erere").isPresent());
     }
+
 }

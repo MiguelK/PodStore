@@ -71,7 +71,7 @@ public class PodCastCatalogService {
 
     private void validateState() {
         if (storage == null) {
-            throw new IllegalStateException("Configure storage");
+            throw new IllegalStateException("Configure storage, storage is null");
         }
     }
 
