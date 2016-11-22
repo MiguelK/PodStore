@@ -9,43 +9,37 @@ public abstract class BundleBuilder implements Callable<Bundle> {
 
     private String title;
     private String description;
-    private String imageURL;
 
-    public static PodCastBundleBuilder newPodCastBundleBuilder(String imageURL, String title, String description) {
-        return new PodCastBundleBuilder(imageURL, title, description);
+    public static PodCastBundleBuilder newPodCastBundleBuilder(String title, String description) {
+        return new PodCastBundleBuilder(title, description);
     }
 
-    public static PodCastCategoryBundleBuilder newPodCastCategoryBundleBuilder(String imageURL,
-                                                                               String title, String description) {
-        return new PodCastCategoryBundleBuilder(imageURL, title, description);
+    public static PodCastCategoryBundleBuilder newPodCastCategoryBundleBuilder(String title, String description) {
+        return new PodCastCategoryBundleBuilder(title, description);
     }
 
-    public static PodCastEpisodeBundleBuilder newPodCastEpisodeBundleBuilder(String imageURL,
-                                                                             String title, String description) {
-        return new PodCastEpisodeBundleBuilder(imageURL, title, description);
+    public static PodCastEpisodeBundleBuilder newPodCastEpisodeBundleBuilder(String title, String description) {
+        return new PodCastEpisodeBundleBuilder(title, description);
     }
 
 
-    BundleBuilder(String imageURL, String title, String description) {
+    BundleBuilder(String title, String description) {
         if (StringUtils.trimToNull(title)==null) {
             throw new IllegalArgumentException("Missing title");
         }
         if (StringUtils.trimToNull(description)==null) {
             throw new IllegalArgumentException("Missing description");
         }
-        if (StringUtils.trimToNull(imageURL)==null) {
-            throw new IllegalArgumentException("Missing imageURL");
-        }
 
-        this.imageURL = imageURL.trim();
+
         this.title = title.trim();
         this.description = description.trim();
     }
 
     @Override
     public Bundle call() throws Exception {
-        return createBundle(imageURL, title, description);
+        return createBundle(title, description);
     }
 
-    protected abstract Bundle createBundle(String imageURL, String title, String description);
+    protected abstract Bundle createBundle(String title, String description);
 }

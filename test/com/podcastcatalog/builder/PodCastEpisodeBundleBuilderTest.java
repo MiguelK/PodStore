@@ -10,48 +10,43 @@ public class PodCastEpisodeBundleBuilderTest {
 
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void invalid_image_url() {
-        BundleBuilder.newPodCastEpisodeBundleBuilder(null, "title", "descr");
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalid_title_null() {
-        BundleBuilder.newPodCastEpisodeBundleBuilder("image.se", null, "descr");
+        BundleBuilder.newPodCastEpisodeBundleBuilder(null, "descr");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalid_title_emptyl() {
-        BundleBuilder.newPodCastEpisodeBundleBuilder("image.se", " ", "descr");
+        BundleBuilder.newPodCastEpisodeBundleBuilder(" ", "descr");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void onvalid_descr_null() {
-        BundleBuilder.newPodCastEpisodeBundleBuilder("image.se", "title", null);
+        BundleBuilder.newPodCastEpisodeBundleBuilder("title", null);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void onvalid_descr_empty() {
-        BundleBuilder.newPodCastEpisodeBundleBuilder("image.se", "title", " ");
+        BundleBuilder.newPodCastEpisodeBundleBuilder("title", " ");
     }
 
     @Test
     public void trim_title() throws Exception {
-        PodCastEpisodeBundleBuilder podCastEpisodeBundleBuilder = BundleBuilder.newPodCastEpisodeBundleBuilder("image.se", " title ", " sdsdsd");
+        PodCastEpisodeBundleBuilder podCastEpisodeBundleBuilder = BundleBuilder.newPodCastEpisodeBundleBuilder(" title ", " sdsdsd");
         podCastEpisodeBundleBuilder.addCollector(() -> Collections.singletonList(PodCastEpisodeTest.createValid().build()));
         Assert.assertEquals(podCastEpisodeBundleBuilder.call().getTitle(), "title");
     }
 
     @Test
     public void trim_descr() throws Exception {
-        PodCastEpisodeBundleBuilder podCastEpisodeBundleBuilder = BundleBuilder.newPodCastEpisodeBundleBuilder("image.se", "title", " aaa ");
+        PodCastEpisodeBundleBuilder podCastEpisodeBundleBuilder = BundleBuilder.newPodCastEpisodeBundleBuilder("title", " aaa ");
         podCastEpisodeBundleBuilder.addCollector(() -> Collections.singletonList(PodCastEpisodeTest.createValid().build()));
         Assert.assertEquals(podCastEpisodeBundleBuilder.call().getDescription(), "aaa");
     }
 
     @Test
     public void trim_image_url() throws Exception {
-        PodCastEpisodeBundleBuilder podCastEpisodeBundleBuilder = BundleBuilder.newPodCastEpisodeBundleBuilder(" image.se/x.png ", " title ", "sdsdsd");
+        PodCastEpisodeBundleBuilder podCastEpisodeBundleBuilder = BundleBuilder.newPodCastEpisodeBundleBuilder(" title ", "sdsdsd");
         podCastEpisodeBundleBuilder.addCollector(() -> Collections.singletonList(PodCastEpisodeTest.createValid().build()));
-        Assert.assertEquals(podCastEpisodeBundleBuilder.call().getImageURL(), "image.se/x.png");
+        Assert.assertEquals(podCastEpisodeBundleBuilder.call().getTitle(), "title");
     }
 }

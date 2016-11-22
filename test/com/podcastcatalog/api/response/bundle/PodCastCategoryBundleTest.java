@@ -18,6 +18,6 @@ public class PodCastCategoryBundleTest {
     public static PodCastCategoryBundle createValid(){
         List<PodCastCategory> podCastCategories = Collections.singletonList(PodCastCategoryTest.createValid());
 
-        return new PodCastCategoryBundle("Title","Description","url.se",podCastCategories);
+        return new PodCastCategoryBundle("Title","Description", podCastCategories);
     }
 }

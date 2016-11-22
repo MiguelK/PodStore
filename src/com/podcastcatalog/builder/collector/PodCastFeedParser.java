@@ -24,9 +24,9 @@ public class PodCastFeedParser {
     private final URL feedURL;
     private final static Logger LOG = Logger.getLogger(PodCastFeedParser.class.getName());
 
-    public static Optional<PodCast> parse(URL feedURL, String artworkUrl100, String collectionId) {
+    public static Optional<PodCast> parse(URL feedURL, String artworkUrl600, String collectionId) {
         PodCastFeedParser podCastFeedParser = new PodCastFeedParser(feedURL);
-        return podCastFeedParser.parse(artworkUrl100, collectionId);
+        return podCastFeedParser.parse(artworkUrl600, collectionId);
     }
 
     private static URL toURL(String url) {
@@ -65,7 +65,7 @@ public class PodCastFeedParser {
         return null;
     }
 
-    private Optional<PodCast> parse(String artworkUrl100, String collectionId) {
+    private Optional<PodCast> parse(String artworkUrl600, String collectionId) {
         PodCast.Builder podCastBuilder = PodCast.newBuilder();
 
         int expectedEpisodeCount = -1;
@@ -74,8 +74,7 @@ public class PodCastFeedParser {
 //            LOG.info("Feed=" + feed);
             PodCastFeedHeader feedHeader = new PodCastFeedHeader(feed.getHeader());
 
-            podCastBuilder.title(feedHeader.getTitle()).setArtworkUrl100(artworkUrl100).
-                    artworkUrlLarge(feedHeader.getArtworkUrlLarge()).
+            podCastBuilder.title(feedHeader.getTitle()).setArtworkUrl600(artworkUrl600).
                     description(feedHeader.getDescription()).collectionId(collectionId).
                     setPodCastCategories(feedHeader.getCategories())
                     .createdDate(feedHeader.getCreatedDate())
@@ -90,7 +89,7 @@ public class PodCastFeedParser {
 
                 //FIXME createdDate
                 PodCastEpisode.Builder episodeBuilder = PodCastEpisode.newBuilder();
-                episodeBuilder.title(podCastFeedItem.getTitle()).podCastCollectionId(collectionId).artworkUrl100(artworkUrl100). //Same as PodCast ok?
+                episodeBuilder.title(podCastFeedItem.getTitle()).podCastCollectionId(collectionId).
                         createdDate(podCastFeedItem.getCreatedDate()).description(podCastFeedItem.getDescription()).id(3434).
                         duration(podCastFeedItem.getDuration()).fileSizeInMegaByte(podCastFeedItem.getFileSizeInMegaByte()).
                         targetURL(podCastFeedItem.getTargetURL()).podCastType(podCastFeedItem.getPodCastType()); //FIXME type?

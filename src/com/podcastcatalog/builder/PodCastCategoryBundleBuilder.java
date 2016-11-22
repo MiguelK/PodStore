@@ -12,8 +12,8 @@ public class PodCastCategoryBundleBuilder extends BundleBuilder {
 
     private final List<PodCastCategoryCollector> collectors;
 
-    public PodCastCategoryBundleBuilder(String imageURL, String title, String description) {
-        super(imageURL, title, description);
+    public PodCastCategoryBundleBuilder(String title, String description) {
+        super(title, description);
         this.collectors = new ArrayList<>();
     }
 
@@ -22,11 +22,11 @@ public class PodCastCategoryBundleBuilder extends BundleBuilder {
     }
 
     @Override
-    protected PodCastCategoryBundle createBundle(String imageURL, String title, String description) {
+    protected PodCastCategoryBundle createBundle(String title, String description) {
         List<PodCastCategory> podCastCategories = collectors.stream()
                 .map(PodCastCategoryCollector::collectCategories).collect(Collectors.toList());
 
         //FIXME abstract Parser
-        return new PodCastCategoryBundle(title, description, imageURL,podCastCategories);
+        return new PodCastCategoryBundle(title, description, podCastCategories);
     }
 }

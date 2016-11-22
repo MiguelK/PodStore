@@ -10,8 +10,8 @@ import java.util.List;
 public class PodCastBundleBuilder extends BundleBuilder {
     private final List<PodCastCollector> collectors;
 
-    public PodCastBundleBuilder(String imageURL, String title, String description) {
-        super(imageURL, title, description);
+    public PodCastBundleBuilder(String title, String description) {
+        super(title, description);
         collectors = new ArrayList<>();
     }
 
@@ -20,13 +20,13 @@ public class PodCastBundleBuilder extends BundleBuilder {
     }
 
     @Override
-    protected PodCastBundle createBundle(String imageURL, String title, String description) {
+    protected PodCastBundle createBundle(String title, String description) {
         List<PodCast> podCasts = new ArrayList<>();
 
         for (PodCastCollector podCastFetcher : collectors) {//FIXME abstract Parser
             podCasts.addAll(podCastFetcher.collectPodCasts());
         }
 
-        return new PodCastBundle(title, description, imageURL, podCasts);
+        return new PodCastBundle(title, description, podCasts);
     }
 }

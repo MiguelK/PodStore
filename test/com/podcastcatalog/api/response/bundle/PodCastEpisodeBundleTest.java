@@ -18,7 +18,7 @@ public class PodCastEpisodeBundleTest {
 
     public static PodCastEpisodeBundle craeteValid(){
         List<PodCastEpisode> podCastEpisodes = Collections.singletonList(PodCastEpisodeTest.createValid().build());
-        return new PodCastEpisodeBundle("Title","Descr","www.url.se", podCastEpisodes);
+        return new PodCastEpisodeBundle("Title","Descr", podCastEpisodes);
     }
 
     @Test
@@ -33,11 +33,11 @@ public class PodCastEpisodeBundleTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalid_podcasts_null() {
-        new PodCastEpisodeBundle("Title","Descr","www.url.se", null);
+        new PodCastEpisodeBundle("Title","Descr", null);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalid_podcasts_empty() {
-        new PodCastEpisodeBundle("Title","Descr","www.url.se", new ArrayList<>());
+        new PodCastEpisodeBundle("Title","Descr", new ArrayList<>());
     }
 }

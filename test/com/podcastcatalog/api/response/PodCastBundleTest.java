@@ -41,15 +41,6 @@ public class PodCastBundleTest {
         createValid().build().getBundleItems().add(PodCastTest.createValid().build());
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void no_podcasts() {
-        PodCastBundle.newBuilder().title("dsdsd").description("dsdsds").imageURL("sdsdsd").build();
-    }
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void podcasts_null_object() {
-        PodCastBundle.newBuilder().title("dsdsd").description("dsdsds").imageURL("sdsdsd").podCast(null).build();
-    }
-
     @Test
     public void createPodCastBundle() {
         Assert.assertNotNull(createValid().build());
@@ -75,16 +66,6 @@ public class PodCastBundleTest {
         createValid().description(" ").build();
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void invalid_imageURL_null() {
-        createValid().imageURL(null).build();
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void invalid_imageURLn_empty() {
-        createValid().imageURL(" ").build();
-    }
-
     @Test
     public void title() {
         Assert.assertEquals(createValid().title("test").build().getTitle(),"test");
@@ -93,11 +74,6 @@ public class PodCastBundleTest {
     @Test
     public void description() {
         Assert.assertEquals(createValid().description("test").build().getDescription(),"test");
-    }
-
-    @Test
-    public void imageURL() {
-        Assert.assertEquals(createValid().imageURL("test").build().getImageURL(),"test");
     }
 
     @Test
@@ -114,8 +90,7 @@ public class PodCastBundleTest {
     }
 
     public static PodCastBundle.Builder createValid(){
-        return PodCastBundle.newBuilder().title("P3 PodCast").description("Lite beskrivnings text")
-                .imageURL("http://www.urasaif.se/wp-content/uploads/2013/04/Fotboll.jpeg").
+        return PodCastBundle.newBuilder().title("P3 PodCast").description("Lite beskrivnings text").
                 podCast(PodCastTest.createValid().build());
     }
 }

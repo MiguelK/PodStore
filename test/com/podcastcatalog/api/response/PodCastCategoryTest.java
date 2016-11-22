@@ -19,7 +19,7 @@ public class PodCastCategoryTest {
     public void trim() {
         Assert.assertEquals(new PodCastCategory(" sommar ","Description B","http://wwww.dn.se/a.jpg", createPodCasts(), PodCastCategoryType.ARTS).getTitle(), "sommar");
         Assert.assertEquals(new PodCastCategory(" sommar "," Description B ","http://wwww.dn.se/a.jpg", createPodCasts(), PodCastCategoryType.ARTS).getDescription(), "Description B");
-        Assert.assertEquals(new PodCastCategory(" sommar ","Description B","http://wwww.dn.se/a.jpg ", createPodCasts(), PodCastCategoryType.ARTS).getArtworkUrl100(), "http://wwww.dn.se/a.jpg");
+        Assert.assertEquals(new PodCastCategory(" sommar ","Description B","http://wwww.dn.se/a.jpg ", createPodCasts(), PodCastCategoryType.ARTS).getArtworkUrl600(), "http://wwww.dn.se/a.jpg");
     }
 
     @Test
@@ -39,11 +39,6 @@ public class PodCastCategoryTest {
         Assert.fail("Invalid " + p);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void image_null() {
-        PodCastCategory p=  new PodCastCategory("sdsd ","Description B",null, createPodCasts(), PodCastCategoryType.ARTS);
-        Assert.fail("Invalid " + p);
-    }
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void image_empty() {
         PodCastCategory p=  new PodCastCategory("sdsd ","Description B","", createPodCasts(), PodCastCategoryType.ARTS);

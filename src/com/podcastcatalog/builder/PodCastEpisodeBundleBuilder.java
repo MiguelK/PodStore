@@ -11,8 +11,8 @@ class PodCastEpisodeBundleBuilder extends BundleBuilder {
 
     private final List<PodCastEpisodeCollector> collectors;
 
-     PodCastEpisodeBundleBuilder(String imageURL, String title, String description) {
-        super(imageURL, title, description);
+     PodCastEpisodeBundleBuilder(String title, String description) {
+        super(title, description);
         this.collectors = new ArrayList<>();
     }
 
@@ -21,13 +21,13 @@ class PodCastEpisodeBundleBuilder extends BundleBuilder {
     }
 
     @Override
-    protected PodCastEpisodeBundle createBundle(String imageURL, String title, String description) {
+    protected PodCastEpisodeBundle createBundle(String title, String description) {
         List<PodCastEpisode> podCastEpisodes = new ArrayList<>();
 
         for (PodCastEpisodeCollector podCastFetcher : collectors) {
             podCastEpisodes.addAll(podCastFetcher.collectEpisodes());
         }
 
-        return new PodCastEpisodeBundle(title, description, imageURL, podCastEpisodes);
+        return new PodCastEpisodeBundle(title, description, podCastEpisodes);
     }
 }

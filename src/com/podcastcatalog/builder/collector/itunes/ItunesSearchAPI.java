@@ -89,7 +89,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         for (PodCastSearchResult.Row podCastRow : podCastSearchResult.getResults()) {
             URL feedURL = toURL(podCastRow.getFeedUrl());
             if (feedURL != null) {
-                Optional<PodCast> podCast = PodCastFeedParser.parse(feedURL, podCastRow.getArtworkUrl100(), podCastRow.getCollectionId());
+                Optional<PodCast> podCast = PodCastFeedParser.parse(feedURL, podCastRow.getArtworkUrl600(), podCastRow.getCollectionId());
                 if (podCast.isPresent()) {
                     PodCast e = podCast.get();
 
@@ -157,8 +157,8 @@ public class ItunesSearchAPI implements PodCastCollector {
             private String kind;
             private String collectionName;
             private String feedUrl;
-            private String artworkUrl30;
-            private String artworkUrl100;
+            private String artworkUrl600;
+//            private String artworkUrl100;
             private String collectionId;
 
             public String getCollectionName() {
@@ -173,8 +173,12 @@ public class ItunesSearchAPI implements PodCastCollector {
                 return feedUrl;
             }
 
+            public String getArtworkUrl600() {
+                return artworkUrl600;
+            }
+
             public String getArtworkUrl100() {
-                return artworkUrl100;
+                return artworkUrl600;
             }
 
             @Override
@@ -183,8 +187,7 @@ public class ItunesSearchAPI implements PodCastCollector {
                         "kind='" + kind + '\'' +
                         ", collectionName='" + collectionName + '\'' +
                         ", feedUrl='" + feedUrl + '\'' +
-                        ", artworkUrl30='" + artworkUrl30 + '\'' +
-                        ", artworkUrl100='" + artworkUrl100 + '\'' +
+                        ", artworkUrl600='" + artworkUrl600 + '\'' +
                         '}';
             }
         }

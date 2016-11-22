@@ -160,16 +160,6 @@ public class PodCastEpisodeTest {
         createValid().createdDate(null).build();
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void inavlid_artworkUrl100_emptyl() {
-        createValid().artworkUrl100(" ").build();
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void inavlid_artworkUrl100_null() {
-        createValid().artworkUrl100(null).build();
-    }
-
     @Test
     public void title_and_targetURL_is_equal() {
         PodCastEpisode a = createValid().build();
@@ -197,7 +187,7 @@ public class PodCastEpisodeTest {
 
     public static PodCastEpisode.Builder createValid(){
 
-        return PodCastEpisode.newBuilder().description("sdsd").title("dsd").id(99).artworkUrl100("http://www.dn.se/image.png")
+        return PodCastEpisode.newBuilder().description("sdsd").title("dsd").id(99)
                 .fileSizeInMegaByte(PodCastEpisodeFileSize.parse("9155554")).duration(PodCastEpisodeDuration.parse("01:24:15"))
                 .createdDate(LocalDateTime.now()).targetURL("dfdsdf").podCastType(PodCastEpisodeType.Audio).podCastCollectionId("8788");
 

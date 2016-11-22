@@ -11,8 +11,8 @@ public class PodCastBundle extends Bundle {
 
     private final List<PodCast> podCasts;
 
-    public PodCastBundle(String title, String description, String imageURL,List<PodCast> podCasts) {
-        super(title, description, imageURL, BundleType.PodCast);
+    public PodCastBundle(String title, String description, List<PodCast> podCasts) {
+        super(title, description, BundleType.PodCast);
         this.podCasts = Collections.unmodifiableList(podCasts);
     }
 
@@ -21,14 +21,13 @@ public class PodCastBundle extends Bundle {
         return podCasts;
     }
 
-    public static Builder newBuilder(){
+    public static Builder newBuilder() {
         return new Builder();
     }
 
     public static class Builder {
-        private  String title;
-        private  String description;
-        private  String imageURL;
+        private String title;
+        private String description;
         private final List<PodCast> podCasts = new ArrayList<>();
 
         public Builder title(String title) {
@@ -41,20 +40,17 @@ public class PodCastBundle extends Bundle {
             return this;
         }
 
-        public Builder imageURL(String imageURL) {
-            this.imageURL = StringUtils.trimToNull(imageURL);
-            return this;
-        }
-        public Builder podCast(PodCast podCast){
+        public Builder podCast(PodCast podCast) {
             this.podCasts.add(podCast);
             return this;
         }
-        public Builder podCasts(List<PodCast> podCasts){
+
+        public Builder podCasts(List<PodCast> podCasts) {
             this.podCasts.addAll(podCasts);
             return this;
         }
 
-        public PodCastBundle build(){
+        public PodCastBundle build() {
 
             if (description == null) {
                 throw new IllegalArgumentException("description is mandatory");
@@ -62,21 +58,19 @@ public class PodCastBundle extends Bundle {
             if (title == null) {
                 throw new IllegalArgumentException("title is mandatory");
             }
-            if (imageURL == null) {
-                throw new IllegalArgumentException("imageURL is mandatory");
-            }
 
             if (podCasts.isEmpty()) {
                 throw new IllegalArgumentException("No podCasts exists in this bundle");
             }
 
-            podCasts.forEach(p->{
-                if(p==null){
+            podCasts.forEach(p -> {
+                if (p == null) {
                     throw new IllegalArgumentException();
-                } });
+                }
+            });
 
 
-            return new PodCastBundle(title, description, imageURL,podCasts);
+            return new PodCastBundle(title, description, podCasts);
         }
     }
 

@@ -32,12 +32,12 @@ public class PodCastCategoryCollectorOkihika extends PodCastCollectorOkihika imp
     public PodCastCategory collectCategories() {
         List<PodCast> podCasts = getPodCasts();
 
-        String artworkUrl100 = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Color_icon_red.svg/220px-Color_icon_red.svg.png";//FIXME Default error image?
+        String artworkUrl600 = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Color_icon_red.svg/220px-Color_icon_red.svg.png";//FIXME Default error image?
 
         if (!podCasts.isEmpty()) {
-            artworkUrl100 = podCasts.get(0).getArtworkUrl100();
+            artworkUrl600 = podCasts.get(0).getArtworkUrl600();
         }
 
-        return new PodCastCategory(title, description, artworkUrl100, podCasts, podCastCategoryType);
+        return new PodCastCategory(title, description, artworkUrl600, podCasts, podCastCategoryType);
     }
 }

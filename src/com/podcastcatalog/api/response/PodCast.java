@@ -16,23 +16,17 @@ public class PodCast extends BundleItem {
     private final String feedURL; //Get all episodes from this url
     private final List<PodCastEpisode> podCastEpisodes;
     private final List<PodCastCategoryType> podCastCategories;
-    private final String artworkUrlLarge; //Can be null
 
     private PodCast(String collectionId, String title, String publisher, String description, LocalDateTime createdDate,
                     String feedURL, List<PodCastEpisode> podCastEpisodes, List<PodCastCategoryType> podCastCategories,
-                    String artworkUrl100, String artworkUrlLarge) {
-        super(title, description, artworkUrl100);
-        this.artworkUrlLarge = artworkUrlLarge;
+                    String artworkUrl600) {
+        super(title, description, artworkUrl600);
         this.collectionId = collectionId;
         this.publisher = publisher;
         this.createdDate = createdDate;
         this.feedURL = feedURL;
         this.podCastEpisodes = Collections.unmodifiableList(podCastEpisodes);
         this.podCastCategories = Collections.unmodifiableList(podCastCategories);
-    }
-
-    public String getArtworkUrlLarge() {
-        return artworkUrlLarge;
     }
 
     public String getCollectionId() {
@@ -64,7 +58,6 @@ public class PodCast extends BundleItem {
         return "PodCast{" +
                 ", publisher='" + publisher + '\'' +
                 ", feedURL='" + feedURL + '\'' +
-                ", artworkUrlLarge='" + artworkUrlLarge + '\'' +
                 ", createdDate='" + createdDate + '\'' +
                 ", podCastEpisodes=" + podCastEpisodes.size() +
                 ", podCastCategories=" + podCastCategories +
@@ -83,8 +76,7 @@ public class PodCast extends BundleItem {
         private String description;
         private LocalDateTime createdDate;
         private String feedURL;
-        private String artworkUrl100;
-        private String artworkUrlLarge;
+        private String artworkUrl600;
         private final List<PodCastEpisode> podCastEpisodes = new ArrayList<>();
         private List<PodCastCategoryType> podCastCategories = new ArrayList<>();
 
@@ -93,12 +85,8 @@ public class PodCast extends BundleItem {
             return this;
         }
 
-        public Builder setArtworkUrl100(String artworkUrl100) {
-            this.artworkUrl100 = StringUtils.trimToNull(artworkUrl100);
-            return this;
-        }
-        public Builder artworkUrlLarge(String artworkUrlLarge) {
-            this.artworkUrlLarge = StringUtils.trimToNull(artworkUrlLarge);
+        public Builder setArtworkUrl600(String artworkUrl600) {
+            this.artworkUrl600 = StringUtils.trimToNull(artworkUrl600);
             return this;
         }
 
@@ -158,7 +146,7 @@ public class PodCast extends BundleItem {
                 throw new IllegalArgumentException("feedURL is mandatory");
             }
             if (collectionId == null) {
-                throw new IllegalArgumentException("Invalid collectionId " + collectionId + " null ");
+                throw new IllegalArgumentException("Invalid collectionId null ");
             }
             if (podCastEpisodes.isEmpty()) {
                 throw new IllegalArgumentException("Invalid addPodCastEpisodes");
@@ -167,8 +155,7 @@ public class PodCast extends BundleItem {
                 throw new IllegalArgumentException("Invalid podCastCategories");
             }
 
-
-            return new PodCast(collectionId, title, publisher, description, createdDate, feedURL, podCastEpisodes, podCastCategories, artworkUrl100, artworkUrlLarge);
+            return new PodCast(collectionId, title, publisher, description, createdDate, feedURL, podCastEpisodes, podCastCategories, artworkUrl600);
         }
 
         public boolean isValid() {

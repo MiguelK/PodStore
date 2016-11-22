@@ -36,7 +36,7 @@ public class PodCastCatalogServiceTest {
             @Override
             public Set<BundleBuilder> getBundleBuilders() {
 
-                PodCastBundleBuilder topListBuilder = BundleBuilder.newPodCastBundleBuilder("image", "Toplistan", "10 bästa podcas i Sverige");
+                PodCastBundleBuilder topListBuilder = BundleBuilder.newPodCastBundleBuilder("Toplistan", "10 bästa podcas i Sverige");
                 topListBuilder.addCollector(ItunesSearchAPI.search("term=p3&entity=podcast&limit=1"));
 
                 Set<BundleBuilder> bundleBuilders = new HashSet<>();
@@ -74,10 +74,10 @@ public class PodCastCatalogServiceTest {
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilder() {
             @Override
             public Set<BundleBuilder> getBundleBuilders() {
-                PodCastBundleBuilder podCastBundleBuilder = BundleBuilder.newPodCastBundleBuilder("?image?", "Toplistan", "10 bästa podcas i Sverige");
+                PodCastBundleBuilder podCastBundleBuilder = BundleBuilder.newPodCastBundleBuilder("Toplistan", "10 bästa podcas i Sverige");
                 podCastBundleBuilder.addCollector(new PodCastCollectorOkihika(PodCastCollectorOkihika.TopList.TOPLIST_SWEDEN, 4));
 
-                PodCastCategoryBundleBuilder categoryBundleBuilder = BundleBuilder.newPodCastCategoryBundleBuilder("?image?", "Alla Kategorier", "???..");
+                PodCastCategoryBundleBuilder categoryBundleBuilder = BundleBuilder.newPodCastCategoryBundleBuilder("Alla Kategorier", "???..");
                 categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 2, "Nyheter och politik", "???"));
                 categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TECHNOLOGY,2, "Teknologi", "???"));
                 categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TV_FILM,1, "TV och film", "???"));
