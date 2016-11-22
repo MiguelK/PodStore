@@ -2,6 +2,7 @@ package com.podcastcatalog.api.response;
 
 import com.google.gson.Gson;
 import com.podcastcatalog.api.response.bundle.*;
+import com.podcastcatalog.api.util.PodCastEpisodeVisitor;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -33,6 +34,29 @@ public class PodCastCatalogTest {
     }
 
     @Test
+    public void visit_episodes_no_duplicates() {
+        PodCastEpisodeVisitor visitor = new PodCastEpisodeVisitor();
+
+        for (Bundle bundle : createValid().getBundles()) {
+            for (BundleItem bundleItem : bundle.getBundleItems()) {
+                bundleItem.accept(visitor);
+            }
+        }
+
+
+        for (Bundle bundle : createValid().getBundles()) {
+            for (BundleItem bundleItem : bundle.getBundleItems()) {
+                bundleItem.accept(visitor);
+            }
+        }
+
+        System.out.println("Visit: " + visitor.getPodCastEpisodes().size());
+        Assert.assertTrue(visitor.getPodCastEpisodes().size()==1);
+
+
+    }
+
+    @Test
     public void createValid_to_JSON() {
         Assert.assertNotNull(GSON.toJson(createValid()));
     }
@@ -58,7 +82,6 @@ public class PodCastCatalogTest {
     public void podCastBundleCategories_unmodifiable() {
         createValid().getBundles().add(PodCastBundleTest.createValid().build());
     }
-
 
     @Test
     public void create_PodCastCatalog() {

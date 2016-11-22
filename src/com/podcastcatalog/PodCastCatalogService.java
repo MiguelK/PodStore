@@ -1,12 +1,11 @@
 package com.podcastcatalog;
 
-import com.podcastcatalog.api.response.PodCast;
-import com.podcastcatalog.api.response.PodCastCatalog;
-import com.podcastcatalog.api.response.PodCastCatalogLanguage;
-import com.podcastcatalog.api.response.PodCastCategory;
+import com.podcastcatalog.api.response.*;
 import com.podcastcatalog.api.response.bundle.Bundle;
 import com.podcastcatalog.api.response.bundle.PodCastBundle;
 import com.podcastcatalog.api.response.bundle.PodCastCategoryBundle;
+import com.podcastcatalog.api.response.search.PodCastEpisodeSearchResult;
+import com.podcastcatalog.api.util.PodCastEpisodeVisitor;
 import com.podcastcatalog.builder.BundleBuilder;
 import com.podcastcatalog.builder.PodCastCatalogBuilder;
 import com.podcastcatalog.store.DataStorage;
@@ -30,6 +29,7 @@ public class PodCastCatalogService {
 
     private final Map<PodCastCatalogLanguage, PodCastCatalog> podCastCatalogByLang;
     private final List<PodCastCatalogBuilder> podCastCatalogBuilders;
+    private List<PodCastEpisodeSearchResult> podCastEpisodeSearchResults = new ArrayList<>();
     private DataStorage storage;
     private final ExecutorService executorService;
     private final ExecutorService ayncExecutor;
@@ -73,13 +73,20 @@ public class PodCastCatalogService {
         ayncExecutor.submit(new RebuildCatalogAction());
     }
 
+    public void buildPodCastEpisodeIndexAsync() {
+        LOG.info("buildPodCastEpisodeIndexAsync() called");
+        ayncExecutor.submit(new RebuildPodCastEpisodeIndex());
+
+    }
+
     private void validateState() {
         if (storage == null) {
             throw new IllegalStateException("Configure storage, storage is null");
         }
     }
 
-    public void buildPodCastCatalogs() {
+    //FIXME Test only delete?
+    void buildPodCastCatalogs() {
         validateState();
 
         try {
@@ -87,6 +94,29 @@ public class PodCastCatalogService {
         } catch (Exception e) {
             throw new RuntimeException("Unable to rebuild catalogs ", e);
         }
+    }
+
+    public List<PodCastEpisodeSearchResult> searchEpisodes(String query) {
+
+        if (podCastEpisodeSearchResults.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        if (podCastEpisodeSearchResults.size() <= 10) {
+            return podCastEpisodeSearchResults;
+        }
+
+        //FIXME Search in episodes...
+        //FIXME Perform search ... queryParam
+        List<PodCastEpisodeSearchResult> result = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++) {
+            result.add(podCastEpisodeSearchResults.get(i));//FIXME
+        }
+
+
+        //FIXME filter max result =20?
+        return result;
     }
 
     private class RebuildCatalogAction implements Callable<Void> {
@@ -126,8 +156,59 @@ public class PodCastCatalogService {
                 writeLock.unlock();
             }
 
+            buildPodCastEpisodeIndexAsync();
 
             return null;
+        }
+    }
+
+    private void replaceIndex(List<PodCastEpisodeSearchResult> results) {
+        if (results.isEmpty()) {
+            return;
+        }
+
+        writeLock.lock();
+
+        LOG.info("Replacing Episode index size=" + results.size());
+        try {
+            this.podCastEpisodeSearchResults = results;
+        } finally {
+            writeLock.unlock();
+        }
+
+    }
+
+    private class RebuildPodCastEpisodeIndex implements Runnable {
+        @Override
+        public void run() {
+            LOG.info("Started RebuildPodCastEpisodeIndex...");
+            List<PodCastEpisodeSearchResult> results = new ArrayList<>();
+
+            PodCastEpisodeVisitor visitor = new PodCastEpisodeVisitor();
+
+            readLock.lock();
+            try {
+                for (Map.Entry<PodCastCatalogLanguage, PodCastCatalog> catalogEntry : podCastCatalogByLang.entrySet()) {
+                    for (Bundle bundle : catalogEntry.getValue().getBundles()) {
+                        for (BundleItem bundleItem : bundle.getBundleItems()) {
+                            bundleItem.accept(visitor);
+                        }
+                    }
+                }
+
+            } finally {
+                readLock.unlock();
+            }
+
+            for (PodCastEpisode podCastEpisode : visitor.getPodCastEpisodes()) {
+                results.add(new PodCastEpisodeSearchResult(podCastEpisode.getTitle(),
+                        podCastEpisode.getDescription(), podCastEpisode.getPodCastCollectionId()));
+            }
+
+            replaceIndex(results);
+
+            LOG.info("Done RebuildPodCastEpisodeIndex...");
+
         }
     }
 

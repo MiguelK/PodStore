@@ -4,25 +4,16 @@ import java.io.Serializable;
 
 public class PodCastSearchResponse implements Serializable {
 
-    private String collectionId;
-    private String collectionName; //P3 Dokumentär
-    private String artworkUrl100;
-    private String feedUrl;
-    private String description;
+    private final String collectionId;
+    private final String title; //P3 Dokumentär
+    private final String artworkUrl100;
+    private final String feedUrl;
 
-    public PodCastSearchResponse(String collectionId, String collectionName, String artworkUrl100,String feedUrl) {
+    public PodCastSearchResponse(String collectionId, String title, String artworkUrl100, String feedUrl) {
         this.collectionId = collectionId;
-        this.collectionName = collectionName;
+        this.title = title;
         this.artworkUrl100 = artworkUrl100;
         this.feedUrl = feedUrl;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getFeedUrl() {
@@ -33,8 +24,8 @@ public class PodCastSearchResponse implements Serializable {
         return collectionId;
     }
 
-    public String getCollectionName() {
-        return collectionName;
+    public String getTitle() {
+        return title;
     }
 
     public String getArtworkUrl100() {

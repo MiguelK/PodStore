@@ -1,7 +1,5 @@
 package com.podcastcatalog.api.response.search;
 
-import com.podcastcatalog.api.response.PodCastEpisode;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,18 +7,19 @@ public class SearchResult {
 
     private List<PodCastSearchResponse> casts = new ArrayList<>();
 
-    private List<PodCastEpisode> podCastEpisodes = new ArrayList<>();
+    private List<PodCastEpisodeSearchResult> podCastEpisodes = new ArrayList<>();
 
-    private int podCastCount;
-    private int podCastEpisodeCount;
+    private final int podCastCount;
+    private final int podCastEpisodeCount;
 
-    private boolean noResultFound;
+    private final boolean noResultFound;
 
-    public SearchResult(List<PodCastSearchResponse> casts, List<PodCastEpisode> podCastEpisodes) {
-        this.casts = casts;
+    public SearchResult(List<PodCastSearchResponse> podCasts, List<PodCastEpisodeSearchResult> podCastEpisodes) {
+        this.casts = podCasts;
         this.podCastEpisodes = podCastEpisodes;
-        podCastCount = casts.size();
-        podCastEpisodeCount = 88;
+        podCastCount = podCasts.size();
+        podCastEpisodeCount = podCastEpisodes.size();
+        noResultFound = podCastEpisodes.isEmpty() && podCasts.isEmpty();
     }
 
     public List<PodCastSearchResponse> getCasts() {
@@ -31,7 +30,7 @@ public class SearchResult {
         return noResultFound;
     }
 
-    public List<PodCastEpisode> getPodCastEpisodes() {
+    public List<PodCastEpisodeSearchResult> getPodCastEpisodes() {
         return podCastEpisodes;
     }
 

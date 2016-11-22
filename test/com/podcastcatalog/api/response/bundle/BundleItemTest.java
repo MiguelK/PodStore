@@ -1,6 +1,7 @@
 package com.podcastcatalog.api.response.bundle;
 
 import com.google.gson.Gson;
+import com.podcastcatalog.api.response.BundleItem;
 import com.podcastcatalog.api.response.PodCastCategoryTest;
 import com.podcastcatalog.api.response.PodCastEpisodeTest;
 import com.podcastcatalog.PodCastTest;

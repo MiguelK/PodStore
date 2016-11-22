@@ -3,6 +3,7 @@ package com.podcastcatalog.api;
 
 import com.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.api.response.PodCastCatalogLanguage;
+import com.podcastcatalog.api.response.search.PodCastEpisodeSearchResult;
 import com.podcastcatalog.api.response.search.PodCastSearchResponse;
 import com.podcastcatalog.api.response.search.SearchResult;
 import com.podcastcatalog.builder.collector.itunes.ItunesSearchAPI;
@@ -14,7 +15,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -65,24 +65,23 @@ public class PodCastCatalog {
 //            LOG.info("podCastCatalog for lang " + lang + " is not loaded yet?");
 //            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Not ready yet").build();
 
-
 //        }
+
         List<PodCastSearchResponse> searchResponses = ItunesSearchAPI.search("term=" + queryParam + "&entity=podcast").searchPodCast();
 
-//        String s = queryParam.replaceAll("_", "&"); //queryParam
-//        List<PodCastSearchResponse> searchResponses = ItunesSearchAPI.search(s).searchPodCast();
-
+        //FIXME
+        // start fetching PodCast+Episodes and cache inMemory... async
         for (PodCastSearchResponse searchResponse : searchResponses) {
             //FIXME ?
 //            String parse = PodCastFeedParser.parse(searchResponse.getFeedUrl());
 //            FeedParser.parse(searchResponse.getFeedUrl())
-//            searchResponse.setDescription(parse);
-//
+//            searchResponse.setDescription(parse);//
         }
 
-        //FIXME Search in episodes...
-        //FIXME Perform search ... queryParam
-        SearchResult searchResult = new SearchResult(searchResponses, new ArrayList<>());
+        List<PodCastEpisodeSearchResult> podCastEpisodes = PodCastCatalogService.getInstance().searchEpisodes(queryParam);
+
+
+        SearchResult searchResult = new SearchResult(searchResponses, podCastEpisodes);
 
         return Response.status(Response.Status.OK).entity(searchResult).build();
     }

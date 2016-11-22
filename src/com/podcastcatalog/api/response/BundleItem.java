@@ -1,25 +1,25 @@
-package com.podcastcatalog.api.response.bundle;
+package com.podcastcatalog.api.response;
 
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 
-public abstract class BundleItem implements Serializable {
+public abstract class BundleItem implements Serializable, Visitable {
 
     private final String title;
     private final String description;
     private final String artworkUrl600;//Mandatory for PodCast and Category
 
-    protected BundleItem(String title, String description, String artworkUrl600) {
+    BundleItem(String title, String description, String artworkUrl600) {
         this.title = StringUtils.trimToNull(title);
         this.description = StringUtils.trimToNull(description);
         this.artworkUrl600 = StringUtils.trimToNull(artworkUrl600);
 
         if (this.title == null) {
-            throw new IllegalArgumentException("title is requred");
+            throw new IllegalArgumentException("title is null");
         }
         if (this.description == null) {
-            throw new IllegalArgumentException("description is requred");
+            throw new IllegalArgumentException("description is null, title=" + title);
         }
 
         if (artworkUrl600 != null && !artworkUrl600.startsWith("http")) {

@@ -1,5 +1,7 @@
 package com.podcastcatalog.api.response.bundle;
 
+import com.podcastcatalog.api.response.BundleItem;
+
 import java.io.Serializable;
 import java.util.List;
 

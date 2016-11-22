@@ -1,6 +1,5 @@
 package com.podcastcatalog.api.response;
 
-import com.podcastcatalog.api.response.bundle.BundleItem;
 import org.apache.commons.lang.StringUtils;
 
 import java.time.LocalDateTime;
@@ -68,6 +67,10 @@ public class PodCast extends BundleItem {
         return new Builder();
     }
 
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
 
     public static class Builder {
         private String collectionId;

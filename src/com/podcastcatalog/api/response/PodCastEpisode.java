@@ -1,12 +1,11 @@
 package com.podcastcatalog.api.response;
 
-import com.podcastcatalog.api.response.bundle.BundleItem;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class PodCastEpisode extends BundleItem implements Serializable{
+public class PodCastEpisode extends BundleItem implements Serializable {
     private final int id; //FIXME ? episode-id?
     private final String targetURL;
 
@@ -24,7 +23,7 @@ public class PodCastEpisode extends BundleItem implements Serializable{
         this.id = id;
         this.podCastCollectionId = podCastCollectionId;
         this.targetURL = targetURL;
-        this.fileSize= fileSize;
+        this.fileSize = fileSize;
         this.podCastType = podCastType;
         this.createdDate = createdDate;
         this.duration = duration;
@@ -93,13 +92,16 @@ public class PodCastEpisode extends BundleItem implements Serializable{
                 '}';
     }
 
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
 
-
-    public static Builder newBuilder(){
+    public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static class Builder{
+    public static class Builder {
         private int id; //FIXME ? episode-id?
         private String podCastCollectionId;
         private String title;
@@ -110,11 +112,12 @@ public class PodCastEpisode extends BundleItem implements Serializable{
         private PodCastEpisodeType podCastType;
         private LocalDateTime createdDate;
 
-        public Builder targetURL(String targetURL){
+        public Builder targetURL(String targetURL) {
             this.targetURL = StringUtils.trimToNull(targetURL);
             return this;
         }
-        public Builder description(String description){
+
+        public Builder description(String description) {
             this.description = StringUtils.trimToNull(description);
             return this;
         }
@@ -143,6 +146,7 @@ public class PodCastEpisode extends BundleItem implements Serializable{
             this.podCastCollectionId = StringUtils.trimToNull(podCastCollectionId);
             return this;
         }
+
         public Builder podCastType(PodCastEpisodeType podCastType) {
             this.podCastType = podCastType;
             return this;
@@ -154,41 +158,41 @@ public class PodCastEpisode extends BundleItem implements Serializable{
         }
 
         public boolean isValid() {
-            try{
+            try {
                 build();
-            }catch (Exception e){
-                return  false;
+            } catch (Exception e) {
+                return false;
             }
 
             return true;
         }
 
-        public PodCastEpisode build(){
-            if(podCastType==null){
+        public PodCastEpisode build() {
+            if (podCastType == null) {
                 throw new IllegalArgumentException("Invalid podCastType null");
             }
-            if(description==null){
+            if (description == null) {
                 throw new IllegalArgumentException("description is mandatory");
             }
-            if(title==null){
+            if (title == null) {
                 throw new IllegalArgumentException("title is mandatory");
             }
-            if(targetURL==null){
+            if (targetURL == null) {
                 throw new IllegalArgumentException("targetURL is mandatory");
             }
 
-            if(createdDate==null){
+            if (createdDate == null) {
                 throw new IllegalArgumentException("createdDate is mandatory");
             }
-            if(id==0 || id<0){
-                throw  new IllegalArgumentException("Invalid id " + id + " mus be > 0");
+            if (id == 0 || id < 0) {
+                throw new IllegalArgumentException("Invalid id " + id + " mus be > 0");
             }
 
-            if(podCastCollectionId==null){
+            if (podCastCollectionId == null) {
                 throw new IllegalArgumentException("podCastCollectionId is null");
             }
 
-            return new PodCastEpisode(id,title,description,targetURL,duration,fileSize,podCastType, createdDate,podCastCollectionId);
+            return new PodCastEpisode(id, title, description, targetURL, duration, fileSize, podCastType, createdDate, podCastCollectionId);
         }
     }
 }

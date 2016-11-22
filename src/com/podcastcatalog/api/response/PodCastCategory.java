@@ -1,7 +1,5 @@
 package com.podcastcatalog.api.response;
 
-import com.podcastcatalog.api.response.bundle.BundleItem;
-
 import java.util.List;
 
 public class PodCastCategory extends BundleItem {
@@ -23,5 +21,10 @@ public class PodCastCategory extends BundleItem {
 
     public List<PodCast> getPodCasts() {
         return podCasts;
+    }
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 }
