@@ -4,7 +4,7 @@ import com.podcastcatalog.api.response.*;
 import com.podcastcatalog.api.response.bundle.Bundle;
 import com.podcastcatalog.api.response.bundle.PodCastBundle;
 import com.podcastcatalog.api.response.bundle.PodCastCategoryBundle;
-import com.podcastcatalog.api.response.search.PodCastEpisodeSearchResult;
+import com.podcastcatalog.api.response.search.PodCastEpisodeResultItem;
 import com.podcastcatalog.api.util.PodCastEpisodeVisitor;
 import com.podcastcatalog.builder.BundleBuilder;
 import com.podcastcatalog.builder.PodCastCatalogBuilder;
@@ -29,7 +29,7 @@ public class PodCastCatalogService {
 
     private final Map<PodCastCatalogLanguage, PodCastCatalog> podCastCatalogByLang;
     private final List<PodCastCatalogBuilder> podCastCatalogBuilders;
-    private List<PodCastEpisodeSearchResult> podCastEpisodeSearchResults = new ArrayList<>();
+    private List<PodCastEpisodeResultItem> podCastEpisodeSearchResults = new ArrayList<>();
     private DataStorage storage;
     private final ExecutorService executorService;
     private final ExecutorService ayncExecutor;
@@ -96,7 +96,7 @@ public class PodCastCatalogService {
         }
     }
 
-    public List<PodCastEpisodeSearchResult> searchEpisodes(String query) {
+    public List<PodCastEpisodeResultItem> searchEpisodes(String query) {
 
         if (podCastEpisodeSearchResults.isEmpty()) {
             return Collections.emptyList();
@@ -108,7 +108,7 @@ public class PodCastCatalogService {
 
         //FIXME Search in episodes...
         //FIXME Perform search ... queryParam
-        List<PodCastEpisodeSearchResult> result = new ArrayList<>();
+        List<PodCastEpisodeResultItem> result = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
             result.add(podCastEpisodeSearchResults.get(i));//FIXME
@@ -162,7 +162,7 @@ public class PodCastCatalogService {
         }
     }
 
-    private void replaceIndex(List<PodCastEpisodeSearchResult> results) {
+    private void replaceIndex(List<PodCastEpisodeResultItem> results) {
         if (results.isEmpty()) {
             return;
         }
@@ -182,7 +182,7 @@ public class PodCastCatalogService {
         @Override
         public void run() {
             LOG.info("Started RebuildPodCastEpisodeIndex...");
-            List<PodCastEpisodeSearchResult> results = new ArrayList<>();
+            List<PodCastEpisodeResultItem> results = new ArrayList<>();
 
             PodCastEpisodeVisitor visitor = new PodCastEpisodeVisitor();
 
@@ -201,8 +201,8 @@ public class PodCastCatalogService {
             }
 
             for (PodCastEpisode podCastEpisode : visitor.getPodCastEpisodes()) {
-                results.add(new PodCastEpisodeSearchResult(podCastEpisode.getTitle(),
-                        podCastEpisode.getDescription(), podCastEpisode.getPodCastCollectionId()));
+                results.add(new PodCastEpisodeResultItem(podCastEpisode.getTitle(),
+                        podCastEpisode.getDescription(), podCastEpisode.getPodCastCollectionId(), podCastEpisode.getTargetURL()));
             }
 
             replaceIndex(results);

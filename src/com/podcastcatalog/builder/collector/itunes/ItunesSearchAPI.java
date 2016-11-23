@@ -67,7 +67,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         for (PodCastSearchResult.Row podCastRow : podCastSearchResult.getResults()) {
 
             result.add(new PodCastSearchResponse(podCastRow.getCollectionId(), podCastRow.getCollectionName(),
-                    podCastRow.getArtworkUrl100(), podCastRow.getFeedUrl()));
+                    podCastRow.getArtworkUrl100()));
         }
 
         return result;

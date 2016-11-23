@@ -1,25 +1,28 @@
 package com.podcastcatalog.api.response.search;
 
-public class PodCastEpisodeSearchResult {
-    private final String title;
-    private final String description;
-    private final String podCastCollectionId;
+import java.io.Serializable;
 
-    public PodCastEpisodeSearchResult(String title, String description, String podCastCollectionId) {
+public abstract class ResultItem implements Serializable {
+
+    private final String title;
+    private final String podCastCollectionId;
+    private final ResultType resultType;
+
+    ResultItem(String title, String podCastCollectionId, ResultType resultType) {
         this.title = title;
-        this.description = description;
         this.podCastCollectionId = podCastCollectionId;
+        this.resultType = resultType;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public String getPodCastCollectionId() {
         return podCastCollectionId;
+    }
+
+    public ResultType getResultType() {
+        return resultType;
     }
 }
