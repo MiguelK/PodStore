@@ -43,5 +43,7 @@
     <orderEntry type="library" name="commons-io-2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Jersey-2.2" level="project" />
     <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
+    <orderEntry type="library" name="commons-lang3-3.0" level="project" />
+    <orderEntry type="library" name="commons-lang3-3.4" level="project" />
   </component>
 </module>

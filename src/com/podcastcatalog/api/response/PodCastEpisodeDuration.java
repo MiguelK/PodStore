@@ -1,6 +1,7 @@
 package com.podcastcatalog.api.response;
 
-import org.apache.commons.lang.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.time.LocalTime;

@@ -1,11 +1,11 @@
 package com.podcastcatalog.api.response;
 
 import com.google.gson.Gson;
-import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.PodCastTest;
+import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.api.response.bundle.BundleType;
 import com.podcastcatalog.api.response.bundle.PodCastBundle;
-import org.apache.commons.lang.ClassUtils;
+import org.apache.commons.lang3.ClassUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

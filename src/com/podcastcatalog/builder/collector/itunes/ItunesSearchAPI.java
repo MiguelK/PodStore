@@ -6,7 +6,7 @@ import com.podcastcatalog.api.response.search.PodCastSearchResponse;
 import com.podcastcatalog.builder.collector.PodCastCollector;
 import com.podcastcatalog.builder.collector.PodCastFeedParser;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;

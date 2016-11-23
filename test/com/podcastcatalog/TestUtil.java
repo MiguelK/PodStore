@@ -1,7 +1,7 @@
 package com.podcastcatalog;
 
 import com.google.gson.Gson;
-import org.apache.commons.lang.ClassUtils;
+import org.apache.commons.lang3.ClassUtils;
 import org.testng.Assert;
 
 import java.io.File;

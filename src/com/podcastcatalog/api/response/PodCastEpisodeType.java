@@ -1,6 +1,7 @@
 package com.podcastcatalog.api.response;
 
-import org.apache.commons.lang.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
 
 public enum PodCastEpisodeType {
     Audio("audio/mpeg"),Video(""),PDF("application/pdf"),Unknown(null);

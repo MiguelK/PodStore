@@ -1,7 +1,7 @@
 package com.podcastcatalog.builder;
 
 import com.podcastcatalog.api.response.bundle.Bundle;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.concurrent.Callable;
 

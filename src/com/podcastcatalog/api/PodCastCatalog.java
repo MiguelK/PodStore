@@ -8,7 +8,7 @@ import com.podcastcatalog.api.response.search.PodCastSearchResponse;
 import com.podcastcatalog.api.response.search.ResultItem;
 import com.podcastcatalog.api.response.search.SearchResult;
 import com.podcastcatalog.builder.collector.itunes.ItunesSearchAPI;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
