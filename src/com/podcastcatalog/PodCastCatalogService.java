@@ -7,7 +7,7 @@ import com.podcastcatalog.api.response.bundle.PodCastCategoryBundle;
 import com.podcastcatalog.api.response.search.PodCastEpisodeResultItem;
 import com.podcastcatalog.api.response.search.PodCastSearchResponse;
 import com.podcastcatalog.api.response.search.ResultItem;
-import com.podcastcatalog.api.util.PodCastEpisodeVisitor;
+import com.podcastcatalog.api.util.BundleItemVisitor;
 import com.podcastcatalog.builder.BundleBuilder;
 import com.podcastcatalog.builder.PodCastCatalogBuilder;
 import com.podcastcatalog.builder.collector.itunes.ItunesSearchAPI;
@@ -34,6 +34,7 @@ public class PodCastCatalogService {
     private final List<PodCastCatalogBuilder> podCastCatalogBuilders;
 
     private final TextSearchEngine<ResultItem> textSearchEngine;
+    private final PodCastIndex podCastIndex;
     private DataStorage storage;
     private final ExecutorService executorService;
     private final ExecutorService ayncExecutor;
@@ -41,6 +42,7 @@ public class PodCastCatalogService {
     private static final PodCastCatalogService INSTANCE = new PodCastCatalogService();
 
     private PodCastCatalogService() {
+        podCastIndex = PodCastIndex.create();
         textSearchEngine = new TextSearchEngine<>();
         podCastCatalogBuilders = new ArrayList<>();
         podCastCatalogByLang = new HashMap<>();
@@ -78,9 +80,9 @@ public class PodCastCatalogService {
         ayncExecutor.submit(new RebuildCatalogAction());
     }
 
-    public void buildPodCastEpisodeIndexAsync() {
-        LOG.info("buildPodCastEpisodeIndexAsync() called");
-        ayncExecutor.submit(new RebuildPodCastEpisodeIndex());
+    public void rebuildIndex() {
+        LOG.info("rebuildIndex() called");
+        ayncExecutor.submit(new RebuildIndex());
 
     }
 
@@ -112,6 +114,10 @@ public class PodCastCatalogService {
         resultItems.addAll(result);
 
         return resultItems;
+    }
+
+    public Optional<PodCast> getPodCastById(String id) {
+        return podCastIndex.lookup(id);
     }
 
     private class RebuildCatalogAction implements Runnable {
@@ -151,23 +157,23 @@ public class PodCastCatalogService {
                 writeLock.unlock();
             }
 
-            buildPodCastEpisodeIndexAsync();
+            rebuildIndex();
         }
     }
 
-    private class RebuildPodCastEpisodeIndex implements Runnable {
+    private class RebuildIndex implements Runnable {
         @Override
         public void run() {
             LOG.info("Started RebuildPodCastEpisodeIndex...");
 
-            PodCastEpisodeVisitor visitor = new PodCastEpisodeVisitor();
+            BundleItemVisitor bundleItemVisitor = new BundleItemVisitor();
 
             readLock.lock();
             try {
                 for (Map.Entry<PodCastCatalogLanguage, PodCastCatalog> catalogEntry : podCastCatalogByLang.entrySet()) {
                     for (Bundle bundle : catalogEntry.getValue().getBundles()) {
                         for (BundleItem bundleItem : bundle.getBundleItems()) {
-                            bundleItem.accept(visitor);
+                            bundleItem.accept(bundleItemVisitor);
                         }
                     }
                 }
@@ -178,8 +184,7 @@ public class PodCastCatalogService {
 
             writeLock.lock();
             try {
-                List<PodCastEpisode> podCastEpisodes = visitor.getPodCastEpisodes();
-                LOG.info("Rebuilding textSearchEngine size=" + podCastEpisodes.size());
+                List<PodCastEpisode> podCastEpisodes = bundleItemVisitor.getPodCastEpisodes();
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
                     PodCastEpisodeResultItem resultItem = new PodCastEpisodeResultItem(podCastEpisode.getTitle(),
                             podCastEpisode.getDescription(), podCastEpisode.getPodCastCollectionId(), podCastEpisode.getTargetURL());
@@ -189,6 +194,9 @@ public class PodCastCatalogService {
                 }
 
                 textSearchEngine.buildIndex();
+
+                podCastIndex.buildIndex(bundleItemVisitor.getPodCasts());
+
             } finally {
                 writeLock.unlock();
             }

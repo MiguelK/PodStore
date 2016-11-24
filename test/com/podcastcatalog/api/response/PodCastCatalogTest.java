@@ -2,7 +2,7 @@ package com.podcastcatalog.api.response;
 
 import com.google.gson.Gson;
 import com.podcastcatalog.api.response.bundle.*;
-import com.podcastcatalog.api.util.PodCastEpisodeVisitor;
+import com.podcastcatalog.api.util.BundleItemVisitor;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -35,7 +35,7 @@ public class PodCastCatalogTest {
 
     @Test
     public void visit_episodes_no_duplicates() {
-        PodCastEpisodeVisitor visitor = new PodCastEpisodeVisitor();
+        BundleItemVisitor visitor = new BundleItemVisitor();
 
         for (Bundle bundle : createValid().getBundles()) {
             for (BundleItem bundleItem : bundle.getBundleItems()) {

@@ -28,15 +28,26 @@ public class ItunesSearchAPI implements PodCastCollector {
     private static final Gson GSON = new Gson();
 
     private static final String BASE_URL_SEARCH = "https://itunes.apple.com/search?";
-    private static final String BASE_URL = "https://itunes.apple.com/lookup?id=";
+    private static final String BASE_URL_LOOKUP = "https://itunes.apple.com/lookup?id=";
 
     private final URL request;
+
+    public static Optional<PodCast> lookup(String id) {
+
+
+        List<PodCast> podCasts = new ItunesSearchAPI(BASE_URL_LOOKUP + id).collectPodCasts();
+        if(podCasts.isEmpty()){
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(podCasts.get(0));
+    }
 
     public static ItunesSearchAPI lookup(List<Long> ids) {
 
         String join = StringUtils.join(ids, ",");
 
-        return new ItunesSearchAPI(BASE_URL + join); //FIXME
+        return new ItunesSearchAPI(BASE_URL_LOOKUP + join); //FIXME
     }
 
     //FIXME Refactor searchPodCasts()
@@ -65,7 +76,6 @@ public class ItunesSearchAPI implements PodCastCollector {
 
         List<PodCastSearchResponse> result = new ArrayList<>();
         for (PodCastSearchResult.Row podCastRow : podCastSearchResult.getResults()) {
-
             result.add(new PodCastSearchResponse(podCastRow.getCollectionId(), podCastRow.getCollectionName(),
                     podCastRow.getArtworkUrl100()));
         }

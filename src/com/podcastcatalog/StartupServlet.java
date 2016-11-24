@@ -31,7 +31,7 @@ public class StartupServlet extends HttpServlet {
 
         if (currentVersion.isPresent()) {
             PodCastCatalogService.getInstance().loadPodCastCatalog(currentVersion.get().getPodCastCatalogSwedish());
-            PodCastCatalogService.getInstance().buildPodCastEpisodeIndexAsync();
+            PodCastCatalogService.getInstance().rebuildIndex();
         } else {
             PodCastCatalogService.getInstance().buildPodCastCatalogsAsync();
         }

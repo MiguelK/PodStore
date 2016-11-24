@@ -1,34 +1,35 @@
 package com.podcastcatalog.api;
 
+import com.podcastcatalog.PodCastCatalogService;
+import com.podcastcatalog.builder.collector.itunes.ItunesSearchAPI;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Optional;
 
 @Path("/podCast")
 public class PodCast {
 
     @GET
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPodCastByCollectionId(@QueryParam("podCastCollectionId") String podCastCollectionId) {
+    public Response getPodCastByCollectionId(@PathParam("id") String id) {
 
+        Optional<com.podcastcatalog.api.response.PodCast> podCast = PodCastCatalogService.getInstance().getPodCastById(id);
 
-        //Look in-memory
-        //no hit search Itunes
-      /*  PodCastCatalogLanguage podCastCatalogLanguage = PodCastCatalogLanguage.fromString(lang);
-        if (podCastCatalogLanguage == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid lang parameter " + lang).build();
-        }*/
+        if (!podCast.isPresent()) {
+            podCast = ItunesSearchAPI.lookup(id);
+            //FIXME if hit fetct and and to in-memory index?
+        }
 
-       /* com.podcastcatalog.api.response.PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(podCastCatalogLanguage);
+        if (!podCast.isPresent()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("No podcast with id= " + id + " exist").build();
+        }
 
-        if (podCastCatalog == null) {
-//            LOG.info("podCastCatalog for lang " + lang + " is not loaded yet?");
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Not ready yet").build();
-        }*/
-
-        return Response.status(Response.Status.OK).entity("ge by id ").build();
+        return Response.status(Response.Status.OK).entity(podCast.get()).build();
     }
 }
