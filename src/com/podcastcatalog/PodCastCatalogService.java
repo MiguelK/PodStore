@@ -5,7 +5,7 @@ import com.podcastcatalog.api.response.bundle.Bundle;
 import com.podcastcatalog.api.response.bundle.PodCastBundle;
 import com.podcastcatalog.api.response.bundle.PodCastCategoryBundle;
 import com.podcastcatalog.api.response.search.PodCastEpisodeResultItem;
-import com.podcastcatalog.api.response.search.PodCastSearchResponse;
+import com.podcastcatalog.api.response.search.PodCastResultItem;
 import com.podcastcatalog.api.response.search.ResultItem;
 import com.podcastcatalog.api.util.BundleItemVisitor;
 import com.podcastcatalog.builder.BundleBuilder;
@@ -107,7 +107,7 @@ public class PodCastCatalogService {
 
         //FIXME Sort algoritm? limit 5 etc...
         List<ResultItem> resultItems = new ArrayList<>();
-        List<PodCastSearchResponse> podCasts = ItunesSearchAPI.search("term=" + queryParam + "&entity=podcast&limit=5").searchPodCast();
+        List<PodCastResultItem> podCasts = ItunesSearchAPI.search("term=" + queryParam + "&entity=podcast&limit=5").searchPodCast();
         resultItems.addAll(podCasts);
 
         List<ResultItem> result = this.textSearchEngine.lookup(queryParam);

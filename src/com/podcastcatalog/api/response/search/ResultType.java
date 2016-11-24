@@ -1,5 +1,5 @@
 package com.podcastcatalog.api.response.search;
 
-public enum ResultType {
+enum ResultType {
     EPISODE, PODCAST
 }

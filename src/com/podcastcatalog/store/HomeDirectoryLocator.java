@@ -8,7 +8,7 @@ class HomeDirectoryLocator {
 
     private static final String PODDA_HOME_DIR = "POD_DATA";
 
-     File locateDataDir() {
+     File locateDataDirectory() {
         File a = new File("/home/krantmig/tools/temp");
 
         if (isReadAndWriteDirectory(a)) {

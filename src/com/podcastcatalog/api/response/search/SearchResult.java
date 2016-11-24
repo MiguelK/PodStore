@@ -1,11 +1,10 @@
 package com.podcastcatalog.api.response.search;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchResult {
 
-    private final List<ResultItem> sortedResult = new ArrayList<>();
+    private final List<ResultItem> resultItems;
 
     private final int totalCount;
     private final boolean noResultFound;
@@ -13,12 +12,11 @@ public class SearchResult {
     public SearchResult(List<ResultItem> resultItems) {
         totalCount = resultItems.size();
         noResultFound = resultItems.isEmpty();
-
-        sortedResult.addAll(resultItems);
+        this.resultItems = resultItems;
     }
 
-    public List<ResultItem> getSortedResult() {
-        return sortedResult;
+    public List<ResultItem> getResultItems() {
+        return resultItems;
     }
 
     public int getTotalCount() {

@@ -1,5 +1,6 @@
 package com.podcastcatalog.store;
 
+import com.podcastcatalog.TestUtil;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public class ZipFileTest {
 
     @Test
-    public void testName() throws IOException {
+    public void zip() throws IOException {
 
         File someFile = new File("some.json");
 
@@ -24,7 +25,7 @@ public class ZipFileTest {
         Path sourceFile =  someFile.toPath();   //Paths.get("the-sourceFile-name.txt");
         Files.write(sourceFile, lines, Charset.forName("UTF-8"));
 
-        File targetFile = new File(someFile.getParentFile(), "new_file.zip");
+        File targetFile = new File(TestUtil.IO_TEMP_DATA_DIRECTORY, "ZipFileTest.zip");
         ZipFile.zip(someFile, targetFile);
 
         Assert.assertTrue(targetFile.canRead());

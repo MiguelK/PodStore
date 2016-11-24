@@ -4,14 +4,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
-public class TextSearchEngine<T> {
+class TextSearchEngine<T> {
 
     private static final int MAX_RESULT_SIZE = 50;
     private final Map<String, Node<T>> index;
 
     private final List<InputData> inputDatas;
 
-    public enum Prio {
+    enum Prio {
         HIGH(100), HIGHEST(300), LOW(10);
 
         final int rank;
@@ -25,19 +25,16 @@ public class TextSearchEngine<T> {
         }
     }
 
-    public TextSearchEngine() {
+    TextSearchEngine() {
         inputDatas = new ArrayList<>();
         index = new HashMap<>();
     }
 
-    public void addText(String text, Prio prio, T targetObject) {
-        //FIXME validate
-        String s = StringUtils.trimToEmpty(text).toLowerCase();
-        inputDatas.add(new InputData(s, prio, targetObject));
+    void addText(String text, Prio prio, T targetObject) {
+        inputDatas.add(new InputData(StringUtils.trimToEmpty(text).toLowerCase(), prio, targetObject));
     }
 
-    public void buildIndex() {
-        //FIXME validate...
+    void buildIndex() {
 
         for (InputData inputData : inputDatas) {
             String text = inputData.getText();
@@ -56,7 +53,7 @@ public class TextSearchEngine<T> {
                     term += c;
 
                     if (term.equals(word)) {
-                        rank += 600;
+                        rank += 600; //FIXME ?
                     }
 
                     node1 = index.putIfAbsent(term, new Node<>(false, term, new TargetRelation<>(inputData.getTargetObject(), rank)));
@@ -105,7 +102,7 @@ public class TextSearchEngine<T> {
     private static class Node<T> {
         final boolean rootNode; //rootTextPart, rootTextFull
         final String term; //"a"
-        private boolean wordMatch;
+//        private boolean wordMatch;
 
         //        int partOffset; //Max =20 antal hop till fullt ord, offset into chidlrens?
 //        List<Node> word = new ArrayList<Node>();
@@ -137,7 +134,6 @@ public class TextSearchEngine<T> {
             return "Node{" +
                     "rootNode=" + rootNode +
                     ", term='" + term + '\'' +
-                    ", wordMatch='" + wordMatch + '\'' +
                     ", targets=" + getValues() +
                     '}';
         }
@@ -164,7 +160,7 @@ public class TextSearchEngine<T> {
         private final Prio prio;
         private final T targetObject;
 
-        public InputData(String text, Prio prio, T targetObject) {
+        InputData(String text, Prio prio, T targetObject) {
             this.text = text;
             this.prio = prio;
             this.targetObject = targetObject;

@@ -70,7 +70,7 @@ public class TextSearchEngineTest {
     }
 
     @Test
-    public void sds() {
+    public void lookup_hit() {
         MyItem podcast1 = new MyItem("PodCast1");
         searchEngine.addText("Sommar i Peking", TextSearchEngine.Prio.HIGHEST, podcast1);
         searchEngine.buildIndex();
@@ -82,12 +82,16 @@ public class TextSearchEngineTest {
     }
 
     @Test
-    public void testName() {
+    public void full_word_match() {
         MyItem podcast1 = new MyItem("PodCast1");
-        searchEngine.addText("Anna Stadling Amerika", TextSearchEngine.Prio.HIGHEST, podcast1);
+        MyItem podcast2 = new MyItem("PodCast2");
+        searchEngine.addText("AnnaStadling Amerika", TextSearchEngine.Prio.HIGH, podcast1);
+        searchEngine.addText("Anna Stadling Amerika", TextSearchEngine.Prio.HIGH, podcast2);
+
         searchEngine.buildIndex();
 
-        Assert.assertTrue(searchEngine.lookup("A").size() == 1);
+        Assert.assertTrue(searchEngine.lookup("Anna").size() == 2);
+        Assert.assertEquals(searchEngine.lookup("Anna").get(0), podcast2);
     }
 
     @Test

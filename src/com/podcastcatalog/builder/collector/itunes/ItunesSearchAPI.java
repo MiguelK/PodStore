@@ -2,7 +2,7 @@ package com.podcastcatalog.builder.collector.itunes;
 
 import com.google.gson.Gson;
 import com.podcastcatalog.api.response.PodCast;
-import com.podcastcatalog.api.response.search.PodCastSearchResponse;
+import com.podcastcatalog.api.response.search.PodCastResultItem;
 import com.podcastcatalog.builder.collector.PodCastCollector;
 import com.podcastcatalog.builder.collector.PodCastFeedParser;
 import org.apache.commons.io.IOUtils;
@@ -67,16 +67,16 @@ public class ItunesSearchAPI implements PodCastCollector {
         }
     }
 
-    public List<PodCastSearchResponse> searchPodCast() {
+    public List<PodCastResultItem> searchPodCast() {
         PodCastSearchResult podCastSearchResult = performSearch();
 
         if (podCastSearchResult == null) {
             return Collections.emptyList();
         }
 
-        List<PodCastSearchResponse> result = new ArrayList<>();
+        List<PodCastResultItem> result = new ArrayList<>();
         for (PodCastSearchResult.Row podCastRow : podCastSearchResult.getResults()) {
-            result.add(new PodCastSearchResponse(podCastRow.getCollectionId(), podCastRow.getCollectionName(),
+            result.add(new PodCastResultItem(podCastRow.getCollectionId(), podCastRow.getCollectionName(),
                     podCastRow.getArtworkUrl100()));
         }
 

@@ -66,7 +66,6 @@ public class PodCastCatalog {
 
 
         //FIXME should uncahed PodCats be fetched??
-
         List<ResultItem> podCastEpisodes = PodCastCatalogService.getInstance().searchEpisodes(queryParam);
 
         SearchResult searchResult = new SearchResult(podCastEpisodes);

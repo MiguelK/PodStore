@@ -36,7 +36,7 @@ public class DataStorage {
     }
 
     public DataStorage() {
-        this(new HomeDirectoryLocator().locateDataDir());
+        this(new HomeDirectoryLocator().locateDataDirectory());
     }
 
     private void initRoot() {
