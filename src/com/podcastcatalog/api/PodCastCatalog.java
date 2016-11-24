@@ -64,22 +64,9 @@ public class PodCastCatalog {
 //            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Not ready yet").build();
 //        }
 
-        //FIXME query limit?
-//        List<PodCastSearchResponse> podCasts = ItunesSearchAPI.search("term=" + queryParam + "&entity=podcast&limit=5").searchPodCast();
 
-//        sortedResult.addAll(podCasts);
+        //FIXME should uncahed PodCats be fetched??
 
-        //FIXME
-        // start fetching PodCast+Episodes and cache inMemory... async
-//        for (PodCastSearchResponse searchResponse : podCasts) {
-//            LOG.info(searchResponse.getTitle());
-        //FIXME ?
-//            String parse = PodCastFeedParser.parse(searchResponse.getFeedUrl());
-//            FeedParser.parse(searchResponse.getFeedUrl())
-//            searchResponse.setDescription(parse);//
-//        }
-
-        //lookup episodes TextSearchEngineService.getInstance().
         List<ResultItem> podCastEpisodes = PodCastCatalogService.getInstance().searchEpisodes(queryParam);
 
         SearchResult searchResult = new SearchResult(podCastEpisodes);

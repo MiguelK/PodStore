@@ -1,15 +1,11 @@
 package com.podcastcatalog;
 
-public class MyItem {
+class MyItem {
 
-    private String name;
+    private final String name;
 
     public MyItem(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override

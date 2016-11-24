@@ -158,7 +158,7 @@ public class ItunesSearchAPI implements PodCastCollector {
             private String collectionName;
             private String feedUrl;
             private String artworkUrl600;
-//            private String artworkUrl100;
+            private String artworkUrl100;
             private String collectionId;
 
             public String getCollectionName() {
@@ -178,7 +178,7 @@ public class ItunesSearchAPI implements PodCastCollector {
             }
 
             public String getArtworkUrl100() {
-                return artworkUrl600;
+                return artworkUrl100;
             }
 
             @Override

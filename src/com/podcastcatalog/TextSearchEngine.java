@@ -7,7 +7,7 @@ import java.util.*;
 public class TextSearchEngine<T> {
 
     private static final int MAX_RESULT_SIZE = 50;
-    private final Map<String, Node> index;
+    private final Map<String, Node<T>> index;
 
     private final List<InputData> inputDatas;
 
@@ -44,14 +44,14 @@ public class TextSearchEngine<T> {
             List<String> words = Arrays.asList(StringUtils.split(text));
 
             int rank = inputData.getPrio().getRank();
-            Node node11 = index.putIfAbsent(text, new Node<T>(false, text, new TargetRelation<T>(inputData.getTargetObject(), rank)));
+            Node<T> node11 = index.putIfAbsent(text, new Node<>(false, text, new TargetRelation<>(inputData.getTargetObject(), rank)));
             if (node11 != null) {
-                node11.addTargetRelation(new TargetRelation<T>(inputData.getTargetObject(), rank));
+                node11.addTargetRelation(new TargetRelation<>(inputData.getTargetObject(), rank));
             }
 
             for (String word : words) {
                 String term = "";
-                Node node1;
+                Node<T> node1;
                 for (char c : word.toCharArray()) {
                     term += c;
 
@@ -59,9 +59,9 @@ public class TextSearchEngine<T> {
                         rank += 600;
                     }
 
-                    node1 = index.putIfAbsent(term, new Node<T>(false, term, new TargetRelation<T>(inputData.getTargetObject(), rank)));
+                    node1 = index.putIfAbsent(term, new Node<>(false, term, new TargetRelation<>(inputData.getTargetObject(), rank)));
                     if (node1 != null) {
-                        node1.addTargetRelation(new TargetRelation<T>(inputData.getTargetObject(), rank));
+                        node1.addTargetRelation(new TargetRelation<>(inputData.getTargetObject(), rank));
                     }
                 }
             }
@@ -83,21 +83,16 @@ public class TextSearchEngine<T> {
 //        System.out.println("A=" + levenshteinDistance);
 
         String term = s.toLowerCase();
-        Node node = index.get(term);
+        Node<T> node = index.get(term);
 
         if (node == null) {
             return Collections.emptyList();
         }
 
-        //pac -> Paris centrum
-        //Node node = Nodes.lookup(w)
-
-        List values = node.getValues();
+        List<T> values = node.getValues();
 
         if (values.size() > MAX_RESULT_SIZE) {
             return values.subList(0, MAX_RESULT_SIZE);
-
-
         }
 
         return values;
@@ -134,7 +129,7 @@ public class TextSearchEngine<T> {
         }
 
         List<T> getValues() {
-            return new ArrayList<T>(targets);
+            return new ArrayList<>(targets);
         }
 
         @Override
@@ -148,11 +143,11 @@ public class TextSearchEngine<T> {
         }
 
         public void sortResult() {
-            targets = new ArrayList<T>();
+            targets = new ArrayList<>();
 
             Collections.sort(targetRelations);
 
-            for (TargetRelation targetRelation : targetRelations) {
+            for (TargetRelation<T> targetRelation : targetRelations) {
                 T targetObject = (T) targetRelation.getTargetObject();
 
                 if (targets.contains(targetObject)) {
@@ -190,7 +185,7 @@ public class TextSearchEngine<T> {
 
     private static class TargetRelation<T> implements Comparable<TargetRelation<T>> {
         private final T targetObject;
-        private int rank;
+        private final int rank;
 
         @Override
         public int compareTo(TargetRelation<T> targetRelation) {

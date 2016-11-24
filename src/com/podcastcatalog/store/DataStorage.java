@@ -200,19 +200,17 @@ public class DataStorage {
             return podCastCatalogVersion;
         }
 
-        public static PodCastCatalogVersion load(File versionRoot) {
-
-
+        static PodCastCatalogVersion load(File versionRoot) {
             PodCastCatalogVersion podCastCatalogVersion = new PodCastCatalogVersion(versionRoot);
 
-            podCastCatalogVersion.loadV();
+            podCastCatalogVersion.readFromDisc();
 
             return podCastCatalogVersion;
         }
 
         private PodCastCatalog podCastCatalog;
 
-        private void loadV() {
+        private void readFromDisc() {
 
             ObjectInputStream in = null;
             FileInputStream fileIn = null;

@@ -50,15 +50,10 @@ public class PodCastFeedParser {
         try {
             Feed feed = FeedParser.parse(feedURL);
             PodCastFeedHeader feedHeader = new PodCastFeedHeader(feed.getHeader());
-            String description = feedHeader.getDescription();
 
-            return description;
+            return feedHeader.getDescription();
 
-        } catch (FeedIOException e) {
-            e.printStackTrace();
-        } catch (FeedXMLParseException e) {
-            e.printStackTrace();
-        } catch (UnsupportedFeedException e) {
+        } catch (FeedIOException | FeedXMLParseException | UnsupportedFeedException e) {
             e.printStackTrace();
         }
 

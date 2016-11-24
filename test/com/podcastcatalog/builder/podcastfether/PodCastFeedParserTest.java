@@ -2,8 +2,6 @@ package com.podcastcatalog.builder.podcastfether;
 
 import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.api.response.PodCast;
-import com.podcastcatalog.api.response.PodCastCategoryType;
-import com.podcastcatalog.api.response.PodCastEpisode;
 import com.podcastcatalog.builder.collector.PodCastFeedParser;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -22,13 +20,6 @@ public class PodCastFeedParserTest {
         PodCast podCast = PodCastFeedParser.parse(new URL("http://api.sr.se/api/rss/pod/3966"), artworkUrl600, collectionId).get();
 
         Assert.assertNotNull(podCast);
-        for (PodCastCategoryType podCastCategoryType : podCast.getPodCastCategories()) {
-            System.out.println(podCastCategoryType);
-        }
-
-        for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodes()) {
-            System.out.println(podCastEpisode);
-        }
 
         Assert.assertEquals(podCast.getCollectionId(),collectionId);
     }

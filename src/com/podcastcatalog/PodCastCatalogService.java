@@ -32,9 +32,8 @@ public class PodCastCatalogService {
 
     private final Map<PodCastCatalogLanguage, PodCastCatalog> podCastCatalogByLang;
     private final List<PodCastCatalogBuilder> podCastCatalogBuilders;
-//    private List<PodCastEpisodeResultItem> podCastEpisodeSearchResults = new ArrayList<>();
 
-    private final TextSearchEngine textSearchEngine;
+    private final TextSearchEngine<ResultItem> textSearchEngine;
     private DataStorage storage;
     private final ExecutorService executorService;
     private final ExecutorService ayncExecutor;
@@ -42,7 +41,7 @@ public class PodCastCatalogService {
     private static final PodCastCatalogService INSTANCE = new PodCastCatalogService();
 
     private PodCastCatalogService() {
-        textSearchEngine = new TextSearchEngine<ResultItem>();
+        textSearchEngine = new TextSearchEngine<>();
         podCastCatalogBuilders = new ArrayList<>();
         podCastCatalogByLang = new HashMap<>();
         ayncExecutor = Executors.newFixedThreadPool(THREADS);
@@ -104,41 +103,21 @@ public class PodCastCatalogService {
 
     public List<ResultItem> searchEpisodes(String queryParam) {
 
-       /* if (podCastEpisodeSearchResults.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        if (podCastEpisodeSearchResults.size() <= 10) {
-            return podCastEpisodeSearchResults;
-        }*/
+        //FIXME Sort algoritm? limit 5 etc...
         List<ResultItem> resultItems = new ArrayList<>();
         List<PodCastSearchResponse> podCasts = ItunesSearchAPI.search("term=" + queryParam + "&entity=podcast&limit=5").searchPodCast();
-        LOG.info("Search: PodCasts=" + podCasts.size() + ",queryParam=" + queryParam);
         resultItems.addAll(podCasts);
 
-        List<PodCastEpisodeResultItem> result = this.textSearchEngine.lookup(queryParam);
-        LOG.info("Search: Episodes=" + result.size() + ",queryParam=" + queryParam);
+        List<ResultItem> result = this.textSearchEngine.lookup(queryParam);
         resultItems.addAll(result);
-/*
 
-        //FIXME Search in episodes...
-        //FIXME Perform search ... queryParam
-        List<PodCastEpisodeResultItem> result = new ArrayList<>();
-
-        for (int i = 0; i < 10; i++) {
-            result.add(podCastEpisodeSearchResults.get(i));//FIXME
-        }
-
-*/
-
-        //FIXME filter max result =20?
         return resultItems;
     }
 
-    private class RebuildCatalogAction implements Callable<Void> {
-        @Override
-        public Void call() throws Exception {
+    private class RebuildCatalogAction implements Runnable {
 
+        @Override
+        public void run() {
             readLock.lock();
             LOG.info("rebuildCatalogs() registered podCastCatalogBuilders=" + podCastCatalogBuilders.size());
 
@@ -173,8 +152,6 @@ public class PodCastCatalogService {
             }
 
             buildPodCastEpisodeIndexAsync();
-
-            return null;
         }
     }
 
@@ -182,7 +159,6 @@ public class PodCastCatalogService {
         @Override
         public void run() {
             LOG.info("Started RebuildPodCastEpisodeIndex...");
-            List<PodCastEpisodeResultItem> results = new ArrayList<>();
 
             PodCastEpisodeVisitor visitor = new PodCastEpisodeVisitor();
 
@@ -201,9 +177,10 @@ public class PodCastCatalogService {
             }
 
             writeLock.lock();
-            LOG.info("Rebuilding textSearchEngine size=" + results.size());
             try {
-                for (PodCastEpisode podCastEpisode : visitor.getPodCastEpisodes()) {
+                List<PodCastEpisode> podCastEpisodes = visitor.getPodCastEpisodes();
+                LOG.info("Rebuilding textSearchEngine size=" + podCastEpisodes.size());
+                for (PodCastEpisode podCastEpisode : podCastEpisodes) {
                     PodCastEpisodeResultItem resultItem = new PodCastEpisodeResultItem(podCastEpisode.getTitle(),
                             podCastEpisode.getDescription(), podCastEpisode.getPodCastCollectionId(), podCastEpisode.getTargetURL());
 

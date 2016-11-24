@@ -4,7 +4,6 @@ import com.podcastcatalog.PodCastTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -67,7 +66,7 @@ public class PodCastCategoryTest {
     }
 
     public static PodCastCategory createValid(){
-        List<PodCast> podCasts = Arrays.asList(PodCastTest.createValid().build());
+        List<PodCast> podCasts = Collections.singletonList(PodCastTest.createValid().build());
         return new PodCastCategory("Title A","Description B","http://www.test.se",podCasts, PodCastCategoryType.ARTS);
     }
 }

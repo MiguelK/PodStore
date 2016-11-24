@@ -139,7 +139,7 @@ public class DataStorageTest {
         assertDirectory(new File(root,"4"));
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void verify_order() throws InterruptedException {
         storage.save(PodCastCatalogTest.createValid());
 
