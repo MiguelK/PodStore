@@ -71,7 +71,6 @@ public class TextSearchEngine<T> {
             node.sortResult();
         }
 
-//        System.out.println("Index size= " + index.size());
     }
 
     public List<T> lookup(String q) {
@@ -89,8 +88,6 @@ public class TextSearchEngine<T> {
         if (node == null) {
             return Collections.emptyList();
         }
-
-        System.out.println(term + " Node == " + node);
 
         //pac -> Paris centrum
         //Node node = Nodes.lookup(w)

@@ -5,9 +5,12 @@ import com.podcastcatalog.api.response.bundle.Bundle;
 import com.podcastcatalog.api.response.bundle.PodCastBundle;
 import com.podcastcatalog.api.response.bundle.PodCastCategoryBundle;
 import com.podcastcatalog.api.response.search.PodCastEpisodeResultItem;
+import com.podcastcatalog.api.response.search.PodCastSearchResponse;
+import com.podcastcatalog.api.response.search.ResultItem;
 import com.podcastcatalog.api.util.PodCastEpisodeVisitor;
 import com.podcastcatalog.builder.BundleBuilder;
 import com.podcastcatalog.builder.PodCastCatalogBuilder;
+import com.podcastcatalog.builder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.store.DataStorage;
 
 import java.util.*;
@@ -29,7 +32,9 @@ public class PodCastCatalogService {
 
     private final Map<PodCastCatalogLanguage, PodCastCatalog> podCastCatalogByLang;
     private final List<PodCastCatalogBuilder> podCastCatalogBuilders;
-    private List<PodCastEpisodeResultItem> podCastEpisodeSearchResults = new ArrayList<>();
+//    private List<PodCastEpisodeResultItem> podCastEpisodeSearchResults = new ArrayList<>();
+
+    private final TextSearchEngine textSearchEngine;
     private DataStorage storage;
     private final ExecutorService executorService;
     private final ExecutorService ayncExecutor;
@@ -37,6 +42,7 @@ public class PodCastCatalogService {
     private static final PodCastCatalogService INSTANCE = new PodCastCatalogService();
 
     private PodCastCatalogService() {
+        textSearchEngine = new TextSearchEngine<ResultItem>();
         podCastCatalogBuilders = new ArrayList<>();
         podCastCatalogByLang = new HashMap<>();
         ayncExecutor = Executors.newFixedThreadPool(THREADS);
@@ -96,15 +102,24 @@ public class PodCastCatalogService {
         }
     }
 
-    public List<PodCastEpisodeResultItem> searchEpisodes(String query) {
+    public List<ResultItem> searchEpisodes(String queryParam) {
 
-        if (podCastEpisodeSearchResults.isEmpty()) {
+       /* if (podCastEpisodeSearchResults.isEmpty()) {
             return Collections.emptyList();
         }
 
         if (podCastEpisodeSearchResults.size() <= 10) {
             return podCastEpisodeSearchResults;
-        }
+        }*/
+        List<ResultItem> resultItems = new ArrayList<>();
+        List<PodCastSearchResponse> podCasts = ItunesSearchAPI.search("term=" + queryParam + "&entity=podcast&limit=5").searchPodCast();
+        LOG.info("Search: PodCasts=" + podCasts.size() + ",queryParam=" + queryParam);
+        resultItems.addAll(podCasts);
+
+        List<PodCastEpisodeResultItem> result = this.textSearchEngine.lookup(queryParam);
+        LOG.info("Search: Episodes=" + result.size() + ",queryParam=" + queryParam);
+        resultItems.addAll(result);
+/*
 
         //FIXME Search in episodes...
         //FIXME Perform search ... queryParam
@@ -114,9 +129,10 @@ public class PodCastCatalogService {
             result.add(podCastEpisodeSearchResults.get(i));//FIXME
         }
 
+*/
 
         //FIXME filter max result =20?
-        return result;
+        return resultItems;
     }
 
     private class RebuildCatalogAction implements Callable<Void> {
@@ -162,22 +178,6 @@ public class PodCastCatalogService {
         }
     }
 
-    private void replaceIndex(List<PodCastEpisodeResultItem> results) {
-        if (results.isEmpty()) {
-            return;
-        }
-
-        writeLock.lock();
-
-        LOG.info("Replacing Episode index size=" + results.size());
-        try {
-            this.podCastEpisodeSearchResults = results;
-        } finally {
-            writeLock.unlock();
-        }
-
-    }
-
     private class RebuildPodCastEpisodeIndex implements Runnable {
         @Override
         public void run() {
@@ -200,15 +200,23 @@ public class PodCastCatalogService {
                 readLock.unlock();
             }
 
-            for (PodCastEpisode podCastEpisode : visitor.getPodCastEpisodes()) {
-                results.add(new PodCastEpisodeResultItem(podCastEpisode.getTitle(),
-                        podCastEpisode.getDescription(), podCastEpisode.getPodCastCollectionId(), podCastEpisode.getTargetURL()));
+            writeLock.lock();
+            LOG.info("Rebuilding textSearchEngine size=" + results.size());
+            try {
+                for (PodCastEpisode podCastEpisode : visitor.getPodCastEpisodes()) {
+                    PodCastEpisodeResultItem resultItem = new PodCastEpisodeResultItem(podCastEpisode.getTitle(),
+                            podCastEpisode.getDescription(), podCastEpisode.getPodCastCollectionId(), podCastEpisode.getTargetURL());
+
+                    String text = podCastEpisode.getTitle() + " " + podCastEpisode.getDescription();
+                    textSearchEngine.addText(text, TextSearchEngine.Prio.HIGH, resultItem);
+                }
+
+                textSearchEngine.buildIndex();
+            } finally {
+                writeLock.unlock();
             }
 
-            replaceIndex(results);
-
             LOG.info("Done RebuildPodCastEpisodeIndex...");
-
         }
     }
 

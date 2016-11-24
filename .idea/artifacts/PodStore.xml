@@ -3,6 +3,11 @@
     <output-path>$USER_HOME$/dev/eap1/deployments</output-path>
     <root id="archive" name="PodStore.war">
       <element id="artifact" artifact-name="PodStore:war exploded" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="commons-lang3-3.4" />
+        </element>
+      </element>
     </root>
   </artifact>
 </component>

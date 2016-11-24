@@ -7,32 +7,18 @@ public class SearchResult {
 
     private final List<ResultItem> sortedResult = new ArrayList<>();
 
-    private final int podCastCount;
-    private final int podCastEpisodeCount;
     private final int totalCount;
-
     private final boolean noResultFound;
 
-    public SearchResult(List<PodCastSearchResponse> podCasts, List<PodCastEpisodeResultItem> podCastEpisodes) {
-        podCastCount = podCasts.size();
-        podCastEpisodeCount = podCastEpisodes.size();
-        totalCount = podCastCount + podCastEpisodeCount;
-        noResultFound = podCastEpisodes.isEmpty() && podCasts.isEmpty();
+    public SearchResult(List<ResultItem> resultItems) {
+        totalCount = resultItems.size();
+        noResultFound = resultItems.isEmpty();
 
-        sortedResult.addAll(podCastEpisodes);
-        sortedResult.addAll(podCasts);
+        sortedResult.addAll(resultItems);
     }
 
     public List<ResultItem> getSortedResult() {
         return sortedResult;
-    }
-
-    public int getPodCastCount() {
-        return podCastCount;
-    }
-
-    public int getPodCastEpisodeCount() {
-        return podCastEpisodeCount;
     }
 
     public int getTotalCount() {
