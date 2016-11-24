@@ -9,16 +9,18 @@ import java.util.List;
 
 public class PodCastCatalog implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private final PodCastCatalogLanguage podCastCatalogLanguage;
     private final LocalDateTime created;
     private final List<Bundle> bundles;
 
-    private  PodCastCatalog(PodCastCatalogLanguage podCastCatalogLanguage, List<Bundle> bundles) {
-        if(podCastCatalogLanguage==null){
+    private PodCastCatalog(PodCastCatalogLanguage podCastCatalogLanguage, List<Bundle> bundles) {
+        if (podCastCatalogLanguage == null) {
             throw new IllegalArgumentException("podCastCatalogLanguage is mandatory");
         }
 
-        if(bundles ==null || bundles.isEmpty()){
+        if (bundles == null || bundles.isEmpty()) {
             throw new IllegalArgumentException("bundles is mandatory");
         }
 

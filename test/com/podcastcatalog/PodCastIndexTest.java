@@ -34,4 +34,17 @@ public class PodCastIndexTest {
 
         Assert.assertNotNull(podCastIndex.lookup("66"));
     }
+
+    @Test
+    public void status() {
+        List<PodCast> podCasts = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            podCasts.add(PodCastTest.createValid().description("b" + i).collectionId("" + i).build());
+        }
+
+        PodCastIndex podCastIndex = PodCastIndex.create();
+        podCastIndex.buildIndex(podCasts);
+
+        Assert.assertNotNull(podCastIndex.getStatus());
+    }
 }

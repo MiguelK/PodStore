@@ -4,7 +4,7 @@ import com.podcastcatalog.api.response.PodCast;
 
 import java.util.*;
 
-public class PodCastIndex {
+class PodCastIndex {
 
     private Map<String, PodCast> index = new HashMap<>();
 
@@ -16,11 +16,6 @@ public class PodCastIndex {
         return new PodCastIndex();
     }
 
-  /*  public PodCastIndex(List<PodCast> podCasts) {
-        this.podCasts = Collections.unmodifiableList(podCasts);
-    }*/
-
-
     public void buildIndex(List<PodCast> podCasts) {
         index = new HashMap<>(); //clear?
 
@@ -29,5 +24,9 @@ public class PodCastIndex {
 
     public Optional<PodCast> lookup(String id) {
         return Optional.ofNullable(index.get(id));
+    }
+
+    public String getStatus() {
+        return "PodCastIndex: Size=" + index.size();
     }
 }

@@ -11,6 +11,10 @@ class TextSearchEngine<T> {
 
     private final List<InputData> inputDatas;
 
+    public String getStatus() {
+        return "TextSearchEngine: indexSize=" + index.size();
+    }
+
     enum Prio {
         HIGH(100), HIGHEST(300), LOW(10);
 

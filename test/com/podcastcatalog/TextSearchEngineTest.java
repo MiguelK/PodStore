@@ -113,4 +113,20 @@ public class TextSearchEngineTest {
         Assert.assertEquals(search1.get(0), podcast2);//Pod higer prio
         Assert.assertEquals(search1.get(1), episode2);
     }
+
+    @Test
+    public void status() {
+
+        for (int i = 0; i < 100; i++) {
+            MyItem podcast1 = new MyItem("PodCast" + i);
+            searchEngine.addText("Sommar i " + i, TextSearchEngine.Prio.HIGHEST, podcast1);
+        }
+
+        MyItem found = new MyItem("Found");
+        searchEngine.addText("Sommar i Stockholm", TextSearchEngine.Prio.LOW, found);
+
+        searchEngine.buildIndex();
+
+        Assert.assertNotNull(searchEngine.getStatus());
+    }
 }

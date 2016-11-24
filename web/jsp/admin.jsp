@@ -29,6 +29,21 @@
 
 <%=stringFormatter.format()%>
 
+<table>
+    <tr>
+        <td>PodCastIndex</td>
+        <td><%= PodCastCatalogService.getInstance().getPodCastIndexStatus() %>
+        </td>
+    </tr>
+
+    <tr>
+        <td>TextSearchEngine</td>
+        <td><%= PodCastCatalogService.getInstance().getTextSearchEngineStatus() %>
+        </td>
+    </tr>
+
+</table>
+
 <br>
 
 <table>
@@ -67,7 +82,7 @@
         <td>
             <form action="http://localhost:10080/PodStore/jsonfile?lang='SV'">
                 <button type="submit" value="refresh" title="refresh">
-                   get ZIP file
+                    get ZIP file
                 </button>
             </form>
         </td>

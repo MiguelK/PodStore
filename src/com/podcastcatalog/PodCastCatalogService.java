@@ -14,7 +14,10 @@ import com.podcastcatalog.builder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.store.DataStorage;
 
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
@@ -54,12 +57,46 @@ public class PodCastCatalogService {
         return INSTANCE;
     }
 
+    public Optional<PodCast> getPodCastById(String id) {
+        return podCastIndex.lookup(id);
+    }
+
     void registerPodCastCatalogBuilder(PodCastCatalogBuilder builder) {
         podCastCatalogBuilders.add(builder);
     }
 
     void setStorage(DataStorage storage) {
         this.storage = storage;
+    }
+
+    public PodCastCatalog getPodCastCatalog(PodCastCatalogLanguage podCastCatalogLanguage) {
+        readLock.lock();
+        try {
+            return podCastCatalogByLang.get(podCastCatalogLanguage);
+
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    public String getTextSearchEngineStatus() {
+        readLock.lock();
+        try {
+            return textSearchEngine.getStatus();
+
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    public String getPodCastIndexStatus() {
+        readLock.lock();
+        try {
+            return podCastIndex.getStatus();
+
+        } finally {
+            readLock.unlock();
+        }
     }
 
     void loadPodCastCatalog(PodCastCatalog podCastCatalog) {
@@ -77,12 +114,24 @@ public class PodCastCatalogService {
     public void buildPodCastCatalogsAsync() {
         validateState();
 
-        ayncExecutor.submit(new RebuildCatalogAction());
+        ayncExecutor.submit(new BuildPodCastCatalogAction());
     }
 
-    public void rebuildIndex() {
-        LOG.info("rebuildIndex() called");
-        ayncExecutor.submit(new RebuildIndex());
+    public List<ResultItem> searchEpisodes(String queryParam) {
+        //FIXME Sort algoritm? limit 5 etc...
+        List<ResultItem> resultItems = new ArrayList<>();
+        List<PodCastResultItem> podCasts = ItunesSearchAPI.search("term=" + queryParam + "&entity=podcast&limit=5").searchPodCast();
+        resultItems.addAll(podCasts);
+
+        List<ResultItem> result = this.textSearchEngine.lookup(queryParam);
+        resultItems.addAll(result);
+
+        return resultItems;
+    }
+
+    void buildIndex() {
+        LOG.info("buildIndex() called");
+        ayncExecutor.submit(new BuildIndexAction());
 
     }
 
@@ -97,30 +146,14 @@ public class PodCastCatalogService {
         validateState();
 
         try {
-            ayncExecutor.submit(new RebuildCatalogAction()).get(MAX_BUILD_CATALOG_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+            ayncExecutor.submit(new BuildPodCastCatalogAction()).get(MAX_BUILD_CATALOG_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
         } catch (Exception e) {
             throw new RuntimeException("Unable to rebuild catalogs ", e);
         }
     }
 
-    public List<ResultItem> searchEpisodes(String queryParam) {
 
-        //FIXME Sort algoritm? limit 5 etc...
-        List<ResultItem> resultItems = new ArrayList<>();
-        List<PodCastResultItem> podCasts = ItunesSearchAPI.search("term=" + queryParam + "&entity=podcast&limit=5").searchPodCast();
-        resultItems.addAll(podCasts);
-
-        List<ResultItem> result = this.textSearchEngine.lookup(queryParam);
-        resultItems.addAll(result);
-
-        return resultItems;
-    }
-
-    public Optional<PodCast> getPodCastById(String id) {
-        return podCastIndex.lookup(id);
-    }
-
-    private class RebuildCatalogAction implements Runnable {
+    private class BuildPodCastCatalogAction implements Runnable {
 
         @Override
         public void run() {
@@ -146,7 +179,6 @@ public class PodCastCatalogService {
             }
 
             writeLock.lock();
-
             try {
                 for (PodCastCatalogLanguage language : newCatalogs.keySet()) {
                     LOG.info("PodCastCatalog " + language + " was updated with new version");
@@ -157,14 +189,14 @@ public class PodCastCatalogService {
                 writeLock.unlock();
             }
 
-            rebuildIndex();
+            buildIndex();
         }
     }
 
-    private class RebuildIndex implements Runnable {
+    private class BuildIndexAction implements Runnable {
         @Override
         public void run() {
-            LOG.info("Started RebuildPodCastEpisodeIndex...");
+            LOG.info("Start " + BuildIndexAction.class.getSimpleName() + " catalogs=" + podCastCatalogByLang.size() + "...");
 
             BundleItemVisitor bundleItemVisitor = new BundleItemVisitor();
 
@@ -201,17 +233,7 @@ public class PodCastCatalogService {
                 writeLock.unlock();
             }
 
-            LOG.info("Done RebuildPodCastEpisodeIndex...");
-        }
-    }
-
-    public PodCastCatalog getPodCastCatalog(PodCastCatalogLanguage podCastCatalogLanguage) {
-        readLock.lock();
-        try {
-            return podCastCatalogByLang.get(podCastCatalogLanguage);
-
-        } finally {
-            readLock.unlock();
+            LOG.info("Done " + BuildIndexAction.class.getSimpleName());
         }
     }
 
@@ -226,12 +248,13 @@ public class PodCastCatalogService {
                 bundles.add(bundle);
             }
 
-
             List<PodCast> podCasts = new ArrayList<>();
-            bundles.stream().filter(b -> b instanceof PodCastBundle).forEach(e -> podCasts.addAll(((PodCastBundle) e).getBundleItems()));
+            bundles.stream().filter(b -> b instanceof PodCastBundle).forEach(e ->
+                    podCasts.addAll(((PodCastBundle) e).getBundleItems()));
 
             List<PodCastCategory> podCastCategories = new ArrayList<>();
-            bundles.stream().filter(b -> b instanceof PodCastCategoryBundle).forEach(e -> podCastCategories.addAll(((PodCastCategoryBundle) e).getBundleItems()));
+            bundles.stream().filter(b -> b instanceof PodCastCategoryBundle).forEach(e ->
+                    podCastCategories.addAll(((PodCastCategoryBundle) e).getBundleItems()));
 
             bundles.addAll(podCastCatalogBuilder.createFromFetchedData(podCasts, podCastCategories));
 
