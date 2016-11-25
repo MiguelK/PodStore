@@ -11,7 +11,7 @@ class TextSearchEngine<T> {
 
     private final List<InputData> inputDatas;
 
-    public String getStatus() {
+    String getStatus() {
         return "TextSearchEngine: indexSize=" + index.size();
     }
 

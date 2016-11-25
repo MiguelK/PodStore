@@ -4,7 +4,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 public class SearchResultTest {
 
@@ -21,18 +20,8 @@ public class SearchResultTest {
     public void totalCount() {
         SearchResult searchResult = new SearchResult(Arrays.asList(new PodCastEpisodeResultItem("title", "descr", "123", "url"),
                 new PodCastEpisodeResultItem("title", "descr", "123", "url")));
-        Assert.assertTrue(searchResult.getTotalCount() == 2);
+        Assert.assertTrue(searchResult.getResultItems().size() == 2);
     }
 
-    @Test
-    public void isNoResultFound_false() {
-        SearchResult searchResult = new SearchResult(Collections.singletonList(new PodCastEpisodeResultItem("title", "descr", "123", "url")));
-        Assert.assertFalse(searchResult.isNoResultFound());
-    }
 
-    @Test
-    public void isNoResultFound_true() {
-        SearchResult searchResult = new SearchResult(Collections.emptyList());
-        Assert.assertTrue(searchResult.isNoResultFound());
-    }
 }

@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
-//Zipped JSON?
+/**
+ *
+ */
 public class PodCastCatalogServlet extends HttpServlet {
 
     private final static Logger LOG = Logger.getLogger(PodCastCatalogServlet.class.getName());

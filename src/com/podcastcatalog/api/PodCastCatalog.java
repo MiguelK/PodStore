@@ -64,9 +64,7 @@ public class PodCastCatalog {
 //            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Not ready yet").build();
 //        }
 
-
-        //FIXME should uncahed PodCats be fetched??
-        List<ResultItem> podCastEpisodes = PodCastCatalogService.getInstance().searchEpisodes(queryParam);
+        List<ResultItem> podCastEpisodes = PodCastCatalogService.getInstance().search(queryParam);
 
         SearchResult searchResult = new SearchResult(podCastEpisodes);
 

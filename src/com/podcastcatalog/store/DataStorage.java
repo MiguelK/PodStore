@@ -22,6 +22,27 @@ public class DataStorage {
 
     private final File rootDir;
 
+    public void save(PodCastCatalog podCastCatalog) {
+        PodCastCatalogVersion versionDirectory = createNewVersionDirectory();
+
+        saveAsObject(podCastCatalog, versionDirectory);
+        File json = saveAsJSON(podCastCatalog, versionDirectory);
+
+        ZipFile.zip(json, versionDirectory.getSweJSONZipped());
+    }
+
+    public void deleteAll() {
+        if (!rootDir.exists() || !rootDir.isDirectory()) {
+            return;
+        }
+
+        try {
+            FileUtils.deleteDirectory(rootDir);
+        } catch (IOException e) {
+            e.printStackTrace();//FIXME
+        }
+    }
+
     public DataStorage(File dataDirectory) {
         if (dataDirectory == null) {
             throw new IllegalArgumentException("dataDirectory is null");
@@ -35,8 +56,33 @@ public class DataStorage {
         initRoot();
     }
 
+    public File getRootDir() {
+        return rootDir;
+    }
+
+    public Optional<PodCastCatalogVersion> getCurrentVersion() {
+        List<PodCastCatalogVersion> allVersions = getAllVersions();
+
+        if (allVersions.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(allVersions.get(0));
+    }
+
     public DataStorage() {
         this(new HomeDirectoryLocator().locateDataDirectory());
+    }
+
+    List<PodCastCatalogVersion> getAllVersions() {
+
+        List<PodCastCatalogVersion> allVersions = new ArrayList<>();
+        List<File> latestVersionDirectories = getVersionDirectories();
+
+        allVersions.addAll(latestVersionDirectories.stream()
+                .map(PodCastCatalogVersion::load).collect(Collectors.toList()));
+
+        return allVersions;
     }
 
     private void initRoot() {
@@ -95,28 +141,6 @@ public class DataStorage {
         return i != -1;
     }
 
-    public void deleteAll() {
-        if (!rootDir.exists() || !rootDir.isDirectory()) {
-            return;
-        }
-
-        try {
-            FileUtils.deleteDirectory(rootDir);
-        } catch (IOException e) {
-            e.printStackTrace();//FIXME
-        }
-    }
-
-    public void save(PodCastCatalog podCastCatalog) {
-        PodCastCatalogVersion versionDirectory = createNewVersionDirectory();
-
-        saveAsObject(podCastCatalog, versionDirectory);
-        File json = saveAsJSON(podCastCatalog, versionDirectory);
-
-        ZipFile.zip(json, versionDirectory.getSweJSONZipped());
-    }
-
-
     private void saveAsObject(PodCastCatalog podCastCatalog, PodCastCatalogVersion versionDirectory) {
         FileOutputStream fileOut = null;
         ObjectOutputStream out = null;
@@ -146,28 +170,6 @@ public class DataStorage {
 
         return versionDirectory.getSweJSON();
     }
-
-    public Optional<PodCastCatalogVersion> getCurrentVersion() {
-        List<PodCastCatalogVersion> allVersions = getAllVersions();
-
-        if (allVersions.isEmpty()) {
-            return Optional.empty();
-        }
-
-        return Optional.ofNullable(allVersions.get(0));
-    }
-
-    public List<PodCastCatalogVersion> getAllVersions() {
-
-        List<PodCastCatalogVersion> allVersions = new ArrayList<>();
-        List<File> latestVersionDirectories = getVersionDirectories();
-
-        allVersions.addAll(latestVersionDirectories.stream()
-                .map(PodCastCatalogVersion::load).collect(Collectors.toList()));
-
-        return allVersions;
-    }
-
 
     public static class PodCastCatalogVersion {
         private int version;
@@ -233,7 +235,7 @@ public class DataStorage {
             }
         }
 
-        public File getSweJSON() {
+        File getSweJSON() {
             return sweJSON;
         }
 
@@ -241,7 +243,7 @@ public class DataStorage {
             return sweJSONZipped;
         }
 
-        public File getSweDat() {
+        File getSweDat() {
             return sweDat;
         }
 
@@ -252,6 +254,16 @@ public class DataStorage {
         public PodCastCatalog getPodCastCatalogSwedish() {
             return podCastCatalog;
         }
-    }
 
+        @Override
+        public String toString() {
+            return "PodCastCatalogVersion{" +
+                    "version=" + version +
+                    ", sweJSON=" + sweJSON +
+                    ", sweJSONZipped=" + sweJSONZipped +
+                    ", sweDat=" + sweDat +
+                    ", podCastCatalog=" + podCastCatalog +
+                    '}';
+        }
+    }
 }

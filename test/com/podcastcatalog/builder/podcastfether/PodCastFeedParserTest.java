@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
 
 public class PodCastFeedParserTest {
 
@@ -29,4 +30,15 @@ public class PodCastFeedParserTest {
         Assert.assertFalse(PodCastFeedParser.parse(new URL("http://api.sr.se/api/rssx/pod/396676"), artworkUrl600, "erere").isPresent());
     }
 
+    @Test
+    public void missingAuthor() throws MalformedURLException {
+        String missingAuthor = "http://juliafrej.libsyn.com/rss";
+
+        Optional<PodCast> podCast = PodCastFeedParser.parse(new URL(missingAuthor), artworkUrl600, "333");
+
+        Assert.assertFalse(podCast.isPresent());
+
+        System.out.println("Present=" + podCast.isPresent());
+
+    }
 }

@@ -111,34 +111,27 @@ public class PodCastCatalogService {
         }
     }
 
+
+    public List<ResultItem> search(String queryParam) {
+        //FIXME Sort algoritm? limit 5 etc...
+        List<ResultItem> resultItems = new ArrayList<>();
+        List<PodCastResultItem> podCasts = ItunesSearchAPI.search("term=" + queryParam + "&entity=podcast&limit=5").searchPodCast();
+        resultItems.addAll(podCasts);
+
+        List<ResultItem> result = textSearchEngine.lookup(queryParam);
+        resultItems.addAll(result);
+
+        return resultItems;
+    }
+
     public void buildPodCastCatalogsAsync() {
         validateState();
 
         ayncExecutor.submit(new BuildPodCastCatalogAction());
     }
 
-    public List<ResultItem> searchEpisodes(String queryParam) {
-        //FIXME Sort algoritm? limit 5 etc...
-        List<ResultItem> resultItems = new ArrayList<>();
-        List<PodCastResultItem> podCasts = ItunesSearchAPI.search("term=" + queryParam + "&entity=podcast&limit=5").searchPodCast();
-        resultItems.addAll(podCasts);
-
-        List<ResultItem> result = this.textSearchEngine.lookup(queryParam);
-        resultItems.addAll(result);
-
-        return resultItems;
-    }
-
-    void buildIndex() {
-        LOG.info("buildIndex() called");
+    void buildIndexAsync() {
         ayncExecutor.submit(new BuildIndexAction());
-
-    }
-
-    private void validateState() {
-        if (storage == null) {
-            throw new IllegalStateException("Configure storage, storage is null");
-        }
     }
 
     //FIXME Test only delete?
@@ -152,6 +145,11 @@ public class PodCastCatalogService {
         }
     }
 
+    private void validateState() {
+        if (storage == null) {
+            throw new IllegalStateException("Configure storage, storage is null");
+        }
+    }
 
     private class BuildPodCastCatalogAction implements Runnable {
 
@@ -189,7 +187,7 @@ public class PodCastCatalogService {
                 writeLock.unlock();
             }
 
-            buildIndex();
+            buildIndexAsync();
         }
     }
 

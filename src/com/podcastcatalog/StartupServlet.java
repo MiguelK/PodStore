@@ -30,9 +30,11 @@ public class StartupServlet extends HttpServlet {
         Optional<DataStorage.PodCastCatalogVersion> currentVersion = dataStorage.getCurrentVersion();
 
         if (currentVersion.isPresent()) {
+            LOG.info("Trying to load existing catalog " + currentVersion.get());
             PodCastCatalogService.getInstance().loadPodCastCatalog(currentVersion.get().getPodCastCatalogSwedish());
-            PodCastCatalogService.getInstance().buildIndex();
+            PodCastCatalogService.getInstance().buildIndexAsync();
         } else {
+            LOG.info("No catalog exists. in homeDir=" + dataStorage.getRootDir().getAbsolutePath());
             PodCastCatalogService.getInstance().buildPodCastCatalogsAsync();
         }
         //        registerOrStartLoading(dataStorage.load(PodCastCatalogLanguage.Sweden)); //FIXME English

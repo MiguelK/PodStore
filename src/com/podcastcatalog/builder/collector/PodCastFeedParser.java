@@ -6,6 +6,7 @@ import it.sauronsoftware.feed4j.FeedParser;
 import it.sauronsoftware.feed4j.FeedXMLParseException;
 import it.sauronsoftware.feed4j.UnsupportedFeedException;
 import it.sauronsoftware.feed4j.bean.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  */
 public class PodCastFeedParser {
 
+    private static final int MAX_FEED_COUNT = 100;
     private final URL feedURL;
     private final static Logger LOG = Logger.getLogger(PodCastFeedParser.class.getName());
 
@@ -43,7 +45,7 @@ public class PodCastFeedParser {
         this.feedURL = feedURL;
     }
 
-    public static String parse(String url){
+    public static String parse(String url) {
 
         URL feedURL = toURL(url);
 
@@ -66,7 +68,6 @@ public class PodCastFeedParser {
         int expectedEpisodeCount = -1;
         try {
             Feed feed = FeedParser.parse(feedURL);
-//            LOG.info("Feed=" + feed);
             PodCastFeedHeader feedHeader = new PodCastFeedHeader(feed.getHeader());
 
             podCastBuilder.title(feedHeader.getTitle()).setArtworkUrl600(artworkUrl600).
@@ -76,7 +77,7 @@ public class PodCastFeedParser {
                     .publisher(feedHeader.getPublisher())
                     .feedURL(feedHeader.getFeedURL());
 
-            expectedEpisodeCount = feed.getItemCount() > 100 ? 100 : feed.getItemCount(); //FIXME
+            expectedEpisodeCount = feed.getItemCount() > MAX_FEED_COUNT ? MAX_FEED_COUNT : feed.getItemCount(); //FIXME
 
             for (int i = 0; i < expectedEpisodeCount; i++) {
                 FeedItem item = feed.getItem(i);
@@ -85,11 +86,11 @@ public class PodCastFeedParser {
                 //FIXME createdDate
                 PodCastEpisode.Builder episodeBuilder = PodCastEpisode.newBuilder();
                 episodeBuilder.title(podCastFeedItem.getTitle()).podCastCollectionId(collectionId).
-                        createdDate(podCastFeedItem.getCreatedDate()).description(podCastFeedItem.getDescription()).id(3434).
+                        createdDate(podCastFeedItem.getCreatedDate()).description(podCastFeedItem.getDescription()).id(99).
                         duration(podCastFeedItem.getDuration()).fileSizeInMegaByte(podCastFeedItem.getFileSizeInMegaByte()).
                         targetURL(podCastFeedItem.getTargetURL()).podCastType(podCastFeedItem.getPodCastType()); //FIXME type?
 
-                if (episodeBuilder.isValid() && podCastFeedItem.getPodCastType() == PodCastEpisodeType.Audio) { //FIXME
+                if (episodeBuilder.isValid() && podCastFeedItem.getPodCastType() == PodCastEpisodeType.Audio) { //FIXME anly audio?
                     podCastBuilder.addPodCastEpisode(episodeBuilder.build());
                 }
 
@@ -98,6 +99,9 @@ public class PodCastFeedParser {
                 }
 
             }
+        } catch (FeedXMLParseException e) {
+            LOG.info("Faild to parse PodCast from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount + " Message=" + e.getMessage());
+            return Optional.empty();
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Faild to parse PodCast from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount, e);
             return Optional.empty();
@@ -108,10 +112,7 @@ public class PodCastFeedParser {
             return Optional.empty();
         }
 
-        PodCast podCast = podCastBuilder.build();
-//        LOG.info("Parsed New PodCast=" + podCast.getTitle());
-
-        return Optional.of(podCast);
+        return Optional.of(podCastBuilder.build());
     }
 
     private static class PodCastFeedHeader {
@@ -124,7 +125,8 @@ public class PodCastFeedParser {
         }
 
         private List<PodCastCategoryType> getCategories() {
-            Optional<RawElement> categoryElement = rawElements.stream().filter(r -> "category".equalsIgnoreCase(r.getName())).findFirst();
+            Optional<RawElement> categoryElement = rawElements.stream().filter(r -> "category".equalsIgnoreCase(r.getName())
+                    && StringUtils.trimToNull(r.getValue()) != null).findFirst();
 
             List<PodCastCategoryType> podCastCategories = new ArrayList<>();
             if (categoryElement.isPresent()) {
@@ -144,8 +146,9 @@ public class PodCastFeedParser {
 
         }
 
-        public LocalDateTime getCreatedDate() {
-            Optional<String> first = rawElements.stream().filter(r -> "lastBuildDate".equalsIgnoreCase(r.getName())).map(RawElement::getValue).findFirst();
+        LocalDateTime getCreatedDate() {
+            Optional<String> first = rawElements.stream().filter(r -> "lastBuildDate".equalsIgnoreCase(r.getName())
+                    && StringUtils.trimToNull(r.getValue()) != null).map(RawElement::getValue).findFirst();
 
             if (first.isPresent()) {
                 LOG.info("FIXME Implement: CreatedDate from node " + first.get());
@@ -155,8 +158,10 @@ public class PodCastFeedParser {
         }
 
         String getPublisher() {
-            Optional<String> first = rawElements.stream().filter(r -> "author".equalsIgnoreCase(r.getName())).map(RawElement::getValue).findFirst();
-            return first.isPresent() ? first.get() : "Unknown";
+            Optional<String> first = rawElements.stream().filter(r -> "author".equalsIgnoreCase(r.getName())
+                    && StringUtils.trimToNull(r.getValue()) != null).map(RawElement::getValue).findFirst();
+
+            return first.isPresent() ? first.get() : null;
         }
 
         public String getDescription() {
@@ -185,7 +190,7 @@ public class PodCastFeedParser {
             return url.toString();
         }
 
-        public String getFeedURL() {
+        String getFeedURL() {
             return feedHeader.getURL().toString();
         }
 
@@ -236,14 +241,14 @@ public class PodCastFeedParser {
             return feedItem.getTitle();
         }
 
-        public LocalDateTime getCreatedDate() {
+        LocalDateTime getCreatedDate() {
             return toLocalDateTime(feedItem.getPubDate());
         }
 
-        public PodCastEpisodeDuration getDuration() {
+        PodCastEpisodeDuration getDuration() {
 
             Optional<String> durationOptional = rawElements.stream().filter(r -> "duration".equalsIgnoreCase(r.getName())
-                    && r.getValue()!=null ).map(RawElement::getValue).findFirst();
+                    && r.getValue() != null).map(RawElement::getValue).findFirst();
 
             PodCastEpisodeDuration duration = null;
             if (durationOptional.isPresent()) {
@@ -256,8 +261,9 @@ public class PodCastFeedParser {
             return feedItem.getDescriptionAsText();//FIXME trim html?
         }
 
-        public PodCastEpisodeFileSize getFileSizeInMegaByte() {
-            Optional<RawAttribute> first = audioEnclosureAttributes.stream().filter(a -> "length".equalsIgnoreCase(a.getName())).findFirst();
+        PodCastEpisodeFileSize getFileSizeInMegaByte() {
+            Optional<RawAttribute> first = audioEnclosureAttributes.stream().filter(a -> "length".equalsIgnoreCase(a.getName()) &&
+                    StringUtils.trimToNull(a.getValue()) != null).findFirst();
 
             if (first.isPresent()) {
                 return PodCastEpisodeFileSize.parse(first.get().getValue()); //FIXME if null value?
@@ -266,9 +272,10 @@ public class PodCastFeedParser {
             return null;
         }
 
-        public String getTargetURL() {
+        String getTargetURL() {
 
-            Optional<RawAttribute> first = audioEnclosureAttributes.stream().filter(a -> "url".equalsIgnoreCase(a.getName())).findFirst();
+            Optional<RawAttribute> first = audioEnclosureAttributes.stream().filter(a -> "url".equalsIgnoreCase(a.getName()) &&
+                    StringUtils.trimToNull(a.getValue()) != null).findFirst();
 
             if (first.isPresent()) {
                 return first.get().getValue(); //FIXME if null value?
@@ -277,7 +284,7 @@ public class PodCastFeedParser {
             return feedItem.getLink().toString(); //FIXME
         }
 
-        public PodCastEpisodeType getPodCastType() {
+        PodCastEpisodeType getPodCastType() {
 
             PodCastEpisodeType podCastEpisodeType = PodCastEpisodeType.Unknown;
             int enclosureCount = feedItem.getEnclosureCount();

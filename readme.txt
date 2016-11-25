@@ -1,5 +1,3 @@
-
-
 Admin
 http://localhost:10080/PodStore
 
@@ -12,6 +10,12 @@ http://localhost:10080/PodStore/api/podCastCatalog/search?lang=SE&query=Java
 
 http://localhost:10080/PodStore/api/podCastCatalog/search?lang=SE&query=term=p3&entity=podcast&limit=3
 
+** ZIP file ****
+
+http://localhost:10080/PodStore/jsonfile?lang=SE
+
+
+
 
 
 Itunes Search API
@@ -19,11 +23,6 @@ https://itunes.apple.com/lookup?id=308339623
 
 
 https://itunes.apple.com/search?term=p3&entity=podcast&limit=3
-
-
-search
-https://itunes.apple.com/search?term=p3&entity=podcast&limit=3
-
 
 ----
 PodCastCatalog
