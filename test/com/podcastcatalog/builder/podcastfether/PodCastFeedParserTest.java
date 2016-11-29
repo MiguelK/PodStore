@@ -14,7 +14,6 @@ public class PodCastFeedParserTest {
 
     private static final String artworkUrl600 = "http://is4.mzstatic.com/image/thumb/Music62/v4/50/78/30/507830d2-568c-86e2-ecd8-ce61b6444770/source/100x100bb.jpg";
 
-
     @Test(groups = TestUtil.SLOW_TEST)
     public void parse_p3_dokumentar() throws MalformedURLException {
         String collectionId = "22233";
@@ -37,8 +36,5 @@ public class PodCastFeedParserTest {
         Optional<PodCast> podCast = PodCastFeedParser.parse(new URL(missingAuthor), artworkUrl600, "333");
 
         Assert.assertFalse(podCast.isPresent());
-
-        System.out.println("Present=" + podCast.isPresent());
-
     }
 }
