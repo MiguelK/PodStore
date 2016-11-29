@@ -65,9 +65,9 @@ public class ItunesSearchAPITest {
     @Test(groups = TestUtil.SLOW_TEST)
     public void fetch_success() {
         ItunesSearchAPI searchAPI = ItunesSearchAPI.search("term=p3&entity=podcast");
-        List<PodCast> fetch = searchAPI.collectPodCasts();
-        Assert.assertFalse(fetch.isEmpty());
-        Assert.assertTrue(fetch.size() == 41, "Actual=" + fetch.size());
+        List<PodCast> podCasts = searchAPI.collectPodCasts();
+        Assert.assertFalse(podCasts.isEmpty());
+        Assert.assertTrue(podCasts.size() == 41, "Actual=" + podCasts.size());
     }
 
 }
