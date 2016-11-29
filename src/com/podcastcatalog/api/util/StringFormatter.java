@@ -28,6 +28,9 @@ public class StringFormatter {
         if(podCastCatalog==null){
             return "PodCastCatalog not ready yet.?";
         }
+        if(true){
+            return "Disabled test... FIXME";//FIXME
+        }
 
         StringBuilder result = new StringBuilder();
 

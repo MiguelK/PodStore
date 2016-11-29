@@ -14,7 +14,7 @@ public class Subscriber {
     @Produces(MediaType.APPLICATION_JSON)
     public Response registerSubscriber(@PathParam("deviceToken") String deviceToken) {
         try {
-            PodCastSubscriptions.registerSubscriber(deviceToken);
+            PodCastSubscriptions.getInstance().registerSubscriber(deviceToken);
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Failed to register new Subscriber " + e.getMessage()).build();
         }
@@ -27,7 +27,7 @@ public class Subscriber {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteSubscriber(@PathParam("deviceToken") String deviceToken) {
         try {
-            PodCastSubscriptions.deleteSubscriber(deviceToken);
+            PodCastSubscriptions.getInstance().deleteSubscriber(deviceToken);
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Failed to delete Subscriber " + e.getMessage()).build();
         }
@@ -36,8 +36,24 @@ public class Subscriber {
     }
 
     @GET
+    @Path("{deviceToken}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSubscriber(@PathParam("deviceToken") String deviceToken) {
+
+        com.podcastcatalog.subscribe.internal.Subscriber subscriber;
+        try {
+            subscriber = PodCastSubscriptions.getInstance().getSubscriber(deviceToken);
+
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Failed to get Subscriber " + e.getMessage()).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(subscriber).build();
+    }
+
+    @GET
     @Produces(MediaType.TEXT_HTML)
     public Response getStatus() {
-        return Response.status(Response.Status.OK).entity("<html><body>FIXME: Subscriber status</body></html>").build();
+        return Response.status(Response.Status.OK).entity(PodCastSubscriptions.getInstance().getStatusAsHTLM()).build();
     }
 }

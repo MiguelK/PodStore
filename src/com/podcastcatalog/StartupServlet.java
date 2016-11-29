@@ -2,6 +2,7 @@ package com.podcastcatalog;
 
 import com.podcastcatalog.builder.PodCastCatalogBuilderSE;
 import com.podcastcatalog.store.DataStorage;
+import com.podcastcatalog.subscribe.PodCastSubscriptions;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -23,6 +24,8 @@ public class StartupServlet extends HttpServlet {
         DataStorage dataStorage = new DataStorage();
 
         LOG.info("Starting PodCastCatalog..., working dir= " + dataStorage);
+
+        PodCastSubscriptions.getInstance().loadFromDiskAsync(dataStorage);
 
         PodCastCatalogService.getInstance().setStorage(dataStorage);
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());//FIXME English

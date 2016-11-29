@@ -45,7 +45,7 @@ class TextSearchEngine<T> {
             List<String> words = Arrays.asList(StringUtils.split(text));
 
             int rank = inputData.getPrio().getRank();
-            Node<T> node11 = index.putIfAbsent(text, new Node<>(false, text, new TargetRelation<>(inputData.getTargetObject(), rank)));
+            Node<T> node11 = index.putIfAbsent(text, new Node<>(text, new TargetRelation<>(inputData.getTargetObject(), rank)));
             if (node11 != null) {
                 node11.addTargetRelation(new TargetRelation<>(inputData.getTargetObject(), rank));
             }
@@ -60,7 +60,7 @@ class TextSearchEngine<T> {
                         rank += 600; //FIXME ?
                     }
 
-                    node1 = index.putIfAbsent(term, new Node<>(false, term, new TargetRelation<>(inputData.getTargetObject(), rank)));
+                    node1 = index.putIfAbsent(term, new Node<>(term, new TargetRelation<>(inputData.getTargetObject(), rank)));
                     if (node1 != null) {
                         node1.addTargetRelation(new TargetRelation<>(inputData.getTargetObject(), rank));
                     }
@@ -99,28 +99,15 @@ class TextSearchEngine<T> {
         return values;
     }
 
-    //Terrorn i Paris centrum
-    //Parkeringsplatsen i Malmö
-    // SearchTernm= "Par"       //Node: term="par" partOffset=
-    // SearchTernm= "Par"       //Node: term="par" partOffset=
     private static class Node<T> {
-        final boolean rootNode; //rootTextPart, rootTextFull
-        final String term; //"a"
-//        private boolean wordMatch;
-
-        //        int partOffset; //Max =20 antal hop till fullt ord, offset into chidlrens?
-//        List<Node> word = new ArrayList<Node>();
-//        List<Node> childrens = new ArrayList<Node>();
-//        List<Node> partsAfter = new ArrayList<Node>(); //Jagad av staten //All full word after
-//        List<Node> partsBefore = new ArrayList<Node>(); //Jagad av staten //All full word before
-        //        List<T> ts
-//        private Set<T> targets = new HashSet<T>();
+        final boolean rootNode;
+        final String term;
         private List<T> targets;
 
         private final List<TargetRelation<T>> targetRelations = new ArrayList<>();
 
-        Node(boolean rootNode, String term, TargetRelation<T> targetRelation) {
-            this.rootNode = rootNode;
+        Node(String term, TargetRelation<T> targetRelation) {
+            this.rootNode = false;
             this.term = term;
             targetRelations.add(targetRelation);
         }
@@ -142,7 +129,7 @@ class TextSearchEngine<T> {
                     '}';
         }
 
-        public void sortResult() {
+        void sortResult() {
             targets = new ArrayList<>();
 
             Collections.sort(targetRelations);
@@ -174,11 +161,11 @@ class TextSearchEngine<T> {
             return text;
         }
 
-        public Prio getPrio() {
+        Prio getPrio() {
             return prio;
         }
 
-        public T getTargetObject() {
+        T getTargetObject() {
             return targetObject;
         }
     }
@@ -192,12 +179,12 @@ class TextSearchEngine<T> {
             return targetRelation.rank - rank;
         }
 
-        public TargetRelation(T targetObject, int rank) {
+        TargetRelation(T targetObject, int rank) {
             this.targetObject = targetObject;
             this.rank = rank;
         }
 
-        public T getTargetObject() {
+        T getTargetObject() {
             return targetObject;
         }
     }

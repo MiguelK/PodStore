@@ -1,7 +1,9 @@
 <%@ page import="com.podcastcatalog.PodCastCatalogService" %>
 <%@ page import="com.podcastcatalog.api.response.PodCastCatalogLanguage" %>
 <%@ page import="javax.ws.rs.core.Response" %>
-<%@ page import="com.podcastcatalog.api.util.StringFormatter" %><%--
+<%@ page import="com.podcastcatalog.api.util.StringFormatter" %>
+<%@ page import="com.podcastcatalog.subscribe.Subscription" %>
+<%@ page import="com.podcastcatalog.subscribe.PodCastSubscriptions" %><%--
   Created by IntelliJ IDEA.
   User: krantmig
   Date: 11/8/16
@@ -28,6 +30,12 @@
 %>
 
 <%=stringFormatter.format()%>
+
+<tr>
+    <td>SubscriptionService</td>
+    <td><%=PodCastSubscriptions.getInstance().getStatusAsHTLM() %>
+    </td>
+</tr>
 
 <table>
     <tr>
@@ -90,16 +98,24 @@
 
     <tr>
         <td>
-            <form method="post" action="http://localhost:10080/podCastSubscription/123/999">
+            <form method="post" action="http://localhost:10080/PodStore/api/subscriber/123">
                 <button type="submit" value="subscribe" title="subscribe">
-                    subscribe
+                    Create Subscribe (123)
+                </button>
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <form method="post" action="http://localhost:10080/PodStore/api/podCastSubscription/123/999">
+                <button type="submit" value="subscribe" title="subscribe">
+                    subscribe (SubscribeId=123)
                 </button>
             </form>
         </td>
     </tr>
 </table>
 <br>
-
 
 </body>
 </html>
