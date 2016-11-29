@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class PodCastEpisode extends BundleItem implements Serializable {
-    private final int id; //FIXME ? episode-id?
+    private final String id;
     private final String targetURL;
 
     private final PodCastEpisodeFileSize fileSize; //Optional can be null
@@ -17,7 +17,7 @@ public class PodCastEpisode extends BundleItem implements Serializable {
 
     private final String podCastCollectionId; //PodCast that contains this episode, used when subscribing after direct play
 
-    private PodCastEpisode(int id, String title, String description, String targetURL, PodCastEpisodeDuration duration,
+    private PodCastEpisode(String id, String title, String description, String targetURL, PodCastEpisodeDuration duration,
                            PodCastEpisodeFileSize fileSize, PodCastEpisodeType podCastType, LocalDateTime createdDate,
                            String podCastCollectionId) {
         super(title, description, null/*Client is using image form parent PodCast */);
@@ -42,7 +42,7 @@ public class PodCastEpisode extends BundleItem implements Serializable {
         return fileSize;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -103,7 +103,7 @@ public class PodCastEpisode extends BundleItem implements Serializable {
     }
 
     public static class Builder {
-        private int id; //FIXME ? episode-id?
+        private String id;
         private String podCastCollectionId;
         private String title;
         private String description;
@@ -123,8 +123,8 @@ public class PodCastEpisode extends BundleItem implements Serializable {
             return this;
         }
 
-        public Builder id(int id) {
-            this.id = id;
+        public Builder id(String id) {
+            this.id = StringUtils.trimToNull(id);
             return this;
         }
 
@@ -185,7 +185,7 @@ public class PodCastEpisode extends BundleItem implements Serializable {
             if (createdDate == null) {
                 throw new IllegalArgumentException("createdDate is mandatory");
             }
-            if (id == 0 || id < 0) {
+            if (StringUtils.isEmpty(id)) {
                 throw new IllegalArgumentException("Invalid id " + id + " mus be > 0");
             }
 

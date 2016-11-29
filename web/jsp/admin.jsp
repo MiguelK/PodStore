@@ -88,8 +88,16 @@
         </td>
     </tr>
 
+    <tr>
+        <td>
+            <form method="post" action="http://localhost:10080/podCastSubscription/123/999">
+                <button type="submit" value="subscribe" title="subscribe">
+                    subscribe
+                </button>
+            </form>
+        </td>
+    </tr>
 </table>
-
 <br>
 
 

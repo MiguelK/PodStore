@@ -2,13 +2,22 @@ Admin
 http://localhost:10080/PodStore
 
 ----   API ------
-getPodCastCatalog
+[podCastCatalog]
 http://localhost:10080/PodStore/api/podCastCatalog?lang='SV'
-
-search
 http://localhost:10080/PodStore/api/podCastCatalog/search?lang=SE&query=Java
-
 http://localhost:10080/PodStore/api/podCastCatalog/search?lang=SE&query=term=p3&entity=podcast&limit=3
+
+[podCast]
+http://localhost:10080/PodStore/api/podCast?id='podCastCollectionId'
+
+[subscriber]
+GET http://localhost:10080/PodStore/api/subscriber   (Get status)
+
+[podCastSubscription]
+GET http://localhost:10080/PodStore/api/podCastSubscription   (Get status)
+
+
+
 
 ** ZIP file ****
 

@@ -103,17 +103,17 @@ public class PodCastEpisodeTest {
 
     @Test
     public void testId() {
-        Assert.assertEquals(createValid().id(99).build().getId(), 99);
+        Assert.assertEquals(createValid().id("99").build().getId(), "99");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void invalid_id_negative() {
-        createValid().id(-1).build();
+    public void invalid_id_null() {
+        createValid().id(null).build();
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void invalid_id_zero() {
-        createValid().id(0).build();
+    public void invalid_id_empty() {
+        createValid().id(" ").build();
     }
 
     @Test
@@ -187,7 +187,7 @@ public class PodCastEpisodeTest {
 
     public static PodCastEpisode.Builder createValid(){
 
-        return PodCastEpisode.newBuilder().description("sdsd").title("dsd").id(99)
+        return PodCastEpisode.newBuilder().description("sdsd").title("dsd").id("9999")
                 .fileSizeInMegaByte(PodCastEpisodeFileSize.parse("9155554")).duration(PodCastEpisodeDuration.parse("01:24:15"))
                 .createdDate(LocalDateTime.now()).targetURL("dfdsdf").podCastType(PodCastEpisodeType.Audio).podCastCollectionId("8788");
 

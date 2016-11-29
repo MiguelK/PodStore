@@ -83,10 +83,11 @@ public class PodCastFeedParser {
                 FeedItem item = feed.getItem(i);
                 PodCastFeedItem podCastFeedItem = new PodCastFeedItem(item);
 
+                String guid = item.getGUID();
                 //FIXME createdDate
                 PodCastEpisode.Builder episodeBuilder = PodCastEpisode.newBuilder();
                 episodeBuilder.title(podCastFeedItem.getTitle()).podCastCollectionId(collectionId).
-                        createdDate(podCastFeedItem.getCreatedDate()).description(podCastFeedItem.getDescription()).id(99).
+                        createdDate(podCastFeedItem.getCreatedDate()).description(podCastFeedItem.getDescription()).id(guid).
                         duration(podCastFeedItem.getDuration()).fileSizeInMegaByte(podCastFeedItem.getFileSizeInMegaByte()).
                         targetURL(podCastFeedItem.getTargetURL()).podCastType(podCastFeedItem.getPodCastType()); //FIXME type?
 
