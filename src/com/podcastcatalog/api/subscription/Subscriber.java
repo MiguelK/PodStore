@@ -43,7 +43,6 @@ public class Subscriber {
         com.podcastcatalog.subscribe.internal.Subscriber subscriber;
         try {
             subscriber = PodCastSubscriptionService.getInstance().getSubscriber(deviceToken);
-
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Failed to get Subscriber " + e.getMessage()).build();
         }

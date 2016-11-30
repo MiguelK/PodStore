@@ -1,10 +1,13 @@
 package com.podcastcatalog.api.subscription;
 
-import com.podcastcatalog.subscribe.*;
+import com.podcastcatalog.PodCastCatalogService;
+import com.podcastcatalog.api.response.PodCast;
+import com.podcastcatalog.subscribe.PodCastSubscriptionService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Optional;
 
 @Path("/podCastSubscription")
 public class PodCastSubscription {
@@ -17,7 +20,8 @@ public class PodCastSubscription {
 
         try {
             PodCastSubscriptionService.getInstance().subscribe(deviceToken, contentId, contentId1 -> {
-                return true; //FIXME check in ProdCat collectionId exists
+                Optional<PodCast> podCast = PodCastCatalogService.getInstance().getPodCastById(contentId);
+                return podCast.isPresent();
             });
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Failed to subscribe " + e.getMessage()).build();

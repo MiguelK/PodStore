@@ -133,8 +133,9 @@ public class PodCastSubscriptionService {
         html.append("<tr><td>Subscribers</td><td>").append(subscriptionData.getSubscribers().size()).append("</td></tr>");
         html.append("<tr><td>Subscriptions</td><td>").append(subscriptionData.getSubscriptions().size()).append("</td></tr>");
         for (Subscriber subscriber : subscriptionData.getSubscribers()) {
-            html.append("<tr><td>").append(subscriber.getDeviceToken()).append("</td>").append("<td>"
-                    + subscriber.getSubscriptions().size() + "</td>").append("</tr>");
+            html.append("<tr><td>").append(subscriber.getDeviceToken())
+                    .append("</td>").append("<td>").append(subscriber.getSubscriptions().size())
+                    .append("</td>").append("</tr>");
         }
 
         html.append("</table>");
