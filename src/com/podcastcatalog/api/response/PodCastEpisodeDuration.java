@@ -54,16 +54,15 @@ public class PodCastEpisodeDuration implements Serializable{
         return totalSeconds;
     }
 
-    private static Optional<LocalTime> toSeconds(final String input) {
+    public static Optional<LocalTime> toSeconds(final String input) {
 
         String trimmedInput = StringUtils.trimToEmpty(input);
         if(trimmedInput.chars().filter(c->c==':').count()!=2){
             return Optional.empty();
         }
 
-
         String substring = trimmedInput.substring(0, 2);
-//        System.out.println(substring);
+
         if(substring.contains(":")){
             trimmedInput = "0" + trimmedInput;
         }

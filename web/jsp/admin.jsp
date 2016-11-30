@@ -3,7 +3,7 @@
 <%@ page import="javax.ws.rs.core.Response" %>
 <%@ page import="com.podcastcatalog.api.util.StringFormatter" %>
 <%@ page import="com.podcastcatalog.subscribe.Subscription" %>
-<%@ page import="com.podcastcatalog.subscribe.PodCastSubscriptions" %><%--
+<%@ page import="com.podcastcatalog.subscribe.PodCastSubscriptionService" %><%--
   Created by IntelliJ IDEA.
   User: krantmig
   Date: 11/8/16
@@ -33,7 +33,7 @@
 
 <tr>
     <td>SubscriptionService</td>
-    <td><%=PodCastSubscriptions.getInstance().getStatusAsHTLM() %>
+    <td><%=PodCastSubscriptionService.getInstance().getStatusAsHTLM() %>
     </td>
 </tr>
 
@@ -107,7 +107,7 @@
     </tr>
     <tr>
         <td>
-            <form method="post" action="http://localhost:10080/PodStore/api/podCastSubscription/123/999">
+            <form method="post" action="http://localhost:10080/PodStore/api/podCastSubscription/123/983093754">
                 <button type="submit" value="subscribe" title="subscribe">
                     subscribe (SubscribeId=123)
                 </button>

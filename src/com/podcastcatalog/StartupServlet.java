@@ -1,8 +1,10 @@
 package com.podcastcatalog;
 
 import com.podcastcatalog.builder.PodCastCatalogBuilderSE;
+import com.podcastcatalog.job.JobManager;
+import com.podcastcatalog.job.SubscriptionNotifierJob;
 import com.podcastcatalog.store.DataStorage;
-import com.podcastcatalog.subscribe.PodCastSubscriptions;
+import com.podcastcatalog.subscribe.PodCastSubscriptionService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class StartupServlet extends HttpServlet {
@@ -25,7 +28,10 @@ public class StartupServlet extends HttpServlet {
 
         LOG.info("Starting PodCastCatalog..., working dir= " + dataStorage);
 
-        PodCastSubscriptions.getInstance().loadFromDiskAsync(dataStorage);
+        JobManager.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
+        JobManager.getInstance().startAsync();
+
+        PodCastSubscriptionService.getInstance().loadFromDiskAsync(dataStorage);
 
         PodCastCatalogService.getInstance().setStorage(dataStorage);
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());//FIXME English

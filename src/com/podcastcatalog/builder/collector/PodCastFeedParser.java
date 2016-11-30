@@ -1,6 +1,7 @@
 package com.podcastcatalog.builder.collector;
 
 import com.podcastcatalog.api.response.*;
+import com.podcastcatalog.api.util.DateUtil;
 import it.sauronsoftware.feed4j.FeedIOException;
 import it.sauronsoftware.feed4j.FeedParser;
 import it.sauronsoftware.feed4j.FeedXMLParseException;
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.logging.Level;
@@ -28,7 +30,7 @@ public class PodCastFeedParser {
 
     public static Optional<PodCast> parse(URL feedURL, String artworkUrl600, String collectionId) {
         PodCastFeedParser podCastFeedParser = new PodCastFeedParser(feedURL);
-        return podCastFeedParser.parse(artworkUrl600, collectionId);
+        return podCastFeedParser.parse(artworkUrl600, collectionId, MAX_FEED_COUNT);
     }
 
     private static URL toURL(String url) {
@@ -43,6 +45,19 @@ public class PodCastFeedParser {
 
     private PodCastFeedParser(URL feedURL) {
         this.feedURL = feedURL;
+    }
+
+    public static Optional<PodCastEpisode> parseLatestPodCastEpisode(PodCast url) {
+
+        URL feedURL = toURL(url.getFeedURL());
+
+        PodCastFeedParser podCastFeedParser = new PodCastFeedParser(feedURL);
+        Optional<PodCast> parse = podCastFeedParser.parse(url.getArtworkUrl600(), url.getCollectionId(), 1);
+        if (parse.isPresent()) {
+            return Optional.ofNullable(parse.get().getLatestPodCastEpisode());
+        }
+
+        return Optional.empty();
     }
 
     public static String parse(String url) {
@@ -62,7 +77,7 @@ public class PodCastFeedParser {
         return null;
     }
 
-    private Optional<PodCast> parse(String artworkUrl600, String collectionId) {
+    private Optional<PodCast> parse(String artworkUrl600, String collectionId, int maxFeedCount) {
         PodCast.Builder podCastBuilder = PodCast.newBuilder();
 
         int expectedEpisodeCount = -1;
@@ -77,7 +92,7 @@ public class PodCastFeedParser {
                     .publisher(feedHeader.getPublisher())
                     .feedURL(feedHeader.getFeedURL());
 
-            expectedEpisodeCount = feed.getItemCount() > MAX_FEED_COUNT ? MAX_FEED_COUNT : feed.getItemCount(); //FIXME
+            expectedEpisodeCount = feed.getItemCount() > maxFeedCount ? maxFeedCount : feed.getItemCount(); //FIXME
 
             for (int i = 0; i < expectedEpisodeCount; i++) {
                 FeedItem item = feed.getItem(i);
@@ -239,10 +254,31 @@ public class PodCastFeedParser {
         }
 
         public String getTitle() {
+
             return feedItem.getTitle();
         }
 
         LocalDateTime getCreatedDate() {
+            Optional<String> publishDate = rawElements.stream().filter(r -> "pubDate".equalsIgnoreCase(r.getName())
+                    && r.getValue() != null).map(RawElement::getValue).findFirst();
+
+            if (publishDate.isPresent()) {
+//                LocalDateTime parse = LocalDateTime.parse(publishDate.get());
+                try {
+                    Optional<LocalDateTime> parse = DateUtil.parse(publishDate.get());
+                    System.out.println(parse);
+                } catch (DateUtil.DateTimeParserException e) {
+                    e.printStackTrace();
+                }
+
+                Optional<LocalTime> localTime = PodCastEpisodeDuration.toSeconds(publishDate.get());
+
+                return toLocalDateTime(feedItem.getPubDate());
+            } else {
+                LOG.warning("Will be eror in push...?//FIXME"); //FIXME
+            }
+
+
             return toLocalDateTime(feedItem.getPubDate());
         }
 

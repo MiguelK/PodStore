@@ -12,7 +12,7 @@ public class PodCastEpisode extends BundleItem implements Serializable {
 
     private final PodCastEpisodeFileSize fileSize; //Optional can be null
     private final PodCastEpisodeType podCastType;
-    private final LocalDateTime createdDate;
+    private final LocalDateTime createdDate;//publishedDateTime //FIXME Rename?
     private final PodCastEpisodeDuration duration; //Optional can be null
 
     private final String podCastCollectionId; //PodCast that contains this episode, used when subscribing after direct play

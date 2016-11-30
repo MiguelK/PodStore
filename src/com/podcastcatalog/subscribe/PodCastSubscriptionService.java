@@ -5,28 +5,30 @@ import com.podcastcatalog.subscribe.internal.Subscriber;
 import com.podcastcatalog.subscribe.internal.SubscriptionData;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
 
-public class PodCastSubscriptions {
+public class PodCastSubscriptionService {
 
-    private static final PodCastSubscriptions INSTANCE = new PodCastSubscriptions();
+    private static final PodCastSubscriptionService INSTANCE = new PodCastSubscriptionService();
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
     private final Lock readLock = reentrantReadWriteLock.readLock();
     private final Lock writeLock = reentrantReadWriteLock.writeLock();
 
-    private final static Logger LOG = Logger.getLogger(PodCastSubscriptions.class.getName());
+    private final static Logger LOG = Logger.getLogger(PodCastSubscriptionService.class.getName());
 
-    private SubscriptionData subscriptionData = new SubscriptionData();
+    private final SubscriptionData subscriptionData = new SubscriptionData();
 
-    public static PodCastSubscriptions getInstance() {
+    public static PodCastSubscriptionService getInstance() {
         return INSTANCE;
     }
 
     public void loadFromDiskAsync(DataStorage dataStorage) {
         //FIXME load subscriptionData from disk async
-        LOG.info("Loading SubscriptionData from disk...");
+        LOG.info("FIXME Loading SubscriptionData from disk...");
     }
 
     public void subscribe(String deviceToken, String contentId, ContentIdValidator contentIdValidator) {
@@ -73,6 +75,23 @@ public class PodCastSubscriptions {
     public void deleteSubscriber(String deviceToken) {
     }
 
+    public List<Subscription> getSubscriptions() {
+        readLock.lock();
+        try {
+            return subscriptionData.getSubscriptions();
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    private Optional<Subscription> getSubscription(String contentId) {
+        readLock.lock();
+        try {
+            return Optional.ofNullable(subscriptionData.getSubscription(StringUtils.trimToEmpty(contentId)));
+        } finally {
+            readLock.unlock();
+        }
+    }
     //Throw exception if not existsing
     public Subscriber getSubscriber(String deviceToken) {
         readLock.lock();
@@ -100,6 +119,12 @@ public class PodCastSubscriptions {
 
     public void pushMessage(String message, String contentId) {
         //FIXME add to queu
+        //FIXME Update pushDateTime
+        Optional<Subscription> subscription = getSubscription(contentId);
+        if(subscription.isPresent()){
+            LOG.info("Send push message " + message + " to contentId=" + subscription.get());
+        }
+
     }
 
     public String getStatusAsHTLM() {

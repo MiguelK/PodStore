@@ -1,6 +1,6 @@
 package com.podcastcatalog.api.subscription;
 
-import com.podcastcatalog.subscribe.PodCastSubscriptions;
+import com.podcastcatalog.subscribe.PodCastSubscriptionService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -14,7 +14,7 @@ public class Subscriber {
     @Produces(MediaType.APPLICATION_JSON)
     public Response registerSubscriber(@PathParam("deviceToken") String deviceToken) {
         try {
-            PodCastSubscriptions.getInstance().registerSubscriber(deviceToken);
+            PodCastSubscriptionService.getInstance().registerSubscriber(deviceToken);
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Failed to register new Subscriber " + e.getMessage()).build();
         }
@@ -27,7 +27,7 @@ public class Subscriber {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteSubscriber(@PathParam("deviceToken") String deviceToken) {
         try {
-            PodCastSubscriptions.getInstance().deleteSubscriber(deviceToken);
+            PodCastSubscriptionService.getInstance().deleteSubscriber(deviceToken);
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Failed to delete Subscriber " + e.getMessage()).build();
         }
@@ -42,7 +42,7 @@ public class Subscriber {
 
         com.podcastcatalog.subscribe.internal.Subscriber subscriber;
         try {
-            subscriber = PodCastSubscriptions.getInstance().getSubscriber(deviceToken);
+            subscriber = PodCastSubscriptionService.getInstance().getSubscriber(deviceToken);
 
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Failed to get Subscriber " + e.getMessage()).build();
@@ -54,6 +54,6 @@ public class Subscriber {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response getStatus() {
-        return Response.status(Response.Status.OK).entity(PodCastSubscriptions.getInstance().getStatusAsHTLM()).build();
+        return Response.status(Response.Status.OK).entity(PodCastSubscriptionService.getInstance().getStatusAsHTLM()).build();
     }
 }

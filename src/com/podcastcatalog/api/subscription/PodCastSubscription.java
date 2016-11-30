@@ -16,7 +16,7 @@ public class PodCastSubscription {
                               @PathParam("contentId") String contentId) {
 
         try {
-            PodCastSubscriptions.getInstance().subscribe(deviceToken, contentId, contentId1 -> {
+            PodCastSubscriptionService.getInstance().subscribe(deviceToken, contentId, contentId1 -> {
                 return true; //FIXME check in ProdCat collectionId exists
             });
         } catch (Exception e) {
@@ -33,7 +33,7 @@ public class PodCastSubscription {
                                 @PathParam("contentId") String contentId) {
 
         try {
-            PodCastSubscriptions.getInstance().unSubscribe(deviceToken, contentId);
+            PodCastSubscriptionService.getInstance().unSubscribe(deviceToken, contentId);
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Failed to unSubscribe " + e.getMessage()).build();
         }
@@ -44,6 +44,6 @@ public class PodCastSubscription {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response getStatus() {
-        return Response.status(Response.Status.OK).entity(PodCastSubscriptions.getInstance().getStatusAsHTLM()).build();
+        return Response.status(Response.Status.OK).entity(PodCastSubscriptionService.getInstance().getStatusAsHTLM()).build();
     }
 }

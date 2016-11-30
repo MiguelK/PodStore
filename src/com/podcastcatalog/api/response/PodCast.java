@@ -73,6 +73,10 @@ public class PodCast extends BundleItem {
         visitor.visit(this);
     }
 
+    public PodCastEpisode getLatestPodCastEpisode() {
+        return podCastEpisodes.get(0);
+    }
+
     public static class Builder {
         private String collectionId;
         private String title;
