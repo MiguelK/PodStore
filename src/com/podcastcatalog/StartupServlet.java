@@ -1,10 +1,11 @@
 package com.podcastcatalog;
 
-import com.podcastcatalog.builder.PodCastCatalogBuilderSE;
-import com.podcastcatalog.job.JobManager;
-import com.podcastcatalog.job.SubscriptionNotifierJob;
-import com.podcastcatalog.store.DataStorage;
-import com.podcastcatalog.subscribe.PodCastSubscriptionService;
+import com.podcastcatalog.modelbuilder.PodCastCatalogBuilderSE;
+import com.podcastcatalog.service.job.JobManagerService;
+import com.podcastcatalog.service.job.SubscriptionNotifierJob;
+import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
+import com.podcastcatalog.storage.DataStorage;
+import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -28,8 +29,8 @@ public class StartupServlet extends HttpServlet {
 
         LOG.info("Starting PodCastCatalog..., working dir= " + dataStorage);
 
-        JobManager.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
-        JobManager.getInstance().startAsync();
+        JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
+        JobManagerService.getInstance().startAsync();
 
         PodCastSubscriptionService.getInstance().loadFromDiskAsync(dataStorage);
 

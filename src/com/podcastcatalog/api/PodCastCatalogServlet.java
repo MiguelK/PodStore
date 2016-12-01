@@ -1,8 +1,8 @@
 package com.podcastcatalog.api;
 
-import com.podcastcatalog.PodCastCatalogService;
-import com.podcastcatalog.api.response.PodCastCatalogLanguage;
-import com.podcastcatalog.store.DataStorage;
+import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
+import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
+import com.podcastcatalog.storage.DataStorage;
 import org.apache.commons.io.IOUtils;
 
 import javax.servlet.ServletException;
@@ -44,7 +44,7 @@ public class PodCastCatalogServlet extends HttpServlet {
             return;
         }
 
-        com.podcastcatalog.api.response.PodCastCatalog podCastCatalog =
+        com.podcastcatalog.model.podcastcatalog.PodCastCatalog podCastCatalog =
                 PodCastCatalogService.getInstance().getPodCastCatalog(language);
 
         LOG.info("Writing podCastCatalog as JSON " + podCastCatalog);

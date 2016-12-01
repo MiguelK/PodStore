@@ -1,7 +1,7 @@
 package com.podcastcatalog.api;
 
-import com.podcastcatalog.PodCastCatalogService;
-import com.podcastcatalog.builder.collector.itunes.ItunesSearchAPI;
+import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
+import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -19,7 +19,7 @@ public class PodCast {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPodCastByCollectionId(@PathParam("id") String id) {
 
-        Optional<com.podcastcatalog.api.response.PodCast> podCast = PodCastCatalogService.getInstance().getPodCastById(id);
+        Optional<com.podcastcatalog.model.podcastcatalog.PodCast> podCast = PodCastCatalogService.getInstance().getPodCastById(id);
 
         if (!podCast.isPresent()) {
             podCast = ItunesSearchAPI.lookup(id);

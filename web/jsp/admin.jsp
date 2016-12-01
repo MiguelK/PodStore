@@ -1,9 +1,10 @@
-<%@ page import="com.podcastcatalog.PodCastCatalogService" %>
-<%@ page import="com.podcastcatalog.api.response.PodCastCatalogLanguage" %>
+<%@ page import="com.podcastcatalog.service.podcastcatalog.PodCastCatalogService" %>
+<%@ page import="com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage" %>
 <%@ page import="javax.ws.rs.core.Response" %>
-<%@ page import="com.podcastcatalog.api.util.StringFormatter" %>
-<%@ page import="com.podcastcatalog.subscribe.Subscription" %>
-<%@ page import="com.podcastcatalog.subscribe.PodCastSubscriptionService" %><%--
+<%@ page import="com.podcastcatalog.util.StringFormatter" %>
+<%@ page import="com.podcastcatalog.model.subscription.Subscription" %>
+<%@ page import="com.podcastcatalog.service.subscription.PodCastSubscriptionService" %>
+<%@ page import="com.podcastcatalog.model.podcastcatalog.PodCastCatalog" %><%--
   Created by IntelliJ IDEA.
   User: krantmig
   Date: 11/8/16
@@ -25,7 +26,7 @@
         out.println("Start reloding Catalog...<br><br>");
     }
 
-    com.podcastcatalog.api.response.PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
+    PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
     StringFormatter stringFormatter = StringFormatter.create(podCastCatalog);
 %>
 

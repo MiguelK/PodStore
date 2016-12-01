@@ -1,10 +1,10 @@
 package com.podcastcatalog.api;
 
 
-import com.podcastcatalog.PodCastCatalogService;
-import com.podcastcatalog.api.response.PodCastCatalogLanguage;
-import com.podcastcatalog.api.response.search.ResultItem;
-import com.podcastcatalog.api.response.search.SearchResult;
+import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
+import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
+import com.podcastcatalog.model.podcastsearch.ResultItem;
+import com.podcastcatalog.model.podcastsearch.SearchResult;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.GET;
@@ -31,7 +31,7 @@ public class PodCastCatalog {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid lang parameter " + lang).build();
         }
 
-        com.podcastcatalog.api.response.PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(podCastCatalogLanguage);
+        com.podcastcatalog.model.podcastcatalog.PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(podCastCatalogLanguage);
 
         if (podCastCatalog == null) {
             LOG.info("podCastCatalog for lang " + lang + " is not loaded yet?");
