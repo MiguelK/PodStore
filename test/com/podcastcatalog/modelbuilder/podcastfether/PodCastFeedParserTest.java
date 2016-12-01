@@ -29,7 +29,7 @@ public class PodCastFeedParserTest {
         Assert.assertFalse(PodCastFeedParser.parse(new URL("http://api.sr.se/api/rssx/pod/396676"), artworkUrl600, "erere").isPresent());
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void missingAuthor() throws MalformedURLException {
         String missingAuthor = "http://juliafrej.libsyn.com/rss";
 

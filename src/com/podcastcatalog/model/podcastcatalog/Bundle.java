@@ -1,5 +1,7 @@
 package com.podcastcatalog.model.podcastcatalog;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,8 +15,8 @@ public abstract class Bundle implements Serializable  {
     private final BundleType bundleType;
 
     Bundle(String title, String description, BundleType bundleType) {
-        this.title = title;
-        this.description = description;
+        this.title = StringUtils.trimToNull(title);
+        this.description = StringUtils.trimToNull(description);
         this.bundleType = bundleType;
     }
 

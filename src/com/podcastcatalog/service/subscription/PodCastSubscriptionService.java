@@ -105,12 +105,7 @@ public class PodCastSubscriptionService {
     }
 
     public void registerSubscriber(String deviceToken) {
-        String deviceTokenTrimmed = StringUtils.trimToNull(deviceToken);
-        if (deviceTokenTrimmed == null) {
-            throw new IllegalArgumentException("deviceToken is empty");
-        }
-
-        Subscriber subscriber = new Subscriber(deviceTokenTrimmed);
+        Subscriber subscriber = new Subscriber(deviceToken);
         writeLock.lock();
         try {
             subscriptionData.registerSubscriber(subscriber);

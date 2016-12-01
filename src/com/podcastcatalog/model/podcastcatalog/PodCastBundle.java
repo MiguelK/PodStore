@@ -20,7 +20,7 @@ public class PodCastBundle extends Bundle {
         return podCasts;
     }
 
-    public static Builder newBuilder() {
+    static Builder newBuilder() {
         return new Builder();
     }
 
