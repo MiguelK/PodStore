@@ -1,12 +1,10 @@
 package com.podcastcatalog.api;
 
-import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
+import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
+import com.podcastcatalog.service.podcaststar.PodCastStarService;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Optional;
@@ -31,5 +29,21 @@ public class PodCast {
         }
 
         return Response.status(Response.Status.OK).entity(podCast.get()).build();
+    }
+
+    @POST
+    @Path("/star/{id}/{episodeId}/{stars}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response starPodCast(@PathParam("id") String id,
+                                @PathParam("episodeId") String episodeId, @PathParam("stars") int stars) {
+
+        try {
+            PodCastStarService.getInstance().starPodCast(id, episodeId, stars);
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Failed to star podCastEpisode " + e.getMessage()).build();
+        }
+
+
+        return Response.status(Response.Status.OK).build();
     }
 }
