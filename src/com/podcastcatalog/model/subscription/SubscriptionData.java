@@ -1,5 +1,7 @@
 package com.podcastcatalog.model.subscription;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,12 +19,39 @@ public class SubscriptionData implements Serializable {
     }
 
     public void subscribe(String deviceToken, String contentId, ContentIdValidator contentIdValidator) {
+        throw new UnsupportedOperationException();
     }
 
-    public void unsubscribe(String deviceToken, String contentId) {
+    public void unsubscribe(String subscriptionId, String contentId) {
+
+        String subscriptionIdTrimmed = StringUtils.trimToNull(subscriptionId);
+
+        Subscriber subscriber = subscriberById.get(subscriptionIdTrimmed);
+
+        if (subscriber == null) {
+            return;
+        }
+//
+        String contentIdTrimmed = StringUtils.trimToNull(contentId);
+        Subscription subscription = subscriptionByContentId.get(contentIdTrimmed);
+
+        if (subscription == null) {
+            return;
+        }
+
+        subscription.removeSubscriber(subscriber);
+        subscriber.removeSubscription(subscription);
+
+        if (subscription.hasNoSubscribers()) {
+            subscriptionByContentId.remove(contentIdTrimmed);
+
+        }
+
+
     }
 
     public void deleteSubscriber(String deviceToken) {
+        subscriberById.remove(deviceToken);
     }
 
     public Subscriber getSubscriber(String id) {

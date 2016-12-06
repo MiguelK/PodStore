@@ -1,3 +1,14 @@
+Todo:
+Subscription
+    - push
+    - save/load data
+    - Episode notifier job -> push episode
+Start
+    - save/load date
+    -
+
+
+
 Admin
 http://localhost:10080/PodStore
 
@@ -16,47 +27,18 @@ GET http://localhost:10080/PodStore/api/subscriber   (Get status)
 [podCastSubscription]
 GET http://localhost:10080/PodStore/api/podCastSubscription   (Get status)
 
-
-
-
 ** ZIP file ****
-
 http://localhost:10080/PodStore/jsonfile?lang=SE
-
-
-
-
-
 Itunes Search API
 https://itunes.apple.com/lookup?id=308339623
 
-
-https://itunes.apple.com/search?term=p3&entity=podcast&limit=3
-
-----
-PodCastCatalog
-  - on per language, List<Bundle> bundles; created + language
-
-
-
 ---
 # Episode has podCastRefId = unikt id inom samma catalog som pekar på PodCast
-Klient:
-Sör upp podcast innom samma ctaalog
-#EpisodeBuilder skalla baar ta från nerladdad PodCastBuilder! bättre perf
+# Search
+		-Client can have a PodCast not existsing in server catalog.
 
-
-
----------------
-*** Search ***
-		* Client can have a PodCast not existsing in server catalog.
-		     - targetFeedURL handled by client
-
-		 [Server]
-
-		 Startup of server
-		 1. Index all Episodes in in-memory searchable cache
-
+# Startup of server
+		 - Index all Episodes in in-memory searchable cache
 		0# /api/search/query=p3&lang=ALL
 		1# search for PodCasts on Itunes
 		1.1 search for episodes matching query (in-memory)
@@ -81,13 +63,3 @@ Sör upp podcast innom samma ctaalog
 			1# call /api/search/query=p3&lang=ALL
 			2# Display PodCast+Episodes //Quick!
 
-        PodCastSearchResponse
-         - ImageURL
-         - Title
-         - Publisher
-         - PodCastCollectionId
-
-        PodCastEpisodeSearchResponse
-         - Title
-         - Description
-         - PodCastCollectionId

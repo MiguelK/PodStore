@@ -22,7 +22,7 @@ public class PodCastSubscriptionService {
 
     private final static Logger LOG = Logger.getLogger(PodCastSubscriptionService.class.getName());
 
-    private final SubscriptionData subscriptionData = new SubscriptionData();
+    private  SubscriptionData subscriptionData = new SubscriptionData();
 
     public static PodCastSubscriptionService getInstance() {
         return INSTANCE;
@@ -31,6 +31,8 @@ public class PodCastSubscriptionService {
     public void loadFromDiskAsync(DataStorage dataStorage) {
         //FIXME load subscriptionData from disk async
         LOG.info("FIXME Loading SubscriptionData from disk...");
+        subscriptionData = new SubscriptionData();
+
     }
 
     public void subscribe(String deviceToken, String contentId, ContentIdValidator contentIdValidator) {
@@ -59,6 +61,7 @@ public class PodCastSubscriptionService {
 
         writeLock.lock();
         try {
+            //Ok forts subscriber for this content
             if (subscription == null) {
                 subscription = new Subscription(contentIdTrimmed);
                 subscriptionData.addSubscription(subscription);
@@ -72,9 +75,26 @@ public class PodCastSubscriptionService {
     }
 
     public void unSubscribe(String deviceToken, String contentId) {
+
+        writeLock.lock();
+        try {
+            subscriptionData.unsubscribe(deviceToken, contentId);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     public void deleteSubscriber(String deviceToken) {
+        writeLock.lock();
+
+        try {
+            subscriptionData.deleteSubscriber(deviceToken);
+
+        } finally {
+            writeLock.unlock();
+        }
+
+
     }
 
     public List<Subscription> getSubscriptions() {
@@ -94,6 +114,7 @@ public class PodCastSubscriptionService {
             readLock.unlock();
         }
     }
+
     //Throw exception if not existsing
     public Subscriber getSubscriber(String deviceToken) {
         readLock.lock();
@@ -118,7 +139,7 @@ public class PodCastSubscriptionService {
         //FIXME add to queu
         //FIXME Update pushDateTime
         Optional<Subscription> subscription = getSubscription(contentId);
-        if(subscription.isPresent()){
+        if (subscription.isPresent()) {
             LOG.info("Send push message " + message + " to contentId=" + subscription.get());
         }
 

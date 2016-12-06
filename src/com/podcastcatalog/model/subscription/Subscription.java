@@ -12,10 +12,14 @@ public class Subscription {
     private LocalDateTime latestPushedDateTime;
     private String contentId;
 
+    //All user Subscribers for this content
     private List<Subscriber> subscribers = new ArrayList<Subscriber>();
 
     public Subscription(String contentId) {
-        this.contentId = contentId;
+        if(StringUtils.isEmpty(contentId)){
+            throw  new IllegalArgumentException("contentId is mandatory");
+        }
+        this.contentId = StringUtils.trimToNull(contentId);
     }
 
     public String getContentId() {
@@ -28,6 +32,9 @@ public class Subscription {
 
     public void addSubscriber(Subscriber subscriber) {
         subscribers.add(subscriber);
+    }
+    public void removeSubscriber(Subscriber subscriber) {
+        subscribers.remove(subscriber);
     }
 
     public LocalDateTime getLatestPushedDateTime() {
@@ -45,5 +52,25 @@ public class Subscription {
 
     public boolean hasSentPushMessage(){
         return  latestPushedDateTime!=null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Subscription that = (Subscription) o;
+
+        return contentId.equals(that.contentId);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return contentId.hashCode();
+    }
+
+    public boolean hasNoSubscribers() {
+        return subscribers.isEmpty();
     }
 }
