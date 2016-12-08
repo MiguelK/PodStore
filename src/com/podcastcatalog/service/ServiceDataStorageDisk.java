@@ -1,8 +1,7 @@
-package com.podcastcatalog.storage;
+package com.podcastcatalog.service;
 
 import com.google.gson.Gson;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
-import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.subscription.SubscriptionData;
 import com.podcastcatalog.util.ZipFile;
 import org.apache.commons.io.FileUtils;
@@ -17,8 +16,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class DataStorage {
-    private final static Logger LOG = Logger.getLogger(DataStorage.class.getName());
+public class ServiceDataStorageDisk implements ServiceDataStorage {
+    private final static Logger LOG = Logger.getLogger(ServiceDataStorageDisk.class.getName());
 
     private static final Gson GSON = new Gson();
 
@@ -28,10 +27,17 @@ public class DataStorage {
 
     private final File subscriptionDataFile;
 
+    @Override
     public SubscriptionData loadSubscriptionData() {
-        return load(subscriptionDataFile, SubscriptionData.class);
+        SubscriptionData load = load(subscriptionDataFile, SubscriptionData.class);
+
+        if(load==null){
+            return new SubscriptionData();
+        }
+        return load;
     }
 
+    @Override
     public void save(SubscriptionData subscriptionData) {
         saveAsObject(subscriptionData, subscriptionDataFile);
     }
@@ -40,14 +46,17 @@ public class DataStorage {
         return podDataHomeDir;
     }
 
+    @Override
     public File getCatalogVersionHomeDir() {
         return catalogVersionHomeDir;
     }
 
+    @Override
     public File getSubscriptionDataFile() {
         return subscriptionDataFile;
     }
 
+    @Override
     public void save(PodCastCatalog podCastCatalog) {
 
         PodCastCatalogVersion versionDirectory = createNewVersionDirectory();
@@ -57,6 +66,7 @@ public class DataStorage {
         ZipFile.zip(json, versionDirectory.getSweJSONZipped());
     }
 
+    @Override
     public void deleteAll() {
         if (!catalogVersionHomeDir.exists() || !catalogVersionHomeDir.isDirectory()) {
             return;
@@ -69,7 +79,7 @@ public class DataStorage {
         }
     }
 
-    public DataStorage(File podDataHomeDir) {
+    public ServiceDataStorageDisk(File podDataHomeDir) {
         if (podDataHomeDir == null) {
             throw new IllegalArgumentException("podDataHomeDir is null");
         }
@@ -101,11 +111,11 @@ public class DataStorage {
         return Optional.ofNullable(allVersions.get(0));
     }
 
-    public DataStorage() {
+    public ServiceDataStorageDisk() {
         this(new HomeDirectoryLocator().locateDataDirectory());
     }
 
-    List<PodCastCatalogVersion> getAllVersions() {
+    public List<PodCastCatalogVersion> getAllVersions() {
 
         List<PodCastCatalogVersion> allVersions = new ArrayList<>();
         List<File> latestVersionDirectories = getVersionDirectories();
@@ -222,7 +232,7 @@ public class DataStorage {
     }
 
 
-    public static class PodCastCatalogVersion {
+  /*  public static class PodCastCatalogVersion {
         private int version;
         private final File sweJSON;
         private final File sweJSONZipped;
@@ -286,7 +296,7 @@ public class DataStorage {
             }
         }
 
-        File getSweJSON() {
+        public File getSweJSON() {
             return sweJSON;
         }
 
@@ -294,7 +304,7 @@ public class DataStorage {
             return sweJSONZipped;
         }
 
-        File getSweDat() {
+        public File getSweDat() {
             return sweDat;
         }
 
@@ -316,5 +326,5 @@ public class DataStorage {
                     ", podCastCatalog=" + podCastCatalog +
                     '}';
         }
-    }
+    }*/
 }

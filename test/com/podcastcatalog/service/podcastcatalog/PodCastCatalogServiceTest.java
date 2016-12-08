@@ -6,7 +6,7 @@ import com.podcastcatalog.modelbuilder.*;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCategoryCollectorOkihika;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCollectorOkihika;
-import com.podcastcatalog.storage.DataStorage;
+import com.podcastcatalog.service.ServiceDataStorageDisk;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -57,7 +57,7 @@ public class PodCastCatalogServiceTest {
     }
 
     private void setUpStorage() {
-        DataStorage storage = new DataStorage();
+        ServiceDataStorageDisk storage = new ServiceDataStorageDisk();
         storage.deleteAll();
 
         PodCastCatalogService.getInstance().setStorage(storage);

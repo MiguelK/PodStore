@@ -1,6 +1,6 @@
 package com.podcastcatalog.service.podcaststar;
 
-import com.podcastcatalog.storage.DataStorage;
+import com.podcastcatalog.service.ServiceDataStorageDisk;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public class PodCastStarService {
         return INSTANCE;
     }
 
-    public void load(DataStorage dataStorage) {
+    public void load(ServiceDataStorageDisk serviceDataStorageDisk) {
         //FIXME load subscriptionData from disk async
         LOG.info("FIXME Loading starred podCasts from disk...");
         starsByPodCastId = new HashMap<>(); //FIXME

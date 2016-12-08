@@ -6,6 +6,8 @@ import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogTest;
 import com.podcastcatalog.model.subscription.SubscriptionData;
+import com.podcastcatalog.service.ServiceDataStorage;
+import com.podcastcatalog.service.ServiceDataStorageDisk;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -18,26 +20,26 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 
-public class DataStorageTest {
+public class ServiceDataStorageDiskTest {
 
-    private DataStorage storage;
+    private ServiceDataStorageDisk storage;
 
     @BeforeMethod
     public void setUp() {
-        storage = new DataStorage();
+        storage = new ServiceDataStorageDisk();
         storage.deleteAll();
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalidDataDirectory_null() {
-        new DataStorage(null);
+        new ServiceDataStorageDisk(null);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalidDataDirectory_not_directory() throws IOException {
         Path tempFile = Files.createTempFile("prefix", "suffix");
         try {
-            new DataStorage(tempFile.toFile());
+            new ServiceDataStorageDisk(tempFile.toFile());
         } finally {
             Files.delete(tempFile);
         }
@@ -88,7 +90,7 @@ public class DataStorageTest {
     public void versionPaths() {
         storage.save(PodCastCatalogTest.createValid());
 
-        for (DataStorage.PodCastCatalogVersion version : storage.getAllVersions()) {
+        for (ServiceDataStorage.PodCastCatalogVersion version : storage.getAllVersions()) {
             Assert.assertNotNull(version.getSweDat());
             Assert.assertNotNull(version.getSweJSON());
             Assert.assertNotNull(version.getSweJSONZipped());
@@ -149,7 +151,7 @@ public class DataStorageTest {
         LocalDateTime created = castCatalog.getCreated();
         storage.save(castCatalog);
 
-        Optional<DataStorage.PodCastCatalogVersion> currentVersion = storage.getCurrentVersion();
+        Optional<ServiceDataStorageDisk.PodCastCatalogVersion> currentVersion = storage.getCurrentVersion();
 
         PodCastCatalog podCastCatalogSwedish = currentVersion.orElseGet(null).getPodCastCatalogSwedish();
 

@@ -1,8 +1,9 @@
 package com.podcastcatalog.api;
 
+import com.podcastcatalog.service.ServiceDataStorage;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
-import com.podcastcatalog.storage.DataStorage;
+import com.podcastcatalog.service.ServiceDataStorageDisk;
 import org.apache.commons.io.IOUtils;
 
 import javax.servlet.ServletException;
@@ -37,9 +38,9 @@ public class PodCastCatalogServlet extends HttpServlet {
             return;
         }
 
-        DataStorage dataStorage = new DataStorage();
+        ServiceDataStorage serviceDataStorageDisk = new ServiceDataStorageDisk();
 
-        if(!dataStorage.getCurrentVersion().isPresent()){
+        if(!serviceDataStorageDisk.getCurrentVersion().isPresent()){
             response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE,"No catalog version loaded yet. Loading in progress?");
             return;
         }
@@ -49,7 +50,7 @@ public class PodCastCatalogServlet extends HttpServlet {
 
         LOG.info("Writing podCastCatalog as JSON " + podCastCatalog);
 
-        File zipFile = dataStorage.getCurrentVersion().orElseGet(null).getSweJSONZipped();//FIXME Only SWE
+        File zipFile = serviceDataStorageDisk.getCurrentVersion().orElseGet(null).getSweJSONZipped();//FIXME Only SWE
 
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "attachment; filename=" + zipFile.getName());

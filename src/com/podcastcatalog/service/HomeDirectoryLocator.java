@@ -1,14 +1,14 @@
-package com.podcastcatalog.storage;
+package com.podcastcatalog.service;
 
 import java.io.File;
 
-class HomeDirectoryLocator {
+public class HomeDirectoryLocator {
 
     private static final String OPENSHIFT_DATA_DIR = "OPENSHIFT_DATA_DIR";
 
     private static final String PODDA_HOME_DIR = "POD_DATA_HOME";//Must exist before starting app! //FIXME
 
-    File locateDataDirectory() {
+    public File locateDataDirectory() {
         File podDataHomeDir = new File("/home/krantmig/tools/temp" + File.separator + PODDA_HOME_DIR);
         if (isReadAndWriteDirectory(podDataHomeDir)) {
             return podDataHomeDir;

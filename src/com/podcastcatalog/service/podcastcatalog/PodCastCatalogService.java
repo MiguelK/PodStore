@@ -1,17 +1,13 @@
 package com.podcastcatalog.service.podcastcatalog;
 
-import com.podcastcatalog.model.podcastcatalog.Bundle;
-import com.podcastcatalog.model.podcastcatalog.PodCastBundle;
-import com.podcastcatalog.model.podcastcatalog.PodCastCategoryBundle;
+import com.podcastcatalog.model.podcastcatalog.*;
 import com.podcastcatalog.model.podcastsearch.PodCastEpisodeResultItem;
 import com.podcastcatalog.model.podcastsearch.PodCastResultItem;
 import com.podcastcatalog.model.podcastsearch.ResultItem;
-import com.podcastcatalog.model.podcastcatalog.BundleItemVisitor;
 import com.podcastcatalog.modelbuilder.BundleBuilder;
 import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
-import com.podcastcatalog.model.podcastcatalog.*;
-import com.podcastcatalog.storage.DataStorage;
+import com.podcastcatalog.service.ServiceDataStorage;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -38,7 +34,7 @@ public class PodCastCatalogService {
 
     private final TextSearchEngine<ResultItem> textSearchEngine;
     private final PodCastIndex podCastIndex;
-    private DataStorage storage;
+    private ServiceDataStorage storage;
     private final ExecutorService executorService;
     private final ExecutorService ayncExecutor;
 
@@ -65,7 +61,7 @@ public class PodCastCatalogService {
         podCastCatalogBuilders.add(builder);
     }
 
-    public void setStorage(DataStorage storage) {
+    public void setStorage(ServiceDataStorage storage) {
         this.storage = storage;
     }
 

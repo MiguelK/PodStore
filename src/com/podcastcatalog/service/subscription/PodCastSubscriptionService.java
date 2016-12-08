@@ -1,10 +1,10 @@
 package com.podcastcatalog.service.subscription;
 
 import com.podcastcatalog.model.subscription.ContentIdValidator;
-import com.podcastcatalog.model.subscription.Subscription;
-import com.podcastcatalog.storage.DataStorage;
 import com.podcastcatalog.model.subscription.Subscriber;
+import com.podcastcatalog.model.subscription.Subscription;
 import com.podcastcatalog.model.subscription.SubscriptionData;
+import com.podcastcatalog.service.ServiceDataStorage;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -28,8 +28,8 @@ public class PodCastSubscriptionService {
         return INSTANCE;
     }
 
-    public void loadFromDiskAsync(DataStorage dataStorage) {
-        subscriptionData = dataStorage.loadSubscriptionData();
+    public void start() {
+        subscriptionData = ServiceDataStorage.useDefault().loadSubscriptionData();
     }
 
     public void subscribe(String deviceToken, String contentId, ContentIdValidator contentIdValidator) {
@@ -90,8 +90,6 @@ public class PodCastSubscriptionService {
         } finally {
             writeLock.unlock();
         }
-
-
     }
 
     public List<Subscription> getSubscriptions() {
