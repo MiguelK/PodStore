@@ -5,6 +5,7 @@ import com.podcastcatalog.model.podcastcatalog.PodCastBundleTest;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogTest;
+import com.podcastcatalog.model.subscription.SubscriptionData;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -23,7 +24,7 @@ public class DataStorageTest {
 
     @BeforeMethod
     public void setUp() {
-        storage = new DataStorage(TestUtil.IO_TEMP_DATA_DIRECTORY);
+        storage = new DataStorage();
         storage.deleteAll();
     }
 
@@ -130,8 +131,7 @@ public class DataStorageTest {
         storage.save(PodCastCatalogTest.createValid());
         storage.save(PodCastCatalogTest.createValid());
 
-        File dataDirectory = TestUtil.IO_TEMP_DATA_DIRECTORY;
-        File root = new File(dataDirectory,"PodCastCatalogVersions");
+        File root = storage.getCatalogVersionHomeDir();
 
         assertDirectory(new File(root,"1"));
         assertDirectory(new File(root,"2"));
@@ -181,6 +181,16 @@ public class DataStorageTest {
         Assert.assertTrue(zipped.canRead());
         Assert.assertTrue(zipped.getName().endsWith("_json.zip"));
         Assert.assertTrue(Files.size(zipped.toPath()) >100);
+    }
+
+    @Test
+    public void saveLoadSubscriptionData() {
+        storage.save(new SubscriptionData());
+        Assert.assertTrue(storage.getSubscriptionDataFile().exists());
+
+        SubscriptionData subscriptionData = storage.loadSubscriptionData();
+
+        Assert.assertNotNull(subscriptionData);
     }
 
     private void assertDirectory(File file){

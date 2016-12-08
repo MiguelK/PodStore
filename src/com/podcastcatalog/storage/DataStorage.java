@@ -3,6 +3,8 @@ package com.podcastcatalog.storage;
 import com.google.gson.Gson;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
+import com.podcastcatalog.model.subscription.SubscriptionData;
+import com.podcastcatalog.util.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -20,44 +22,73 @@ public class DataStorage {
 
     private static final Gson GSON = new Gson();
 
-    private final File rootDir;
+    private final File podDataHomeDir;
+    private final File catalogVersionHomeDir;
+    private static final String SUBSCRIPTION_DATA_FILE_NAME = "SubscriptionData.dat";
+
+    private final File subscriptionDataFile;
+
+    public SubscriptionData loadSubscriptionData() {
+        return load(subscriptionDataFile, SubscriptionData.class);
+    }
+
+    public void save(SubscriptionData subscriptionData) {
+        saveAsObject(subscriptionData, subscriptionDataFile);
+    }
+
+    public File getPodDataHomeDir() {
+        return podDataHomeDir;
+    }
+
+    public File getCatalogVersionHomeDir() {
+        return catalogVersionHomeDir;
+    }
+
+    public File getSubscriptionDataFile() {
+        return subscriptionDataFile;
+    }
 
     public void save(PodCastCatalog podCastCatalog) {
-        PodCastCatalogVersion versionDirectory = createNewVersionDirectory();
 
-        saveAsObject(podCastCatalog, versionDirectory);
+        PodCastCatalogVersion versionDirectory = createNewVersionDirectory();
+        saveAsObject(podCastCatalog, versionDirectory.getSweDat());
         File json = saveAsJSON(podCastCatalog, versionDirectory);
 
         ZipFile.zip(json, versionDirectory.getSweJSONZipped());
     }
 
     public void deleteAll() {
-        if (!rootDir.exists() || !rootDir.isDirectory()) {
+        if (!catalogVersionHomeDir.exists() || !catalogVersionHomeDir.isDirectory()) {
             return;
         }
 
         try {
-            FileUtils.deleteDirectory(rootDir);
+            FileUtils.deleteDirectory(catalogVersionHomeDir);
         } catch (IOException e) {
             e.printStackTrace();//FIXME
         }
     }
 
-    public DataStorage(File dataDirectory) {
-        if (dataDirectory == null) {
-            throw new IllegalArgumentException("dataDirectory is null");
+    public DataStorage(File podDataHomeDir) {
+        if (podDataHomeDir == null) {
+            throw new IllegalArgumentException("podDataHomeDir is null");
         }
-        if (!dataDirectory.isDirectory()) {
-            throw new IllegalArgumentException("dataDirectory is not a dir " + dataDirectory.getAbsolutePath());
+        if (!podDataHomeDir.isDirectory()) {
+            throw new IllegalArgumentException("podDataHomeDir is not a dir " + podDataHomeDir.getAbsolutePath());
+        }
+        this.podDataHomeDir = podDataHomeDir;
+
+        this.catalogVersionHomeDir = new File(podDataHomeDir, "PodCastCatalogVersions");
+        File subscriptionService = new File(podDataHomeDir, "SubscriptionService");
+
+        if (!this.catalogVersionHomeDir.exists()) {
+            this.catalogVersionHomeDir.mkdirs();
+        }
+        if (!subscriptionService.exists()) {
+            subscriptionService.mkdirs();
         }
 
-        this.rootDir = new File(dataDirectory, "PodCastCatalogVersions");
-
-        initRoot();
-    }
-
-    public File getRootDir() {
-        return rootDir;
+        subscriptionDataFile = new File(subscriptionService, SUBSCRIPTION_DATA_FILE_NAME);
     }
 
     public Optional<PodCastCatalogVersion> getCurrentVersion() {
@@ -85,16 +116,11 @@ public class DataStorage {
         return allVersions;
     }
 
-    private void initRoot() {
-        if (!this.rootDir.exists()) {
-            this.rootDir.mkdirs();
-        }
-    }
 
     private List<File> getVersionDirectories() {
         List<File> files = new ArrayList<>();
 
-        File[] subdirs = rootDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
+        File[] subdirs = catalogVersionHomeDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
         if (subdirs == null) {
             return Collections.emptyList();
         }
@@ -108,7 +134,7 @@ public class DataStorage {
         Collections.reverse(v);
 
         for (Integer version : v) {
-            File file = new File(rootDir, String.valueOf(version));
+            File file = new File(catalogVersionHomeDir, String.valueOf(version));
             files.add(file);
         }
 
@@ -117,7 +143,7 @@ public class DataStorage {
     }
 
     private PodCastCatalogVersion createNewVersionDirectory() {
-        File[] subdirs = rootDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
+        File[] subdirs = catalogVersionHomeDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 
         int nextVersionNumber = 1;
         if (subdirs != null) {
@@ -130,7 +156,7 @@ public class DataStorage {
             }
         }
 
-        File file = new File(rootDir, String.valueOf(nextVersionNumber));
+        File file = new File(catalogVersionHomeDir, String.valueOf(nextVersionNumber));
         file.mkdirs();//FIXME
 
         return PodCastCatalogVersion.create(file);
@@ -141,17 +167,41 @@ public class DataStorage {
         return i != -1;
     }
 
-    private void saveAsObject(PodCastCatalog podCastCatalog, PodCastCatalogVersion versionDirectory) {
+    private <T> T load(File sourceFile, Class<T> sourceType) {
+
+        ObjectInputStream in = null;
+        FileInputStream fileIn = null;
+        try {
+            try {
+                fileIn = new FileInputStream(sourceFile);
+                in = new ObjectInputStream(fileIn);
+                return ((T) in.readObject());
+            } catch (IOException | ClassNotFoundException e) {
+                LOG.log(Level.SEVERE, "Unable to load object=" + sourceType + " from=" + sourceFile.getAbsolutePath(), e);
+            }
+
+        } finally {
+            if (in != null) {
+                IOUtils.closeQuietly(in);
+            }
+            if (fileIn != null) {
+                IOUtils.closeQuietly(fileIn);
+            }
+        }
+        return null;
+    }
+
+    private void saveAsObject(Object object, File targetFile) {
         FileOutputStream fileOut = null;
         ObjectOutputStream out = null;
         try {
             fileOut =
-                    new FileOutputStream(versionDirectory.getSweDat());
+                    new FileOutputStream(targetFile);
             out = new ObjectOutputStream(fileOut);
-            out.writeObject(podCastCatalog);
+            out.writeObject(object);
         } catch (IOException e) {
             e.printStackTrace();
-            LOG.log(Level.SEVERE, "Unable to save PodCastCatalog " + versionDirectory.getSweDat().getAbsolutePath(), e);
+            LOG.log(Level.SEVERE, "Unable to save object " + object + " to = " + targetFile.getAbsolutePath(), e);
         } finally {
             IOUtils.closeQuietly(out);
             IOUtils.closeQuietly(fileOut);
@@ -170,6 +220,7 @@ public class DataStorage {
 
         return versionDirectory.getSweJSON();
     }
+
 
     public static class PodCastCatalogVersion {
         private int version;

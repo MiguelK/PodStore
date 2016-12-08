@@ -1,6 +1,7 @@
 package com.podcastcatalog.storage;
 
 import com.podcastcatalog.TestUtil;
+import com.podcastcatalog.util.ZipFile;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

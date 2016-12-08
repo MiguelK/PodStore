@@ -22,17 +22,14 @@ public class PodCastSubscriptionService {
 
     private final static Logger LOG = Logger.getLogger(PodCastSubscriptionService.class.getName());
 
-    private  SubscriptionData subscriptionData = new SubscriptionData();
+    private SubscriptionData subscriptionData = new SubscriptionData();
 
     public static PodCastSubscriptionService getInstance() {
         return INSTANCE;
     }
 
     public void loadFromDiskAsync(DataStorage dataStorage) {
-        //FIXME load subscriptionData from disk async
-        LOG.info("FIXME Loading SubscriptionData from disk...");
-        subscriptionData = new SubscriptionData();
-
+        subscriptionData = dataStorage.loadSubscriptionData();
     }
 
     public void subscribe(String deviceToken, String contentId, ContentIdValidator contentIdValidator) {

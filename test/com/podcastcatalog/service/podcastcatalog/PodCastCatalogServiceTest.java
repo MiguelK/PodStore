@@ -57,7 +57,7 @@ public class PodCastCatalogServiceTest {
     }
 
     private void setUpStorage() {
-        DataStorage storage = new DataStorage(TestUtil.IO_TEMP_DATA_DIRECTORY);
+        DataStorage storage = new DataStorage();
         storage.deleteAll();
 
         PodCastCatalogService.getInstance().setStorage(storage);

@@ -6,31 +6,33 @@ class HomeDirectoryLocator {
 
     private static final String OPENSHIFT_DATA_DIR = "OPENSHIFT_DATA_DIR";
 
-    private static final String PODDA_HOME_DIR = "POD_DATA";
+    private static final String PODDA_HOME_DIR = "POD_DATA_HOME";//Must exist before starting app! //FIXME
 
-     File locateDataDirectory() {
-        File a = new File("/home/krantmig/tools/temp");
-
-        if (isReadAndWriteDirectory(a)) {
-            return a;
+    File locateDataDirectory() {
+        File podDataHomeDir = new File("/home/krantmig/tools/temp" + File.separator + PODDA_HOME_DIR);
+        if (isReadAndWriteDirectory(podDataHomeDir)) {
+            return podDataHomeDir;
         }
 
-        File b = new File("/Users/miguelkrantz/Documents/temp/podda");
-
-        if (isReadAndWriteDirectory(b)) {
-            return b;
+        podDataHomeDir = new File("/Users/miguelkrantz/Documents/temp/" + File.separator + PODDA_HOME_DIR);
+        if (isReadAndWriteDirectory(podDataHomeDir)) {
+            return podDataHomeDir;
         }
-
 
         String openShiftDataDir = System.getenv(OPENSHIFT_DATA_DIR);
-        File contentRoot = new File(openShiftDataDir, PODDA_HOME_DIR);
 
-        if (!contentRoot.exists()) {
-            contentRoot.mkdir();
+        if (openShiftDataDir != null) {
+            podDataHomeDir = new File(openShiftDataDir, PODDA_HOME_DIR);
         }
 
-        if (isReadAndWriteDirectory(contentRoot)) {
-            return contentRoot;
+        if (!podDataHomeDir.exists()) {
+            if(!podDataHomeDir.mkdirs()){
+                throw new IllegalStateException("Unable to create dirs " + podDataHomeDir.getAbsolutePath());
+            }
+        }
+
+        if (isReadAndWriteDirectory(podDataHomeDir)) {
+            return podDataHomeDir;
 
         }
 

@@ -32,14 +32,14 @@ public class SubscriptionNotifierJob implements Job {
                 continue;
             }
 
-            Optional<PodCastEpisode> remoteLatestOptional = PodCastFeedParser.parseLatestPodCastEpisode(podCast);
+            Optional<PodCastEpisode> latestPodCastEpisode = PodCastFeedParser.parseLatestPodCastEpisode(podCast);
 
-            if (!remoteLatestOptional.isPresent()) {
+            if (!latestPodCastEpisode.isPresent()) {
                 LOG.warning("latestRemotePodCast is null for contentId=" + subscription.getContentId());
                 continue;
             }
 
-            PodCastEpisode remoteLatest = remoteLatestOptional.get();
+            PodCastEpisode remoteLatest = latestPodCastEpisode.get();
             PodCastEpisode inMemoryLatest = podCast.getLatestPodCastEpisode();
 
             if (remoteLatest.getCreatedDate().isAfter(inMemoryLatest.getCreatedDate())) {

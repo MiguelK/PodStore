@@ -2,6 +2,7 @@ package com.podcastcatalog.service.subscription;
 
 import com.podcastcatalog.model.subscription.Subscriber;
 import com.podcastcatalog.model.subscription.Subscription;
+import com.podcastcatalog.storage.DataStorage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.testng.Assert;
@@ -15,7 +16,7 @@ public class PodCastSubscriptionServiceTest {
 
     @BeforeMethod
     public void setUp() {
-        PodCastSubscriptionService.getInstance().loadFromDiskAsync(null);
+        PodCastSubscriptionService.getInstance().loadFromDiskAsync(new DataStorage());
         PodCastSubscriptionService.getInstance().registerSubscriber(VALID_SUBSCRIBER);
     }
 
@@ -52,7 +53,6 @@ public class PodCastSubscriptionServiceTest {
 
         PodCastSubscriptionService.getInstance().deleteSubscriber(deviceToken);
         Assert.assertNull(PodCastSubscriptionService.getInstance().getSubscriber(deviceToken));
-
     }
 
     @Test
@@ -101,8 +101,5 @@ public class PodCastSubscriptionServiceTest {
         Document parse = Jsoup.parse(html);
 
         Assert.assertNotNull(parse);
-        System.out.println(html);
-
-
     }
 }

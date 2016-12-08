@@ -44,7 +44,7 @@ public class StartupServlet extends HttpServlet {
             PodCastCatalogService.getInstance().loadPodCastCatalog(currentVersion.get().getPodCastCatalogSwedish());
             PodCastCatalogService.getInstance().buildIndexAsync();
         } else {
-            LOG.info("No catalog exists. in homeDir=" + dataStorage.getRootDir().getAbsolutePath());
+            LOG.info("No catalog exists. in homeDir=" + dataStorage);
             PodCastCatalogService.getInstance().buildPodCastCatalogsAsync();
         }
         //        registerOrStartLoading(dataStorage.load(PodCastCatalogLanguage.Sweden)); //FIXME English

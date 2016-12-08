@@ -1,4 +1,4 @@
-package com.podcastcatalog.storage;
+package com.podcastcatalog.util;
 
 import org.apache.commons.io.IOUtils;
 
@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-class ZipFile {
+public class ZipFile {
 
 
-    static void zip(File file, File zipFileName) {
+    public static void zip(File file, File zipFileName) {
 
         FileOutputStream fileOutputStream = null;
 
