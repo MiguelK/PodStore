@@ -58,7 +58,6 @@ public class PodCastSubscriptionService {
     }
 
     public void unSubscribe(String deviceToken, String contentId) {
-
         writeLock.lock();
         try {
             subscriptionData.unsubscribe(deviceToken, contentId);
@@ -69,10 +68,8 @@ public class PodCastSubscriptionService {
 
     public void deleteSubscriber(String deviceToken) {
         writeLock.lock();
-
         try {
             subscriptionData.deleteSubscriber(deviceToken);
-
         } finally {
             writeLock.unlock();
         }
@@ -87,14 +84,6 @@ public class PodCastSubscriptionService {
         }
     }
 
-    private Optional<Subscription> getSubscription(String contentId) {
-        readLock.lock();
-        try {
-            return Optional.ofNullable(subscriptionData.getSubscription(StringUtils.trimToEmpty(contentId)));
-        } finally {
-            readLock.unlock();
-        }
-    }
 
     public Subscriber getSubscriber(String deviceToken) {
         readLock.lock();
@@ -139,5 +128,14 @@ public class PodCastSubscriptionService {
         html.append("</table>");
 
         return html.toString();
+    }
+
+    private Optional<Subscription> getSubscription(String contentId) {
+        readLock.lock();
+        try {
+            return Optional.ofNullable(subscriptionData.getSubscription(StringUtils.trimToEmpty(contentId)));
+        } finally {
+            readLock.unlock();
+        }
     }
 }

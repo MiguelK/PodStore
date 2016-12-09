@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 public class JobManagerService {
 
     private final static Logger LOG = Logger.getLogger(JobManagerService.class.getName());
+    private static final int INITIAL_DELAY = 0;
 
     private final ScheduledExecutorService threadPool;
 
@@ -28,15 +29,13 @@ public class JobManagerService {
         return INSTANCE;
     }
 
-
     public void registerJob(Job job, int period, TimeUnit timeUnit) {
-        RegisterdJob registerdJob = new RegisterdJob(new WorkExecutor(job), period, timeUnit);
-        registerdJobs.add(registerdJob);
+        registerdJobs.add(new RegisterdJob(new WorkExecutor(job), period, timeUnit));
     }
 
     public void startAsync() {
         for (RegisterdJob registerdJob : registerdJobs) {
-            threadPool.scheduleAtFixedRate(registerdJob.getWorkExecutor(), 0, registerdJob.getPeriod(), registerdJob.getTimeUnit());
+            threadPool.scheduleAtFixedRate(registerdJob.getWorkExecutor(), INITIAL_DELAY, registerdJob.getPeriod(), registerdJob.getTimeUnit());
         }
     }
 
@@ -45,21 +44,21 @@ public class JobManagerService {
         final int period;
         final TimeUnit timeUnit;
 
-        public RegisterdJob(WorkExecutor workExecutor, int period, TimeUnit timeUnit) {
+        RegisterdJob(WorkExecutor workExecutor, int period, TimeUnit timeUnit) {
             this.workExecutor = workExecutor;
             this.period = period;
             this.timeUnit = timeUnit;
         }
 
-        public WorkExecutor getWorkExecutor() {
+        WorkExecutor getWorkExecutor() {
             return workExecutor;
         }
 
-        public int getPeriod() {
+        int getPeriod() {
             return period;
         }
 
-        public TimeUnit getTimeUnit() {
+        TimeUnit getTimeUnit() {
             return timeUnit;
         }
     }

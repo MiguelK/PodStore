@@ -78,7 +78,7 @@ public class PodCastTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalid_podCastEpisodes_empty() {
-         PodCast.newBuilder().title("sdsds").description("dsdsdsd").createdDate(LocalDateTime.now()).
+         PodCast.newBuilder().title("P3 Dokumentär").description("dsdsdsd").createdDate(LocalDateTime.now()).
                 feedURL("sdsdsd").collectionId("3434").publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("ARTS")).
                 addPodCastEpisodes(Collections.emptyList()).build();
     }
@@ -182,7 +182,7 @@ public class PodCastTest {
         List<PodCastEpisode> podCastEpisode = new ArrayList<>();
         podCastEpisode.add(PodCastEpisodeTest.createValid().build());
 
-        return PodCast.newBuilder().title("sdsds").description("dsdsdsd").createdDate(LocalDateTime.now()).setArtworkUrl600("http://www.dn.se/someimage.png").
+        return PodCast.newBuilder().title("P3 Dokumentär").description("dsdsdsd").createdDate(LocalDateTime.now()).setArtworkUrl600("http://www.dn.se/someimage.png").
                 feedURL("sdsdsd").collectionId("4444").publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("ARTS")).
                 addPodCastEpisodes(podCastEpisode);
 
