@@ -32,35 +32,21 @@ public class PodCastSubscriptionService {
         subscriptionData = ServiceDataStorage.useDefault().loadSubscriptionData();
     }
 
-    public void subscribe(String deviceToken, String contentId, ContentIdValidator contentIdValidator) {
+    public void subscribe(String subscriberId, String contentId, ContentIdValidator contentIdValidator) {
 
-        String deviceTokenTrimmed = StringUtils.trimToNull(deviceToken);
-        String contentIdTrimmed = StringUtils.trimToNull(contentId);
-
-        readLock.lock();
-        Subscription subscription;
-        Subscriber subscriber;
-        try {
-            subscriber = subscriptionData.getSubscriber(deviceTokenTrimmed);
-            if (subscriber == null) {
-                throw new IllegalArgumentException("No Subscriber with id " + deviceTokenTrimmed + " exists");
-            }
-
-            if (!contentIdValidator.isValidContentId(contentIdTrimmed)) {
-                throw new IllegalArgumentException("Invalid contentId " + contentIdTrimmed + " not accepted by " + contentIdValidator);
-            }
-
-            subscription = subscriptionData.getSubscription(contentIdTrimmed);
-
-        } finally {
-            readLock.unlock();
+        if (!contentIdValidator.isValidContentId(contentId)) {
+            throw new IllegalArgumentException("Invalid contentId " + contentId + " not accepted by " + contentIdValidator);
         }
 
         writeLock.lock();
+
+        Subscriber subscriber = subscriptionData.getSubscriber(subscriberId);
+        Subscription subscription = subscriptionData.getSubscription(contentId);
+
         try {
             //Ok forts subscriber for this content
             if (subscription == null) {
-                subscription = new Subscription(contentIdTrimmed);
+                subscription = new Subscription(contentId);
                 subscriptionData.addSubscription(subscription);
             }
 
@@ -110,7 +96,6 @@ public class PodCastSubscriptionService {
         }
     }
 
-    //Throw exception if not existsing
     public Subscriber getSubscriber(String deviceToken) {
         readLock.lock();
         try {

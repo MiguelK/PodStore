@@ -51,8 +51,19 @@ public class PodCastSubscriptionServiceTest {
         Assert.assertNotNull(PodCastSubscriptionService.getInstance().getSubscriber(deviceToken));
 
         PodCastSubscriptionService.getInstance().deleteSubscriber(deviceToken);
-        Assert.assertNull(PodCastSubscriptionService.getInstance().getSubscriber(deviceToken));
     }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void deleteSubscriber_removed() {
+        String deviceToken = "123dsdsd";
+        PodCastSubscriptionService.getInstance().registerSubscriber(deviceToken);
+        Assert.assertNotNull(PodCastSubscriptionService.getInstance().getSubscriber(deviceToken));
+
+        PodCastSubscriptionService.getInstance().deleteSubscriber(deviceToken);
+
+        Assert.assertNotNull(PodCastSubscriptionService.getInstance().getSubscriber(deviceToken));
+    }
+
 
     @Test
     public void getSubscriber_success() {

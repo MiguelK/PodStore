@@ -14,12 +14,7 @@ public class SubscriptionData implements Serializable {
     private Map<String, Subscriber> subscriberById = new HashMap<>();
     private Map<String, Subscription> subscriptionByContentId = new HashMap<>();
 
-
     public SubscriptionData() {
-    }
-
-    public void subscribe(String deviceToken, String contentId, ContentIdValidator contentIdValidator) {
-        throw new UnsupportedOperationException();
     }
 
     public void unsubscribe(String subscriptionId, String contentId) {
@@ -31,7 +26,7 @@ public class SubscriptionData implements Serializable {
         if (subscriber == null) {
             return;
         }
-//
+
         String contentIdTrimmed = StringUtils.trimToNull(contentId);
         Subscription subscription = subscriptionByContentId.get(contentIdTrimmed);
 
@@ -44,18 +39,22 @@ public class SubscriptionData implements Serializable {
 
         if (subscription.hasNoSubscribers()) {
             subscriptionByContentId.remove(contentIdTrimmed);
-
         }
-
-
     }
 
     public void deleteSubscriber(String deviceToken) {
-        subscriberById.remove(deviceToken);
+
+        subscriberById.remove(StringUtils.trimToEmpty(deviceToken));
     }
 
     public Subscriber getSubscriber(String id) {
-        return subscriberById.get(id);
+
+        Subscriber subscriber = subscriberById.get(StringUtils.trimToEmpty(id));
+        if (subscriber == null) {
+            throw new IllegalArgumentException("No Subscriber with id " + id + " exists");
+        }
+
+        return subscriber;
     }
 
     public void registerSubscriber(Subscriber subscriber) {
@@ -63,7 +62,7 @@ public class SubscriptionData implements Serializable {
     }
 
     public Subscription getSubscription(String contentId) {
-        return subscriptionByContentId.get(contentId);
+        return subscriptionByContentId.get(StringUtils.trimToEmpty(contentId));
     }
 
     public void addSubscription(Subscription subscription) {
