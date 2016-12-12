@@ -40,8 +40,8 @@
 
 <table>
     <tr>
-        <td>PodCastIndex</td>
-        <td><%= PodCastCatalogService.getInstance().getPodCastIndexStatus() %>
+        <td>PodCastCatalogIndex</td>
+        <td><%= PodCastCatalogService.getInstance().getPodCastCatalogIndexStatus() %>
         </td>
     </tr>
 

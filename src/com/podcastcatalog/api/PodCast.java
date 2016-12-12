@@ -15,13 +15,13 @@ public class PodCast {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPodCastByCollectionId(@PathParam("id") String id) {
+    public Response getPodCastById(@PathParam("id") String id) {
 
         Optional<com.podcastcatalog.model.podcastcatalog.PodCast> podCast = PodCastCatalogService.getInstance().getPodCastById(id);
 
         if (!podCast.isPresent()) {
             podCast = ItunesSearchAPI.lookup(id);
-            //FIXME if hit fetct and and to in-memory index?
+            //FIXME if hit fetch and to in-memory index?
         }
 
         if (!podCast.isPresent()) {
@@ -30,6 +30,40 @@ public class PodCast {
 
         return Response.status(Response.Status.OK).entity(podCast.get()).build();
     }
+
+   /* @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPodCastByIds(@QueryParam(value = "id") String id) {
+
+        if (StringUtils.isEmpty(id)) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Missing id= " + id).build();
+        }
+
+        Map<String, com.podcastcatalog.model.podcastcatalog.PodCast> podCastById = new HashMap<>();
+
+        List<String> podCastIds = Arrays.asList(StringUtils.split(StringUtils.trimToEmpty(id), ","));
+
+        for (String podCastId : podCastIds) {
+            Optional<com.podcastcatalog.model.podcastcatalog.PodCast> podCast = PodCastCatalogService.getInstance().getPodCastById(podCastId);
+
+            if (!podCast.isPresent()) {
+                podCast = ItunesSearchAPI.lookup(id);
+                //FIXME if hit fetch and and to in-memory index? performance
+            }
+
+            if (!podCast.isPresent()) {
+                //FIXME lOG? invalid id received?
+                continue;
+            }
+
+            podCastById.put(podCast.get().getCollectionId(), podCast.get());
+        }
+
+        PodCastStatus podCastStatus = new PodCastStatus(podCastById);
+
+        return Response.status(Response.Status.OK).entity(podCastStatus).build();
+    }*/
+
 
     @POST
     @Path("/star/{id}/{episodeId}/{stars}")

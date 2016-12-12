@@ -12,6 +12,29 @@ import java.util.List;
 public class PodCastIndexTest {
 
     @Test
+    public void add_if_not_existing() {
+        PodCast b = PodCastTest.createValid().description("bcd").collectionId("1").build();
+
+        PodCastIndex podCastIndex = PodCastIndex.create();
+        podCastIndex.update(b);
+
+        Assert.assertEquals(podCastIndex.lookup("1").get().getDescription(),"bcd");
+    }
+
+    @Test
+    public void updatePodCast_changed() {
+        PodCast a = PodCastTest.createValid().description("a").collectionId("1").build();
+        PodCast b = PodCastTest.createValid().description("bcd").collectionId("1").build();
+
+        PodCastIndex podCastIndex = PodCastIndex.create();
+        podCastIndex.update(a);
+
+        Assert.assertEquals(podCastIndex.lookup("1").get().getDescription(),"a");
+        podCastIndex.update(b);
+        Assert.assertEquals(podCastIndex.lookup("1").get().getDescription(),"bcd");
+    }
+
+    @Test
     public void lookup_found() {
         PodCast a = PodCastTest.createValid().description("a").collectionId("1").build();
         PodCast b = PodCastTest.createValid().description("b").collectionId("2").build();

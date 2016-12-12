@@ -2,10 +2,11 @@ package com.podcastcatalog;
 
 import com.podcastcatalog.modelbuilder.PodCastCatalogBuilderSE;
 import com.podcastcatalog.service.ServiceDataStorage;
+import com.podcastcatalog.service.ServiceDataStorageDisk;
 import com.podcastcatalog.service.job.JobManagerService;
+import com.podcastcatalog.service.job.PodCastSubscriptionUpdater;
 import com.podcastcatalog.service.job.SubscriptionNotifierJob;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
-import com.podcastcatalog.service.ServiceDataStorageDisk;
 import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
 
 import javax.servlet.ServletConfig;
@@ -32,6 +33,7 @@ public class StartupServlet extends HttpServlet {
         LOG.info("Starting PodCastCatalog..., working dir= " + serviceDataStorageDisk);
 
         JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
+        JobManagerService.getInstance().registerJob(new PodCastSubscriptionUpdater(), 10, TimeUnit.MINUTES); //FIXME 10 min to first update
         JobManagerService.getInstance().startAsync();
 
         PodCastSubscriptionService.getInstance().start();

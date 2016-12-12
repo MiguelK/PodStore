@@ -7,8 +7,6 @@ Start
     - save/load date
     -
 
-
-
 Admin
 http://localhost:10080/PodStore
 
@@ -36,6 +34,11 @@ https://itunes.apple.com/lookup?id=308339623
 # Episode has podCastRefId = unikt id inom samma catalog som pekar på PodCast
 # Search
 		-Client can have a PodCast not existsing in server catalog.
+
+* Subscriber.getSubscriberPodCasts()
+   get request from playListVC, update with star if later episode exist
+   use the return podcast values if later exists
+
 
 # Startup of server
 		 - Index all Episodes in in-memory searchable cache

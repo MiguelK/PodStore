@@ -33,6 +33,7 @@ public class PodCastCatalogService {
     private final List<PodCastCatalogBuilder> podCastCatalogBuilders;
 
     private final TextSearchEngine<ResultItem> textSearchEngine;
+    private final PodCastIndex podCastCatalogIndex;
     private final PodCastIndex podCastIndex;
     private ServiceDataStorage storage;
     private final ExecutorService executorService;
@@ -41,6 +42,7 @@ public class PodCastCatalogService {
     private static final PodCastCatalogService INSTANCE = new PodCastCatalogService();
 
     private PodCastCatalogService() {
+        podCastCatalogIndex = PodCastIndex.create();
         podCastIndex = PodCastIndex.create();
         textSearchEngine = new TextSearchEngine<>();
         podCastCatalogBuilders = new ArrayList<>();
@@ -54,7 +56,28 @@ public class PodCastCatalogService {
     }
 
     public Optional<PodCast> getPodCastById(String id) {
-        return podCastIndex.lookup(id);
+        readLock.lock();
+        try {
+            //podCastIndex updated every 10th minute @see PodCastSubscriptionUpdater.java
+            Optional<PodCast> podCast = podCastIndex.lookup(id);
+            if (podCast.isPresent()) {
+                return podCast;
+            }
+
+            return podCastCatalogIndex.lookup(id);
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    public void updatePodCastIndex(PodCast podCast) {
+        writeLock.lock();
+
+        try {
+            podCastIndex.update(podCast);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     public void registerPodCastCatalogBuilder(PodCastCatalogBuilder builder) {
@@ -85,10 +108,10 @@ public class PodCastCatalogService {
         }
     }
 
-    public String getPodCastIndexStatus() {
+    public String getPodCastCatalogIndexStatus() {
         readLock.lock();
         try {
-            return podCastIndex.getStatus();
+            return podCastCatalogIndex.getStatus();
 
         } finally {
             readLock.unlock();
@@ -221,7 +244,7 @@ public class PodCastCatalogService {
 
                 textSearchEngine.buildIndex();
 
-                podCastIndex.buildIndex(bundleItemVisitor.getPodCasts());
+                podCastCatalogIndex.buildIndex(bundleItemVisitor.getPodCasts());
 
             } finally {
                 writeLock.unlock();

@@ -1,7 +1,7 @@
 package com.podcastcatalog.api;
 
-import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
+import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
 
 import javax.ws.rs.*;

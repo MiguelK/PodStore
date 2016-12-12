@@ -21,7 +21,7 @@ public class SubscriptionNotifierJob implements Job {
         List<Subscription> subscriptions = getSubscriptions();
 
         if (!subscriptions.isEmpty()) {
-            LOG.info(getClass().getSimpleName() + " looking for PodCastEpisde updates. subscriptions=" + subscriptions.size());
+            LOG.info(getClass().getSimpleName() + " looking for PodCastEpisode updates. subscriptions=" + subscriptions.size());
         }
 
         for (Subscription subscription : subscriptions) {
@@ -70,11 +70,8 @@ public class SubscriptionNotifierJob implements Job {
         }
 
         Optional<PodCast> podCastOptional = ItunesSearchAPI.lookup(podCastId);
-        if (podCastOptional.isPresent()) {
-            return podCastOptional.get();
-        }
+        return podCastOptional.orElse(null);
 
-        return null;
     }
 
     Optional<PodCastEpisode> getLatestPodCastEpisodeFromSourceServer(PodCast podCast) {

@@ -101,10 +101,12 @@ public class ServiceDataStorageDiskTest {
     public void verify_version_structure() throws IOException {
         storage.save(PodCastCatalogTest.createValid());
 
-        File dataDirectory = TestUtil.IO_TEMP_DATA_DIRECTORY;
+
+        File dataDirectory = storage.getPodDataHomeDir();
         File root = new File(dataDirectory,"PodCastCatalogVersions");
         File one = new File(root,"1");
 
+        System.out.println("PATH= " + one.getAbsolutePath());
         Assert.assertTrue(one.isDirectory());
         Assert.assertTrue(one.canRead());
         Assert.assertTrue(one.canWrite());

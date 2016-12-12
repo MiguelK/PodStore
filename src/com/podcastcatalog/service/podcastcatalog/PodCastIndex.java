@@ -16,7 +16,7 @@ public class PodCastIndex {
         return new PodCastIndex();
     }
 
-    public void buildIndex(List<PodCast> podCasts) {
+    void buildIndex(List<PodCast> podCasts) {
         index = new HashMap<>(); //clear?
 
         podCasts.forEach(p -> index.put(p.getCollectionId(), p));
@@ -28,5 +28,10 @@ public class PodCastIndex {
 
     public String getStatus() {
         return "PodCastIndex: Size=" + index.size();
+    }
+
+    public void update(PodCast podCast) {
+
+        index.put(podCast.getCollectionId(),podCast);
     }
 }
