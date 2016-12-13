@@ -14,8 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+//FIXME Remove, not used. version 1?
 @Path("/subscriber")
 public class Subscriber {
+
 
     @GET
     @Path("{deviceToken}")
