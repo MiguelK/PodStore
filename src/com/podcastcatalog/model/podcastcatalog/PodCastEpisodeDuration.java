@@ -38,7 +38,7 @@ public class PodCastEpisodeDuration implements Serializable{
         return totalSeconds != INVALID_VALUE;
     }
 
-    public int getHour() {
+    int getHour() {
         return hours;
     }
 
@@ -77,5 +77,32 @@ public class PodCastEpisodeDuration implements Serializable{
         }
 
         return Optional.ofNullable(date);
+    }
+
+    @Override
+    public String toString() {
+        return "PodCastEpisodeDuration{" +
+                "totalSeconds=" + totalSeconds +
+                ", hours=" + hours +
+                ", minutes=" + minutes +
+                ", seconds=" + seconds +
+                '}';
+    }
+
+    public String getDisplayValue() {
+
+        int hour = getHour();
+        int minutes = getMinutes();
+
+        String displayValue = "";
+        if(hour>0){
+            displayValue += hour + "h";
+        }
+        if(minutes>0){
+            displayValue += " " + minutes + "m";
+        }
+
+
+        return displayValue;
     }
 }

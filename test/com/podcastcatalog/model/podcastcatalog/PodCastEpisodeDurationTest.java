@@ -1,6 +1,5 @@
 package com.podcastcatalog.model.podcastcatalog;
 
-import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeDuration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -33,6 +32,12 @@ public class PodCastEpisodeDurationTest {
         Assert.assertTrue(duration.getSeconds()==12);
     }
 
+    @Test
+    public void parse_display_value() {
+        Assert.assertEquals(PodCastEpisodeDuration.parse("02:23:12").getDisplayValue(),"2h 23m");
+        Assert.assertEquals(PodCastEpisodeDuration.parse("01:03:12").getDisplayValue(),"1h 3m");
+//        Assert.assertEquals(PodCastEpisodeDuration.parse("00:00:54").getDisplayValue(),"54m");
+    }
 
     @Test
     public void invalid_duration_null() {

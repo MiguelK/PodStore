@@ -2,6 +2,7 @@ package com.podcastcatalog.modelbuilder.podcastfether;
 
 import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
+import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
 import com.podcastcatalog.modelbuilder.collector.PodCastFeedParser;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -22,6 +23,15 @@ public class PodCastFeedParserTest {
         Assert.assertNotNull(podCast);
 
         Assert.assertEquals(podCast.getCollectionId(),collectionId);
+    }
+
+    @Test(groups = TestUtil.SLOW_TEST)
+    public void parse_episode_duration() throws MalformedURLException {
+        PodCast podCast = PodCastFeedParser.parse(new URL("http://api.sr.se/api/rss/pod/3966"), artworkUrl600, "22233").get();
+
+        for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodes()) {
+            Assert.assertNotNull(podCastEpisode.getDuration().getDisplayValue());
+        }
     }
 
     @Test(groups = TestUtil.SLOW_TEST)

@@ -53,11 +53,19 @@ public class PodCastEpisodeFileSize implements Serializable {
         return fileSizeInBytes!=INVALID_VALUE;
     }
 
-    public long getFileSizeInBytes() {
+    long getFileSizeInBytes() {
         return fileSizeInBytes;
     }
 
-    public String getFileSizeFormatted() {
+    String getFileSizeFormatted() {
         return fileSizeFormatted;
+    }
+
+    @Override
+    public String toString() {
+        return "PodCastEpisodeFileSize{" +
+                "fileSizeInBytes=" + fileSizeInBytes +
+                ", fileSizeFormatted='" + fileSizeFormatted + '\'' +
+                '}';
     }
 }
