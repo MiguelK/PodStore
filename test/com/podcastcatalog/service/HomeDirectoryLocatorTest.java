@@ -1,6 +1,5 @@
-package com.podcastcatalog.storage;
+package com.podcastcatalog.service;
 
-import com.podcastcatalog.service.HomeDirectoryLocator;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

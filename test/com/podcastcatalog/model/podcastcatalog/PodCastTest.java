@@ -156,11 +156,27 @@ public class PodCastTest {
 
     @Test
     public void addPodCastEpisode() {
-
         PodCastEpisode podCastEpisode = PodCastEpisodeTest.createValid().build();
         PodCast podCast = createValid().addPodCastEpisode(podCastEpisode).build();
 
         Assert.assertTrue(podCast.getPodCastEpisodes().contains(podCastEpisode));
+    }
+
+    @Test
+    public void getLatestPodCastEpisode() {
+
+        PodCast.Builder builder = PodCast.newBuilder().title("P3 Dokumentär").description("dsdsdsd").
+                createdDate(LocalDateTime.now()).setArtworkUrl600("http://www.dn.se/someimage.png").
+                feedURL("sdsdsd").collectionId("4444").publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("ARTS"));
+        PodCastEpisode firstEpisodeAdded = PodCastEpisodeTest.createValid().id("1111").description("A").build();
+
+        builder.addPodCastEpisode(firstEpisodeAdded);
+        builder.addPodCastEpisode(PodCastEpisodeTest.createValid().id("3434").description("A").build());
+
+        PodCast podCast = builder.build();
+
+        Assert.assertTrue(podCast.getPodCastEpisodes().size()==2);
+        Assert.assertEquals(podCast.getLatestPodCastEpisode().getId(),"1111");
     }
 
     @Test

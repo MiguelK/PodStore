@@ -13,10 +13,6 @@ import java.util.*;
 
 public class DateUtil {
 
-    public static String parse(LocalDateTime localDateTime) {
-        return null;
-    }
-
     public static class  DateTimeParserException extends Exception{
         DateTimeParserException() {
             super("Unable to parse null date");
@@ -96,7 +92,7 @@ public class DateUtil {
         return Date.from(instant);
     }
 
-    public static LocalDateTime tillLocalDateTime(Date date) {
+    public static LocalDateTime toLocalDateTime(Date date) {
         if (date == null) {
             date = new Date();
         }
@@ -109,7 +105,7 @@ public class DateUtil {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
-    public static Date tillDate(LocalDateTime localDateTime) {
+    public static Date toDate(LocalDateTime localDateTime) {
         if (localDateTime == null) {
             return null;
         }
@@ -118,7 +114,7 @@ public class DateUtil {
         return Date.from(instant);
     }
 
-    public static LocalDate tillLocalDate(Date datum) {
+    public static LocalDate toLocalDate(Date datum) {
         if (datum == null) {
             datum = new Date();
         }

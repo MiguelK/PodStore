@@ -1,4 +1,4 @@
-package com.podcastcatalog.storage;
+package com.podcastcatalog.service;
 
 import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.podcastcatalog.PodCastBundleTest;

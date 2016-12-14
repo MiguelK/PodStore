@@ -1,9 +1,8 @@
-package com.podcastcatalog.modelbuilder.podcastfether;
+package com.podcastcatalog.modelbuilder.collector.itunes;
 
 import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
-import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
