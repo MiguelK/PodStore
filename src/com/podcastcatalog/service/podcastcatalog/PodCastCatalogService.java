@@ -81,7 +81,13 @@ public class PodCastCatalogService {
     }
 
     public void registerPodCastCatalogBuilder(PodCastCatalogBuilder builder) {
-        podCastCatalogBuilders.add(builder);
+        writeLock.lock();
+
+        try {
+            podCastCatalogBuilders.add(builder);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     public void setStorage(ServiceDataStorage storage) {
@@ -102,7 +108,6 @@ public class PodCastCatalogService {
         readLock.lock();
         try {
             return textSearchEngine.getStatus();
-
         } finally {
             readLock.unlock();
         }
@@ -137,10 +142,14 @@ public class PodCastCatalogService {
         List<PodCastResultItem> podCasts = ItunesSearchAPI.search("term=" + queryParam + "&entity=podcast&limit=5").searchPodCast();
         resultItems.addAll(podCasts);
 
-        List<ResultItem> result = textSearchEngine.lookup(queryParam);
-        resultItems.addAll(result);
-
-        return resultItems;
+        readLock.lock();
+        try {
+            List<ResultItem> result = textSearchEngine.lookup(queryParam);
+            resultItems.addAll(result);
+            return resultItems;
+        } finally {
+            readLock.unlock();
+        }
     }
 
     public void buildPodCastCatalogsAsync() {
@@ -175,7 +184,7 @@ public class PodCastCatalogService {
         @Override
         public void run() {
             readLock.lock();
-            LOG.info("rebuildCatalogs() registered podCastCatalogBuilders=" + podCastCatalogBuilders.size());
+            LOG.info(BuildPodCastCatalogAction.class.getSimpleName() + ", registered podCastCatalogBuilders=" + podCastCatalogBuilders.size());
 
             List<PodCastCatalogBuilder> snapShot = new ArrayList<>(podCastCatalogBuilders);
 

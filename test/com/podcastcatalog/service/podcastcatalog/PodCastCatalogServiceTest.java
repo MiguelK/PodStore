@@ -10,13 +10,25 @@ import com.podcastcatalog.service.ServiceDataStorageDisk;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class PodCastCatalogServiceTest {
 
+    @Test
+    public void getPodCastCatalogIndexStatus() {
+        String status = PodCastCatalogService.getInstance().getPodCastCatalogIndexStatus();
+
+        Assert.assertTrue(status.contains("Size=0"));
+    }
+
+    @Test
+    public void getPodCastById() {
+        PodCast podCast = PodCastTest.createValid().build();
+        PodCastCatalogService.getInstance().updatePodCastIndex(podCast);
+
+        Optional<PodCast> podCastById = PodCastCatalogService.getInstance().getPodCastById(podCast.getCollectionId());
+        Assert.assertTrue(podCastById.isPresent());
+    }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void buildPodCastCatalogs() {
@@ -76,8 +88,8 @@ public class PodCastCatalogServiceTest {
 
                 PodCastCategoryBundleBuilder categoryBundleBuilder = BundleBuilder.newPodCastCategoryBundleBuilder("Alla Kategorier", "???..");
                 categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 2, "Nyheter och politik", "???"));
-                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TECHNOLOGY,2, "Teknologi", "???"));
-                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TV_FILM,1, "TV och film", "???"));
+                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TECHNOLOGY, 2, "Teknologi", "???"));
+                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TV_FILM, 1, "TV och film", "???"));
 
 
                 Set<BundleBuilder> bundleBuilders = new HashSet<>();
@@ -113,4 +125,5 @@ public class PodCastCatalogServiceTest {
 
         System.out.println("LocalCatalog = " + podCastCatalog);
     }
+
 }
