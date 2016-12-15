@@ -11,6 +11,9 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class PodCastCatalogServiceTest {
 
@@ -18,7 +21,7 @@ public class PodCastCatalogServiceTest {
     public void getPodCastCatalogIndexStatus() {
         String status = PodCastCatalogService.getInstance().getPodCastCatalogIndexStatus();
 
-        Assert.assertTrue(status.contains("Size=0"));
+        Assert.assertTrue(status.contains("Size=0"), " status=" + status);
     }
 
     @Test
@@ -31,7 +34,7 @@ public class PodCastCatalogServiceTest {
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
-    public void buildPodCastCatalogs() {
+    public void buildPodCastCatalogs() throws InterruptedException, ExecutionException, TimeoutException {
 
         setUpStorage();
 
@@ -61,14 +64,14 @@ public class PodCastCatalogServiceTest {
         });
 
 
-        PodCastCatalogService.getInstance().buildPodCastCatalogs();
+        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync().get(5,TimeUnit.MINUTES);
         PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
         Assert.assertNotNull(podCastCatalog);
         Assert.assertFalse(podCastCatalog.getBundles().isEmpty());
 
     }
 
-    private void setUpStorage() {
+    private static void setUpStorage() {
         ServiceDataStorageDisk storage = new ServiceDataStorageDisk();
         storage.deleteAll();
 
@@ -76,8 +79,19 @@ public class PodCastCatalogServiceTest {
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
-    public void build_hallo_world_catalog() {
+    public void build_hallo_world_catalog() throws InterruptedException, ExecutionException, TimeoutException {
 
+        initPodCastCatalogs();
+
+        //1# App start get current built catalog
+        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
+
+        TestUtil.assertToJSONNotNull(podCastCatalog);
+
+        System.out.println("LocalCatalog = " + podCastCatalog);
+    }
+
+    public static void initPodCastCatalogs() throws InterruptedException, ExecutionException, TimeoutException {
         setUpStorage();
 
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilder() {
@@ -116,14 +130,7 @@ public class PodCastCatalogServiceTest {
         });
 
         PodCastCatalogService
-                .getInstance().buildPodCastCatalogs();
-
-        //1# App start get current built catalog
-        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
-
-        TestUtil.assertToJSONNotNull(podCastCatalog);
-
-        System.out.println("LocalCatalog = " + podCastCatalog);
+                .getInstance().buildPodCastCatalogsAsync().get(3, TimeUnit.MINUTES);
     }
 
 }

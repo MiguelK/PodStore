@@ -13,7 +13,6 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
@@ -152,25 +151,14 @@ public class PodCastCatalogService {
         }
     }
 
-    public void buildPodCastCatalogsAsync() {
-        validateState();
-
-        ayncExecutor.submit(new BuildPodCastCatalogAction());
-    }
-
     public void buildIndexAsync() {
         ayncExecutor.submit(new BuildIndexAction());
     }
 
-    //FIXME Test only delete?
-    public void buildPodCastCatalogs() {
+    public Future buildPodCastCatalogsAsync() {
         validateState();
 
-        try {
-            ayncExecutor.submit(new BuildPodCastCatalogAction()).get(MAX_BUILD_CATALOG_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to rebuild catalogs ", e);
-        }
+        return ayncExecutor.submit(new BuildPodCastCatalogAction());
     }
 
     private void validateState() {

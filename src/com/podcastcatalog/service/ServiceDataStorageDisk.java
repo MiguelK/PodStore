@@ -60,6 +60,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
     public void save(PodCastCatalog podCastCatalog) {
 
         PodCastCatalogVersion versionDirectory = createNewVersionDirectory();
+        LOG.info("Saving PodCastCatalog to " + versionDirectory.getSweDat().getAbsolutePath());
         saveAsObject(podCastCatalog, versionDirectory.getSweDat());
         File json = saveAsJSON(podCastCatalog, versionDirectory);
 
