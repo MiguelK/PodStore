@@ -13,7 +13,7 @@ public class Subscription {
     private String contentId;
 
     //All user Subscribers for this content
-    private List<Subscriber> subscribers = new ArrayList<Subscriber>();
+    private final List<Subscriber> subscribers = new ArrayList<>();
 
     public Subscription(String contentId) {
         if(StringUtils.isEmpty(contentId)){

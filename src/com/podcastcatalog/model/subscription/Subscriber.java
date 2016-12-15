@@ -11,7 +11,7 @@ public class Subscriber implements Serializable{
     private String deviceToken;
 
     //This user Subscriber's subscriptions
-    private List<Subscription> subscriptions = new ArrayList<Subscription>();
+    private final List<Subscription> subscriptions = new ArrayList<>();
 
     public Subscriber(String deviceToken) {
         String deviceTokenTrimmed = StringUtils.trimToNull(deviceToken);

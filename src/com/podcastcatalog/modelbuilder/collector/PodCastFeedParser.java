@@ -166,10 +166,8 @@ public class PodCastFeedParser {
             Optional<String> first = rawElements.stream().filter(r -> "lastBuildDate".equalsIgnoreCase(r.getName())
                     && StringUtils.trimToNull(r.getValue()) != null).map(RawElement::getValue).findFirst();
 
-            if (first.isPresent()) {
-                LOG.info("FIXME Implement: CreatedDate from node " + first.get());
-                //2016-09-01T06:09:04.447
-            }
+            //2016-09-01T06:09:04.447
+            first.ifPresent(s -> LOG.info("FIXME Implement: CreatedDate from node " + s));
             return LocalDateTime.now();
         }
 
@@ -302,11 +300,9 @@ public class PodCastFeedParser {
             Optional<RawAttribute> first = audioEnclosureAttributes.stream().filter(a -> "length".equalsIgnoreCase(a.getName()) &&
                     StringUtils.trimToNull(a.getValue()) != null).findFirst();
 
-            if (first.isPresent()) {
-                return PodCastEpisodeFileSize.parse(first.get().getValue()); //FIXME if null value?
-            }
+            //FIXME if null value?
+            return first.map(rawAttribute -> PodCastEpisodeFileSize.parse(rawAttribute.getValue())).orElse(null);
 
-            return null;
         }
 
         String getTargetURL() {

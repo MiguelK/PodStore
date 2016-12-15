@@ -11,8 +11,8 @@ import java.util.Map;
 //Data only serializabe to disk
 public class SubscriptionData implements Serializable {
 
-    private Map<String, Subscriber> subscriberById = new HashMap<>();
-    private Map<String, Subscription> subscriptionByContentId = new HashMap<>();
+    private final Map<String, Subscriber> subscriberById = new HashMap<>();
+    private final Map<String, Subscription> subscriptionByContentId = new HashMap<>();
 
     public SubscriptionData() {
     }

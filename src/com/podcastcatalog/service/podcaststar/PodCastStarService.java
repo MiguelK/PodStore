@@ -63,7 +63,7 @@ public class PodCastStarService {
     }
 
     private static class PodCastStar {
-        private Map<String, PodCastEpisodeStar> podCastEpisodeStars = new HashMap<>();
+        private final Map<String, PodCastEpisodeStar> podCastEpisodeStars = new HashMap<>();
 
         PodCastStar() {
         }

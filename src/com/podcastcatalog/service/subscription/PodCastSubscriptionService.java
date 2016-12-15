@@ -108,9 +108,7 @@ public class PodCastSubscriptionService {
         //FIXME add to queu
         //FIXME Update pushDateTime
         Optional<Subscription> subscription = getSubscription(contentId);
-        if (subscription.isPresent()) {
-            LOG.info("Send push message " + message + " to contentId=" + subscription.get());
-        }
+        subscription.ifPresent(subscription1 -> LOG.info("Send push message " + message + " to contentId=" + subscription1));
 
     }
 

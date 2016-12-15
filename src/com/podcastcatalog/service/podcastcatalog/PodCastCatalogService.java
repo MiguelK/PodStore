@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 public class PodCastCatalogService {
 
     private static final int THREADS = 5;
-    private static final int MAX_BUILD_CATALOG_TIMEOUT_IN_MINUTES = 15;
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
     private final Lock readLock = reentrantReadWriteLock.readLock();
     private final Lock writeLock = reentrantReadWriteLock.writeLock();
