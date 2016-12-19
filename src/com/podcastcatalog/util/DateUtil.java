@@ -2,6 +2,7 @@ package com.podcastcatalog.util;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,7 +10,10 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 public class DateUtil {
 
@@ -34,11 +38,11 @@ public class DateUtil {
             .toFormatter();
 
 
-    public static Optional<LocalDateTime> parse(String dateTime)throws DateTimeParserException {
+    public static Optional<LocalDateTime> parse(String dateTime) {
 
         String trimmeddateTime = StringUtils.trimToNull(dateTime);
         if (trimmeddateTime ==null) {
-            throw new DateTimeParserException();
+            return  Optional.empty();
         }
 
         try {
@@ -68,10 +72,47 @@ public class DateUtil {
                     }
                 }
 
-                String pattern = "EEE, dd MMM yyyy HH:mm:ss";
-                LocalDateTime localDate = LocalDateTime.parse(trimmeddateTime,
-                        DateTimeFormatter.ofPattern(pattern).withLocale(Locale.ENGLISH));
-                return Optional.ofNullable(localDate);
+                //Sun, 07 Aug 2016 12:05:26 EST
+                List<String> patterns = Arrays.asList("EEE, dd MMM yyyy HH:mm:ss", "EEE, dd MMM yyyy HH:mm:ss EST");
+//                String pattern = "dd MMM yyyy HH:mm:ss";
+//                LocalDateTime localDate = null;
+
+                for (String pattern : patterns) {
+                    try{
+
+                        SimpleDateFormat format =
+                                new SimpleDateFormat(pattern);
+
+                        Date parse = format.parse(trimmeddateTime);
+                        System.out.println(parse);
+
+                        if(parse!=null){
+                            return Optional.ofNullable(toLocalDateTime(parse));
+                        }
+
+//                        System.out.println(trimmeddateTime);
+//                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+
+//                        ZonedDateTime parse1 = ZonedDateTime.parse(trimmeddateTime);
+//                        LocalDateTime localDateTime = parse1.toLocalDateTime();
+//                        System.out.println(localDateTime);
+
+//                        System.out.println("10. " + DateFormat.getDateTimeInstance(
+//                                DateFormat.LONG, DateFormat.LONG).parse(trimmeddateTime));
+
+//                        DateTime date = formatter.withZone(DateTimeZone.forID("Europe/Paris")).parseDateTime(str);
+
+//                        LocalDateTime parse = LocalDateTime.parse(trimmeddateTime,
+//                                formatter);//.withLocale(Locale.ENGLISH));
+
+                        return Optional.empty();//Optional.ofNullable(parse);
+
+                    }catch (Exception x){
+//                        x.printStackTrace();
+                    }
+                }
+
+                return Optional.empty();
             }
         }
     }

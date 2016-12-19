@@ -1,7 +1,7 @@
 package com.podcastcatalog.modelbuilder.collector;
 
-import com.podcastcatalog.util.DateUtil;
 import com.podcastcatalog.model.podcastcatalog.*;
+import com.podcastcatalog.util.DateUtil;
 import it.sauronsoftware.feed4j.FeedIOException;
 import it.sauronsoftware.feed4j.FeedParser;
 import it.sauronsoftware.feed4j.FeedXMLParseException;
@@ -12,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.logging.Level;
@@ -261,17 +260,9 @@ public class PodCastFeedParser {
                     && r.getValue() != null).map(RawElement::getValue).findFirst();
 
             if (publishDate.isPresent()) {
-//                LocalDateTime parse = LocalDateTime.parse(publishDate.get());
-                try {
-                    Optional<LocalDateTime> parse = DateUtil.parse(publishDate.get());
-                    System.out.println(parse);
-                } catch (DateUtil.DateTimeParserException e) {
-                    e.printStackTrace();
-                }
+                Optional<LocalDateTime> parse = DateUtil.parse(publishDate.get());
 
-                Optional<LocalTime> localTime = PodCastEpisodeDuration.toSeconds(publishDate.get());
-
-                return toLocalDateTime(feedItem.getPubDate());
+                return parse.orElseGet(() -> toLocalDateTime(feedItem.getPubDate()));
             } else {
                 LOG.warning("Will be eror in push...?//FIXME"); //FIXME
             }
