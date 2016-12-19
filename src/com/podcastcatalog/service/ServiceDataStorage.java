@@ -80,14 +80,12 @@ public interface ServiceDataStorage {
             ObjectInputStream in = null;
             FileInputStream fileIn = null;
             try {
-                try {
-                    fileIn = new FileInputStream(sweDat);
-                    in = new ObjectInputStream(fileIn);
-                    podCastCatalog = ((PodCastCatalog) in.readObject());
-                } catch (IOException | ClassNotFoundException e) {
-                    throw new RuntimeException("Unable to read PodCastCatalog " + sweDat.getAbsolutePath(), e);
-                }
+                fileIn = new FileInputStream(sweDat);
+                in = new ObjectInputStream(fileIn);
+                podCastCatalog = ((PodCastCatalog) in.readObject());
+            } catch (Exception e) {
 
+                throw new RuntimeException("Unable to read PodCastCatalog " + sweDat.getAbsolutePath(), e);
             } finally {
                 if (in != null) {
                     IOUtils.closeQuietly(in);
