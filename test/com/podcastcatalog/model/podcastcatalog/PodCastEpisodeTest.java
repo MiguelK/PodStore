@@ -2,10 +2,6 @@ package com.podcastcatalog.model.podcastcatalog;
 
 import com.google.gson.Gson;
 import com.podcastcatalog.TestUtil;
-import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
-import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeDuration;
-import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeFileSize;
-import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -18,6 +14,13 @@ public class PodCastEpisodeTest {
     @Test
     public void toGSON_duration() {
         TestUtil.assertToJSONContains(createValid().build(),"duration\":{\"totalSeconds\":5055,\"hours\":1,\"minutes\":24,\"seconds\":15}");
+    }
+
+    @Test
+    public void testName() {
+        PodCastEpisode build = createValid().fileSizeInMegaByte(null).build();
+        TestUtil.assertToJSONNotNull(build);
+
     }
 
     @Test

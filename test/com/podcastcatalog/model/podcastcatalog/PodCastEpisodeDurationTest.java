@@ -1,9 +1,21 @@
 package com.podcastcatalog.model.podcastcatalog;
 
+import com.google.gson.Gson;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class PodCastEpisodeDurationTest {
+
+
+    Gson gson = new Gson();
+    @Test
+    public void toJSON() {
+
+        PodCastEpisodeDuration s = PodCastEpisodeDuration.parse("1:00:02");
+        String s1 = gson.toJson(s);
+
+
+    }
 
     @Test
     public void parse_valid_duration_1() {

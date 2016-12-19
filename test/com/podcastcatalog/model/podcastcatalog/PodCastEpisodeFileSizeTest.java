@@ -1,11 +1,24 @@
 package com.podcastcatalog.model.podcastcatalog;
 
+import com.google.gson.Gson;
 import com.podcastcatalog.DataProviderTestData;
-import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeFileSize;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class PodCastEpisodeFileSizeTest {
+
+
+    Gson gson = new Gson();
+    @Test
+    public void toJSON() {
+
+        PodCastEpisodeFileSize s = PodCastEpisodeFileSize.parse("4444441219");
+        String s1 = gson.toJson(s);
+        System.out.println(s1);
+        System.out.println(s);
+
+
+    }
 
     @Test(dataProvider = "valid_file_size", dataProviderClass = DataProviderTestData.class)
     public void testName(String size,String expected) {

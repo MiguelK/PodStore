@@ -12,7 +12,7 @@
           <element id="library" level="project" name="gson-2" />
           <element id="library" level="project" name="commons-io-2" />
           <element id="library" level="project" name="feed4j-1" />
-          <element id="library" level="project" name="apache-commons-lang-2" />
+          <element id="library" level="project" name="commons-lang3-3.4" />
         </element>
       </element>
     </root>
