@@ -1,7 +1,9 @@
 package com.podcastcatalog.model.podcastcatalog;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.podcastcatalog.DataProviderTestData;
+import com.podcastcatalog.TestUtil;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -9,10 +11,17 @@ public class PodCastEpisodeFileSizeTest {
 
 
     Gson gson = new Gson();
+
     @Test
     public void toJSON() {
 
         PodCastEpisodeFileSize s = PodCastEpisodeFileSize.parse("4444441219");
+        TestUtil.assertToJSONNotNull(s);
+
+        JsonElement jsonElement = TestUtil.GSON.toJsonTree(s, PodCastEpisodeFileSize.class);
+
+        Assert.assertNotNull(jsonElement);
+
         String s1 = gson.toJson(s);
         System.out.println(s1);
         System.out.println(s);

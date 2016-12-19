@@ -28,7 +28,7 @@ public class TestUtil {
 
     public static final String SLOW_TEST = "slow";
 
-    private static final Gson GSON = new Gson();
+    public static final Gson GSON = new Gson();
 
 
     public static void assertSerializable(Object obj) {

@@ -78,7 +78,7 @@
     <tr>
 
         <td>
-            <form action="http://localhost:10080/PodStore/api/podCastCatalog?lang='SV'">
+            <form action="http://localhost:10080/PodStore/api/podCastCatalog?lang='SE'">
                 <button type="submit" value="refresh" title="refresh">
                     API getPodCastCatalog() SE
                 </button>
@@ -89,7 +89,7 @@
     <tr>
 
         <td>
-            <form action="http://localhost:10080/PodStore/jsonfile?lang='SV'">
+            <form action="http://localhost:10080/PodStore/jsonfile?lang='SE'">
                 <button type="submit" value="refresh" title="refresh">
                     get ZIP file
                 </button>

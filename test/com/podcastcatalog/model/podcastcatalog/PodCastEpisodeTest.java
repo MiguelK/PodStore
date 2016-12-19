@@ -17,13 +17,6 @@ public class PodCastEpisodeTest {
     }
 
     @Test
-    public void testName() {
-        PodCastEpisode build = createValid().fileSizeInMegaByte(null).build();
-        TestUtil.assertToJSONNotNull(build);
-
-    }
-
-    @Test
     public void serializable() {
         PodCastEpisode podCastEpisode = createValid().build();
         TestUtil.assertSerializable(podCastEpisode);
