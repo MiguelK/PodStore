@@ -31,7 +31,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
     public SubscriptionData loadSubscriptionData() {
         SubscriptionData load = load(subscriptionDataFile, SubscriptionData.class);
 
-        if(load==null){
+        if (load == null) {
             return new SubscriptionData();
         }
         return load;
@@ -188,7 +188,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
                 in = new ObjectInputStream(fileIn);
                 return ((T) in.readObject());
             } catch (IOException | ClassNotFoundException e) {
-                LOG.log(Level.SEVERE, "Unable to load object=" + sourceType + " from=" + sourceFile.getAbsolutePath(), e);
+                LOG.log(Level.INFO, "Unable to load object=" + sourceType + " from=" + sourceFile.getAbsolutePath(), e);
             }
 
         } finally {
@@ -232,100 +232,4 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         return versionDirectory.getSweJSON();
     }
 
-
-  /*  public static class PodCastCatalogVersion {
-        private int version;
-        private final File sweJSON;
-        private final File sweJSONZipped;
-        private final File sweDat;
-
-        private PodCastCatalogVersion(File versionRoot) {
-            sweDat = new File(versionRoot, PodCastCatalogLanguage.Sweden.name() + ".dat");
-            sweJSON = new File(versionRoot, PodCastCatalogLanguage.Sweden.name() + ".json");
-            sweJSONZipped = new File(versionRoot, PodCastCatalogLanguage.Sweden.name() + "_json.zip");
-
-            make(versionRoot);
-        }
-
-        private void make(File versionRoot) {
-            try {
-                version = Integer.parseInt(versionRoot.getName());
-                sweDat.createNewFile();
-                sweJSON.createNewFile();
-                sweJSONZipped.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public static PodCastCatalogVersion create(File versionRoot) {
-            PodCastCatalogVersion podCastCatalogVersion = new PodCastCatalogVersion(versionRoot);
-            podCastCatalogVersion.make(versionRoot);
-            return podCastCatalogVersion;
-        }
-
-        static PodCastCatalogVersion load(File versionRoot) {
-            PodCastCatalogVersion podCastCatalogVersion = new PodCastCatalogVersion(versionRoot);
-
-            podCastCatalogVersion.readFromDisc();
-
-            return podCastCatalogVersion;
-        }
-
-        private PodCastCatalog podCastCatalog;
-
-        private void readFromDisc() {
-
-            ObjectInputStream in = null;
-            FileInputStream fileIn = null;
-            try {
-                try {
-                    fileIn = new FileInputStream(sweDat);
-                    in = new ObjectInputStream(fileIn);
-                    podCastCatalog = ((PodCastCatalog) in.readObject());
-                } catch (IOException | ClassNotFoundException e) {
-                    LOG.log(Level.SEVERE, "Unable to load PodCastCatalog=" + sweDat.getAbsolutePath(), e);
-                }
-
-            } finally {
-                if (in != null) {
-                    IOUtils.closeQuietly(in);
-                }
-                if (fileIn != null) {
-                    IOUtils.closeQuietly(fileIn);
-                }
-            }
-        }
-
-        public File getSweJSON() {
-            return sweJSON;
-        }
-
-        public File getSweJSONZipped() {
-            return sweJSONZipped;
-        }
-
-        public File getSweDat() {
-            return sweDat;
-        }
-
-        public int getVersion() {
-            return version;
-        }
-
-        public PodCastCatalog getPodCastCatalogSwedish() {
-            return podCastCatalog;
-        }
-
-        @Override
-        public String toString() {
-            return "PodCastCatalogVersion{" +
-                    "version=" + version +
-                    ", sweJSON=" + sweJSON +
-                    ", sweJSONZipped=" + sweJSONZipped +
-                    ", sweDat=" + sweDat +
-                    ", podCastCatalog=" + podCastCatalog +
-                    '}';
-        }
-    }*/
 }

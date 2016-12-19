@@ -40,6 +40,8 @@ public interface ServiceDataStorage {
         private final File sweJSONZipped;
         private final File sweDat;
 
+        private PodCastCatalog podCastCatalog;
+
         private PodCastCatalogVersion(File versionRoot) {
             sweDat = new File(versionRoot, PodCastCatalogLanguage.Sweden.name() + ".dat");
             sweJSON = new File(versionRoot, PodCastCatalogLanguage.Sweden.name() + ".json");
@@ -73,8 +75,6 @@ public interface ServiceDataStorage {
             return podCastCatalogVersion;
         }
 
-        private PodCastCatalog podCastCatalog;
-
         private void readFromDisc() {
 
             ObjectInputStream in = null;
@@ -85,8 +85,7 @@ public interface ServiceDataStorage {
                     in = new ObjectInputStream(fileIn);
                     podCastCatalog = ((PodCastCatalog) in.readObject());
                 } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();//FIXME
-//                    LOG.log(Level.SEVERE, "Unable to load PodCastCatalog=" + sweDat.getAbsolutePath(), e);
+                    throw new RuntimeException("Unable to read PodCastCatalog " + sweDat.getAbsolutePath(), e);
                 }
 
             } finally {

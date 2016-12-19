@@ -13,7 +13,7 @@ public class JobManagerServiceTest {
 
         JobManagerService.getInstance().registerJob(job, 1, TimeUnit.MILLISECONDS);
         JobManagerService.getInstance().startAsync();
-        Thread.sleep(100);
+        Thread.sleep(300);
 
         Assert.assertTrue(job.getState() > 10);
     }

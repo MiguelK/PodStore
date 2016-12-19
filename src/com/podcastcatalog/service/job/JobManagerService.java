@@ -11,14 +11,12 @@ import java.util.logging.Logger;
 public class JobManagerService {
 
     private final static Logger LOG = Logger.getLogger(JobManagerService.class.getName());
-    private static final int INITIAL_DELAY = 0;
 
     private final ScheduledExecutorService threadPool;
 
     private static final JobManagerService INSTANCE = new JobManagerService();
 
     private final List<RegisterdJob> registerdJobs;
-
 
     private JobManagerService() {
         threadPool = Executors.newScheduledThreadPool(5);
@@ -35,7 +33,8 @@ public class JobManagerService {
 
     public void startAsync() {
         for (RegisterdJob registerdJob : registerdJobs) {
-            threadPool.scheduleAtFixedRate(registerdJob.getWorkExecutor(), INITIAL_DELAY, registerdJob.getPeriod(), registerdJob.getTimeUnit());
+            LOG.info("Schedule job:" + registerdJob.getWorkExecutor());
+            threadPool.scheduleAtFixedRate(registerdJob.getWorkExecutor(), registerdJob.getPeriod(), registerdJob.getPeriod(), registerdJob.getTimeUnit());
         }
     }
 
@@ -76,8 +75,15 @@ public class JobManagerService {
             try {
                 this.target.doWork();
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, "Faile execute Job " + target.getClass().getSimpleName(), e);
+                LOG.log(Level.SEVERE, "Failed execute Job " + target.getClass().getSimpleName(), e);
             }
+        }
+
+        @Override
+        public String toString() {
+            return "WorkExecutor{" +
+                    "target=" + target.getClass().getSimpleName() +
+                    '}';
         }
     }
 }

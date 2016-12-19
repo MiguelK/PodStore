@@ -20,6 +20,9 @@
 
 <%
 
+    String contextPath = request.getContextPath();
+
+
     if (request.getParameter("action") != null) {
 
         PodCastCatalogService.getInstance().buildPodCastCatalogsAsync();
@@ -78,22 +81,25 @@
     <tr>
 
         <td>
-            <form action="http://localhost:10080/PodStore/api/podCastCatalog?lang='SE'">
+            <a href="<%=contextPath%>/api/podCastCatalog?lang=SE">API getPodCastCatalog() SE</a>
+           <%-- <form method="get" action="http://localhost:10080/PodStore/api/podCastCatalog?lang=SE">
                 <button type="submit" value="refresh" title="refresh">
                     API getPodCastCatalog() SE
                 </button>
-            </form>
+            </form>--%>
         </td>
     </tr>
 
     <tr>
 
         <td>
-            <form action="http://localhost:10080/PodStore/jsonfile?lang='SE'">
+            <a href="<%=contextPath%>/api/jsonfile?lang=SE">API  get ZIP file, SE</a>
+
+           <%-- <form action="http://localhost:10080/PodStore/jsonfile?lang='SE'">
                 <button type="submit" value="refresh" title="refresh">
                     get ZIP file
                 </button>
-            </form>
+            </form>--%>
         </td>
     </tr>
 

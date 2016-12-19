@@ -1,13 +1,6 @@
 package com.podcastcatalog.util;
 
-import com.podcastcatalog.model.podcastcatalog.PodCast;
-import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
-import com.podcastcatalog.model.podcastcatalog.PodCastCategory;
-import com.podcastcatalog.model.podcastcatalog.PodCastCategoryType;
-import com.podcastcatalog.model.podcastcatalog.Bundle;
-import com.podcastcatalog.model.podcastcatalog.BundleType;
-import com.podcastcatalog.model.podcastcatalog.PodCastBundle;
-import com.podcastcatalog.model.podcastcatalog.PodCastCategoryBundle;
+import com.podcastcatalog.model.podcastcatalog.*;
 
 import java.util.List;
 
@@ -28,14 +21,13 @@ public class StringFormatter {
         if(podCastCatalog==null){
             return "PodCastCatalog not ready yet.?";
         }
-        if(true){
+        /*if(true){
             return "Disabled test... FIXME";//FIXME
-        }
+        }*/
 
         StringBuilder result = new StringBuilder();
 
         result.append("<body>");
-
 
         int podcastCount = 0;
         int episodeCount = 0;
@@ -76,7 +68,7 @@ public class StringFormatter {
         result.append(" Created=").append(podCastCatalog.getCreated()).append("<br>");
         List<Bundle> bundles = podCastCatalog.getBundles();
         result.append(" Bundle size=").append(bundles.size()).append("<br>");
-
+/*
         for (Bundle bundle : bundles) {
             BundleType bundleType = bundle.getBundleType();
 
@@ -101,7 +93,7 @@ public class StringFormatter {
             }
 
             result.append(part.toString()).append("<br>");
-        }
+        }*/
 
         return result.append("</body>").toString();
     }

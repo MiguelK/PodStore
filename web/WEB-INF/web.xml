@@ -18,7 +18,7 @@
 -->
     <servlet-mapping>
         <servlet-name>PodCastCatalogServlet</servlet-name>
-        <url-pattern>/jsonfile</url-pattern>
+        <url-pattern>/api/jsonfile</url-pattern>
     </servlet-mapping>
 
 
