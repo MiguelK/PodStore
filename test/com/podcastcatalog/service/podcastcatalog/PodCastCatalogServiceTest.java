@@ -17,6 +17,26 @@ import java.util.concurrent.TimeoutException;
 
 public class PodCastCatalogServiceTest {
 
+    //bundles=[PodCastCategoryBundle{podCastCategories=15}, PodCastBundle{podCasts=15}, PodCastEpisodeBundle{podCastEpisodes=16}]}
+    //1:21 min
+    //Old 4:08 bundles=[PodCastCategoryBundle{podCastCategories=15}, PodCastBundle{podCasts=15}, PodCastEpisodeBundle{podCastEpisodes=16}]}
+    //@Test(groups = TestUtil.SLOW_TEST)
+    public void build_catalog_swe() throws InterruptedException, ExecutionException, TimeoutException {
+
+        setUpStorage();
+
+
+        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());
+
+         PodCastCatalogService
+                .getInstance().buildPodCastCatalogsAsync().get(16, TimeUnit.MINUTES);
+
+
+        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
+        System.out.println(podCastCatalog);
+
+    }
+
     @Test
     public void getPodCastCatalogIndexStatus() {
         String status = PodCastCatalogService.getInstance().getPodCastCatalogIndexStatus();

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastsearch.PodCastResultItem;
 import com.podcastcatalog.modelbuilder.collector.PodCastCollector;
-import com.podcastcatalog.modelbuilder.collector.PodCastFeedParser;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ForkJoinPool;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -86,11 +86,15 @@ public class ItunesSearchAPI implements PodCastCollector {
 
     @Override
     public List<PodCast> collectPodCasts() {
+
         PodCastSearchResult podCastSearchResult = performSearch();
 
         if (podCastSearchResult == null) {
             return Collections.emptyList();
         }
+
+        ForkJoinPool pool = new ForkJoinPool();
+        List<FolderProcessor> tasks = new ArrayList<FolderProcessor>();
 
         List<PodCast> podCasts = new ArrayList<>();
 
@@ -98,17 +102,29 @@ public class ItunesSearchAPI implements PodCastCollector {
 
         for (PodCastSearchResult.Row podCastRow : podCastSearchResult.getResults()) {
             URL feedURL = toURL(podCastRow.getFeedUrl());
+
             if (feedURL != null) {
-                Optional<PodCast> podCast = PodCastFeedParser.parse(feedURL, podCastRow.getArtworkUrl600(), podCastRow.getCollectionId());
+                FolderProcessor folderProcessor = new FolderProcessor(feedURL,podCastRow.getArtworkUrl600(), podCastRow.getCollectionId());
+                folderProcessor.fork();
+                tasks.add(folderProcessor);
+
+             /*   Optional<PodCast> podCast = PodCastFeedParser.parse(feedURL, podCastRow.getArtworkUrl600(), podCastRow.getCollectionId());
                 if (podCast.isPresent()) {
                     PodCast e = podCast.get();
 
                     podCasts.add(e);
-                }
+                }*/
             }
         }
 
         LOG.info("Done parsing " + podCasts.size() + " podCast(s), expected=" + podCastSearchResult.resultCount);
+
+        for (FolderProcessor task : tasks) {
+            PodCast join = task.join();
+            if(join!=null){
+                podCasts.add(join);
+            }
+        }
 
         return podCasts;
     }

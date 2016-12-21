@@ -19,7 +19,7 @@ public class PodCastCatalogUpdaterTest {
         PodCastCatalogUpdater updater = new PodCastCatalogUpdater();
         updater.doWork();
 
-        Thread.sleep(20000);
+        Thread.sleep(10000);
 
         ServiceDataStorage.PodCastCatalogVersion podCastCatalogVersion = ServiceDataStorage.useDefault().getCurrentVersion().get();
 

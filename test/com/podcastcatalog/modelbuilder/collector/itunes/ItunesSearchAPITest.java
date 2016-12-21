@@ -18,6 +18,15 @@ public class ItunesSearchAPITest {
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
+    public void parse_25_podcasts() {
+        ItunesSearchAPI query = ItunesSearchAPI.search("term=a&entity=podcast&limit=25");
+        int podCasts = query.collectPodCasts().size();
+        System.out.println(podCasts);
+
+//        Assert.assertTrue(episodes >= 100, "episodes=" + episodes);
+    }
+
+    @Test(groups = TestUtil.SLOW_TEST)
     public void episoed_p3() {
         ItunesSearchAPI query = ItunesSearchAPI.search("term=p3&entity=podcast&limit=1");
         int episodes = query.collectPodCasts().get(0).getPodCastEpisodes().size();

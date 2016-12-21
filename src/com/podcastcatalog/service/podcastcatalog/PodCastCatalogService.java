@@ -46,7 +46,7 @@ public class PodCastCatalogService {
         podCastCatalogBuilders = new ArrayList<>();
         podCastCatalogByLang = new HashMap<>();
         ayncExecutor = Executors.newFixedThreadPool(THREADS);
-        executorService = Executors.newSingleThreadExecutor();//Important single thread!
+        executorService = Executors.newFixedThreadPool(5);//Important single thread!
     }
 
     public static PodCastCatalogService getInstance() {
@@ -164,6 +164,11 @@ public class PodCastCatalogService {
         if (storage == null) {
             throw new IllegalStateException("Configure storage, storage is null");
         }
+
+        if(podCastCatalogBuilders.isEmpty()){
+            throw new IllegalStateException("No podCastCatalogBuilders registered");
+        }
+
     }
 
     private class BuildPodCastCatalogAction implements Runnable {

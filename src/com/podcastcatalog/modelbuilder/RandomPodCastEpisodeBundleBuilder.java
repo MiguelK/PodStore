@@ -32,8 +32,11 @@ public class RandomPodCastEpisodeBundleBuilder {
         for (PodCastCategory podCastCategory : podCastCategories) {
             PodCastCategoryType podCastCategoryType = podCastCategory.getPodCastCategoryType();
             if(podCastCategoryType == PodCastCategoryType.ARTS || podCastCategoryType==PodCastCategoryType.HISTORY){
-                PodCastEpisode podCastEpisode = podCastCategory.getPodCasts().get(1).getPodCastEpisodes().get(0);
-                podCastEpisodes.add(podCastEpisode);
+
+                if(!podCastCategory.getPodCasts().isEmpty()){
+                    PodCastEpisode podCastEpisode = podCastCategory.getPodCasts().get(0).getPodCastEpisodes().get(0);
+                    podCastEpisodes.add(podCastEpisode);
+                }
             }
         }
 

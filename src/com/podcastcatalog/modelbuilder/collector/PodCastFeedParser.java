@@ -1,6 +1,7 @@
 package com.podcastcatalog.modelbuilder.collector;
 
 import com.podcastcatalog.model.podcastcatalog.*;
+import com.podcastcatalog.modelbuilder.collector.itunes.PodCastEpisodeProcessor;
 import com.podcastcatalog.util.DateUtil;
 import it.sauronsoftware.feed4j.FeedParser;
 import it.sauronsoftware.feed4j.FeedXMLParseException;
@@ -66,10 +67,15 @@ public class PodCastFeedParser {
 
             expectedEpisodeCount = feed.getItemCount() > maxFeedCount ? maxFeedCount : feed.getItemCount(); //FIXME
 
+            List<PodCastEpisodeProcessor> tasks = new ArrayList<>();
             for (int i = 0; i < expectedEpisodeCount; i++) {
                 FeedItem item = feed.getItem(i);
-                PodCastFeedItem podCastFeedItem = new PodCastFeedItem(item);
+                PodCastEpisodeProcessor podCastEpisodeProcessor = new PodCastEpisodeProcessor(item, collectionId);
+                podCastEpisodeProcessor.fork();//FIXME
+                tasks.add(podCastEpisodeProcessor);
 
+
+               /* PodCastFeedItem podCastFeedItem = new PodCastFeedItem(item);
                 String guid = item.getGUID();
                 //FIXME createdDate
                 PodCastEpisode.Builder episodeBuilder = PodCastEpisode.newBuilder();
@@ -80,13 +86,21 @@ public class PodCastFeedParser {
 
                 if (episodeBuilder.isValid() && podCastFeedItem.getPodCastType() == PodCastEpisodeType.Audio) { //FIXME anly audio?
                     podCastBuilder.addPodCastEpisode(episodeBuilder.build());
-                }
+                }*/
 
                 if (i % 10 == 0) {
                     LOG.info("Parsing Episode=" + i + " of expectedEpisodeCount=" + expectedEpisodeCount);
                 }
-
             }
+
+            for (PodCastEpisodeProcessor task : tasks) {
+                PodCastEpisode podCastEpisode = task.join();//FIXME
+                if(podCastEpisode!=null){
+                    podCastBuilder.addPodCastEpisode(podCastEpisode);
+                }
+            }
+
+
         } catch (FeedXMLParseException e) {
             LOG.info("Faild to parse PodCast from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount + " Message=" + e.getMessage());
             return Optional.empty();
@@ -94,6 +108,8 @@ public class PodCastFeedParser {
             LOG.log(Level.SEVERE, "Faild to parse PodCast from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount, e);
             return Optional.empty();
         }
+
+
 
         if (!podCastBuilder.isValid()) {
             LOG.log(Level.SEVERE, "PodCast from feed=" + feedURL + " is not valid, expectedEpisodeCount=" + expectedEpisodeCount);
@@ -194,13 +210,14 @@ public class PodCastFeedParser {
         }
     }
 
-    private static class PodCastFeedItem {
+    //TEST
+    public static class PodCastFeedItem {
 
         private final FeedItem feedItem;
         private List<RawElement> rawElements = new ArrayList<>();
         private List<RawAttribute> audioEnclosureAttributes = new ArrayList<>();
 
-        PodCastFeedItem(FeedItem feedItem) {
+        public PodCastFeedItem(FeedItem feedItem) {
             this.feedItem = feedItem;
             rawElements = getRawElements(feedItem);
             audioEnclosureAttributes = getAudioEnclosureAttributes(feedItem);
@@ -229,7 +246,7 @@ public class PodCastFeedParser {
             return feedItem.getTitle();
         }
 
-        LocalDateTime getCreatedDate() {
+        public LocalDateTime getCreatedDate() {
             Optional<String> publishDate = rawElements.stream().filter(r -> "pubDate".equalsIgnoreCase(r.getName())
                     && r.getValue() != null).map(RawElement::getValue).findFirst();
 
@@ -245,7 +262,7 @@ public class PodCastFeedParser {
             return toLocalDateTime(feedItem.getPubDate());
         }
 
-        PodCastEpisodeDuration getDuration() {
+        public PodCastEpisodeDuration getDuration() {
 
             Optional<String> durationOptional = rawElements.stream().filter(r -> "duration".equalsIgnoreCase(r.getName())
                     && r.getValue() != null).map(RawElement::getValue).findFirst();
@@ -261,7 +278,7 @@ public class PodCastFeedParser {
             return feedItem.getDescriptionAsText();//FIXME trim html?
         }
 
-        PodCastEpisodeFileSize getFileSizeInMegaByte() {
+        public PodCastEpisodeFileSize getFileSizeInMegaByte() {
             Optional<RawAttribute> first = audioEnclosureAttributes.stream().filter(a -> "length".equalsIgnoreCase(a.getName()) &&
                     StringUtils.trimToNull(a.getValue()) != null).findFirst();
 
@@ -270,7 +287,7 @@ public class PodCastFeedParser {
 
         }
 
-        String getTargetURL() {
+        public String getTargetURL() {
 
             Optional<RawAttribute> first = audioEnclosureAttributes.stream().filter(a -> "url".equalsIgnoreCase(a.getName()) &&
                     StringUtils.trimToNull(a.getValue()) != null).findFirst();
@@ -282,7 +299,7 @@ public class PodCastFeedParser {
             return feedItem.getLink().toString(); //FIXME
         }
 
-        PodCastEpisodeType getPodCastType() {
+        public PodCastEpisodeType getPodCastType() {
 
             PodCastEpisodeType podCastEpisodeType = PodCastEpisodeType.Unknown;
             int enclosureCount = feedItem.getEnclosureCount();
