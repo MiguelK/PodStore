@@ -2,10 +2,8 @@ package com.podcastcatalog.modelbuilder.collector;
 
 import com.podcastcatalog.model.podcastcatalog.*;
 import com.podcastcatalog.util.DateUtil;
-import it.sauronsoftware.feed4j.FeedIOException;
 import it.sauronsoftware.feed4j.FeedParser;
 import it.sauronsoftware.feed4j.FeedXMLParseException;
-import it.sauronsoftware.feed4j.UnsupportedFeedException;
 import it.sauronsoftware.feed4j.bean.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,16 +22,13 @@ import java.util.stream.Collectors;
 public class PodCastFeedParser {
 
     private static final int MAX_FEED_COUNT = 100;
-    private final URL feedURL;
     private final static Logger LOG = Logger.getLogger(PodCastFeedParser.class.getName());
 
     public static Optional<PodCast> parse(URL feedURL, String artworkUrl600, String collectionId) {
-        PodCastFeedParser podCastFeedParser = new PodCastFeedParser(feedURL);
-        return podCastFeedParser.parse(artworkUrl600, collectionId, MAX_FEED_COUNT);
+        return PodCastFeedParser.parse(feedURL, artworkUrl600, collectionId, MAX_FEED_COUNT);
     }
 
     private static URL toURL(String url) {
-
         try {
             return new URL(url);
         } catch (MalformedURLException e) {
@@ -42,16 +37,11 @@ public class PodCastFeedParser {
         return null;
     }
 
-    private PodCastFeedParser(URL feedURL) {
-        this.feedURL = feedURL;
-    }
-
     public static Optional<PodCastEpisode> parseLatestPodCastEpisode(PodCast url) {
 
         URL feedURL = toURL(url.getFeedURL());
 
-        PodCastFeedParser podCastFeedParser = new PodCastFeedParser(feedURL);
-        Optional<PodCast> parse = podCastFeedParser.parse(url.getArtworkUrl600(), url.getCollectionId(), 1);
+        Optional<PodCast> parse = PodCastFeedParser.parse(feedURL, url.getArtworkUrl600(), url.getCollectionId(), 1);
         if (parse.isPresent()) {
             return Optional.ofNullable(parse.get().getLatestPodCastEpisode());
         }
@@ -59,24 +49,7 @@ public class PodCastFeedParser {
         return Optional.empty();
     }
 
-    public static String parse(String url) {
-
-        URL feedURL = toURL(url);
-
-        try {
-            Feed feed = FeedParser.parse(feedURL);
-            PodCastFeedHeader feedHeader = new PodCastFeedHeader(feed.getHeader());
-
-            return feedHeader.getDescription();
-
-        } catch (FeedIOException | FeedXMLParseException | UnsupportedFeedException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    private Optional<PodCast> parse(String artworkUrl600, String collectionId, int maxFeedCount) {
+    private static Optional<PodCast> parse(URL feedURL, String artworkUrl600, String collectionId, int maxFeedCount) {
         PodCast.Builder podCastBuilder = PodCast.newBuilder();
 
         int expectedEpisodeCount = -1;
@@ -185,6 +158,7 @@ public class PodCastFeedParser {
             return feedHeader.getTitle();
         }
 
+        //FIXME remove?
         public String getArtworkUrlLarge() {
             if (feedHeader == null) {
                 return null;

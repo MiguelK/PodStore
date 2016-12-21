@@ -31,6 +31,8 @@ public class PodCastFeedParserTest {
         for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodes()) {
             Assert.assertNotNull(podCastEpisode.getDuration().getDisplayValue());
         }
+
+        System.out.println("Episodes " + podCast.getPodCastEpisodes().size());
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
