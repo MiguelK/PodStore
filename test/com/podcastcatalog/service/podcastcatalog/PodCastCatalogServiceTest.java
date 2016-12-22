@@ -2,6 +2,7 @@ package com.podcastcatalog.service.podcastcatalog;
 
 import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.podcastcatalog.*;
+import com.podcastcatalog.model.podcastsearch.ResultItem;
 import com.podcastcatalog.modelbuilder.*;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCategoryCollectorOkihika;
@@ -34,14 +35,30 @@ public class PodCastCatalogServiceTest {
 
         PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
         System.out.println(podCastCatalog);
+    }
+
+    @Test
+    public void search_empty() {
+        Assert.assertTrue(PodCastCatalogService.getInstance().search(null).isEmpty());
+        Assert.assertTrue(PodCastCatalogService.getInstance().search("").isEmpty());
+        Assert.assertTrue(PodCastCatalogService.getInstance().search(" ").isEmpty());
+    }
+
+    @Test(groups = TestUtil.SLOW_TEST)
+    public void search_podcasts_no_episodes() {
+
+        List<ResultItem> resultItems = PodCastCatalogService.getInstance().search("p1");
+
+       Assert.assertTrue(resultItems.size()>=05);
 
     }
 
     @Test
     public void getPodCastCatalogIndexStatus() {
+
         String status = PodCastCatalogService.getInstance().getPodCastCatalogIndexStatus();
 
-        Assert.assertTrue(status.contains("Size=0"), " status=" + status);
+        Assert.assertNotNull(status);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)

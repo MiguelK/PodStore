@@ -3,34 +3,34 @@ Subscription
     - push
     - save/load data
     - Episode notifier job -> push episode
-Start
-    - save/load date
-    -
 
-Admin
+
+###### Admin  ######
 http://localhost:10080/PodStore
 
-----   API ------
+###### API #######
 [podCastCatalog]
 http://localhost:10080/PodStore/api/podCastCatalog?lang='SV'
 http://localhost:10080/PodStore/api/podCastCatalog/search?lang=SE&query=Java
 http://localhost:10080/PodStore/api/podCastCatalog/search?lang=SE&query=term=p3&entity=podcast&limit=3
 
-[podCast]
+api/podCast
 http://localhost:10080/PodStore/api/podCast?id='podCastCollectionId'
 
-[subscriber]
+api/subscriber
 GET http://localhost:10080/PodStore/api/subscriber   (Get status)
 
-[podCastSubscription]
+api/podCastSubscription
 GET http://localhost:10080/PodStore/api/podCastSubscription   (Get status)
 
-** ZIP file ****
-http://localhost:10080/PodStore/jsonfile?lang=SE
+api/jsonfilejsonfile   (get productcatlog JSON ZIP file)
+http://localhost:10080/PodStore/api/jsonfile?lang=SE
+
+###########################################################################
+
+
 Itunes Search API
 https://itunes.apple.com/lookup?id=308339623
-
----
 # Episode has podCastRefId = unikt id inom samma catalog som pekar på PodCast
 # Search
 		-Client can have a PodCast not existsing in server catalog.

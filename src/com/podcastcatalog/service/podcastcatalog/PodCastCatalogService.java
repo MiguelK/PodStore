@@ -8,6 +8,7 @@ import com.podcastcatalog.modelbuilder.BundleBuilder;
 import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.service.ServiceDataStorage;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -135,6 +136,12 @@ public class PodCastCatalogService {
 
 
     public List<ResultItem> search(String queryParam) {
+
+        String queryParamTrimmed = StringUtils.trimToNull(queryParam);
+        if(queryParamTrimmed==null){
+            return Collections.emptyList();
+        }
+
         //FIXME Sort algoritm? limit 5 etc...
         List<ResultItem> resultItems = new ArrayList<>();
         List<PodCastResultItem> podCasts = ItunesSearchAPI.search("term=" + queryParam + "&entity=podcast&limit=5").searchPodCast();
