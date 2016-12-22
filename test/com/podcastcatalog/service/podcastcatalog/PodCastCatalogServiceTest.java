@@ -86,7 +86,7 @@ public class PodCastCatalogServiceTest {
             public Set<BundleBuilder> getBundleBuilders() {
 
                 PodCastBundleBuilder topListBuilder = BundleBuilder.newPodCastBundleBuilder("Toplistan", "10 bästa podcas i Sverige");
-                topListBuilder.addCollector(ItunesSearchAPI.search("term=p3&entity=podcast&limit=1"));
+                topListBuilder.addCollector(ItunesSearchAPI.createCollector("term=p3&entity=podcast&limit=1"));
 
                 Set<BundleBuilder> bundleBuilders = new HashSet<>();
                 bundleBuilders.add(topListBuilder);

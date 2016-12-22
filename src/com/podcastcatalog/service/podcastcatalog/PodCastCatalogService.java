@@ -144,7 +144,7 @@ public class PodCastCatalogService {
 
         //FIXME Sort algoritm? limit 5 etc...
         List<ResultItem> resultItems = new ArrayList<>();
-        List<PodCastResultItem> podCasts = ItunesSearchAPI.search("term=" + queryParam + "&entity=podcast&limit=5").searchPodCast();
+        List<PodCastResultItem> podCasts = ItunesSearchAPI.searchPodCasts("term=" + queryParam + "&entity=podcast&limit=5");
         resultItems.addAll(podCasts);
 
         readLock.lock();

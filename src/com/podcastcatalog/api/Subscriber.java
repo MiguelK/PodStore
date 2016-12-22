@@ -40,7 +40,7 @@ public class Subscriber {
                     getPodCastById(podCastId);
 
             if (!podCast.isPresent()) {
-                podCast = ItunesSearchAPI.lookup(podCastId);
+                podCast = ItunesSearchAPI.lookupPodCast(podCastId);
                 //FIXME if hit fetch and and to in-memory index? performance
             }
 

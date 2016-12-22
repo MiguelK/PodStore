@@ -30,7 +30,7 @@ public class PodCast {
         Optional<com.podcastcatalog.model.podcastcatalog.PodCast> podCast = PodCastCatalogService.getInstance().getPodCastById(id);
 
         if (!podCast.isPresent()) {
-            podCast = ItunesSearchAPI.lookup(id);
+            podCast = ItunesSearchAPI.lookupPodCast(id);
         }
 
         if (!podCast.isPresent()) {
@@ -64,7 +64,7 @@ public class PodCast {
             Optional<com.podcastcatalog.model.podcastcatalog.PodCast> podCast = PodCastCatalogService.getInstance().getPodCastById(podCastId);
 
             if (!podCast.isPresent()) {
-                podCast = ItunesSearchAPI.lookup(id);
+                podCast = ItunesSearchAPI.lookupPodCast(id);
             }
 
             if (!podCast.isPresent()) {

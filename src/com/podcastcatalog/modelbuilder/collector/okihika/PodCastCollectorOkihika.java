@@ -136,9 +136,7 @@ public class PodCastCollectorOkihika implements PodCastCollector {
 
         LOG.info("Start searchAPI of " + podCastIds.size() + " podcast(s)");
 
-        ItunesSearchAPI searchAPI = ItunesSearchAPI.lookup(podCastIds);
-
-        return searchAPI.collectPodCasts();
+        return ItunesSearchAPI.lookupPodCasts(podCastIds);
     }
 
     private List<Long> getPodCastIds() {

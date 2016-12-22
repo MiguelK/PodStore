@@ -17,12 +17,6 @@ import java.util.Optional;
 
 public class DateUtil {
 
-    public static class  DateTimeParserException extends Exception{
-        DateTimeParserException() {
-            super("Unable to parse null date");
-        }
-    }
-
     private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
@@ -133,7 +127,7 @@ public class DateUtil {
         return Date.from(instant);
     }
 
-    public static LocalDateTime toLocalDateTime(Date date) {
+    private static LocalDateTime toLocalDateTime(Date date) {
         if (date == null) {
             date = new Date();
         }

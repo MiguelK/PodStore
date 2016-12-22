@@ -69,7 +69,7 @@ public class SubscriptionNotifierJob implements Job {
             return castById.get();
         }
 
-        Optional<PodCast> podCastOptional = ItunesSearchAPI.lookup(podCastId);
+        Optional<PodCast> podCastOptional = ItunesSearchAPI.lookupPodCast(podCastId);
         return podCastOptional.orElse(null);
 
     }

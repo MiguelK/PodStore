@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ForkJoinPool;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,57 +31,39 @@ public class ItunesSearchAPI implements PodCastCollector {
 
     private final URL request;
 
-    public static Optional<PodCast> lookup(String id) {
+    private ItunesSearchAPI(String url) {
+        this.request = buildURL(url);
+    }
 
+    public static ItunesSearchAPI createCollector(String parameters) {
+        return new ItunesSearchAPI(BASE_URL_SEARCH + parameters);
+    }
+
+    public static Optional<PodCast> lookupPodCast(String id) {
 
         List<PodCast> podCasts = new ItunesSearchAPI(BASE_URL_LOOKUP + id).collectPodCasts();
-        if(podCasts.isEmpty()){
+        if (podCasts.isEmpty()) {
             return Optional.empty();
         }
 
         return Optional.ofNullable(podCasts.get(0));
     }
 
-    public static ItunesSearchAPI lookup(List<Long> ids) {
+    public static List<PodCast> lookupPodCasts(List<Long> ids) {
+        String podCastIds = StringUtils.join(ids, ",");
 
-        String join = StringUtils.join(ids, ",");
-
-        return new ItunesSearchAPI(BASE_URL_LOOKUP + join); //FIXME
-    }
-
-    //FIXME Refactor searchPodCasts()
-    public static ItunesSearchAPI search(String parameters) {
-        return new ItunesSearchAPI(BASE_URL_SEARCH + parameters);
-    }
-
-    private ItunesSearchAPI(String url) {
-        this.request = buildURL(url);
-    }
-
-    private URL buildURL(String url) {
-        try {
-            return new URL(url);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(e); //Only if schema is missing (https:)
-        }
-    }
-
-    public List<PodCastResultItem> searchPodCast() {
-        PodCastSearchResult podCastSearchResult = performSearch();
-
-        if (podCastSearchResult == null) {
+        if (podCastIds == null) {
             return Collections.emptyList();
         }
 
-        List<PodCastResultItem> result = new ArrayList<>();
-        for (PodCastSearchResult.Row podCastRow : podCastSearchResult.getResults()) {
-            result.add(new PodCastResultItem(podCastRow.getCollectionId(), podCastRow.getCollectionName(),
-                    podCastRow.getArtworkUrl100()));
-        }
+        ItunesSearchAPI itunesSearchAPI = new ItunesSearchAPI(BASE_URL_LOOKUP + podCastIds);//FIXME
 
-        return result;
+        return itunesSearchAPI.collectPodCasts();
     }
 
+    public static List<PodCastResultItem> searchPodCasts(String parameters) {
+        return new ItunesSearchAPI(BASE_URL_SEARCH + parameters).searchPodCast();
+    }
 
     @Override
     public List<PodCast> collectPodCasts() {
@@ -93,8 +74,7 @@ public class ItunesSearchAPI implements PodCastCollector {
             return Collections.emptyList();
         }
 
-        ForkJoinPool pool = new ForkJoinPool();
-        List<FolderProcessor> tasks = new ArrayList<FolderProcessor>();
+        List<PodCastProcessor> tasks = new ArrayList<PodCastProcessor>();
 
         List<PodCast> podCasts = new ArrayList<>();
 
@@ -104,24 +84,17 @@ public class ItunesSearchAPI implements PodCastCollector {
             URL feedURL = toURL(podCastRow.getFeedUrl());
 
             if (feedURL != null) {
-                FolderProcessor folderProcessor = new FolderProcessor(feedURL,podCastRow.getArtworkUrl600(), podCastRow.getCollectionId());
-                folderProcessor.fork();
-                tasks.add(folderProcessor);
-
-             /*   Optional<PodCast> podCast = PodCastFeedParser.parse(feedURL, podCastRow.getArtworkUrl600(), podCastRow.getCollectionId());
-                if (podCast.isPresent()) {
-                    PodCast e = podCast.get();
-
-                    podCasts.add(e);
-                }*/
+                PodCastProcessor podCastProcessor = new PodCastProcessor(feedURL, podCastRow.getArtworkUrl600(), podCastRow.getCollectionId());
+                podCastProcessor.fork();//Joins current ForkJoinPool :)
+                tasks.add(podCastProcessor);
             }
         }
 
         LOG.info("Done parsing " + podCasts.size() + " podCast(s), expected=" + podCastSearchResult.resultCount);
 
-        for (FolderProcessor task : tasks) {
+        for (PodCastProcessor task : tasks) {
             PodCast join = task.join();
-            if(join!=null){
+            if (join != null) {
                 podCasts.add(join);
             }
         }
@@ -229,5 +202,28 @@ public class ItunesSearchAPI implements PodCastCollector {
         return null;
     }
 
+    private URL buildURL(String url) {
+        try {
+            return new URL(url);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e); //Only if schema is missing (https:)
+        }
+    }
+
+    private List<PodCastResultItem> searchPodCast() {
+        PodCastSearchResult podCastSearchResult = performSearch();
+
+        if (podCastSearchResult == null) {
+            return Collections.emptyList();
+        }
+
+        List<PodCastResultItem> result = new ArrayList<>();
+        for (PodCastSearchResult.Row podCastRow : podCastSearchResult.getResults()) {
+            result.add(new PodCastResultItem(podCastRow.getCollectionId(), podCastRow.getCollectionName(),
+                    podCastRow.getArtworkUrl100()));
+        }
+
+        return result;
+    }
 
 }
