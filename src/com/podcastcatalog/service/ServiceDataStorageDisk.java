@@ -42,7 +42,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         saveAsObject(subscriptionData, subscriptionDataFile);
     }
 
-    public File getPodDataHomeDir() {
+    File getPodDataHomeDir() {
         return podDataHomeDir;
     }
 

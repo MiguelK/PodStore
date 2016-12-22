@@ -76,4 +76,22 @@ public class SubscriptionData implements Serializable {
     public List<Subscription> getSubscriptions() {
         return new ArrayList<>(subscriptionByContentId.values());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SubscriptionData that = (SubscriptionData) o;
+
+        if (!subscriberById.equals(that.subscriberById)) return false;
+        return subscriptionByContentId.equals(that.subscriptionByContentId);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = subscriberById.hashCode();
+        result = 31 * result + subscriptionByContentId.hashCode();
+        return result;
+    }
 }

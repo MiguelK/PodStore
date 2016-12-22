@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class PodCastEpisodeDurationTest {
 
 
-    Gson gson = new Gson();
+    private final Gson gson = new Gson();
     @Test
     public void toJSON() {
 

@@ -14,7 +14,7 @@ public class PodCastCatalogUpdaterTest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void doWork() throws InterruptedException, ExecutionException, TimeoutException {
-        PodCastCatalogServiceTest.initPodCastCatalogs();;
+        PodCastCatalogServiceTest.initPodCastCatalogs();
 
         PodCastCatalogUpdater updater = new PodCastCatalogUpdater();
         updater.doWork();

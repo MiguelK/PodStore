@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 public class PodCastEpisodeFileSizeTest {
 
 
-    Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     @Test
     public void toJSON() {
