@@ -44,7 +44,7 @@ public class PodCastCatalogServiceTest {
         Assert.assertTrue(status.contains("Size=0"), " status=" + status);
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void getPodCastById() {
         PodCast podCast = PodCastTest.createValid().build();
         PodCastCatalogService.getInstance().updatePodCastIndex(podCast);

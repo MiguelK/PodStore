@@ -19,11 +19,11 @@ public class PodCastCatalogUpdaterTest {
         PodCastCatalogUpdater updater = new PodCastCatalogUpdater();
         updater.doWork();
 
-        Thread.sleep(10000);
+        Thread.sleep(15000);
 
         ServiceDataStorage.PodCastCatalogVersion podCastCatalogVersion = ServiceDataStorage.useDefault().getCurrentVersion().get();
 
-        Assert.assertTrue(podCastCatalogVersion.getVersion()==2);
+        Assert.assertTrue(podCastCatalogVersion.getVersion()==2,"was=" + podCastCatalogVersion.getVersion());
 
     }
 

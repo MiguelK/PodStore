@@ -1,5 +1,6 @@
 package com.podcastcatalog.modelbuilder;
 
+import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -29,21 +30,21 @@ public class PodCastEpisodeBundleBuilderTest {
         BundleBuilder.newPodCastEpisodeBundleBuilder("title", " ");
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void trim_title() throws Exception {
         PodCastEpisodeBundleBuilder podCastEpisodeBundleBuilder = BundleBuilder.newPodCastEpisodeBundleBuilder(" title ", " sdsdsd");
         podCastEpisodeBundleBuilder.addCollector(() -> Collections.singletonList(PodCastEpisodeTest.createValid().build()));
         Assert.assertEquals(podCastEpisodeBundleBuilder.call().getTitle(), "title");
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void trim_descr() throws Exception {
         PodCastEpisodeBundleBuilder podCastEpisodeBundleBuilder = BundleBuilder.newPodCastEpisodeBundleBuilder("title", " aaa ");
         podCastEpisodeBundleBuilder.addCollector(() -> Collections.singletonList(PodCastEpisodeTest.createValid().build()));
         Assert.assertEquals(podCastEpisodeBundleBuilder.call().getDescription(), "aaa");
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void trim_image_url() throws Exception {
         PodCastEpisodeBundleBuilder podCastEpisodeBundleBuilder = BundleBuilder.newPodCastEpisodeBundleBuilder(" title ", "sdsdsd");
         podCastEpisodeBundleBuilder.addCollector(() -> Collections.singletonList(PodCastEpisodeTest.createValid().build()));

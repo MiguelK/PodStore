@@ -1,5 +1,6 @@
 package com.podcastcatalog.service.podcastcatalog;
 
+import com.podcastcatalog.TestUtil;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -11,12 +12,12 @@ public class TextSearchEngineTest {
 
     private TextSearchEngine<MyItem> searchEngine;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)//(groups = TestUtil.SLOW_TEST)
     public void setUp() {
         searchEngine = new TextSearchEngine<>();
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void max_match() {
         for (int i = 0; i < 100; i++) {
             searchEngine.addText("Sommar i  dfhd dfhd uidf hfhhfhf ABBA " + i, TextSearchEngine.Prio.HIGHEST, new MyItem("PodCast" + i));

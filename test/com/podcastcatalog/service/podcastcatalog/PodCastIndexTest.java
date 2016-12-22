@@ -1,5 +1,6 @@
 package com.podcastcatalog.service.podcastcatalog;
 
+import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastTest;
 import org.testng.Assert;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class PodCastIndexTest {
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void add_if_not_existing() {
         PodCast b = PodCastTest.createValid().description("bcd").collectionId("1").build();
 
@@ -21,7 +22,7 @@ public class PodCastIndexTest {
         Assert.assertEquals(podCastIndex.lookup("1").get().getDescription(),"bcd");
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void updatePodCast_changed() {
         PodCast a = PodCastTest.createValid().description("a").collectionId("1").build();
         PodCast b = PodCastTest.createValid().description("bcd").collectionId("1").build();
@@ -34,7 +35,7 @@ public class PodCastIndexTest {
         Assert.assertEquals(podCastIndex.lookup("1").get().getDescription(),"bcd");
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void lookup_found() {
         PodCast a = PodCastTest.createValid().description("a").collectionId("1").build();
         PodCast b = PodCastTest.createValid().description("b").collectionId("2").build();
@@ -45,7 +46,7 @@ public class PodCastIndexTest {
         Assert.assertEquals(podCastIndex.lookup("2").orElseGet(null), b);
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void buildIndex_100() {
 
         List<PodCast> podCasts = new ArrayList<>();
@@ -59,7 +60,7 @@ public class PodCastIndexTest {
         Assert.assertNotNull(podCastIndex.lookup("66"));
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void status() {
         List<PodCast> podCasts = new ArrayList<>();
         for (int i = 0; i < 100; i++) {

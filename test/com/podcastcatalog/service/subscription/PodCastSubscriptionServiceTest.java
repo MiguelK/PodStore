@@ -1,5 +1,6 @@
 package com.podcastcatalog.service.subscription;
 
+import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.subscription.Subscriber;
 import com.podcastcatalog.model.subscription.Subscription;
 import org.jsoup.Jsoup;
@@ -13,7 +14,7 @@ public class PodCastSubscriptionServiceTest {
 
     private static final String VALID_SUBSCRIBER = "123-valid-DeviceToken";
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setUp() {
         PodCastSubscriptionService.getInstance().start();
         PodCastSubscriptionService.getInstance().registerSubscriber(VALID_SUBSCRIBER);
@@ -24,22 +25,22 @@ public class PodCastSubscriptionServiceTest {
         PodCastSubscriptionService.getInstance().deleteSubscriber(VALID_SUBSCRIBER);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class, groups = TestUtil.SLOW_TEST)
     public void subscribe_invalid_content_null() {
         PodCastSubscriptionService.getInstance().subscribe(VALID_SUBSCRIBER, null, contentId -> false);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class, groups = TestUtil.SLOW_TEST)
     public void subscribe_invalid_content_empty() {
         PodCastSubscriptionService.getInstance().subscribe(VALID_SUBSCRIBER, "", contentId -> false);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class , groups = TestUtil.SLOW_TEST)
     public void subscribe_invalid_content_validator_false() {
         PodCastSubscriptionService.getInstance().subscribe(VALID_SUBSCRIBER, "1234", contentId -> false);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class  , groups = TestUtil.SLOW_TEST)
     public void subscribe_not_registered() {
         PodCastSubscriptionService.getInstance().subscribe("123dsdsd", "dfjkdf", contentId -> true);
     }
@@ -64,14 +65,13 @@ public class PodCastSubscriptionServiceTest {
         Assert.assertNotNull(PodCastSubscriptionService.getInstance().getSubscriber(deviceToken));
     }
 
-
     @Test
     public void getSubscriber_success() {
         PodCastSubscriptionService.getInstance().registerSubscriber("123");
         Assert.assertNotNull(PodCastSubscriptionService.getInstance().getSubscriber(" 123 "));
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void subscribe_success() {
         String deviceToken = "123";
         PodCastSubscriptionService.getInstance().registerSubscriber(deviceToken);
@@ -87,7 +87,7 @@ public class PodCastSubscriptionServiceTest {
         PodCastSubscriptionService.getInstance().unSubscribe("123", "99");
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void subscribe_unsubscribe() {
         String deviceToken = "123";
         PodCastSubscriptionService.getInstance().registerSubscriber(deviceToken);
@@ -101,7 +101,7 @@ public class PodCastSubscriptionServiceTest {
         Assert.assertTrue(PodCastSubscriptionService.getInstance().getSubscriptions().isEmpty());
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void getStatusAsHTLM() {
         PodCastSubscriptionService.getInstance().registerSubscriber("7777");
         PodCastSubscriptionService.getInstance().registerSubscriber("8888");

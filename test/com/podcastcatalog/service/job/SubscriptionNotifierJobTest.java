@@ -1,5 +1,6 @@
 package com.podcastcatalog.service.job;
 
+import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeTest;
@@ -18,7 +19,7 @@ import static com.podcastcatalog.service.job.SubscriptionNotifierJob.PUSH_PAYLOA
 public class SubscriptionNotifierJobTest {
 
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void new_episode_check_push_messag() {
         StringBuilder pushMessage = new StringBuilder();
 

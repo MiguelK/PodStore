@@ -1,5 +1,6 @@
 package com.podcastcatalog.service.job;
 
+import com.podcastcatalog.TestUtil;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -7,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 public class JobManagerServiceTest {
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void enable_state() throws InterruptedException {
         StateJob job = new StateJob();
 

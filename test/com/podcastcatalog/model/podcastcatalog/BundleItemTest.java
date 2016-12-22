@@ -1,26 +1,21 @@
 package com.podcastcatalog.model.podcastcatalog;
 
-import com.google.gson.Gson;
-import com.podcastcatalog.model.podcastcatalog.BundleItem;
-import com.podcastcatalog.model.podcastcatalog.PodCastCategoryTest;
-import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeTest;
-import com.podcastcatalog.model.podcastcatalog.PodCastTest;
-import org.testng.Assert;
+import com.podcastcatalog.TestUtil;
 import org.testng.annotations.Test;
 
 public class BundleItemTest {
 
-    private static final Gson GSON = new Gson();
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void title() {
         BundleItem podCast = PodCastTest.createValid().description("SOME X").build();
-        Assert.assertTrue(GSON.toJson(podCast).contains("SOME X"));
+        TestUtil.assertToJSONContains(podCast, "SOME X");
         BundleItem podCastCategory = PodCastCategoryTest.createValid();
-        Assert.assertNotNull(GSON.toJson(podCastCategory));
+
+        TestUtil.assertToJSONNotNull(podCastCategory);
 
         BundleItem build = PodCastEpisodeTest.createValid().description("Avsnitt B").build();
-        Assert.assertTrue(GSON.toJson(build).contains("Avsnitt B"));
+        TestUtil.assertToJSONContains(build, "Avsnitt B");
     }
 
 }

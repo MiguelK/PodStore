@@ -38,7 +38,7 @@ public class PodCastBundleTest {
         createValid().build().getBundleItems().add(PodCastTest.createValid().build());
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void createPodCastBundle() {
         Assert.assertNotNull(createValid().build());
     }
@@ -68,7 +68,7 @@ public class PodCastBundleTest {
         Assert.assertEquals(createValid().title("test").build().getTitle(),"test");
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void description() {
         Assert.assertEquals(createValid().description("test").build().getDescription(),"test");
     }

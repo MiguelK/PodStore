@@ -6,8 +6,6 @@ import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogTest;
 import com.podcastcatalog.model.subscription.SubscriptionData;
-import com.podcastcatalog.service.ServiceDataStorage;
-import com.podcastcatalog.service.ServiceDataStorageDisk;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -24,7 +22,7 @@ public class ServiceDataStorageDiskTest {
 
     private ServiceDataStorageDisk storage;
 
-    @BeforeMethod
+    @BeforeMethod(groups = TestUtil.SLOW_TEST)
     public void setUp() {
         storage = new ServiceDataStorageDisk();
         storage.deleteAll();
@@ -45,12 +43,12 @@ public class ServiceDataStorageDiskTest {
         }
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void null_if_file_does_not_exist() {
         Assert.assertFalse(storage.getCurrentVersion().isPresent());
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void save_load() {
         PodCastCatalog podCastCatalog1 = PodCastCatalog.create(PodCastCatalogLanguage.Sweden,
                 Collections.singletonList(PodCastBundleTest.createValid().build()));
@@ -62,7 +60,7 @@ public class ServiceDataStorageDiskTest {
         Assert.assertNotNull(storage.getCurrentVersion().orElseGet(null).getPodCastCatalogSwedish());
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void save_2_versions() {
 
         storage.save(PodCastCatalogTest.createValid());
@@ -72,12 +70,12 @@ public class ServiceDataStorageDiskTest {
         Assert.assertTrue(storage.getCurrentVersion().orElseGet(null).getVersion() == 2);
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void no_versions() {
         Assert.assertTrue(storage.getAllVersions().isEmpty());
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void create_3_versions() {
         storage.save(PodCastCatalogTest.createValid());
         storage.save(PodCastCatalogTest.createValid());
@@ -86,7 +84,7 @@ public class ServiceDataStorageDiskTest {
         Assert.assertTrue(storage.getAllVersions().size() == 3);
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void versionPaths() {
         storage.save(PodCastCatalogTest.createValid());
 
@@ -97,7 +95,7 @@ public class ServiceDataStorageDiskTest {
         }
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void verify_version_structure() throws IOException {
         storage.save(PodCastCatalogTest.createValid());
 
@@ -128,7 +126,7 @@ public class ServiceDataStorageDiskTest {
         Assert.assertTrue(Files.size(sweZIP.toPath()) >100);
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void verify_version_directories() {
         storage.save(PodCastCatalogTest.createValid());
         storage.save(PodCastCatalogTest.createValid());
@@ -160,7 +158,7 @@ public class ServiceDataStorageDiskTest {
         Assert.assertEquals(podCastCatalogSwedish.getCreated(), created);
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void deleteAll() {
         Assert.assertTrue(storage.getAllVersions().isEmpty());
 
@@ -175,7 +173,7 @@ public class ServiceDataStorageDiskTest {
         Assert.assertTrue(storage.getAllVersions().isEmpty());
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void zipJSON() throws IOException {
         storage.save(PodCastCatalogTest.createValid());
 
@@ -187,7 +185,7 @@ public class ServiceDataStorageDiskTest {
         Assert.assertTrue(Files.size(zipped.toPath()) >100);
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void saveLoadSubscriptionData() {
         storage.save(new SubscriptionData());
         Assert.assertTrue(storage.getSubscriptionDataFile().exists());

@@ -1,8 +1,6 @@
 package com.podcastcatalog.model.podcastcatalog;
 
-import com.podcastcatalog.model.podcastcatalog.PodCastCategory;
-import com.podcastcatalog.model.podcastcatalog.PodCastCategoryTest;
-import com.podcastcatalog.model.podcastcatalog.PodCastCategoryBundle;
+import com.podcastcatalog.TestUtil;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -11,7 +9,7 @@ import java.util.List;
 
 public class PodCastCategoryBundleTest {
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void createValid_bunlde() {
         Assert.assertNotNull(createValid());
        }

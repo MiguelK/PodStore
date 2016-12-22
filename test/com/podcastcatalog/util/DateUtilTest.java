@@ -1,6 +1,7 @@
 package com.podcastcatalog.util;
 
 import com.podcastcatalog.DataProviderTestData;
+import com.podcastcatalog.TestUtil;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -10,7 +11,7 @@ import java.util.Optional;
 public class DateUtilTest {
 
 
-    @Test(dataProvider = "invalid_dates", dataProviderClass = DataProviderTestData.class)
+    @Test(dataProvider = "invalid_dates", dataProviderClass = DataProviderTestData.class, groups = TestUtil.SLOW_TEST)
     public void parse_invaliud_dates(String date) {
 
         Optional<LocalDateTime> parse = DateUtil.parse(date);
@@ -18,7 +19,7 @@ public class DateUtilTest {
         Assert.assertFalse(parse.isPresent());
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void parse_valid_dates() {
         Assert.assertTrue(DateUtil.parse("Sun, 07 Aug 2016 12:05:26 EST").isPresent());
         Assert.assertTrue(DateUtil.parse("Sun, 07 Aug 2016 12:05:26 PST").isPresent());

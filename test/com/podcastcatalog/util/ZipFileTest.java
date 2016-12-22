@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ZipFileTest {
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void zip() throws IOException {
 
         File someFile = new File("some.json");

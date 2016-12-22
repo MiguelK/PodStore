@@ -1,5 +1,6 @@
 package com.podcastcatalog.model.podcaststatus;
 
+import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastTest;
 import org.testng.Assert;
@@ -9,7 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PodCastStatusTest {
-    @Test
+
+    @Test(groups = TestUtil.SLOW_TEST)
     public void latestPodCastId() {
 
         Map<String,PodCast> pods = new HashMap<>();
