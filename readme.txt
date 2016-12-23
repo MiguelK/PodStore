@@ -12,7 +12,7 @@ http://localhost:10080/PodStore
 [podCastCatalog]
 http://localhost:10080/PodStore/api/podCastCatalog?lang='SV'
 http://localhost:10080/PodStore/api/podCastCatalog/search?lang=SE&query=Java
-http://localhost:10080/PodStore/api/podCastCatalog/search?lang=SE&query=term=p3&entity=podcast&limit=3
+http://localhost:10080/PodStore/api/podCastCatalog/search?lang=SE&query=p3
 
 api/podCast
 http://localhost:10080/PodStore/api/podCast?id='podCastCollectionId'

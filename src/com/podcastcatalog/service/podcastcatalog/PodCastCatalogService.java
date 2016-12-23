@@ -167,6 +167,10 @@ public class PodCastCatalogService {
         return ayncExecutor.submit(new BuildPodCastCatalogAction());
     }
 
+    public boolean isBuildingInProgress(){
+        return false;//FIXME
+    }
+
     private void validateState() {
         if (storage == null) {
             throw new IllegalStateException("Configure storage, storage is null");
@@ -185,11 +189,9 @@ public class PodCastCatalogService {
             readLock.lock();
             LOG.info(BuildPodCastCatalogAction.class.getSimpleName() + ", registered podCastCatalogBuilders=" + podCastCatalogBuilders.size());
 
-            List<PodCastCatalogBuilder> snapShot = new ArrayList<>(podCastCatalogBuilders);
-
             Map<PodCastCatalogLanguage, PodCastCatalog> newCatalogs = new HashMap<>();
             try {
-                for (PodCastCatalogBuilder podCastCatalogBuilder : snapShot) {
+                for (PodCastCatalogBuilder podCastCatalogBuilder : podCastCatalogBuilders) {
                     LOG.info("Start building PodCastCatalog " + podCastCatalogBuilder.getPodCastCatalogLang() + " ...");
 
                     PodCastCatalog catalog = buildPodcastCatalog(podCastCatalogBuilder);

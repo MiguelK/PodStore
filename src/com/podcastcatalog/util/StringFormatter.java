@@ -1,8 +1,10 @@
 package com.podcastcatalog.util;
 
 import com.podcastcatalog.model.podcastcatalog.*;
+import com.podcastcatalog.service.ServiceDataStorage;
 
 import java.util.List;
+import java.util.Optional;
 
 public class StringFormatter {
     private final PodCastCatalog podCastCatalog;
@@ -21,9 +23,6 @@ public class StringFormatter {
         if(podCastCatalog==null){
             return "PodCastCatalog not ready yet.?";
         }
-        /*if(true){
-            return "Disabled test... FIXME";//FIXME
-        }*/
 
         StringBuilder result = new StringBuilder();
 
@@ -68,6 +67,13 @@ public class StringFormatter {
         result.append(" Created=").append(podCastCatalog.getCreated()).append("<br>");
         List<Bundle> bundles = podCastCatalog.getBundles();
         result.append(" Bundle size=").append(bundles.size()).append("<br>");
+
+        List<ServiceDataStorage.PodCastCatalogVersion> allVersions = ServiceDataStorage.useDefault().getAllVersions();
+        result.append("PodCastCatalogVersion(s) = ").append(allVersions.size()).append("<br>");
+        Optional<ServiceDataStorage.PodCastCatalogVersion> currentVersion = ServiceDataStorage.useDefault().getCurrentVersion();
+        currentVersion.ifPresent(podCastCatalogVersion -> result.append("Latest PodCastCatalogVersion = ").append(podCastCatalogVersion).append("<br>"));
+
+        //FIXME Slow perf
 /*
         for (Bundle bundle : bundles) {
             BundleType bundleType = bundle.getBundleType();

@@ -19,21 +19,21 @@
 <body>
 
 <%
-
     String contextPath = request.getContextPath();
-
 
     if (request.getParameter("action") != null) {
 
         PodCastCatalogService.getInstance().buildPodCastCatalogsAsync();
-        out.println("Start reloding Catalog...<br><br>");
+        out.println("Start building PodCastCatalog(s)...<br><br>");
     }
 
     PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
-    StringFormatter stringFormatter = StringFormatter.create(podCastCatalog);
+    StringFormatter podCastCatalogStatus = StringFormatter.create(podCastCatalog);
 %>
 
-<%=stringFormatter.format()%>
+<%=podCastCatalogStatus.format()%>
+
+<br>
 
 <tr>
     <td>SubscriptionService</td>
@@ -64,43 +64,34 @@
             <form action="">
                 <input type="hidden" id="thisField" name="action" value="action">
                 <button type="submit" value="relod" title="reload">
-                    Reload
+                    Rebuild PodCastCatalog(s)
                 </button>
             </form>
         </td>
-
         <td>
             <form action="">
                 <button type="submit" value="refresh" title="refresh">
-                    Refresh
+                    Refresh View (Call when Rebuilding PodCastCatalog(s) )
                 </button>
             </form>
         </td>
     </tr>
 
     <tr>
+        <td>##################### API ################################ </td>
+    </tr>
 
+    <tr>
         <td>
-            <a href="<%=contextPath%>/api/podCastCatalog?lang=SE">API getPodCastCatalog() SE</a>
-           <%-- <form method="get" action="http://localhost:10080/PodStore/api/podCastCatalog?lang=SE">
-                <button type="submit" value="refresh" title="refresh">
-                    API getPodCastCatalog() SE
-                </button>
-            </form>--%>
+            <a href="<%=contextPath%>/api/podCastCatalog?lang=SE">getPodCastCatalog (SE)</a>
         </td>
     </tr>
 
     <tr>
 
         <td>
-            <a href="<%=contextPath%>/api/jsonfile?lang=SE">API  get ZIP file, SE</a>
-
-           <%-- <form action="http://localhost:10080/PodStore/jsonfile?lang='SE'">
-                <button type="submit" value="refresh" title="refresh">
-                    get ZIP file
-                </button>
-            </form>--%>
-        </td>
+            <a href="<%=contextPath%>/api/jsonfile?lang=SE">get ZIP file (SE)</a>
+     </td>
     </tr>
 
     <tr>
@@ -123,6 +114,5 @@
     </tr>
 </table>
 <br>
-
 </body>
 </html>
