@@ -1,0 +1,63 @@
+package com.podcastcatalog.modelbuilder.language;
+
+import com.podcastcatalog.model.podcastcatalog.PodCast;
+import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
+import com.podcastcatalog.model.podcastcatalog.PodCastCategory;
+import com.podcastcatalog.model.podcastcatalog.Bundle;
+import com.podcastcatalog.modelbuilder.*;
+import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCategoryCollectorOkihika;
+import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCollectorOkihika;
+
+import java.util.*;
+
+//XML or Database...
+public class PodCastCatalogBuilderSE implements PodCastCatalogBuilder {
+
+    @Override
+    public List<Bundle> createFromFetchedData(List<PodCast> podCasts, List<PodCastCategory> podCastCategories) {
+        RandomPodCastEpisodeBundleBuilder randomPodCastEpisodeBundleBuilder = new RandomPodCastEpisodeBundleBuilder(podCasts, podCastCategories);
+
+        Bundle bundle = randomPodCastEpisodeBundleBuilder.createEpisodeBundle();
+
+        return Collections.singletonList(bundle);
+    }
+
+    @Override
+    public Set<BundleBuilder> getBundleBuilders() {
+        //FIXME implement...
+//        PodCastBundleBuilder podCastBundle = BundleBuilder.newPodCastBundleBuilder("image", "Toplistan", "10 bästa podcas i Sverige");
+//        podCastBundle.addCollector(ItunesSearchAPI.search("term=p3&entity=podcast"));
+
+        PodCastBundleBuilder podCastBundle = BundleBuilder.newPodCastBundleBuilder("Toplistan", "De bästa i Sverige");//FIXME Image
+        podCastBundle.addCollector(new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.SWE, PodCastCollectorOkihika.TopList.TOPLIST_SWEDEN, 20));
+
+
+        PodCastCategoryBundleBuilder categoryBundle = BundleBuilder.newPodCastCategoryBundleBuilder("Alla Kategorier", "???");
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.NEWS_POLITICS, "Nyheter och politik"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.MUSIC, "Musik"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.ARTS, "Konst"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.BUSINESS, "Näringsliv"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.COMEDY, "Komedi"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.K_12, "Utbildning"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.GAMES_HOBBIES, "Spel och hobbu"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.GOVERNMENT_ORGANIZATIONS, "Myndigheter och organistaioner"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.KIDS_FAMILY, "Barn och familj"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.RELIGION_SPIRITUALITY, "Religion och andligh"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.SCIENCE_MEDICINE, "Vetenskap och medecin"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.SOCIETY_CULTURE, "Samhälle och kultur"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.SPORTS_RECREATION, "Sport och fritid"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.TECHNOLOGY, "Teknologi"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSwedish(PodCastCollectorOkihika.TopList.TV_FILM, "TV och film"));
+
+        Set<BundleBuilder> bundleBuilders = new HashSet<>();
+        bundleBuilders.add(podCastBundle);
+        bundleBuilders.add(categoryBundle);
+
+        return bundleBuilders;
+    }
+
+    @Override
+    public PodCastCatalogLanguage getPodCastCatalogLang() {
+        return PodCastCatalogLanguage.Sweden;
+    }
+}

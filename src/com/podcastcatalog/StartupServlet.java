@@ -1,6 +1,6 @@
 package com.podcastcatalog;
 
-import com.podcastcatalog.modelbuilder.PodCastCatalogBuilderSE;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSE;
 import com.podcastcatalog.service.ServiceDataStorage;
 import com.podcastcatalog.service.ServiceDataStorageDisk;
 import com.podcastcatalog.service.job.JobManagerService;

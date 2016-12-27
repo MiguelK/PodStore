@@ -7,6 +7,7 @@ import com.podcastcatalog.modelbuilder.*;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCategoryCollectorOkihika;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCollectorOkihika;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSE;
 import com.podcastcatalog.service.ServiceDataStorageDisk;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -135,7 +136,7 @@ public class PodCastCatalogServiceTest {
             @Override
             public Set<BundleBuilder> getBundleBuilders() {
                 PodCastBundleBuilder podCastBundleBuilder = BundleBuilder.newPodCastBundleBuilder("Toplistan", "10 bästa podcas i Sverige");
-                podCastBundleBuilder.addCollector(new PodCastCollectorOkihika(PodCastCollectorOkihika.TopList.TOPLIST_SWEDEN, 4));
+                podCastBundleBuilder.addCollector(new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.SWE, PodCastCollectorOkihika.TopList.TOPLIST_SWEDEN, 4));
 
                 PodCastCategoryBundleBuilder categoryBundleBuilder = BundleBuilder.newPodCastCategoryBundleBuilder("Alla Kategorier", "???..");
                 categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 2, "Nyheter och politik", "???"));

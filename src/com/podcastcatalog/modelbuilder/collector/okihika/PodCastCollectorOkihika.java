@@ -22,7 +22,21 @@ public class PodCastCollectorOkihika implements PodCastCollector {
 
     private final static Logger LOG = Logger.getLogger(PodCastCollectorOkihika.class.getName());
     private static final int TIMEOUT_MILLIS = 5000;
-    private static final String ROOT_URL_OKIHIKA = "http://podcast.okihika.com/SE/";
+
+    public enum Language{
+        SWE("http://podcast.okihika.com/SE/"),
+        US("http://podcast.okihika.com/US/");
+
+        private final String rootUrl;
+
+        Language(String rootUrl) {
+            this.rootUrl = rootUrl;
+        }
+
+        public String getRootUrl() {
+            return rootUrl;
+        }
+    }
 
     private final String url;
     private final int resultSize;
@@ -96,14 +110,14 @@ public class PodCastCollectorOkihika implements PodCastCollector {
         NATIONAL("1473"),
         NON_PROFIT("1476"),
         REGIONAL("1474");
-        private final String url;
+        private final String categoryId;
 
-        TopList(String url) {
-            this.url = ROOT_URL_OKIHIKA + url;
+        TopList(String categoryId) {
+            this.categoryId =  categoryId;
         }
 
-        public String getUrl() {
-            return url;
+        public String getCategoryId() {
+            return categoryId;
         }
 
         public PodCastCategoryType toPodCastCategoryType() {
@@ -112,8 +126,8 @@ public class PodCastCollectorOkihika implements PodCastCollector {
     }
 
 
-    public PodCastCollectorOkihika(TopList toplist, int resultSize) {
-        this.url = toplist.getUrl();
+    public PodCastCollectorOkihika(Language language, TopList toplist, int resultSize) {
+        this.url = language.getRootUrl() +  toplist.getCategoryId();
         this.resultSize = resultSize;
     }
 
@@ -194,8 +208,9 @@ public class PodCastCollectorOkihika implements PodCastCollector {
                 parseID(e.toString()) != null;
     }
 
+    //FIXME remove only used by test
     public static PodCastCollectorOkihika parse(TopList toplist, int resultSize) {
-        return new PodCastCollectorOkihika(toplist, resultSize);
+        return new PodCastCollectorOkihika(Language.SWE,toplist, resultSize);
     }
 
 }

@@ -32,7 +32,7 @@ public class ItunesSearchAPITest {
         ItunesSearchAPI query = ItunesSearchAPI.createCollector("term=Java&entity=podcast&limit=25");
         int podCasts = query.collectPodCasts().size();
 
-        Assert.assertTrue(podCasts>=15);
+        Assert.assertTrue(podCasts>=14);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)

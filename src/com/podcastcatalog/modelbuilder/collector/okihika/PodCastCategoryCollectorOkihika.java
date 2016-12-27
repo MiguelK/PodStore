@@ -14,18 +14,23 @@ public class PodCastCategoryCollectorOkihika extends PodCastCollectorOkihika imp
     private final String description;
     private final PodCastCategoryType podCastCategoryType;
 
+    //Only for test FIXME remove
     public PodCastCategoryCollectorOkihika(TopList toplist, int resultSize, String title, String description) {
-        super(toplist, resultSize);
+        super(Language.SWE, toplist, resultSize);
         this.title = title;
         this.description = description;
         this.podCastCategoryType = toplist.toPodCastCategoryType();
     }
 
-    public PodCastCategoryCollectorOkihika(TopList toplist, String title, String description) {
-        super(toplist, DEFAULT_RESULT_SIZE);
+    private PodCastCategoryCollectorOkihika(Language language, TopList toplist, String title, String description) {
+        super(language,toplist, DEFAULT_RESULT_SIZE);
         this.title = title;
         this.description = description;
         this.podCastCategoryType = toplist.toPodCastCategoryType();
+    }
+
+    public static PodCastCategoryCollectorOkihika createSwedish(TopList toplist, String title){
+        return new PodCastCategoryCollectorOkihika(Language.SWE, toplist, title, "????");
     }
 
     @Override

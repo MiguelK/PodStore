@@ -27,7 +27,7 @@ public class PodCastCollectorOkihikaTest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void toplist_Sweden() {
-        PodCastCollectorOkihika swe = new PodCastCollectorOkihika(PodCastCollectorOkihika.TopList.TOPLIST_SWEDEN,20);
+        PodCastCollectorOkihika swe = new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.SWE, PodCastCollectorOkihika.TopList.TOPLIST_SWEDEN,20);
         List<PodCast> podCasts = swe.collectPodCasts();
 
         Assert.assertTrue(podCasts.size()>10);
