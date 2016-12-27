@@ -24,8 +24,8 @@ public class PodCastCollectorOkihika implements PodCastCollector {
     private static final int TIMEOUT_MILLIS = 5000;
 
     public enum Language{
-        SWE("http://podcast.okihika.com/SE/"),
-        US("http://podcast.okihika.com/US/");
+        SWE("http://podcast.okihika.com/SE/"),//Swedish
+        US("http://podcast.okihika.com/US/");//US-English
 
         private final String rootUrl;
 

@@ -11,7 +11,7 @@ public class StringFormatterTest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void format() {
-        PodCastCatalog valid = PodCastCatalogTest.createValid();
+        PodCastCatalog valid = PodCastCatalogTest.createValidPodCastCatalogSWE();
         StringFormatter object = StringFormatter.create(valid);
         Assert.assertNotNull(object.format());
     }

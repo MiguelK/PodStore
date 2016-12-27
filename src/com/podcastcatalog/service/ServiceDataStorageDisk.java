@@ -2,6 +2,7 @@ package com.podcastcatalog.service;
 
 import com.google.gson.Gson;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
+import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.subscription.SubscriptionData;
 import com.podcastcatalog.util.ZipFile;
 import org.apache.commons.io.FileUtils;
@@ -13,7 +14,6 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ServiceDataStorageDisk implements ServiceDataStorage {
@@ -22,7 +22,8 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
     private static final Gson GSON = new Gson();
 
     private final File podDataHomeDir;
-    private final File catalogVersionHomeDir;
+    private final File catalogVersionHomeDirSWE;
+    private final File catalogVersionHomeDirUS;
     private static final String SUBSCRIPTION_DATA_FILE_NAME = "SubscriptionData.dat";
 
     private final File subscriptionDataFile;
@@ -46,9 +47,8 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         return podDataHomeDir;
     }
 
-    @Override
-    public File getCatalogVersionHomeDir() {
-        return catalogVersionHomeDir;
+    public File getCatalogVersionHomeDirSWE() {
+        return catalogVersionHomeDirSWE;
     }
 
     @Override
@@ -59,22 +59,38 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
     @Override
     public void save(PodCastCatalog podCastCatalog) {
 
-        PodCastCatalogVersion versionDirectory = createNewVersionDirectory();
-        LOG.info("Saving PodCastCatalog to " + versionDirectory.getSweDat().getAbsolutePath());
-        saveAsObject(podCastCatalog, versionDirectory.getSweDat());
+        PodCastCatalogVersion versionDirectory = createNewVersionDirectory(podCastCatalog.getPodCastCatalogLanguage());
+
+        LOG.info("Saving PodCastCatalog to " + versionDirectory.getLangDat().getAbsolutePath());
+
+
+        saveAsObject(podCastCatalog, versionDirectory.getLangDat());
         File json = saveAsJSON(podCastCatalog, versionDirectory);
 
-        ZipFile.zip(json, versionDirectory.getSweJSONZipped());
+        ZipFile.zip(json, versionDirectory.getLangJSONZipped());
+    }
+
+    private File getCatalogVersionHomeDir(PodCastCatalogLanguage language) {
+
+        switch (language) {
+            case SWE:
+                return catalogVersionHomeDirSWE;
+            case US:
+                return catalogVersionHomeDirUS;
+            default:
+                throw new IllegalStateException("Unknown lang " + language);
+        }
     }
 
     @Override
     public void deleteAll() {
-        if (!catalogVersionHomeDir.exists() || !catalogVersionHomeDir.isDirectory()) {
+        if (!catalogVersionHomeDirSWE.exists() || !catalogVersionHomeDirSWE.isDirectory()) {
             return;
         }
 
         try {
-            FileUtils.deleteDirectory(catalogVersionHomeDir);
+            FileUtils.deleteDirectory(catalogVersionHomeDirSWE);
+            FileUtils.deleteDirectory(catalogVersionHomeDirUS);
         } catch (IOException e) {
             e.printStackTrace();//FIXME
         }
@@ -89,11 +105,16 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         }
         this.podDataHomeDir = podDataHomeDir;
 
-        this.catalogVersionHomeDir = new File(podDataHomeDir, "PodCastCatalogVersions");
+        this.catalogVersionHomeDirSWE = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + PodCastCatalogLanguage.SWE.name());
+        this.catalogVersionHomeDirUS = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + PodCastCatalogLanguage.US.name());
         File subscriptionService = new File(podDataHomeDir, "SubscriptionService");
 
-        if (!this.catalogVersionHomeDir.exists()) {
-            this.catalogVersionHomeDir.mkdirs();
+        if (!this.catalogVersionHomeDirSWE.exists()) {
+            this.catalogVersionHomeDirSWE.mkdirs();
+        }
+
+        if (!this.catalogVersionHomeDirUS.exists()) {
+            this.catalogVersionHomeDirUS.mkdirs();
         }
         if (!subscriptionService.exists()) {
             subscriptionService.mkdirs();
@@ -102,8 +123,8 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         subscriptionDataFile = new File(subscriptionService, SUBSCRIPTION_DATA_FILE_NAME);
     }
 
-    public Optional<PodCastCatalogVersion> getCurrentVersion() {
-        List<PodCastCatalogVersion> allVersions = getAllVersions();
+    public Optional<PodCastCatalogVersion> getCurrentVersion(PodCastCatalogLanguage language) {
+        List<PodCastCatalogVersion> allVersions = getAllVersions(language);
 
         if (allVersions.isEmpty()) {
             return Optional.empty();
@@ -116,19 +137,29 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         this(new HomeDirectoryLocator().locateDataDirectory());
     }
 
-    public List<PodCastCatalogVersion> getAllVersions() {
+    public List<PodCastCatalogVersion> getAllVersions(PodCastCatalogLanguage castCatalogLanguage) {
 
         List<PodCastCatalogVersion> allVersions = new ArrayList<>();
-        List<File> latestVersionDirectories = getVersionDirectories();
+        List<File> latestVersionDirectories = getVersionDirectories(castCatalogLanguage);
 
-        allVersions.addAll(latestVersionDirectories.stream()
-                .map(PodCastCatalogVersion::load).collect(Collectors.toList()));
+
+        for (File latestVersionDirectory : latestVersionDirectories) {
+
+            allVersions.add(PodCastCatalogVersion.load(latestVersionDirectory,castCatalogLanguage));
+        }
+
+//        allVersions.addAll(latestVersionDirectories.stream().map(PodCastCatalogVersion.load(-> p ,castCatalogLanguage))
+
+//                .map(PodCastCatalogVersion::load).collect(Collectors.toList()));
 
         return allVersions;
     }
 
 
-    private List<File> getVersionDirectories() {
+    private List<File> getVersionDirectories(PodCastCatalogLanguage language) {
+
+        File catalogVersionHomeDir = getCatalogVersionHomeDir(language);
+
         List<File> files = new ArrayList<>();
 
         File[] subdirs = catalogVersionHomeDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
@@ -153,7 +184,9 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         return files;
     }
 
-    private PodCastCatalogVersion createNewVersionDirectory() {
+    private PodCastCatalogVersion createNewVersionDirectory(PodCastCatalogLanguage podCastCatalogLanguage) {
+        File catalogVersionHomeDir = getCatalogVersionHomeDir(podCastCatalogLanguage);
+
         File[] subdirs = catalogVersionHomeDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 
         int nextVersionNumber = 1;
@@ -170,7 +203,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         File file = new File(catalogVersionHomeDir, String.valueOf(nextVersionNumber));
         file.mkdirs();//FIXME
 
-        return PodCastCatalogVersion.create(file);
+        return PodCastCatalogVersion.create(file, podCastCatalogLanguage);
     }
 
     private boolean isVersionDirectory(File e) {
@@ -222,14 +255,14 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
     private File saveAsJSON(PodCastCatalog podCastCatalog, PodCastCatalogVersion versionDirectory) {
 
         try {
-            try (Writer writer = new OutputStreamWriter(new FileOutputStream(versionDirectory.getSweJSON()), "UTF-8")) {
+            try (Writer writer = new OutputStreamWriter(new FileOutputStream(versionDirectory.getLangJSON()), "UTF-8")) {
                 GSON.toJson(podCastCatalog, writer);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return versionDirectory.getSweJSON();
+        return versionDirectory.getLangJSON();
     }
 
 }

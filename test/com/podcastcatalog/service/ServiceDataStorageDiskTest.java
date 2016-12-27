@@ -45,144 +45,146 @@ public class ServiceDataStorageDiskTest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void null_if_file_does_not_exist() {
-        Assert.assertFalse(storage.getCurrentVersion().isPresent());
+        Assert.assertFalse(storage.getCurrentVersion(PodCastCatalogLanguage.SWE).isPresent());
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void save_load() {
-        PodCastCatalog podCastCatalog1 = PodCastCatalog.create(PodCastCatalogLanguage.Sweden,
+        PodCastCatalog podCastCatalog1 = PodCastCatalog.create(PodCastCatalogLanguage.SWE,
                 Collections.singletonList(PodCastBundleTest.createValid().build()));
 
-        Assert.assertFalse(storage.getCurrentVersion().isPresent());
+        Assert.assertFalse(storage.getCurrentVersion(PodCastCatalogLanguage.SWE).isPresent());
 
         storage.save(podCastCatalog1);
 
-        Assert.assertNotNull(storage.getCurrentVersion().orElseGet(null).getPodCastCatalogSwedish());
+        Assert.assertNotNull(storage.getCurrentVersion(PodCastCatalogLanguage.SWE).orElseGet(null).getPodCastCatalog());
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void save_2_versions() {
 
-        storage.save(PodCastCatalogTest.createValid());
-        Assert.assertTrue(storage.getCurrentVersion().orElseGet(null).getVersion() == 1);
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
+        Assert.assertTrue(storage.getCurrentVersion(PodCastCatalogLanguage.SWE).orElseGet(null).getVersion() == 1);
 
-        storage.save(PodCastCatalogTest.createValid());
-        Assert.assertTrue(storage.getCurrentVersion().orElseGet(null).getVersion() == 2);
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
+        Assert.assertTrue(storage.getCurrentVersion(PodCastCatalogLanguage.SWE).orElseGet(null).getVersion() == 2);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void no_versions() {
-        Assert.assertTrue(storage.getAllVersions().isEmpty());
+        Assert.assertTrue(storage.getAllVersions(PodCastCatalogLanguage.SWE).isEmpty());
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void create_3_versions() {
-        storage.save(PodCastCatalogTest.createValid());
-        storage.save(PodCastCatalogTest.createValid());
-        storage.save(PodCastCatalogTest.createValid());
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
 
-        Assert.assertTrue(storage.getAllVersions().size() == 3);
+        Assert.assertTrue(storage.getAllVersions(PodCastCatalogLanguage.SWE).size() == 3);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void versionPaths() {
-        storage.save(PodCastCatalogTest.createValid());
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
 
-        for (ServiceDataStorage.PodCastCatalogVersion version : storage.getAllVersions()) {
-            Assert.assertNotNull(version.getSweDat());
-            Assert.assertNotNull(version.getSweJSON());
-            Assert.assertNotNull(version.getSweJSONZipped());
+        for (ServiceDataStorage.PodCastCatalogVersion version : storage.getAllVersions(PodCastCatalogLanguage.SWE)) {
+            Assert.assertNotNull(version.getLangDat());
+            Assert.assertNotNull(version.getLangJSON());
+            Assert.assertNotNull(version.getLangJSONZipped());
         }
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void verify_version_structure() throws IOException {
-        storage.save(PodCastCatalogTest.createValid());
-
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogUS());
 
         File dataDirectory = storage.getPodDataHomeDir();
-        File root = new File(dataDirectory,"PodCastCatalogVersions");
-        File one = new File(root,"1");
+        File oneSWE = new File(dataDirectory, "PodCastCatalogVersions" + File.separator + PodCastCatalogLanguage.SWE.name() + File.separator + "1");
+        File oneUS = new File(dataDirectory, "PodCastCatalogVersions" + File.separator + PodCastCatalogLanguage.US.name() + File.separator + "1");
 
-        System.out.println("PATH= " + one.getAbsolutePath());
-        Assert.assertTrue(one.isDirectory());
-        Assert.assertTrue(one.canRead());
-        Assert.assertTrue(one.canWrite());
+        System.out.println("PATH= " + oneSWE.getAbsolutePath());
 
-        File sweDat = new File(one,PodCastCatalogLanguage.Sweden.name() + ".dat");
-        File sweJSON = new File(one,PodCastCatalogLanguage.Sweden.name() + ".json");
-        File sweZIP = new File(one,PodCastCatalogLanguage.Sweden.name() + "_json.zip");
+        assertDirectoryStructure(oneSWE, PodCastCatalogLanguage.SWE);
+        assertDirectoryStructure(oneUS, PodCastCatalogLanguage.US);
+    }
+
+    private void assertDirectoryStructure(File oneSWE, PodCastCatalogLanguage language) throws IOException {
+        File sweDat = new File(oneSWE, language.name() + ".dat");
+        File sweJSON = new File(oneSWE, language.name() + ".json");
+        File sweZIP = new File(oneSWE, language.name() + "_json.zip");
 
         Assert.assertTrue(sweDat.isFile());
         Assert.assertTrue(sweDat.canRead());
-        Assert.assertTrue(Files.size(sweDat.toPath()) >100);
+        Assert.assertTrue(Files.size(sweDat.toPath()) > 100);
 
         Assert.assertTrue(sweJSON.isFile());
         Assert.assertTrue(sweJSON.canRead());
-        Assert.assertTrue(Files.size(sweJSON.toPath()) >100,"was=" + Files.size(sweJSON.toPath()));
+        Assert.assertTrue(Files.size(sweJSON.toPath()) > 100, "was=" + Files.size(sweJSON.toPath()));
 
         Assert.assertTrue(sweZIP.isFile());
         Assert.assertTrue(sweZIP.canRead());
-        Assert.assertTrue(Files.size(sweZIP.toPath()) >100);
+        Assert.assertTrue(Files.size(sweZIP.toPath()) > 100);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void verify_version_directories() {
-        storage.save(PodCastCatalogTest.createValid());
-        storage.save(PodCastCatalogTest.createValid());
-        storage.save(PodCastCatalogTest.createValid());
-        storage.save(PodCastCatalogTest.createValid());
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
 
-        File root = storage.getCatalogVersionHomeDir();
+        File root = storage.getCatalogVersionHomeDirSWE();
 
-        assertDirectory(new File(root,"1"));
-        assertDirectory(new File(root,"2"));
-        assertDirectory(new File(root,"3"));
-        assertDirectory(new File(root,"4"));
+        assertDirectory(new File(root, "1"));
+        assertDirectory(new File(root, "2"));
+        assertDirectory(new File(root, "3"));
+        assertDirectory(new File(root, "4"));
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void verify_order() throws InterruptedException {
-        storage.save(PodCastCatalogTest.createValid());
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
 
         Thread.sleep(1000);
 
-        PodCastCatalog castCatalog = PodCastCatalogTest.createValid();
+        PodCastCatalog castCatalog = PodCastCatalogTest.createValidPodCastCatalogSWE();
         LocalDateTime created = castCatalog.getCreated();
         storage.save(castCatalog);
 
-        Optional<ServiceDataStorageDisk.PodCastCatalogVersion> currentVersion = storage.getCurrentVersion();
+        Optional<ServiceDataStorageDisk.PodCastCatalogVersion> currentVersion = storage.getCurrentVersion(PodCastCatalogLanguage.SWE);
 
-        PodCastCatalog podCastCatalogSwedish = currentVersion.orElseGet(null).getPodCastCatalogSwedish();
+        PodCastCatalog podCastCatalogSwedish = currentVersion.orElseGet(null).getPodCastCatalog();
 
         Assert.assertEquals(podCastCatalogSwedish.getCreated(), created);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void deleteAll() {
-        Assert.assertTrue(storage.getAllVersions().isEmpty());
+        Assert.assertTrue(storage.getAllVersions(PodCastCatalogLanguage.SWE).isEmpty());
 
-        storage.save(PodCastCatalogTest.createValid());
-        storage.save(PodCastCatalogTest.createValid());
-        storage.save(PodCastCatalogTest.createValid());
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
 
-        Assert.assertTrue(storage.getAllVersions().size()==3);
+        Assert.assertTrue(storage.getAllVersions(PodCastCatalogLanguage.SWE).size() == 3);
 
         storage.deleteAll();
 
-        Assert.assertTrue(storage.getAllVersions().isEmpty());
+        Assert.assertTrue(storage.getAllVersions(PodCastCatalogLanguage.SWE).isEmpty());
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void zipJSON() throws IOException {
-        storage.save(PodCastCatalogTest.createValid());
+        storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
 
-        File zipped = storage.getCurrentVersion().orElseGet(null).getSweJSONZipped();
+        File zipped = storage.getCurrentVersion(PodCastCatalogLanguage.SWE).orElseGet(null).getLangJSONZipped();
         Assert.assertNotNull(zipped);
         Assert.assertTrue(zipped.isFile());
         Assert.assertTrue(zipped.canRead());
         Assert.assertTrue(zipped.getName().endsWith("_json.zip"));
-        Assert.assertTrue(Files.size(zipped.toPath()) >100);
+        Assert.assertTrue(Files.size(zipped.toPath()) > 100);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
@@ -195,7 +197,7 @@ public class ServiceDataStorageDiskTest {
         Assert.assertNotNull(subscriptionData);
     }
 
-    private void assertDirectory(File file){
+    private void assertDirectory(File file) {
         Assert.assertTrue(file.isDirectory());
         Assert.assertTrue(file.canRead());
         Assert.assertTrue(file.canWrite());

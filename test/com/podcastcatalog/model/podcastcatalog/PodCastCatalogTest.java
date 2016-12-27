@@ -22,7 +22,7 @@ public class PodCastCatalogTest {
         bundles.add(PodCastBundleTest.createValid().build());
         bundles.add(PodCastCategoryBundleTest.createValid());
 
-        PodCastCatalog podCastCatalog = PodCastCatalog.create(PodCastCatalogLanguage.Sweden, bundles);
+        PodCastCatalog podCastCatalog = PodCastCatalog.create(PodCastCatalogLanguage.SWE, bundles);
 
         Assert.assertTrue(podCastCatalog.getBundles().size() == 3);
         String json = GSON.toJson(podCastCatalog);
@@ -35,14 +35,14 @@ public class PodCastCatalogTest {
     public void visit_episodes_no_duplicates() {
         BundleItemVisitor visitor = new BundleItemVisitor();
 
-        for (Bundle bundle : createValid().getBundles()) {
+        for (Bundle bundle : createValidPodCastCatalogSWE().getBundles()) {
             for (BundleItem bundleItem : bundle.getBundleItems()) {
                 bundleItem.accept(visitor);
             }
         }
 
 
-        for (Bundle bundle : createValid().getBundles()) {
+        for (Bundle bundle : createValidPodCastCatalogSWE().getBundles()) {
             for (BundleItem bundleItem : bundle.getBundleItems()) {
                 bundleItem.accept(visitor);
             }
@@ -56,34 +56,34 @@ public class PodCastCatalogTest {
 
     @Test
     public void createValid_to_JSON() {
-        Assert.assertNotNull(GSON.toJson(createValid()));
+        Assert.assertNotNull(GSON.toJson(createValidPodCastCatalogSWE()));
     }
 
     @Test
     public void created() {
         LocalDateTime now = LocalDateTime.now();
-        Assert.assertEquals(createValid().getCreated().getDayOfMonth(), now.getDayOfMonth());
-        Assert.assertEquals(createValid().getCreated().getDayOfWeek(), now.getDayOfWeek());
-        Assert.assertEquals(createValid().getCreated().getHour(), now.getHour());
-        Assert.assertEquals(createValid().getCreated().getMonth(), now.getMonth());
-        Assert.assertEquals(createValid().getCreated().getMinute(), now.getMinute());
+        Assert.assertEquals(createValidPodCastCatalogSWE().getCreated().getDayOfMonth(), now.getDayOfMonth());
+        Assert.assertEquals(createValidPodCastCatalogSWE().getCreated().getDayOfWeek(), now.getDayOfWeek());
+        Assert.assertEquals(createValidPodCastCatalogSWE().getCreated().getHour(), now.getHour());
+        Assert.assertEquals(createValidPodCastCatalogSWE().getCreated().getMonth(), now.getMonth());
+        Assert.assertEquals(createValidPodCastCatalogSWE().getCreated().getMinute(), now.getMinute());
     }
 
     @Test
     public void serializable() {
-        PodCastCatalog podCastCatalog = createValid();
+        PodCastCatalog podCastCatalog = createValidPodCastCatalogSWE();
         List<? extends Class<?>> classes = Arrays.asList(podCastCatalog.getClass().getInterfaces());
         Assert.assertTrue(classes.contains(Serializable.class));
     }
 
     @Test(expectedExceptions = UnsupportedOperationException.class)
     public void podCastBundleCategories_unmodifiable() {
-        createValid().getBundles().add(PodCastBundleTest.createValid().build());
+        createValidPodCastCatalogSWE().getBundles().add(PodCastBundleTest.createValid().build());
     }
 
     @Test
     public void create_PodCastCatalog() {
-        Assert.assertNotNull(createValid());
+        Assert.assertNotNull(createValidPodCastCatalogSWE());
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -94,32 +94,41 @@ public class PodCastCatalogTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalid_bundles_null() {
-        PodCastCatalog.create(PodCastCatalogLanguage.Sweden, null);
+        PodCastCatalog.create(PodCastCatalogLanguage.SWE, null);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalid_bundles_empty() {
-        PodCastCatalog.create(PodCastCatalogLanguage.Sweden, Collections.emptyList());
+        PodCastCatalog.create(PodCastCatalogLanguage.SWE, Collections.emptyList());
     }
 
     @Test
     public void podCastCatalogLanguage() {
-        Assert.assertEquals(createValid().getPodCastCatalogLanguage(), PodCastCatalogLanguage.Sweden);
+        Assert.assertEquals(createValidPodCastCatalogSWE().getPodCastCatalogLanguage(), PodCastCatalogLanguage.SWE);
     }
 
     @Test
     public void testToSTring() {
-        Assert.assertNotNull(createValid().toString());
+        Assert.assertNotNull(createValidPodCastCatalogSWE().toString());
 
-        System.out.println(createValid().toString());
+        System.out.println(createValidPodCastCatalogSWE().toString());
     }
 
-    public static PodCastCatalog createValid() {
+    public static PodCastCatalog createValidPodCastCatalogSWE() {
         List<Bundle> podCastBundle1s = new ArrayList<>();
         podCastBundle1s.add(PodCastBundleTest.createValid().build());
         podCastBundle1s.add(PodCastEpisodeBundleTest.craeteValid());
         podCastBundle1s.add(PodCastCategoryBundleTest.createValid());
 
-        return PodCastCatalog.create(PodCastCatalogLanguage.Sweden, podCastBundle1s);
+        return PodCastCatalog.create(PodCastCatalogLanguage.SWE, podCastBundle1s);
+    }
+
+    public static PodCastCatalog createValidPodCastCatalogUS() {
+        List<Bundle> podCastBundle1s = new ArrayList<>();
+        podCastBundle1s.add(PodCastBundleTest.createValid().build());
+        podCastBundle1s.add(PodCastEpisodeBundleTest.craeteValid());
+        podCastBundle1s.add(PodCastCategoryBundleTest.createValid());
+
+        return PodCastCatalog.create(PodCastCatalogLanguage.US, podCastBundle1s);
     }
 }

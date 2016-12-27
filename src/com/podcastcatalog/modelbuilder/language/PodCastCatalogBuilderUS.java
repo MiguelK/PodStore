@@ -57,6 +57,6 @@ public class PodCastCatalogBuilderUS implements PodCastCatalogBuilder {
 
     @Override
     public PodCastCatalogLanguage getPodCastCatalogLang() {
-        return PodCastCatalogLanguage.Sweden;
+        return PodCastCatalogLanguage.US;
     }
 }

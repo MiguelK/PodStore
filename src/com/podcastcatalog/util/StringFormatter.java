@@ -68,9 +68,9 @@ public class StringFormatter {
         List<Bundle> bundles = podCastCatalog.getBundles();
         result.append(" Bundle size=").append(bundles.size()).append("<br>");
 
-        List<ServiceDataStorage.PodCastCatalogVersion> allVersions = ServiceDataStorage.useDefault().getAllVersions();
+        List<ServiceDataStorage.PodCastCatalogVersion> allVersions = ServiceDataStorage.useDefault().getAllVersions(PodCastCatalogLanguage.SWE);
         result.append("PodCastCatalogVersion(s) = ").append(allVersions.size()).append("<br>");
-        Optional<ServiceDataStorage.PodCastCatalogVersion> currentVersion = ServiceDataStorage.useDefault().getCurrentVersion();
+        Optional<ServiceDataStorage.PodCastCatalogVersion> currentVersion = ServiceDataStorage.useDefault().getCurrentVersion(PodCastCatalogLanguage.SWE);
         currentVersion.ifPresent(podCastCatalogVersion -> result.append("Latest PodCastCatalogVersion = ").append(podCastCatalogVersion).append("<br>"));
 
         //FIXME Slow perf

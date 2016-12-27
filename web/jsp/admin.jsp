@@ -21,18 +21,21 @@
 <%
     String contextPath = request.getContextPath();
 
-    if (request.getParameter("action") != null) {
+    String language = request.getParameter("actionBuildPodCastCatalog");
 
-        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync();
-        out.println("Start building PodCastCatalog(s)...<br><br>");
+    if (language != null) {
+        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.fromString(language));
+        out.println("Start building PodCastCatalog " + language + " ...<br><br>");
     }
 
-    PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
-    StringFormatter podCastCatalogStatus = StringFormatter.create(podCastCatalog);
+    StringFormatter podCastCatalogStatusSWE = StringFormatter.create(PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SWE));
+    StringFormatter podCastCatalogStatusUS = StringFormatter.create(PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.US));
 %>
 
-<%=podCastCatalogStatus.format()%>
+<%=podCastCatalogStatusSWE.format()%>
+<br>
 
+<%=podCastCatalogStatusUS.format()%>
 <br>
 
 <tr>
@@ -62,36 +65,53 @@
     <tr>
         <td>
             <form action="">
-                <input type="hidden" id="thisField" name="action" value="action">
+                <input type="hidden"  name="action" value="SWE">
                 <button type="submit" value="relod" title="reload">
-                    Rebuild PodCastCatalog(s)
+                    Rebuild PodCastCatalog (SWE)
                 </button>
             </form>
         </td>
+    </tr>
+    <tr>
         <td>
             <form action="">
-                <button type="submit" value="refresh" title="refresh">
-                    Refresh View (Call when Rebuilding PodCastCatalog(s) )
+                <input type="hidden"  name="action" value="US">
+                <button type="submit" value="relod" title="reload">
+                    Rebuild PodCastCatalog (US)
                 </button>
             </form>
         </td>
     </tr>
 
+    <td>
+        <form action="">
+            <button type="submit" value="refresh" title="refresh">
+                Refresh View (Call when Rebuilding PodCastCatalog(s) )
+            </button>
+        </form>
+    </td>
+    </tr>
+
     <tr>
-        <td>##################### API ################################ </td>
+        <td>##################### API ################################</td>
     </tr>
 
     <tr>
         <td>
-            <a href="<%=contextPath%>/api/podCastCatalog?lang=SE">getPodCastCatalog (SE)</a>
+            <a href="<%=contextPath%>/api/podCastCatalog?lang=SWE">getPodCastCatalog (SE)</a>
         </td>
     </tr>
 
     <tr>
-
         <td>
-            <a href="<%=contextPath%>/api/jsonfile?lang=SE">get ZIP file (SE)</a>
-     </td>
+            <a href="<%=contextPath%>/api/jsonfile?lang=SWE">get ZIP file (SE)</a>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <a href="<%=contextPath%>/api/jsonfile?lang=US">get ZIP file (US)</a>
+        </td>
     </tr>
 
     <tr>

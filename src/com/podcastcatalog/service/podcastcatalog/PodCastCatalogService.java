@@ -36,7 +36,7 @@ public class PodCastCatalogService {
     private final PodCastIndex podCastIndex;
     private ServiceDataStorage storage;
     private final ExecutorService executorService;
-    private final ExecutorService ayncExecutor;
+    private final ExecutorService asyncExecutor;
 
     private static final PodCastCatalogService INSTANCE = new PodCastCatalogService();
 
@@ -46,7 +46,7 @@ public class PodCastCatalogService {
         textSearchEngine = new TextSearchEngine<>();
         podCastCatalogBuilders = new ArrayList<>();
         podCastCatalogByLang = new HashMap<>();
-        ayncExecutor = Executors.newFixedThreadPool(THREADS);
+        asyncExecutor = Executors.newFixedThreadPool(THREADS);
         executorService = Executors.newFixedThreadPool(5);//Important single thread!
     }
 
@@ -138,7 +138,7 @@ public class PodCastCatalogService {
     public List<ResultItem> search(String queryParam) {
 
         String queryParamTrimmed = StringUtils.trimToNull(queryParam);
-        if(queryParamTrimmed==null){
+        if (queryParamTrimmed == null) {
             return Collections.emptyList();
         }
 
@@ -157,17 +157,17 @@ public class PodCastCatalogService {
         }
     }
 
-    public void buildIndexAsync() {
-        ayncExecutor.submit(new BuildIndexAction());
+    public void buildIndexAsync(PodCastCatalogLanguage podCastCatalogLanguage) {
+        asyncExecutor.submit(new BuildIndexAction(podCastCatalogLanguage));
     }
 
-    public Future buildPodCastCatalogsAsync() {
+    public Future buildPodCastCatalogsAsync(PodCastCatalogLanguage language) {
         validateState();
 
-        return ayncExecutor.submit(new BuildPodCastCatalogAction());
+        return asyncExecutor.submit(new BuildPodCastCatalogAction(language));
     }
 
-    public boolean isBuildingInProgress(){
+    public boolean isBuildingInProgress() {
         return false;//FIXME
     }
 
@@ -176,13 +176,19 @@ public class PodCastCatalogService {
             throw new IllegalStateException("Configure storage, storage is null");
         }
 
-        if(podCastCatalogBuilders.isEmpty()){
+        if (podCastCatalogBuilders.isEmpty()) {
             throw new IllegalStateException("No podCastCatalogBuilders registered");
         }
 
     }
 
     private class BuildPodCastCatalogAction implements Runnable {
+
+        private PodCastCatalogLanguage podCastCatalogLanguage;
+
+        public BuildPodCastCatalogAction(PodCastCatalogLanguage podCastCatalogLanguage) {
+            this.podCastCatalogLanguage = podCastCatalogLanguage;
+        }
 
         @Override
         public void run() {
@@ -192,6 +198,11 @@ public class PodCastCatalogService {
             Map<PodCastCatalogLanguage, PodCastCatalog> newCatalogs = new HashMap<>();
             try {
                 for (PodCastCatalogBuilder podCastCatalogBuilder : podCastCatalogBuilders) {
+
+                    if (podCastCatalogBuilder.getPodCastCatalogLang() != podCastCatalogLanguage) {
+                        continue; //Only build one catalog = podCastCatalogLanguage
+                    }
+
                     LOG.info("Start building PodCastCatalog " + podCastCatalogBuilder.getPodCastCatalogLang() + " ...");
 
                     PodCastCatalog catalog = buildPodcastCatalog(podCastCatalogBuilder);
@@ -216,11 +227,18 @@ public class PodCastCatalogService {
                 writeLock.unlock();
             }
 
-            buildIndexAsync();
+            buildIndexAsync(podCastCatalogLanguage);
         }
     }
 
     private class BuildIndexAction implements Runnable {
+
+        private final PodCastCatalogLanguage podCastCatalogLanguage;
+
+        public BuildIndexAction(PodCastCatalogLanguage podCastCatalogLanguage) {
+            this.podCastCatalogLanguage = podCastCatalogLanguage;
+        }
+
         @Override
         public void run() {
             LOG.info("Start " + BuildIndexAction.class.getSimpleName() + " catalogs=" + podCastCatalogByLang.size() + "...");
@@ -230,6 +248,13 @@ public class PodCastCatalogService {
             readLock.lock();
             try {
                 for (Map.Entry<PodCastCatalogLanguage, PodCastCatalog> catalogEntry : podCastCatalogByLang.entrySet()) {
+
+                    if (catalogEntry.getKey() != podCastCatalogLanguage) {
+                        continue;
+                    }
+
+                    LOG.info("Start building index for PodCastCatalog " + podCastCatalogLanguage);
+
                     for (Bundle bundle : catalogEntry.getValue().getBundles()) {
                         for (BundleItem bundleItem : bundle.getBundleItems()) {
                             bundleItem.accept(bundleItemVisitor);

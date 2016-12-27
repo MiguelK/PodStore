@@ -1,6 +1,8 @@
 package com.podcastcatalog;
 
+import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSE;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderUS;
 import com.podcastcatalog.service.ServiceDataStorage;
 import com.podcastcatalog.service.ServiceDataStorageDisk;
 import com.podcastcatalog.service.job.JobManagerService;
@@ -40,20 +42,23 @@ public class StartupServlet extends HttpServlet {
 
         PodCastSubscriptionService.getInstance().start();
 
-        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());//FIXME English
+        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());
+        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderUS());
 
-        Optional<ServiceDataStorageDisk.PodCastCatalogVersion> currentVersion = serviceDataStorageDisk.getCurrentVersion();
+        loadPodCastCatalog(serviceDataStorageDisk, PodCastCatalogLanguage.SWE);
+        loadPodCastCatalog(serviceDataStorageDisk, PodCastCatalogLanguage.US);
+    }
 
+    private void loadPodCastCatalog(ServiceDataStorage serviceDataStorageDisk, PodCastCatalogLanguage language) {
+        Optional<ServiceDataStorageDisk.PodCastCatalogVersion> currentVersion = serviceDataStorageDisk.getCurrentVersion(language);
         if (currentVersion.isPresent()) {
             LOG.info("Loading existing catalog " + currentVersion.get());
-            PodCastCatalogService.getInstance().loadPodCastCatalog(currentVersion.get().getPodCastCatalogSwedish());
-            PodCastCatalogService.getInstance().buildIndexAsync();
+            PodCastCatalogService.getInstance().loadPodCastCatalog(currentVersion.get().getPodCastCatalog());
+            PodCastCatalogService.getInstance().buildIndexAsync(language);
         } else {
             LOG.info("No catalog exists. in homeDir=" + serviceDataStorageDisk);
-            PodCastCatalogService.getInstance().buildPodCastCatalogsAsync();
+            PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language);
         }
-        //        registerOrStartLoading(dataStorage.load(PodCastCatalogLanguage.Sweden)); //FIXME English
-
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -1,5 +1,6 @@
 package com.podcastcatalog.service.job;
 
+import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 
 import java.util.logging.Logger;
@@ -13,6 +14,6 @@ public class PodCastCatalogUpdater implements Job {
 
         LOG.info(PodCastCatalogUpdater.class.getSimpleName() + " doWork()...");
 
-        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync();
+        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SWE);
     }
 }

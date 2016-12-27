@@ -24,28 +24,28 @@ public interface ServiceDataStorage {
 
     void save(PodCastCatalog podCastCatalog);
 
-    File getCatalogVersionHomeDir();
+    File getCatalogVersionHomeDirSWE();
 
     File getSubscriptionDataFile();
 
     void deleteAll();
 
-    Optional<ServiceDataStorage.PodCastCatalogVersion> getCurrentVersion();
+    Optional<ServiceDataStorage.PodCastCatalogVersion> getCurrentVersion(PodCastCatalogLanguage language);
 
-    List<ServiceDataStorage.PodCastCatalogVersion> getAllVersions();
+    List<ServiceDataStorage.PodCastCatalogVersion> getAllVersions(PodCastCatalogLanguage castCatalogLanguage);
 
     class PodCastCatalogVersion {
         private int version;
-        private final File sweJSON;
-        private final File sweJSONZipped;
-        private final File sweDat;
+        private final File langJSON;
+        private final File langJSONZipped;
+        private final File langDat;
 
         private PodCastCatalog podCastCatalog;
 
-        private PodCastCatalogVersion(File versionRoot) {
-            sweDat = new File(versionRoot, PodCastCatalogLanguage.Sweden.name() + ".dat");
-            sweJSON = new File(versionRoot, PodCastCatalogLanguage.Sweden.name() + ".json");
-            sweJSONZipped = new File(versionRoot, PodCastCatalogLanguage.Sweden.name() + "_json.zip");
+        private PodCastCatalogVersion(File versionRoot, PodCastCatalogLanguage podCastCatalogLanguage) {
+            langDat = new File(versionRoot, podCastCatalogLanguage.name() + ".dat");
+            langJSON = new File(versionRoot, podCastCatalogLanguage.name() + ".json");
+            langJSONZipped = new File(versionRoot, podCastCatalogLanguage.name() + "_json.zip");
 
             make(versionRoot);
         }
@@ -53,22 +53,22 @@ public interface ServiceDataStorage {
         private void make(File versionRoot) {
             try {
                 version = Integer.parseInt(versionRoot.getName());
-                sweDat.createNewFile();
-                sweJSON.createNewFile();
-                sweJSONZipped.createNewFile();
+                langDat.createNewFile();
+                langJSON.createNewFile();
+                langJSONZipped.createNewFile();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        public static PodCastCatalogVersion create(File versionRoot) {
-            PodCastCatalogVersion podCastCatalogVersion = new PodCastCatalogVersion(versionRoot);
+        public static PodCastCatalogVersion create(File versionRoot, PodCastCatalogLanguage podCastCatalogLanguage) {
+            PodCastCatalogVersion podCastCatalogVersion = new PodCastCatalogVersion(versionRoot, podCastCatalogLanguage);
             podCastCatalogVersion.make(versionRoot);
             return podCastCatalogVersion;
         }
 
-        static PodCastCatalogVersion load(File versionRoot) {
-            PodCastCatalogVersion podCastCatalogVersion = new PodCastCatalogVersion(versionRoot);
+        static PodCastCatalogVersion load(File versionRoot, PodCastCatalogLanguage podCastCatalogLanguage) {
+            PodCastCatalogVersion podCastCatalogVersion = new PodCastCatalogVersion(versionRoot, podCastCatalogLanguage);
 
             podCastCatalogVersion.readFromDisc();
 
@@ -80,12 +80,12 @@ public interface ServiceDataStorage {
             ObjectInputStream in = null;
             FileInputStream fileIn = null;
             try {
-                fileIn = new FileInputStream(sweDat);
+                fileIn = new FileInputStream(langDat);
                 in = new ObjectInputStream(fileIn);
                 podCastCatalog = ((PodCastCatalog) in.readObject());
             } catch (Exception e) {
 
-                throw new RuntimeException("Unable to read PodCastCatalog " + sweDat.getAbsolutePath(), e);
+                throw new RuntimeException("Unable to read PodCastCatalog " + langDat.getAbsolutePath(), e);
             } finally {
                 if (in != null) {
                     IOUtils.closeQuietly(in);
@@ -96,23 +96,23 @@ public interface ServiceDataStorage {
             }
         }
 
-        public File getSweJSON() {
-            return sweJSON;
+        public File getLangJSON() {
+            return langJSON;
         }
 
-        public File getSweJSONZipped() {
-            return sweJSONZipped;
+        public File getLangJSONZipped() {
+            return langJSONZipped;
         }
 
-        public File getSweDat() {
-            return sweDat;
+        public File getLangDat() {
+            return langDat;
         }
 
         public int getVersion() {
             return version;
         }
 
-        public PodCastCatalog getPodCastCatalogSwedish() {
+        public PodCastCatalog getPodCastCatalog() {
             return podCastCatalog;
         }
 
@@ -120,9 +120,9 @@ public interface ServiceDataStorage {
         public String toString() {
             return "PodCastCatalogVersion{" +
                     "version=" + version +
-                    ", sweJSON=" + sweJSON +
-                    ", sweJSONZipped=" + sweJSONZipped +
-                    ", sweDat=" + sweDat +
+                    ", langJSON=" + langJSON +
+                    ", langJSONZipped=" + langJSONZipped +
+                    ", langDat=" + langDat +
                     ", podCastCatalog=" + podCastCatalog +
                     '}';
         }

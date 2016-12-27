@@ -1,6 +1,7 @@
 package com.podcastcatalog.service.job;
 
 import com.podcastcatalog.TestUtil;
+import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.service.ServiceDataStorage;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogServiceTest;
 import org.testng.Assert;
@@ -21,7 +22,7 @@ public class PodCastCatalogUpdaterTest {
 
         Thread.sleep(15000);
 
-        ServiceDataStorage.PodCastCatalogVersion podCastCatalogVersion = ServiceDataStorage.useDefault().getCurrentVersion().get();
+        ServiceDataStorage.PodCastCatalogVersion podCastCatalogVersion = ServiceDataStorage.useDefault().getCurrentVersion(PodCastCatalogLanguage.SWE).get();
 
         Assert.assertTrue(podCastCatalogVersion.getVersion()==2,"was=" + podCastCatalogVersion.getVersion());
 

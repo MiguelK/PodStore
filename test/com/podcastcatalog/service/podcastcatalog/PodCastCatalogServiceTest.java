@@ -31,10 +31,10 @@ public class PodCastCatalogServiceTest {
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());
 
          PodCastCatalogService
-                .getInstance().buildPodCastCatalogsAsync().get(16, TimeUnit.MINUTES);
+                .getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SWE).get(16, TimeUnit.MINUTES);
 
 
-        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
+        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SWE);
         System.out.println(podCastCatalog);
     }
 
@@ -97,13 +97,13 @@ public class PodCastCatalogServiceTest {
 
             @Override
             public PodCastCatalogLanguage getPodCastCatalogLang() {
-                return PodCastCatalogLanguage.Sweden;
+                return PodCastCatalogLanguage.SWE;
             }
         });
 
 
-        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync().get(5,TimeUnit.MINUTES);
-        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
+        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SWE).get(5,TimeUnit.MINUTES);
+        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SWE);
         Assert.assertNotNull(podCastCatalog);
         Assert.assertFalse(podCastCatalog.getBundles().isEmpty());
 
@@ -122,7 +122,7 @@ public class PodCastCatalogServiceTest {
         initPodCastCatalogs();
 
         //1# App start get current built catalog
-        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.Sweden);
+        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SWE);
 
         TestUtil.assertToJSONNotNull(podCastCatalog);
 
@@ -163,12 +163,12 @@ public class PodCastCatalogServiceTest {
 
             @Override
             public PodCastCatalogLanguage getPodCastCatalogLang() {
-                return PodCastCatalogLanguage.Sweden;
+                return PodCastCatalogLanguage.SWE;
             }
         });
 
         PodCastCatalogService
-                .getInstance().buildPodCastCatalogsAsync().get(3, TimeUnit.MINUTES);
+                .getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SWE).get(3, TimeUnit.MINUTES);
     }
 
 }
