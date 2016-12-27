@@ -1,9 +1,7 @@
 package com.podcastcatalog.api;
 
-import com.podcastcatalog.service.ServiceDataStorage;
-import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
-import com.podcastcatalog.service.ServiceDataStorageDisk;
+import com.podcastcatalog.service.ServiceDataStorage;
 import org.apache.commons.io.IOUtils;
 
 import javax.servlet.ServletException;
@@ -32,32 +30,42 @@ public class PodCastCatalogServlet extends HttpServlet {
 
         PodCastCatalogLanguage language = PodCastCatalogLanguage.fromString(request.getParameter("lang"));
 
-        if(language==null){
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Missing lang parameter? or invalid lang=" + request.getParameter("lang")
+        if (language == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing lang parameter? or invalid lang=" + request.getParameter("lang")
                     + " valid values=" + Arrays.toString(PodCastCatalogLanguage.values()));
             return;
         }
 
-        ServiceDataStorage serviceDataStorageDisk = new ServiceDataStorageDisk();
+        ServiceDataStorage serviceDataStorageDisk = ServiceDataStorage.useDefault();
 
-        if(!serviceDataStorageDisk.getCurrentVersion().isPresent()){
-            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE,"No catalog version loaded yet. Loading in progress?");
+     /*   if (!serviceDataStorageDisk.getCurrentVersion().isPresent()) {
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "No catalog version loaded yet. Loading in progress?");
+            return;
+        }*/
+
+     /*   com.podcastcatalog.model.podcastcatalog.PodCastCatalog podCastCatalog =
+                PodCastCatalogService.getInstance().getPodCastCatalog(language);
+
+        if (podCastCatalog == null) {
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "PodCastCatalog with lang " + language + " is not loaded yet?");
             return;
         }
 
-        com.podcastcatalog.model.podcastcatalog.PodCastCatalog podCastCatalog =
-                PodCastCatalogService.getInstance().getPodCastCatalog(language);
-
-        LOG.info("Writing podCastCatalog as JSON " + podCastCatalog);
+        LOG.info("Writing podCastCatalog as JSON " + podCastCatalog);*/
 
         File zipFile = serviceDataStorageDisk.getCurrentVersion().orElseGet(null).getSweJSONZipped();//FIXME Only SWE
+
+        if (zipFile == null) {
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "No PoCastCatalog with language=" + language + " exists, Loading in progress?");
+            return;
+        }
 
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "attachment; filename=" + zipFile.getName());
 
         ServletOutputStream outputStream = response.getOutputStream();
 
-        IOUtils.copy(new FileInputStream(zipFile),outputStream);
+        IOUtils.copy(new FileInputStream(zipFile), outputStream);
 
         outputStream.flush();
     }

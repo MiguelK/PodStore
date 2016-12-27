@@ -15,7 +15,7 @@ public class PodCastCollectorOkihikaTest {
 
         for (PodCastCollectorOkihika.TopList list : PodCastCollectorOkihika.TopList.values()) {
 
-            if(list== PodCastCollectorOkihika.TopList.TOPLIST_SWEDEN){
+            if(list== PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY){
                 continue;
             }
 
@@ -27,7 +27,7 @@ public class PodCastCollectorOkihikaTest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void toplist_Sweden() {
-        PodCastCollectorOkihika swe = new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.SWE, PodCastCollectorOkihika.TopList.TOPLIST_SWEDEN,20);
+        PodCastCollectorOkihika swe = new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.SWE, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY,20);
         List<PodCast> podCasts = swe.collectPodCasts();
 
         Assert.assertTrue(podCasts.size()>10);

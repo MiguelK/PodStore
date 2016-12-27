@@ -29,7 +29,11 @@ public class PodCastCategoryCollectorOkihika extends PodCastCollectorOkihika imp
         this.podCastCategoryType = toplist.toPodCastCategoryType();
     }
 
-    public static PodCastCategoryCollectorOkihika createSwedish(TopList toplist, String title){
+    public static PodCastCategoryCollectorOkihika createSWE(TopList toplist, String title){
+        return new PodCastCategoryCollectorOkihika(Language.SWE, toplist, title, "????");
+    }
+
+    public static PodCastCategoryCollectorOkihika createUS(TopList toplist, String title){
         return new PodCastCategoryCollectorOkihika(Language.SWE, toplist, title, "????");
     }
 

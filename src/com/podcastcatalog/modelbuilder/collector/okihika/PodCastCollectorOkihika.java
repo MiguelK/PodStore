@@ -42,7 +42,7 @@ public class PodCastCollectorOkihika implements PodCastCollector {
     private final int resultSize;
 
     public enum TopList {
-        TOPLIST_SWEDEN("0"),
+        TOPLIST_COUNTRY("0"),
         ARTS("1301"),
         DESIGN("1402"),
         FASHION_BEAUTY("1459"),
