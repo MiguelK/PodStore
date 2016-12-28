@@ -24,7 +24,9 @@ api/podCastSubscription
 GET http://localhost:10080/PodStore/api/podCastSubscription   (Get status)
 
 api/jsonfilejsonfile   (get productcatlog JSON ZIP file)
-http://localhost:10080/PodStore/api/jsonfile?lang=SE
+http://localhost:10080/PodStore/api/jsonfile?lang=SWE
+
+http://localhost:10080/PodStore/api/jsonfile?lang=US
 
 ###########################################################################
 

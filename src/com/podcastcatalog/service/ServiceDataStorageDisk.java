@@ -221,7 +221,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
                 in = new ObjectInputStream(fileIn);
                 return ((T) in.readObject());
             } catch (IOException | ClassNotFoundException e) {
-                LOG.log(Level.INFO, "Unable to load object=" + sourceType + " from=" + sourceFile.getAbsolutePath(), e);
+                LOG.log(Level.INFO, "Unable to load object=" + sourceType + " from=" + sourceFile.getAbsolutePath(), e.getMessage());
             }
 
         } finally {
