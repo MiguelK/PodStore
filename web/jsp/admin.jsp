@@ -27,15 +27,14 @@
         PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.fromString(language));
         out.println("Start building PodCastCatalog " + language + " ...<br><br>");
     }
-
-    StringFormatter podCastCatalogStatusSWE = StringFormatter.create(PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SWE));
-    StringFormatter podCastCatalogStatusUS = StringFormatter.create(PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.US));
 %>
 
-<%=podCastCatalogStatusSWE.format()%>
+PodCastCatalog SWE <br>
+<%=StringFormatter.format(PodCastCatalogLanguage.SWE)%>
 <br>
 
-<%=podCastCatalogStatusUS.format()%>
+PodCastCatalog US <br>
+<%=StringFormatter.format(PodCastCatalogLanguage.US)%>
 <br>
 
 <tr>

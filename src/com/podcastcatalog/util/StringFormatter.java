@@ -2,12 +2,13 @@ package com.podcastcatalog.util;
 
 import com.podcastcatalog.model.podcastcatalog.*;
 import com.podcastcatalog.service.ServiceDataStorage;
+import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 
 import java.util.List;
 import java.util.Optional;
 
 public class StringFormatter {
-    private final PodCastCatalog podCastCatalog;
+   /* private final PodCastCatalog podCastCatalog;
 
     private StringFormatter(PodCastCatalog podCastCatalog) {
         this.podCastCatalog = podCastCatalog;
@@ -15,11 +16,13 @@ public class StringFormatter {
 
     public static StringFormatter create(PodCastCatalog podCastCatalog) {
         return new StringFormatter(podCastCatalog);
-    }
+    }*/
 
     @SuppressWarnings("unchecked")
-    public String format() {
+    public static String format(PodCastCatalogLanguage podCastCatalogLanguage) {
 
+
+        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(podCastCatalogLanguage);
         if(podCastCatalog==null){
             return "PodCastCatalog not ready yet.?";
         }
@@ -68,9 +71,9 @@ public class StringFormatter {
         List<Bundle> bundles = podCastCatalog.getBundles();
         result.append(" Bundle size=").append(bundles.size()).append("<br>");
 
-        List<ServiceDataStorage.PodCastCatalogVersion> allVersions = ServiceDataStorage.useDefault().getAllVersions(PodCastCatalogLanguage.SWE);
+        List<ServiceDataStorage.PodCastCatalogVersion> allVersions = ServiceDataStorage.useDefault().getAllVersions(podCastCatalog.getPodCastCatalogLanguage());
         result.append("PodCastCatalogVersion(s) = ").append(allVersions.size()).append("<br>");
-        Optional<ServiceDataStorage.PodCastCatalogVersion> currentVersion = ServiceDataStorage.useDefault().getCurrentVersion(PodCastCatalogLanguage.SWE);
+        Optional<ServiceDataStorage.PodCastCatalogVersion> currentVersion = ServiceDataStorage.useDefault().getCurrentVersion(podCastCatalog.getPodCastCatalogLanguage());
         currentVersion.ifPresent(podCastCatalogVersion -> result.append("Latest PodCastCatalogVersion = ").append(podCastCatalogVersion).append("<br>"));
 
         //FIXME Slow perf

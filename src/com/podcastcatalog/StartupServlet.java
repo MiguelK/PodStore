@@ -6,6 +6,7 @@ import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderUS;
 import com.podcastcatalog.service.ServiceDataStorage;
 import com.podcastcatalog.service.ServiceDataStorageDisk;
 import com.podcastcatalog.service.job.JobManagerService;
+import com.podcastcatalog.service.job.MemoryDumperJob;
 import com.podcastcatalog.service.job.PodCastCatalogUpdater;
 import com.podcastcatalog.service.job.SubscriptionNotifierJob;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
@@ -29,6 +30,7 @@ public class StartupServlet extends HttpServlet {
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
+        System.out.println("StartupServlet....");
         LOG.info("About to start PodStore..");
 
         ServiceDataStorage serviceDataStorageDisk = ServiceDataStorage.useDefault();
@@ -38,6 +40,7 @@ public class StartupServlet extends HttpServlet {
 
         JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 20, TimeUnit.HOURS); //FIXME
+        JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 10, TimeUnit.SECONDS); //FIXME
         JobManagerService.getInstance().startAsync();
 
         PodCastSubscriptionService.getInstance().start();
