@@ -1,7 +1,7 @@
 package com.podcastcatalog.model.subscription;
 
 import com.podcastcatalog.TestUtil;
-import com.podcastcatalog.service.datastore.ServiceDataStorageDisk;
+import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -14,7 +14,7 @@ public class SubscriptionDataTest {
 
     @Test
     public void save_load_equal() {
-        ServiceDataStorageDisk storageDisk = new ServiceDataStorageDisk(TestUtil.IO_TEMP_DATA_DIRECTORY);
+        ServiceDataStorage storageDisk = TestUtil.createForTest();
 
         SubscriptionData a = new SubscriptionData();
         storageDisk.save(a);
@@ -25,7 +25,7 @@ public class SubscriptionDataTest {
 
     @Test
     public void save_load_SubscriptionData() {
-        ServiceDataStorageDisk storageDisk = new ServiceDataStorageDisk(TestUtil.IO_TEMP_DATA_DIRECTORY);
+        ServiceDataStorage storageDisk = TestUtil.createForTest();
 
         storageDisk.save(new SubscriptionData());
 

@@ -24,7 +24,7 @@ public class ServiceDataStorageDiskTest {
 
     @BeforeMethod(groups = TestUtil.SLOW_TEST)
     public void setUp() {
-        storage = ServiceDataStorage.useDefault();
+        storage = TestUtil.createForTest();
         storage.deleteAll();
     }
 
