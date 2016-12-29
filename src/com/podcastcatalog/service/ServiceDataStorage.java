@@ -24,6 +24,8 @@ public interface ServiceDataStorage {
 
     void save(PodCastCatalog podCastCatalog);
 
+    File getPodDataHomeDir();
+
     File getCatalogVersionHomeDirSWE();
 
     File getSubscriptionDataFile();
@@ -32,7 +34,8 @@ public interface ServiceDataStorage {
 
     Optional<ServiceDataStorage.PodCastCatalogVersion> getCurrentVersion(PodCastCatalogLanguage language);
 
-    List<ServiceDataStorage.PodCastCatalogVersion> getAllVersions(PodCastCatalogLanguage castCatalogLanguage);
+    List<PodCastCatalogVersion> getAllVersions(PodCastCatalogLanguage castCatalogLanguage);
+
 
     class PodCastCatalogVersion {
         private int version;
@@ -40,7 +43,7 @@ public interface ServiceDataStorage {
         private final File langJSONZipped;
         private final File langDat;
 
-        private PodCastCatalog podCastCatalog;
+        private transient PodCastCatalog podCastCatalog; //Only load latest version in-memory
 
         private PodCastCatalogVersion(File versionRoot, PodCastCatalogLanguage podCastCatalogLanguage) {
             langDat = new File(versionRoot, podCastCatalogLanguage.name() + ".dat");
@@ -68,14 +71,10 @@ public interface ServiceDataStorage {
         }
 
         static PodCastCatalogVersion load(File versionRoot, PodCastCatalogLanguage podCastCatalogLanguage) {
-            PodCastCatalogVersion podCastCatalogVersion = new PodCastCatalogVersion(versionRoot, podCastCatalogLanguage);
-
-            podCastCatalogVersion.readFromDisc();
-
-            return podCastCatalogVersion;
+            return new PodCastCatalogVersion(versionRoot, podCastCatalogLanguage);
         }
 
-        private void readFromDisc() {
+        void loadPodCastCatalogFromDisc() {
 
             ObjectInputStream in = null;
             FileInputStream fileIn = null;

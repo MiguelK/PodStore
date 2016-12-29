@@ -43,7 +43,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         saveAsObject(subscriptionData, subscriptionDataFile);
     }
 
-    File getPodDataHomeDir() {
+    public File getPodDataHomeDir() {
         return podDataHomeDir;
     }
 
@@ -130,7 +130,10 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
             return Optional.empty();
         }
 
-        return Optional.ofNullable(allVersions.get(0));
+        PodCastCatalogVersion podCastCatalogVersion = allVersions.get(0);
+        podCastCatalogVersion.loadPodCastCatalogFromDisc();
+
+        return Optional.of(podCastCatalogVersion);
     }
 
     public ServiceDataStorageDisk() {
@@ -142,16 +145,9 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         List<PodCastCatalogVersion> allVersions = new ArrayList<>();
         List<File> latestVersionDirectories = getVersionDirectories(castCatalogLanguage);
 
-
         for (File latestVersionDirectory : latestVersionDirectories) {
-
             allVersions.add(PodCastCatalogVersion.load(latestVersionDirectory,castCatalogLanguage));
         }
-
-//        allVersions.addAll(latestVersionDirectories.stream().map(PodCastCatalogVersion.load(-> p ,castCatalogLanguage))
-
-//                .map(PodCastCatalogVersion::load).collect(Collectors.toList()));
-
         return allVersions;
     }
 

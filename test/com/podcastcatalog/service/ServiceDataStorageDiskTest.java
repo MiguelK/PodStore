@@ -20,11 +20,11 @@ import java.util.Optional;
 
 public class ServiceDataStorageDiskTest {
 
-    private ServiceDataStorageDisk storage;
+    private ServiceDataStorage storage;
 
     @BeforeMethod(groups = TestUtil.SLOW_TEST)
     public void setUp() {
-        storage = new ServiceDataStorageDisk();
+        storage = ServiceDataStorage.useDefault();
         storage.deleteAll();
     }
 
@@ -143,11 +143,11 @@ public class ServiceDataStorageDiskTest {
         assertDirectory(new File(root, "4"));
     }
 
-    @Test(groups = TestUtil.SLOW_TEST)
+    @Test //(groups = TestUtil.SLOW_TEST)
     public void verify_order() throws InterruptedException {
+        storage = ServiceDataStorage.useDefault();
+        storage.deleteAll();
         storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
-
-        Thread.sleep(1000);
 
         PodCastCatalog castCatalog = PodCastCatalogTest.createValidPodCastCatalogSWE();
         LocalDateTime created = castCatalog.getCreated();

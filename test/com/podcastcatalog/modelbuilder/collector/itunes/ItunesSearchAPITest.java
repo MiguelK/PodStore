@@ -84,7 +84,7 @@ public class ItunesSearchAPITest {
         ItunesSearchAPI searchAPI = ItunesSearchAPI.createCollector("term=p3&entity=podcast");
         List<PodCast> podCasts = searchAPI.collectPodCasts();
         Assert.assertFalse(podCasts.isEmpty());
-        Assert.assertTrue(podCasts.size() == 41, "Actual=" + podCasts.size());
+        Assert.assertTrue(podCasts.size() >= 42, "Actual=" + podCasts.size());
     }
 
 }

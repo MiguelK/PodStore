@@ -1,6 +1,7 @@
 package com.podcastcatalog;
 
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
+import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSE;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderUS;
 import com.podcastcatalog.service.ServiceDataStorage;
@@ -45,14 +46,15 @@ public class StartupServlet extends HttpServlet {
 
         PodCastSubscriptionService.getInstance().start();
 
-        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());
-        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderUS());
-
-        loadPodCastCatalog(serviceDataStorageDisk, PodCastCatalogLanguage.SWE);
-        loadPodCastCatalog(serviceDataStorageDisk, PodCastCatalogLanguage.US);
+        loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderSE());
+        loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderUS());
     }
 
-    private void loadPodCastCatalog(ServiceDataStorage serviceDataStorageDisk, PodCastCatalogLanguage language) {
+    private void loadPodCastCatalog(ServiceDataStorage serviceDataStorageDisk, PodCastCatalogBuilder builder) {
+
+        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(builder);
+
+        PodCastCatalogLanguage language = builder.getPodCastCatalogLang();
         Optional<ServiceDataStorageDisk.PodCastCatalogVersion> currentVersion = serviceDataStorageDisk.getCurrentVersion(language);
         if (currentVersion.isPresent()) {
             LOG.info("Loading existing catalog " + currentVersion.get());
