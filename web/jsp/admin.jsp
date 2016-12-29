@@ -27,6 +27,9 @@
         PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.fromString(language));
         out.println("Start building PodCastCatalog " + language + " ...<br><br>");
     }
+    if(PodCastCatalogService.getInstance().isBuildingInProgress()){
+        out.println("Building PodCastCatalog in progress... wait...<br><br>");
+    }
 %>
 
 PodCastCatalog SWE <br>
@@ -64,7 +67,7 @@ PodCastCatalog US <br>
     <tr>
         <td>
             <form action="">
-                <input type="hidden"  name="action" value="SWE">
+                <input type="hidden"  name="actionBuildPodCastCatalog" value="SWE">
                 <button type="submit" value="relod" title="reload">
                     Rebuild PodCastCatalog (SWE)
                 </button>
@@ -74,7 +77,7 @@ PodCastCatalog US <br>
     <tr>
         <td>
             <form action="">
-                <input type="hidden"  name="action" value="US">
+                <input type="hidden"  name="actionBuildPodCastCatalog" value="US">
                 <button type="submit" value="relod" title="reload">
                     Rebuild PodCastCatalog (US)
                 </button>

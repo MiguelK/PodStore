@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
-public class TextSearchEngine<T> {
+public class TextSearchIndex<T> {
 
     private static final int MAX_RESULT_SIZE = 50;
     private final Map<String, Node<T>> index;
@@ -12,7 +12,7 @@ public class TextSearchEngine<T> {
     private final List<InputData> inputDatas;
 
     public String getStatus() {
-        return "TextSearchEngine: indexSize=" + index.size();
+        return "TextSearchIndex: indexSize=" + index.size();
     }
 
     public enum Prio {
@@ -29,7 +29,7 @@ public class TextSearchEngine<T> {
         }
     }
 
-    public TextSearchEngine() {
+    public TextSearchIndex() {
         inputDatas = new ArrayList<>();
         index = new HashMap<>();
     }
@@ -45,9 +45,9 @@ public class TextSearchEngine<T> {
             List<String> words = Arrays.asList(StringUtils.split(text));
 
             int rank = inputData.getPrio().getRank();
-            Node<T> node11 = index.putIfAbsent(text, new Node<>(text, new TargetRelation<>(inputData.getTargetObject(), rank)));
-            if (node11 != null) {
-                node11.addTargetRelation(new TargetRelation<>(inputData.getTargetObject(), rank));
+            Node<T> node = index.putIfAbsent(text, new Node<>(text, new TargetRelation<>(inputData.getTargetObject(), rank)));
+            if (node != null) {
+                node.addTargetRelation(new TargetRelation<>(inputData.getTargetObject(), rank));
             }
 
             for (String word : words) {
@@ -79,9 +79,6 @@ public class TextSearchEngine<T> {
         if (s == null) {
             return Collections.emptyList();
         }
-
-//        int levenshteinDistance = StringUtils.getLevenshteinDistance(q, "Terrorn i Paris centrum.");
-//        System.out.println("A=" + levenshteinDistance);
 
         String term = s.toLowerCase();
         Node<T> node = index.get(term);

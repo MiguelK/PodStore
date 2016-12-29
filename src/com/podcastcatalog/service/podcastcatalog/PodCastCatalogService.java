@@ -31,19 +31,20 @@ public class PodCastCatalogService {
     private final Map<PodCastCatalogLanguage, PodCastCatalog> podCastCatalogByLang;
     private final List<PodCastCatalogBuilder> podCastCatalogBuilders;
 
-    private final TextSearchEngine<ResultItem> textSearchEngine;
+    private TextSearchIndex<ResultItem> textSearchIndex;
     private final PodCastIndex podCastCatalogIndex;
     private final PodCastIndex podCastIndex;
     private ServiceDataStorage storage;
     private final ExecutorService executorService;
     private final ExecutorService asyncExecutor;
+    private volatile boolean buildingInProgress;
 
     private static final PodCastCatalogService INSTANCE = new PodCastCatalogService();
 
     private PodCastCatalogService() {
         podCastCatalogIndex = PodCastIndex.create();
         podCastIndex = PodCastIndex.create();
-        textSearchEngine = new TextSearchEngine<>();
+        textSearchIndex = new TextSearchIndex<>();
         podCastCatalogBuilders = new ArrayList<>();
         podCastCatalogByLang = new HashMap<>();
         asyncExecutor = Executors.newFixedThreadPool(THREADS);
@@ -106,7 +107,7 @@ public class PodCastCatalogService {
     public String getTextSearchEngineStatus() {
         readLock.lock();
         try {
-            return textSearchEngine.getStatus();
+            return textSearchIndex.getStatus();
         } finally {
             readLock.unlock();
         }
@@ -149,7 +150,7 @@ public class PodCastCatalogService {
 
         readLock.lock();
         try {
-            List<ResultItem> result = textSearchEngine.lookup(queryParam);
+            List<ResultItem> result = textSearchIndex.lookup(queryParam);
             resultItems.addAll(result);
             return resultItems;
         } finally {
@@ -164,11 +165,18 @@ public class PodCastCatalogService {
     public Future buildPodCastCatalogsAsync(PodCastCatalogLanguage language) {
         validateState();
 
+        if(buildingInProgress){
+            LOG.info("Buulding in progress language=" + language + " try again later.?");
+           return null;
+        }
+
+        buildingInProgress = true;
+
         return asyncExecutor.submit(new BuildPodCastCatalogAction(language));
     }
 
     public boolean isBuildingInProgress() {
-        return false;//FIXME
+        return buildingInProgress;
     }
 
     private void validateState() {
@@ -228,6 +236,8 @@ public class PodCastCatalogService {
             }
 
             buildIndexAsync(podCastCatalogLanguage);
+
+            buildingInProgress = false; //FIXME
         }
     }
 
@@ -267,6 +277,8 @@ public class PodCastCatalogService {
             }
 
             writeLock.lock();
+            TextSearchIndex<ResultItem> newTextSearchIndex = new TextSearchIndex<>();
+
             try {
                 List<PodCastEpisode> podCastEpisodes = bundleItemVisitor.getPodCastEpisodes();
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
@@ -274,10 +286,11 @@ public class PodCastCatalogService {
                             podCastEpisode.getDescription(), podCastEpisode.getPodCastCollectionId(), podCastEpisode.getTargetURL());
 
                     String text = podCastEpisode.getTitle() + " " + podCastEpisode.getDescription();
-                    textSearchEngine.addText(text, TextSearchEngine.Prio.HIGH, resultItem);
+                    newTextSearchIndex.addText(text, TextSearchIndex.Prio.HIGH, resultItem);
                 }
+                newTextSearchIndex.buildIndex();
 
-                textSearchEngine.buildIndex();
+                textSearchIndex = newTextSearchIndex;
 
                 podCastCatalogIndex.buildIndex(bundleItemVisitor.getPodCasts());
 
