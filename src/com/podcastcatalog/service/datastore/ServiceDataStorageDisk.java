@@ -1,4 +1,4 @@
-package com.podcastcatalog.service;
+package com.podcastcatalog.service.datastore;
 
 import com.google.gson.Gson;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
@@ -47,10 +47,6 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         return podDataHomeDir;
     }
 
-    public File getCatalogVersionHomeDirSWE() {
-        return catalogVersionHomeDirSWE;
-    }
-
     @Override
     public File getSubscriptionDataFile() {
         return subscriptionDataFile;
@@ -70,7 +66,8 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         ZipFile.zip(json, versionDirectory.getLangJSONZipped());
     }
 
-    private File getCatalogVersionHomeDir(PodCastCatalogLanguage language) {
+    @Override
+    public File getCatalogVersionHomeDirectory(PodCastCatalogLanguage language) {
 
         switch (language) {
             case SWE:
@@ -137,7 +134,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
     }
 
     public ServiceDataStorageDisk() {
-        this(new HomeDirectoryLocator().locateDataDirectory());
+        this(new LocatorProduction().getPodDataHomeDirectory());
     }
 
     public List<PodCastCatalogVersion> getAllVersions(PodCastCatalogLanguage castCatalogLanguage) {
@@ -146,7 +143,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         List<File> latestVersionDirectories = getVersionDirectories(castCatalogLanguage);
 
         for (File latestVersionDirectory : latestVersionDirectories) {
-            allVersions.add(PodCastCatalogVersion.load(latestVersionDirectory,castCatalogLanguage));
+            allVersions.add(PodCastCatalogVersion.load(latestVersionDirectory, castCatalogLanguage));
         }
         return allVersions;
     }
@@ -154,7 +151,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
 
     private List<File> getVersionDirectories(PodCastCatalogLanguage language) {
 
-        File catalogVersionHomeDir = getCatalogVersionHomeDir(language);
+        File catalogVersionHomeDir = getCatalogVersionHomeDirectory(language);
 
         List<File> files = new ArrayList<>();
 
@@ -181,7 +178,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
     }
 
     private PodCastCatalogVersion createNewVersionDirectory(PodCastCatalogLanguage podCastCatalogLanguage) {
-        File catalogVersionHomeDir = getCatalogVersionHomeDir(podCastCatalogLanguage);
+        File catalogVersionHomeDir = getCatalogVersionHomeDirectory(podCastCatalogLanguage);
 
         File[] subdirs = catalogVersionHomeDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 

@@ -1,7 +1,8 @@
 package com.podcastcatalog.util;
 
 import com.podcastcatalog.model.podcastcatalog.*;
-import com.podcastcatalog.service.ServiceDataStorage;
+import com.podcastcatalog.service.datastore.PodCastCatalogVersion;
+import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 
 import java.util.List;
@@ -71,9 +72,9 @@ public class StringFormatter {
         List<Bundle> bundles = podCastCatalog.getBundles();
         result.append(" Bundle size=").append(bundles.size()).append("<br>");
 
-        List<ServiceDataStorage.PodCastCatalogVersion> allVersions = ServiceDataStorage.useDefault().getAllVersions(podCastCatalog.getPodCastCatalogLanguage());
+        List<PodCastCatalogVersion> allVersions = ServiceDataStorage.useDefault().getAllVersions(podCastCatalog.getPodCastCatalogLanguage());
         result.append("PodCastCatalogVersion(s) = ").append(allVersions.size()).append("<br>");
-        Optional<ServiceDataStorage.PodCastCatalogVersion> currentVersion = ServiceDataStorage.useDefault().getCurrentVersion(podCastCatalog.getPodCastCatalogLanguage());
+        Optional<PodCastCatalogVersion> currentVersion = ServiceDataStorage.useDefault().getCurrentVersion(podCastCatalog.getPodCastCatalogLanguage());
         currentVersion.ifPresent(podCastCatalogVersion -> result.append("Latest PodCastCatalogVersion = ").append(podCastCatalogVersion).append("<br>"));
 
         //FIXME Slow perf

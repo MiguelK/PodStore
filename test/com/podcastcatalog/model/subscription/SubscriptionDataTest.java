@@ -1,7 +1,7 @@
 package com.podcastcatalog.model.subscription;
 
 import com.podcastcatalog.TestUtil;
-import com.podcastcatalog.service.ServiceDataStorageDisk;
+import com.podcastcatalog.service.datastore.ServiceDataStorageDisk;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

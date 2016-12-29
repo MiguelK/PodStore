@@ -1,7 +1,7 @@
 package com.podcastcatalog.api;
 
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
-import com.podcastcatalog.service.ServiceDataStorage;
+import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import org.apache.commons.io.IOUtils;
 
 import javax.servlet.ServletException;

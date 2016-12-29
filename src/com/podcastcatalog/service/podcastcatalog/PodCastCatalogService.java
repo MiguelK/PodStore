@@ -7,7 +7,7 @@ import com.podcastcatalog.model.podcastsearch.ResultItem;
 import com.podcastcatalog.modelbuilder.BundleBuilder;
 import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
-import com.podcastcatalog.service.ServiceDataStorage;
+import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;

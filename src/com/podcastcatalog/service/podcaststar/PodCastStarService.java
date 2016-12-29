@@ -1,6 +1,6 @@
 package com.podcastcatalog.service.podcaststar;
 
-import com.podcastcatalog.service.ServiceDataStorageDisk;
+import com.podcastcatalog.service.datastore.ServiceDataStorageDisk;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;

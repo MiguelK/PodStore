@@ -1,4 +1,4 @@
-package com.podcastcatalog.service;
+package com.podcastcatalog.service.datastore;
 
 import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.podcastcatalog.PodCastBundleTest;
@@ -88,7 +88,7 @@ public class ServiceDataStorageDiskTest {
     public void versionPaths() {
         storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
 
-        for (ServiceDataStorage.PodCastCatalogVersion version : storage.getAllVersions(PodCastCatalogLanguage.SWE)) {
+        for (PodCastCatalogVersion version : storage.getAllVersions(PodCastCatalogLanguage.SWE)) {
             Assert.assertNotNull(version.getLangDat());
             Assert.assertNotNull(version.getLangJSON());
             Assert.assertNotNull(version.getLangJSONZipped());
@@ -135,7 +135,7 @@ public class ServiceDataStorageDiskTest {
         storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
         storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
 
-        File root = storage.getCatalogVersionHomeDirSWE();
+        File root = storage.getCatalogVersionHomeDirectory(PodCastCatalogLanguage.SWE);
 
         assertDirectory(new File(root, "1"));
         assertDirectory(new File(root, "2"));
@@ -153,7 +153,7 @@ public class ServiceDataStorageDiskTest {
         LocalDateTime created = castCatalog.getCreated();
         storage.save(castCatalog);
 
-        Optional<ServiceDataStorageDisk.PodCastCatalogVersion> currentVersion = storage.getCurrentVersion(PodCastCatalogLanguage.SWE);
+        Optional<PodCastCatalogVersion> currentVersion = storage.getCurrentVersion(PodCastCatalogLanguage.SWE);
 
         PodCastCatalog podCastCatalogSwedish = currentVersion.orElseGet(null).getPodCastCatalog();
 

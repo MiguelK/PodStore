@@ -8,7 +8,7 @@ import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCategoryCollectorOkihika;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCollectorOkihika;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSE;
-import com.podcastcatalog.service.ServiceDataStorageDisk;
+import com.podcastcatalog.service.datastore.ServiceDataStorageDisk;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

@@ -4,8 +4,8 @@ import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSE;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderUS;
-import com.podcastcatalog.service.ServiceDataStorage;
-import com.podcastcatalog.service.ServiceDataStorageDisk;
+import com.podcastcatalog.service.datastore.PodCastCatalogVersion;
+import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import com.podcastcatalog.service.job.JobManagerService;
 import com.podcastcatalog.service.job.MemoryDumperJob;
 import com.podcastcatalog.service.job.PodCastCatalogUpdater;
@@ -55,7 +55,7 @@ public class StartupServlet extends HttpServlet {
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(builder);
 
         PodCastCatalogLanguage language = builder.getPodCastCatalogLang();
-        Optional<ServiceDataStorageDisk.PodCastCatalogVersion> currentVersion = serviceDataStorageDisk.getCurrentVersion(language);
+        Optional<PodCastCatalogVersion> currentVersion = serviceDataStorageDisk.getCurrentVersion(language);
         if (currentVersion.isPresent()) {
             LOG.info("Loading existing catalog " + currentVersion.get());
             PodCastCatalogService.getInstance().loadPodCastCatalog(currentVersion.get().getPodCastCatalog());

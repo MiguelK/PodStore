@@ -4,7 +4,7 @@ import com.podcastcatalog.model.subscription.ContentIdValidator;
 import com.podcastcatalog.model.subscription.Subscriber;
 import com.podcastcatalog.model.subscription.Subscription;
 import com.podcastcatalog.model.subscription.SubscriptionData;
-import com.podcastcatalog.service.ServiceDataStorage;
+import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

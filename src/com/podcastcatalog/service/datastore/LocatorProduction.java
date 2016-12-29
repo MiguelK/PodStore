@@ -1,14 +1,15 @@
-package com.podcastcatalog.service;
+package com.podcastcatalog.service.datastore;
 
 import java.io.File;
 
-public class HomeDirectoryLocator {
+public class LocatorProduction implements PodHomeDirectoryLocator {
 
     private static final String OPENSHIFT_DATA_DIR = "OPENSHIFT_DATA_DIR";
 
     private static final String PODDA_HOME_DIR = "POD_DATA_HOME";//Must exist before starting app! //FIXME
 
-    public File locateDataDirectory() {
+    @Override
+    public File getPodDataHomeDirectory() {
         File podDataHomeDir = new File("/home/krantmig/tools/temp" + File.separator + PODDA_HOME_DIR);
         if (isReadAndWriteDirectory(podDataHomeDir)) {
             return podDataHomeDir;
@@ -26,7 +27,7 @@ public class HomeDirectoryLocator {
         }
 
         if (!podDataHomeDir.exists()) {
-            if(!podDataHomeDir.mkdirs()){
+            if (!podDataHomeDir.mkdirs()) {
                 throw new IllegalStateException("Unable to create dirs " + podDataHomeDir.getAbsolutePath());
             }
         }
