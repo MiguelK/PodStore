@@ -25,7 +25,9 @@ public class ZipFileTest {
         Path sourceFile =  someFile.toPath();   //Paths.get("the-sourceFile-name.txt");
         Files.write(sourceFile, lines, Charset.forName("UTF-8"));
 
-        File targetFile = new File(TestUtil.IO_TEMP_DATA_DIRECTORY, "ZipFileTest.zip");
+        someFile = new File("/Users/miguelkrantz/Documents/temp/words.json");
+
+        File targetFile = new File(TestUtil.createForTest().getPodDataHomeDir(), "ZipFileTest.zip");
         ZipFile.zip(someFile, targetFile);
 
         Assert.assertTrue(targetFile.canRead());

@@ -31,7 +31,7 @@ public class PodCastCatalogService {
     private final Map<PodCastCatalogLanguage, PodCastCatalog> podCastCatalogByLang;
     private final List<PodCastCatalogBuilder> podCastCatalogBuilders;
 
-    private TextSearchIndex<ResultItem> textSearchIndex;
+    private TextSearchIndex<ResultItem> textSearchIndex; //FIXME One per language
     private final PodCastIndex podCastCatalogIndex;
     private final PodCastIndex podCastIndex;
     private ServiceDataStorage storage;
@@ -126,8 +126,6 @@ public class PodCastCatalogService {
     public void loadPodCastCatalog(PodCastCatalog podCastCatalog) {
 
         writeLock.lock();
-        LOG.info("Loading stored podCastCatalog " + podCastCatalog);
-
         try {
             podCastCatalogByLang.put(podCastCatalog.getPodCastCatalogLanguage(), podCastCatalog);
         } finally {
@@ -166,7 +164,7 @@ public class PodCastCatalogService {
         validateState();
 
         if(buildingInProgress){
-            LOG.info("Buulding in progress language=" + language + " try again later.?");
+            LOG.info("Building is in progress language=" + language + " try again later.?");
            return null;
         }
 
@@ -201,7 +199,7 @@ public class PodCastCatalogService {
         @Override
         public void run() {
             readLock.lock();
-            LOG.info(BuildPodCastCatalogAction.class.getSimpleName() + ", registered podCastCatalogBuilders=" + podCastCatalogBuilders.size());
+            //LOG.info(BuildPodCastCatalogAction.class.getSimpleName() + ", registered podCastCatalogBuilders=" + podCastCatalogBuilders.size());
 
             Map<PodCastCatalogLanguage, PodCastCatalog> newCatalogs = new HashMap<>();
             try {
@@ -214,6 +212,8 @@ public class PodCastCatalogService {
                     LOG.info("Start building PodCastCatalog " + podCastCatalogBuilder.getPodCastCatalogLang() + " ...");
 
                     PodCastCatalog catalog = buildPodcastCatalog(podCastCatalogBuilder);
+
+                    LOG.info("Done building PodCastCatalog " + catalog);
 
                     if (catalog != null) {
                         storage.save(catalog);
@@ -297,6 +297,8 @@ public class PodCastCatalogService {
             } finally {
                 writeLock.unlock();
             }
+
+            LOG.info("Done building index for PodCastCatalog " + podCastCatalogLanguage + ", textSearchIndex=" + textSearchIndex.getStatus());
 
             LOG.info("Done " + BuildIndexAction.class.getSimpleName());
         }

@@ -74,13 +74,19 @@ public class TextSearchIndexTest {
     public void lookup_hit() {
         MyItem podcast1 = new MyItem("PodCast1");
         searchEngine.addText("Sommar i Peking", TextSearchIndex.Prio.HIGHEST, podcast1);
+        searchEngine.addText("Sommar i Peking kommer alltid före den i Sverige", TextSearchIndex.Prio.HIGHEST, podcast1);
+
         searchEngine.buildIndex();
 
         Assert.assertTrue(searchEngine.lookup("s").size() == 1);
         Assert.assertTrue(searchEngine.lookup("so").size() == 1);
         Assert.assertTrue(searchEngine.lookup("sommar").size() == 1);
         Assert.assertTrue(searchEngine.lookup("Sommar i Peking").size() == 1);
+//        Assert.assertTrue(searchEngine.lookup("Sommar i Peking kommer alltid före den i Sverige").size() == 1);
+        Assert.assertTrue(searchEngine.lookup("Sommar i Peking").size() == 1);
+
     }
+
 
     @Test
     public void full_word_match() {

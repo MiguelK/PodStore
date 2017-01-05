@@ -30,5 +30,7 @@ public class MemoryDumperJob implements Job {
         //Print Maximum available memory
         LOG.info("Max Memory:" + runtime.maxMemory() / mb + "MB");
 
+        System.gc();
+
     }
 }

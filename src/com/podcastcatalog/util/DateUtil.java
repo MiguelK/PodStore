@@ -102,7 +102,7 @@ public class DateUtil {
                         return Optional.empty();//Optional.ofNullable(parse);
 
                     }catch (Exception x){
-//                        x.printStackTrace();
+                     x.printStackTrace();
                     }
                 }
 

@@ -44,6 +44,19 @@ public class TextSearchIndex<T> {
             String text = inputData.getText();
             List<String> words = Arrays.asList(StringUtils.split(text));
 
+            int maxWordsToIndex = 4;
+            if(words.size()> maxWordsToIndex){
+                words = words.subList(0,maxWordsToIndex-1);
+
+                int x = text.indexOf(words.get(maxWordsToIndex-2)) + 1;
+
+                text = text.substring(0, x);
+
+            //    System.out.println("hghg");
+
+
+            }
+
             int rank = inputData.getPrio().getRank();
             Node<T> node = index.putIfAbsent(text, new Node<>(text, new TargetRelation<>(inputData.getTargetObject(), rank)));
             if (node != null) {

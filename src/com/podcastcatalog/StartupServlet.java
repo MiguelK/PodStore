@@ -39,15 +39,15 @@ public class StartupServlet extends HttpServlet {
 
         LOG.info("Starting PodCastCatalog..., working dir= " + serviceDataStorageDisk);
 
-        JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
+        // JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 20, TimeUnit.HOURS); //FIXME
-        JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 10, TimeUnit.SECONDS); //FIXME
+       // JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 10, TimeUnit.SECONDS); //FIXME change time, remove
         JobManagerService.getInstance().startAsync();
 
         PodCastSubscriptionService.getInstance().start();
 
         loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderSE());
-        loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderUS());
+//        loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderUS()); //FIXME
     }
 
     private void loadPodCastCatalog(ServiceDataStorage serviceDataStorageDisk, PodCastCatalogBuilder builder) {
@@ -57,7 +57,7 @@ public class StartupServlet extends HttpServlet {
         PodCastCatalogLanguage language = builder.getPodCastCatalogLang();
         Optional<PodCastCatalogVersion> currentVersion = serviceDataStorageDisk.getCurrentVersion(language);
         if (currentVersion.isPresent()) {
-            LOG.info("Loading existing catalog " + currentVersion.get());
+            LOG.info("Loading existing PodCastCatalog " + currentVersion.get());
             PodCastCatalogService.getInstance().loadPodCastCatalog(currentVersion.get().getPodCastCatalog());
             PodCastCatalogService.getInstance().buildIndexAsync(language);
         } else {
