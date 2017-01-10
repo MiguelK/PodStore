@@ -28,11 +28,11 @@ public class PodCastFeedParserTest {
     public void parse_episode_duration() throws MalformedURLException {
         PodCast podCast = PodCastFeedParser.parse(new URL("http://api.sr.se/api/rss/pod/3966"), artworkUrl600, "22233").get();
 
-        for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodes()) {
+        for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodesInternal()) {
             Assert.assertNotNull(podCastEpisode.getDuration().getDisplayValue());
         }
 
-        System.out.println("Episodes " + podCast.getPodCastEpisodes().size());
+        System.out.println("Episodes " + podCast.getPodCastEpisodesInternal().size());
     }
 
     @Test(groups = TestUtil.SLOW_TEST)

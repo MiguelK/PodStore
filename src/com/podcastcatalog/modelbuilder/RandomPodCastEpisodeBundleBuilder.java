@@ -25,7 +25,7 @@ public class RandomPodCastEpisodeBundleBuilder {
         List<PodCastEpisode> podCastEpisodes = new ArrayList<>();
 
         for (PodCast podCast : podCas) {
-            PodCastEpisode podCastEpisode = podCast.getPodCastEpisodes().get(0);
+            PodCastEpisode podCastEpisode = podCast.getPodCastEpisodesInternal().get(0);
             podCastEpisodes.add(podCastEpisode);
         }
 
@@ -34,7 +34,7 @@ public class RandomPodCastEpisodeBundleBuilder {
             if(podCastCategoryType == PodCastCategoryType.ARTS || podCastCategoryType==PodCastCategoryType.HISTORY){
 
                 if(!podCastCategory.getPodCasts().isEmpty()){
-                    PodCastEpisode podCastEpisode = podCastCategory.getPodCasts().get(0).getPodCastEpisodes().get(0);
+                    PodCastEpisode podCastEpisode = podCastCategory.getPodCasts().get(0).getPodCastEpisodesInternal().get(0);
                     podCastEpisodes.add(podCastEpisode);
                 }
             }

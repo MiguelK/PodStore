@@ -38,7 +38,7 @@ public class ItunesSearchAPITest {
     @Test(groups = TestUtil.SLOW_TEST)
     public void episoed_p3() {
         ItunesSearchAPI query = ItunesSearchAPI.createCollector("term=p3&entity=podcast&limit=1");
-        int episodes = query.collectPodCasts().get(0).getPodCastEpisodes().size();
+        int episodes = query.collectPodCasts().get(0).getPodCastEpisodesInternal().size();
 
         Assert.assertTrue(episodes >= 100, "episodes=" + episodes);
     }
@@ -59,7 +59,7 @@ public class ItunesSearchAPITest {
 
         List<PodCastEpisode> episodes = new ArrayList<>();
 
-        podCasts.forEach(p -> episodes.addAll(p.getPodCastEpisodes()));
+        podCasts.forEach(p -> episodes.addAll(p.getPodCastEpisodesInternal()));
 
         Set<String> ids = new HashSet<>();
         for (PodCastEpisode episode : episodes) {

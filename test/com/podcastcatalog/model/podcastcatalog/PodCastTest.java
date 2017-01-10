@@ -112,7 +112,7 @@ public class PodCastTest {
     @Test
     public void podCastEpisodes() {
         List<PodCastEpisode> podCastEpisodes = Collections.singletonList(PodCastEpisodeTest.createValid().build());
-        Assert.assertTrue(createValid().addPodCastEpisodes(podCastEpisodes).build().getPodCastEpisodes().size()==2);
+        Assert.assertTrue(createValid().addPodCastEpisodes(podCastEpisodes).build().getPodCastEpisodesInternal().size()==2);
     }
     @Test
     public void trim_description() {
@@ -126,7 +126,7 @@ public class PodCastTest {
 
     @Test(expectedExceptions = UnsupportedOperationException.class)
     public void podCastEpisodes_unmodifiable() {
-        createValid().build().getPodCastEpisodes().add(PodCastEpisodeTest.createValid().build());
+        createValid().build().getPodCastEpisodesInternal().add(PodCastEpisodeTest.createValid().build());
     }
     @Test
     public void createdDate() {
@@ -159,7 +159,7 @@ public class PodCastTest {
         PodCastEpisode podCastEpisode = PodCastEpisodeTest.createValid().build();
         PodCast podCast = createValid().addPodCastEpisode(podCastEpisode).build();
 
-        Assert.assertTrue(podCast.getPodCastEpisodes().contains(podCastEpisode));
+        Assert.assertTrue(podCast.getPodCastEpisodesInternal().contains(podCastEpisode));
     }
 
     @Test
@@ -175,7 +175,7 @@ public class PodCastTest {
 
         PodCast podCast = builder.build();
 
-        Assert.assertTrue(podCast.getPodCastEpisodes().size()==2);
+        Assert.assertTrue(podCast.getPodCastEpisodesInternal().size()==2);
         Assert.assertEquals(podCast.getLatestPodCastEpisode().getId(),"1111");
     }
 

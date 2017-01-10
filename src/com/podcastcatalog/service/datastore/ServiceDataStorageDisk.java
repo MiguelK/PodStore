@@ -1,6 +1,11 @@
 package com.podcastcatalog.service.datastore;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.podcastcatalog.model.podcastcatalog.Bundle;
+import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.subscription.SubscriptionData;
@@ -19,7 +24,7 @@ import java.util.stream.IntStream;
 public class ServiceDataStorageDisk implements ServiceDataStorage {
     private final static Logger LOG = Logger.getLogger(ServiceDataStorageDisk.class.getName());
 
-    private static final Gson GSON = new Gson();
+    //private static final Gson GSON = new Gson();
 
     private final File podDataHomeDir;
     private final File catalogVersionHomeDirSWE;
@@ -245,6 +250,37 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         } finally {
             IOUtils.closeQuietly(out);
             IOUtils.closeQuietly(fileOut);
+        }
+    }
+
+    private static final Gson GSON;// = new Gson();
+
+    static {
+        List<String> fieldExclusions = new ArrayList<String>();
+        fieldExclusions.add("podCastEpisodesInternal");
+
+        List<Class<?>> classExclusions = new ArrayList<Class<?>>();
+       // classExclusions.add(PodCast.class);
+        GSON = GsonFactory.build(fieldExclusions, classExclusions);
+    }
+
+    public static class GsonFactory {
+
+        public static Gson build(final List<String> fieldExclusions, final List<Class<?>> classExclusions) {
+            GsonBuilder b = new GsonBuilder();
+            b.addSerializationExclusionStrategy(new ExclusionStrategy() {
+                @Override
+                public boolean shouldSkipField(FieldAttributes f) {
+                    return fieldExclusions == null ? false : fieldExclusions.contains(f.getName());
+                }
+
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    return classExclusions == null ? false : classExclusions.contains(clazz);
+                }
+            });
+            return b.create();
+
         }
     }
 

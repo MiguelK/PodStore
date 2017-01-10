@@ -34,7 +34,8 @@ quota -s
 * OPENSHIFT_DATA_DIR (All persistent data skall lagras här)
 /var/lib/openshift/572600af0c1e66233d000100/app-root/data
 
-
+More memory JVM OpenShidt
+https://developers.openshift.com/servers/tomcat/jvm-memory.html
 
 
 ###### Admin  ######

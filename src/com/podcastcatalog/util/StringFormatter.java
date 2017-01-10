@@ -43,7 +43,7 @@ public class StringFormatter {
                         List<PodCast> podCasts = podCastCategory.getPodCasts();
                         podcastCount += podCasts.size();
                         for (PodCast podCast : podCasts) {
-                            episodeCount += podCast.getPodCastEpisodes().size();
+                            episodeCount += podCast.getPodCastEpisodesInternal().size();
                         }
                     }
                     break;
@@ -58,7 +58,7 @@ public class StringFormatter {
                     podcastCount += podCasts.size();
 
                     for (PodCast podCast : podCasts) {
-                        episodeCount += podCast.getPodCastEpisodes().size();
+                        episodeCount += podCast.getPodCastEpisodesInternal().size();
                     }
                     break;
             }

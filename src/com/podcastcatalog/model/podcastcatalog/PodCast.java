@@ -3,6 +3,7 @@ package com.podcastcatalog.model.podcastcatalog;
 
 import org.apache.commons.lang3.StringUtils;
 
+import javax.xml.bind.annotation.XmlTransient;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +15,12 @@ public class PodCast extends BundleItem {
     private final String publisher; //Sveriges Radio
     private final LocalDateTime createdDate;
     private final String feedURL; //Get all episodes from this url
-    private final List<PodCastEpisode> podCastEpisodes;
+
+    private  List<PodCastEpisode> podCastEpisodesInternal;
+
+    private final List<PodCastEpisode> podCastEpisodes; //Used in JSON test FIXME
+
+
     private final List<PodCastCategoryType> podCastCategories;
 
     private PodCast(String collectionId, String title, String publisher, String description, LocalDateTime createdDate,
@@ -25,8 +31,13 @@ public class PodCast extends BundleItem {
         this.publisher = publisher;
         this.createdDate = createdDate;
         this.feedURL = feedURL;
-        this.podCastEpisodes = Collections.unmodifiableList(podCastEpisodes);
+        this.podCastEpisodesInternal = Collections.unmodifiableList(podCastEpisodes);
+        this.podCastEpisodes = podCastEpisodes.size()>=10 ? new ArrayList<>(podCastEpisodes.subList(0,9)) : podCastEpisodes;
         this.podCastCategories = Collections.unmodifiableList(podCastCategories);
+    }
+
+    public List<PodCastEpisode> getPodCastEpisodes() {
+        return podCastEpisodes;
     }
 
     public String getCollectionId() {
@@ -45,8 +56,8 @@ public class PodCast extends BundleItem {
         return feedURL;
     }
 
-    public List<PodCastEpisode> getPodCastEpisodes() {
-        return podCastEpisodes;
+    public List<PodCastEpisode> getPodCastEpisodesInternal() {
+        return podCastEpisodesInternal;
     }
 
     public List<PodCastCategoryType> getPodCastCategories() {
@@ -59,7 +70,7 @@ public class PodCast extends BundleItem {
                 ", publisher='" + publisher + '\'' +
                 ", feedURL='" + feedURL + '\'' +
                 ", createdDate='" + createdDate + '\'' +
-                ", podCastEpisodes=" + podCastEpisodes.size() +
+                ", podCastEpisodesInternal=" + podCastEpisodesInternal.size() +
                 ", podCastCategories=" + podCastCategories +
                 '}';
     }
@@ -73,8 +84,13 @@ public class PodCast extends BundleItem {
         visitor.visit(this);
     }
 
+    public void removeEpisodes(){
+
+
+    }
+
     public PodCastEpisode getLatestPodCastEpisode() {
-        return podCastEpisodes.get(0);
+        return podCastEpisodesInternal.get(0);
     }
 
     public static class Builder {

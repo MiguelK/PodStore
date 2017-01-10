@@ -1,7 +1,6 @@
 package com.podcastcatalog.model.podcastcatalog;
 
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
-import com.podcastcatalog.service.podcaststar.PodCastStarService;
 
 import java.util.*;
 
@@ -13,7 +12,7 @@ public class BundleItemVisitor implements Visitor{
     @Override
     public void visit(PodCast podCast) {
 
-        List<PodCastEpisode> podCastEpisodes = podCast.getPodCastEpisodes();
+        List<PodCastEpisode> podCastEpisodes = podCast.getPodCastEpisodesInternal();
         setArtworkURL(podCast.getArtworkUrl600(), podCastEpisodes);
 
         this.podCastEpisodes.addAll(podCastEpisodes);
@@ -24,7 +23,7 @@ public class BundleItemVisitor implements Visitor{
     public void visit(PodCastCategory podCastCategory) {
 
         for (PodCast podCast : podCastCategory.getPodCasts()) {
-            List<PodCastEpisode> podCastEpisodes = podCast.getPodCastEpisodes();
+            List<PodCastEpisode> podCastEpisodes = podCast.getPodCastEpisodesInternal();
             setArtworkURL(podCast.getArtworkUrl600(), podCastEpisodes);
 
             this.podCastEpisodes.addAll(podCastEpisodes);

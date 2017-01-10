@@ -29,7 +29,7 @@ public class PodCastCatalogBuilderSE implements PodCastCatalogBuilder {
 //        podCastBundle.addCollector(ItunesSearchAPI.search("term=p3&entity=podcast"));
 
         PodCastBundleBuilder podCastBundle = BundleBuilder.newPodCastBundleBuilder("Toplistan", "De bästa i Sverige");//FIXME Image
-        podCastBundle.addCollector(new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.SWE, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY, 20));
+        podCastBundle.addCollector(new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.SWE, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY, 30));
 
 
         PodCastCategoryBundleBuilder categoryBundle = BundleBuilder.newPodCastCategoryBundleBuilder("Alla Kategorier", "???");
