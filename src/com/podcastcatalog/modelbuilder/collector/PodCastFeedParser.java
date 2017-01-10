@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  */
 public class PodCastFeedParser {
 
-    private static final int MAX_FEED_COUNT = 100;
+    private static final int MAX_FEED_COUNT = 400; //ALL?
     private final static Logger LOG = Logger.getLogger(PodCastFeedParser.class.getName());
 
     public static Optional<PodCast> parse(URL feedURL, String artworkUrl600, String collectionId) {

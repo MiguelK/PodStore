@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="war" name="PodStore">
-    <output-path>$USER_HOME$/dev/eap1/deployments</output-path>
+    <output-path>$PROJECT_DIR$/../../temp</output-path>
     <root id="archive" name="PodStore.war">
       <element id="artifact" artifact-name="PodStore:war exploded" />
       <element id="directory" name="WEB-INF">

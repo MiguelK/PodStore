@@ -7,11 +7,13 @@ public abstract class ResultItem implements Serializable {
     private final String title;
     private final String podCastCollectionId;
     private final ResultType resultType;
+    private final String artworkUrl100;
 
-    ResultItem(String title, String podCastCollectionId, ResultType resultType) {
+    ResultItem(String title, String podCastCollectionId, String artworkUrl100, ResultType resultType) {
         this.title = title;
         this.podCastCollectionId = podCastCollectionId;
         this.resultType = resultType;
+        this.artworkUrl100 = artworkUrl100;
     }
 
     public String getTitle() {
@@ -25,4 +27,8 @@ public abstract class ResultItem implements Serializable {
     public ResultType getResultType() {
         return resultType;
     }
+    public String getArtworkUrl100() {
+        return artworkUrl100;
+    }
+
 }

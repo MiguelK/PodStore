@@ -84,7 +84,16 @@ public class TextSearchIndexTest {
         Assert.assertTrue(searchEngine.lookup("Sommar i Peking").size() == 1);
 //        Assert.assertTrue(searchEngine.lookup("Sommar i Peking kommer alltid före den i Sverige").size() == 1);
         Assert.assertTrue(searchEngine.lookup("Sommar i Peking").size() == 1);
+    }
 
+    @Test
+    public void lookup_hit_1() {
+        MyItem podcast1 = new MyItem("PodCast1");
+        searchEngine.addText(" Fallet Peter Mangs i Sverige", TextSearchIndex.Prio.HIGHEST, podcast1);
+
+        searchEngine.buildIndex();
+
+        Assert.assertTrue(searchEngine.lookup("Fallet P").size() == 1);
     }
 
 

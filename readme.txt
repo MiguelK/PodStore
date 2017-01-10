@@ -4,6 +4,38 @@ Subscription
     - save/load data
     - Episode notifier job -> push episode
 
+##### Server
+WildFly 10 administrator added.  Please make note of these credentials:
+
+Username: adminEPFdZJx
+Password: jRmngM53mG6u
+
+run 'rhc port-forward podstore' to access the web admin area on port 9990.
+
+Open Shift
+1# Kopiera war filen till servern:
+scp scp /Users/miguelkrantz/Documents/temp/PodStore.war 586e521b7628e1e473000140@podstore-itemstore.rhcloud.com:///var/lib/openshift/586e521b7628e1e473000140/wildfly/standalone/deployments
+
+* Login OpenShift
+ssh 586e521b7628e1e473000140@podstore-itemstore.rhcloud.com
+
+* ALIAS
+tail -f /var/lib/openshift/566d72b989f5cf714300000b/wildfly/standalone/log/server.log
+
+Check file sizes
+du -h * | sort -rh | head -50
+
+rm -rf .* *   (Tar bort alla file/dir i samma katalog)
+
+To check if you're hitting the inode limit use quota command:
+quota -s
+
+
+* OPENSHIFT_DATA_DIR (All persistent data skall lagras här)
+/var/lib/openshift/572600af0c1e66233d000100/app-root/data
+
+
+
 
 ###### Admin  ######
 http://localhost:10080/PodStore

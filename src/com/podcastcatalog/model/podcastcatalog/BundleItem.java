@@ -9,7 +9,7 @@ public abstract class BundleItem implements Serializable, Visitable {
 
     private final String title;
     private final String description;
-    private final String artworkUrl600;//Mandatory for PodCast and Category
+    private  String artworkUrl600;//Mandatory for PodCast and Category, set by SearchIndex used in search only result
 
     BundleItem(String title, String description, String artworkUrl600) {
         this.title = StringUtils.trimToNull(title);
@@ -38,5 +38,9 @@ public abstract class BundleItem implements Serializable, Visitable {
 
     public String getArtworkUrl600() {
         return artworkUrl600;
+    }
+
+    public void setArtworkUrl600(String artworkUrl600) {
+        this.artworkUrl600 = artworkUrl600;
     }
 }

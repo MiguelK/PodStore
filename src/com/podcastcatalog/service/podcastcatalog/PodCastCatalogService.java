@@ -10,6 +10,8 @@ import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -143,8 +145,18 @@ public class PodCastCatalogService {
 
         //FIXME Sort algoritm? limit 5 etc...
         List<ResultItem> resultItems = new ArrayList<>();
-        List<PodCastResultItem> podCasts = ItunesSearchAPI.searchPodCasts("term=" + queryParam + "&entity=podcast&limit=5");
-        resultItems.addAll(podCasts);
+
+        String encodedQueryParam = null;
+        try {
+            encodedQueryParam = URLEncoder.encode(queryParam, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            LOG.warning("Failed to encode search param " + queryParam);
+        }
+
+        if(encodedQueryParam!=null){
+            List<PodCastResultItem> podCasts = ItunesSearchAPI.searchPodCasts("term=" + encodedQueryParam + "&entity=podcast&limit=5");
+            resultItems.addAll(podCasts);
+        }
 
         readLock.lock();
         try {
@@ -282,8 +294,10 @@ public class PodCastCatalogService {
             try {
                 List<PodCastEpisode> podCastEpisodes = bundleItemVisitor.getPodCastEpisodes();
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
-                    PodCastEpisodeResultItem resultItem = new PodCastEpisodeResultItem(podCastEpisode.getTitle(),
-                            podCastEpisode.getDescription(), podCastEpisode.getPodCastCollectionId(), podCastEpisode.getTargetURL());
+                  //  PodCastEpisodeResultItem resultItem = new PodCastEpisodeResultItem(podCastEpisode.getTitle(),
+                    //          podCastEpisode.getDescription(), podCastEpisode.getPodCastCollectionId(), podCastEpisode.getTargetURL(),
+                    //      podCastEpisode.getArtworkUrl600());
+                    PodCastEpisodeResultItem resultItem = new PodCastEpisodeResultItem(podCastEpisode);
 
                     String text = podCastEpisode.getTitle() + " " + podCastEpisode.getDescription();
                     newTextSearchIndex.addText(text, TextSearchIndex.Prio.HIGH, resultItem);

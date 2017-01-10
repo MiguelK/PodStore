@@ -1,9 +1,9 @@
 package com.podcastcatalog.model.podcastcatalog;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
+import com.podcastcatalog.service.podcaststar.PodCastStarService;
+
+import java.util.*;
 
 public class BundleItemVisitor implements Visitor{
 
@@ -12,7 +12,11 @@ public class BundleItemVisitor implements Visitor{
 
     @Override
     public void visit(PodCast podCast) {
-        podCastEpisodes.addAll(podCast.getPodCastEpisodes());
+
+        List<PodCastEpisode> podCastEpisodes = podCast.getPodCastEpisodes();
+        setArtworkURL(podCast.getArtworkUrl600(), podCastEpisodes);
+
+        this.podCastEpisodes.addAll(podCastEpisodes);
         podCasts.add(podCast);
     }
 
@@ -20,14 +24,35 @@ public class BundleItemVisitor implements Visitor{
     public void visit(PodCastCategory podCastCategory) {
 
         for (PodCast podCast : podCastCategory.getPodCasts()) {
-            podCastEpisodes.addAll(podCast.getPodCastEpisodes());
+            List<PodCastEpisode> podCastEpisodes = podCast.getPodCastEpisodes();
+            setArtworkURL(podCast.getArtworkUrl600(), podCastEpisodes);
+
+            this.podCastEpisodes.addAll(podCastEpisodes);
             podCasts.add(podCast);
         }
     }
 
     @Override
     public void visit(PodCastEpisode podCastEpisode) {
+
+        Optional<PodCast> podCastById = PodCastCatalogService.getInstance().getPodCastById(podCastEpisode.getPodCastCollectionId());
+
+        String artworkURL = "invalid url"; //Will trigger placeholder image in search result
+        if(podCastById.isPresent()){
+            PodCast podCast = podCastById.get();
+            artworkURL = podCast.getArtworkUrl600();
+        }
+
+        podCastEpisode.setArtworkUrl600(artworkURL);
+
         podCastEpisodes.add(podCastEpisode);
+    }
+
+    private void setArtworkURL(String artworkURL, List<PodCastEpisode> podCastEpisodes){
+
+        for (PodCastEpisode podCastEpisode : podCastEpisodes) {
+            podCastEpisode.setArtworkUrl600(artworkURL);
+        }
 
     }
 
