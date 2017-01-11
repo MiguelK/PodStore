@@ -89,7 +89,7 @@ public class PodCastFeedParser {
                 }*/
 
                 if (i % 10 == 0) {
-                    LOG.info("Parsing Episode=" + i + " of expectedEpisodeCount=" + expectedEpisodeCount);
+               //     LOG.info("Parsing Episode=" + i + " of expectedEpisodeCount=" + expectedEpisodeCount);
                 }
             }
 

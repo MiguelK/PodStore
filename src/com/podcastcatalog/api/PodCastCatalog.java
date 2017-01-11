@@ -64,7 +64,7 @@ public class PodCastCatalog {
 //            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Not ready yet").build();
 //        }
 
-        List<ResultItem> podCastEpisodes = PodCastCatalogService.getInstance().search(queryParam);
+        List<ResultItem> podCastEpisodes = PodCastCatalogService.getInstance().search(podCastCatalogLanguage, queryParam);
 
         SearchResult searchResult = new SearchResult(podCastEpisodes);
 

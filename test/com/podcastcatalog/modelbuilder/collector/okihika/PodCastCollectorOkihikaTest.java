@@ -26,10 +26,18 @@ public class PodCastCollectorOkihikaTest {
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
-    public void toplist_Sweden() {
+    public void toplist_SWE() {
         PodCastCollectorOkihika swe = new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.SWE, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY,20);
         List<PodCast> podCasts = swe.collectPodCasts();
 
-        Assert.assertTrue(podCasts.size()>10);
+        Assert.assertTrue(podCasts.size()>10, "Size=" + podCasts.size());
+    }
+
+    @Test(groups = TestUtil.SLOW_TEST)
+    public void toplist_US() {
+        PodCastCollectorOkihika us = new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.US, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY,20);
+        List<PodCast> podCasts = us.collectPodCasts();
+
+        Assert.assertTrue(podCasts.size()>10, "Size=" + podCasts.size());
     }
 }

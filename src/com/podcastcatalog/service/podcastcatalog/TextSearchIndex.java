@@ -11,6 +11,8 @@ public class TextSearchIndex<T> {
 
     private final List<InputData> inputDatas;
     private static final int MAX_WORDS_TO_INDEX = 4;
+    private int maxWordsToIndex  = MAX_WORDS_TO_INDEX;
+    private int maxCharactersLengthToIndex;
 
     public String getStatus() {
         return "TextSearchIndex: indexSize=" + index.size();
@@ -30,6 +32,12 @@ public class TextSearchIndex<T> {
         }
     }
 
+    public TextSearchIndex(int maxWordsToIndex) {
+        inputDatas = new ArrayList<>();
+        index = new HashMap<>();
+        this.maxWordsToIndex = maxWordsToIndex;
+    }
+
     public TextSearchIndex() {
         inputDatas = new ArrayList<>();
         index = new HashMap<>();
@@ -45,17 +53,23 @@ public class TextSearchIndex<T> {
             String text = inputData.getText();
             List<String> words = Arrays.asList(StringUtils.split(text));
 
-            if (words.size() > MAX_WORDS_TO_INDEX) {
-                words = words.subList(0, MAX_WORDS_TO_INDEX - 1);
-
-                int x = text.indexOf(words.get(MAX_WORDS_TO_INDEX - 2)) + 1;
-
-                text = text.substring(0, x);
+            if (words.size() > maxWordsToIndex && maxWordsToIndex>1) {
+                words = words.subList(0, maxWordsToIndex - 1);
+                int totalWordsEndOffset = text.indexOf(words.get(maxWordsToIndex - 2)) + 1;
+                text = text.substring(0, totalWordsEndOffset);
             }
+
+            /*if (words.size() == 1) {
+                words = words.subList(0, 1);
+                int x = text.indexOf(words.get(0)) + 1;
+                text = text.substring(0, x);
+            }*/ //FIXME
+
 
             int rank = inputData.getPrio().getRank();
             Node<T> node = index.putIfAbsent(text, new Node<>(text, new TargetRelation<>(inputData.getTargetObject(), rank)));
             if (node != null) {
+               // System.out.printf("node=" + text);
                 node.addTargetRelation(new TargetRelation<>(inputData.getTargetObject(), rank));
             }
 
@@ -77,12 +91,12 @@ public class TextSearchIndex<T> {
 
                     node1 = index.putIfAbsent(term, new Node<>(term, new TargetRelation<>(inputData.getTargetObject(), rank)));
                     if (node1 != null) {
-                    //    System.out.println("Term=" + term);
+                        //        System.out.println("Term=" + term);
                         node1.addTargetRelation(new TargetRelation<>(inputData.getTargetObject(), rank));
                     }
                     node2 = index.putIfAbsent(allWordTerms, new Node<>(allWordTerms, new TargetRelation<>(inputData.getTargetObject(), rank)));
                     if (node2 != null) {
-                        //    System.out.println("allWordTerms=" + allWordTerms);
+                   //         System.out.println("allWordTerms=" + allWordTerms);
                         node2.addTargetRelation(new TargetRelation<>(inputData.getTargetObject(), rank));
                     }
                 }

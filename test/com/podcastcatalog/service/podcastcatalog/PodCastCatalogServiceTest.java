@@ -8,6 +8,7 @@ import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCategoryCollectorOkihika;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCollectorOkihika;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSE;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderUS;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -38,17 +39,33 @@ public class PodCastCatalogServiceTest {
         System.out.println(podCastCatalog);
     }
 
+    @Test(groups = TestUtil.SLOW_TEST)
+    public void build_catalog_US() throws InterruptedException, ExecutionException, TimeoutException {
+
+        setUpStorage();
+
+
+        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderUS());
+
+        PodCastCatalogService
+                .getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.US).get(16, TimeUnit.MINUTES);
+
+
+        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.US);
+        System.out.println(podCastCatalog);
+    }
+
     @Test
     public void search_empty() {
-        Assert.assertTrue(PodCastCatalogService.getInstance().search(null).isEmpty());
-        Assert.assertTrue(PodCastCatalogService.getInstance().search("").isEmpty());
-        Assert.assertTrue(PodCastCatalogService.getInstance().search(" ").isEmpty());
+        Assert.assertTrue(PodCastCatalogService.getInstance().search(PodCastCatalogLanguage.SWE,null).isEmpty());
+        Assert.assertTrue(PodCastCatalogService.getInstance().search(PodCastCatalogLanguage.SWE,"").isEmpty());
+        Assert.assertTrue(PodCastCatalogService.getInstance().search(PodCastCatalogLanguage.SWE," ").isEmpty());
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void search_podcasts_no_episodes() {
 
-        List<ResultItem> resultItems = PodCastCatalogService.getInstance().search("p1");
+        List<ResultItem> resultItems = PodCastCatalogService.getInstance().search(PodCastCatalogLanguage.SWE,"p1");
 
        Assert.assertTrue(resultItems.size()>=05);
 

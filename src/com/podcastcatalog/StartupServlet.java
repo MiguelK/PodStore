@@ -46,8 +46,8 @@ public class StartupServlet extends HttpServlet {
 
         PodCastSubscriptionService.getInstance().start();
 
-        loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderSE());
-//       loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderUS()); //FIXME
+   //     loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderSE());
+       loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderUS()); //FIXME
     }
 
     private void loadPodCastCatalog(ServiceDataStorage serviceDataStorageDisk, PodCastCatalogBuilder builder) {

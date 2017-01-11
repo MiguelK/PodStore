@@ -33,20 +33,23 @@ public class PodCastCatalogService {
     private final Map<PodCastCatalogLanguage, PodCastCatalog> podCastCatalogByLang;
     private final List<PodCastCatalogBuilder> podCastCatalogBuilders;
 
-    private TextSearchIndex<ResultItem> textSearchIndex; //FIXME One per language
+    private TextSearchIndex<ResultItem> podCastEpisodeIndexSWE; //FIXME One per language, podCastEpisodeIndexSWE
+    private TextSearchIndex<ResultItem> podCastEpisodeIndexUS; //FIXME One per language, podCastEpisodeIndexSWE
     private final PodCastIndex podCastCatalogIndex;
     private final PodCastIndex podCastIndex;
     private ServiceDataStorage storage;
     private final ExecutorService executorService;
     private final ExecutorService asyncExecutor;
     private volatile boolean buildingInProgress;
+    private volatile PodCastCatalogLanguage buildingInProgressLang;
 
     private static final PodCastCatalogService INSTANCE = new PodCastCatalogService();
 
     private PodCastCatalogService() {
         podCastCatalogIndex = PodCastIndex.create();
         podCastIndex = PodCastIndex.create();
-        textSearchIndex = new TextSearchIndex<>();
+        podCastEpisodeIndexSWE = new TextSearchIndex<>();
+        podCastEpisodeIndexUS = new TextSearchIndex<>();
         podCastCatalogBuilders = new ArrayList<>();
         podCastCatalogByLang = new HashMap<>();
         asyncExecutor = Executors.newFixedThreadPool(THREADS);
@@ -109,7 +112,7 @@ public class PodCastCatalogService {
     public String getTextSearchEngineStatus() {
         readLock.lock();
         try {
-            return textSearchIndex.getStatus();
+            return podCastEpisodeIndexSWE.getStatus() + " US=" + podCastEpisodeIndexUS.getStatus();
         } finally {
             readLock.unlock();
         }
@@ -136,7 +139,7 @@ public class PodCastCatalogService {
     }
 
 
-    public List<ResultItem> search(String queryParam) {
+    public List<ResultItem> search(PodCastCatalogLanguage podCastCatalogLanguage, String queryParam) {
 
         String queryParamTrimmed = StringUtils.trimToNull(queryParam);
         if (queryParamTrimmed == null) {
@@ -153,6 +156,7 @@ public class PodCastCatalogService {
             LOG.warning("Failed to encode search param " + queryParam);
         }
 
+        //FIXME set lang in search?
         if(encodedQueryParam!=null){
             List<PodCastResultItem> podCasts = ItunesSearchAPI.searchPodCasts("term=" + encodedQueryParam + "&entity=podcast&limit=5");
             resultItems.addAll(podCasts);
@@ -160,7 +164,15 @@ public class PodCastCatalogService {
 
         readLock.lock();
         try {
-            List<ResultItem> result = textSearchIndex.lookup(queryParam);
+
+            List<ResultItem> result = new ArrayList<>();
+            if(podCastCatalogLanguage == PodCastCatalogLanguage.SWE){
+                 result = podCastEpisodeIndexSWE.lookup(queryParam);
+            } else {
+                result = podCastEpisodeIndexUS.lookup(queryParam);
+
+            }
+
             resultItems.addAll(result);
             return resultItems;
         } finally {
@@ -175,12 +187,13 @@ public class PodCastCatalogService {
     public Future buildPodCastCatalogsAsync(PodCastCatalogLanguage language) {
         validateState();
 
-        if(buildingInProgress){
+       /* if(buildingInProgress && language == buildingInProgressLang){
             LOG.info("Building is in progress language=" + language + " try again later.?");
            return null;
         }
 
         buildingInProgress = true;
+        buildingInProgressLang = language; */ //FIXME
 
         return asyncExecutor.submit(new BuildPodCastCatalogAction(language));
     }
@@ -225,7 +238,7 @@ public class PodCastCatalogService {
 
                     PodCastCatalog catalog = buildPodcastCatalog(podCastCatalogBuilder);
 
-                    LOG.info("Done building PodCastCatalog " + catalog);
+                    LOG.info("Done building PodCastCatalog Lang=" + podCastCatalogBuilder.getPodCastCatalogLang() + " Catalog=" + catalog);
 
                     if (catalog != null) {
                         storage.save(catalog);
@@ -263,19 +276,21 @@ public class PodCastCatalogService {
 
         @Override
         public void run() {
-            LOG.info("Start " + BuildIndexAction.class.getSimpleName() + " catalogs=" + podCastCatalogByLang.size() + "...");
+
+            try{
 
             BundleItemVisitor bundleItemVisitor = new BundleItemVisitor();
 
+                LOG.info("Build Index Action " + podCastCatalogLanguage);
             readLock.lock();
             try {
                 for (Map.Entry<PodCastCatalogLanguage, PodCastCatalog> catalogEntry : podCastCatalogByLang.entrySet()) {
 
                     if (catalogEntry.getKey() != podCastCatalogLanguage) {
-                        continue;
+                        continue; //Only buidl for one Language at a time :)
                     }
 
-                    LOG.info("Start building index for PodCastCatalog " + podCastCatalogLanguage);
+                    LOG.info("Start building search index : " + podCastCatalogLanguage);
 
                     for (Bundle bundle : catalogEntry.getValue().getBundles()) {
                         for (BundleItem bundleItem : bundle.getBundleItems()) {
@@ -288,33 +303,48 @@ public class PodCastCatalogService {
                 readLock.unlock();
             }
 
-            writeLock.lock();
-            TextSearchIndex<ResultItem> newTextSearchIndex = new TextSearchIndex<>();
 
-            try {
+            TextSearchIndex<ResultItem> newTextSearchIndex = null;
+
+            boolean swedishCatalog = podCastCatalogLanguage == PodCastCatalogLanguage.SWE;
+
+            if(swedishCatalog){
+                 newTextSearchIndex = new TextSearchIndex<>();
+            } else {
+                newTextSearchIndex = new TextSearchIndex<>(1); //Only one word save memory?
+            }
+
+                //FIXME test
                 List<PodCastEpisode> podCastEpisodes = bundleItemVisitor.getPodCastEpisodes();
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
-                  //  PodCastEpisodeResultItem resultItem = new PodCastEpisodeResultItem(podCastEpisode.getTitle(),
-                    //          podCastEpisode.getDescription(), podCastEpisode.getPodCastCollectionId(), podCastEpisode.getTargetURL(),
-                    //      podCastEpisode.getArtworkUrl600());
                     PodCastEpisodeResultItem resultItem = new PodCastEpisodeResultItem(podCastEpisode);
-
                     String text = podCastEpisode.getTitle() + " " + podCastEpisode.getDescription();
                     newTextSearchIndex.addText(text, TextSearchIndex.Prio.HIGH, resultItem);
                 }
+
                 newTextSearchIndex.buildIndex();
 
-                textSearchIndex = newTextSearchIndex;
+                writeLock.lock();
+                try {
 
-                podCastCatalogIndex.buildIndex(bundleItemVisitor.getPodCasts());
+                if(swedishCatalog){
+                    podCastEpisodeIndexSWE = newTextSearchIndex;
+                    LOG.info("Done building podCastEpisodeIndexSWE=" + podCastEpisodeIndexSWE.getStatus());
+                    podCastCatalogIndex.buildIndex(bundleItemVisitor.getPodCasts()); //Only update for swe
+
+                } else {
+                    podCastEpisodeIndexUS = newTextSearchIndex;
+                    LOG.info("Done building podCastEpisodeIndexUS=" + podCastEpisodeIndexUS.getStatus());
+                }
 
             } finally {
                 writeLock.unlock();
             }
 
-            LOG.info("Done building index for PodCastCatalog " + podCastCatalogLanguage + ", textSearchIndex=" + textSearchIndex.getStatus());
+            }catch (Exception e){
+                LOG.log(Level.SEVERE,"Error " + BuildIndexAction.class.getSimpleName(), e);
 
-            LOG.info("Done " + BuildIndexAction.class.getSimpleName());
+            }
         }
     }
 

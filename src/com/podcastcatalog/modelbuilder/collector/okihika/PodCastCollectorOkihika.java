@@ -203,9 +203,13 @@ public class PodCastCollectorOkihika implements PodCastCollector {
     }
 
     private Predicate<Element> isValidItunesPodCastURL() {
-        return e -> e.getElementsByAttribute("href") != null &&
-                e.toString().contains("itunes.apple.com/se/podcast") &&
-                parseID(e.toString()) != null;
+        return e -> {
+            String toString = e.toString();
+            boolean contains = toString.contains("itunes.apple.com/se/podcast") || toString.contains("itunes.apple.com/us/podcast") ;
+            return e.getElementsByAttribute("href") != null &&
+                    contains &&
+                    parseID(toString) != null;
+        };
     }
 
     //FIXME remove only used by test

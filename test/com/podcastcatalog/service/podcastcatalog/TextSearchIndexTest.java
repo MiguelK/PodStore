@@ -28,6 +28,34 @@ public class TextSearchIndexTest {
     }
 
     @Test
+    public void max_characters_to_index() {
+        searchEngine = new TextSearchIndex<>(1);
+
+        searchEngine.addText("Sommar i ", TextSearchIndex.Prio.HIGHEST, new MyItem("PodCast 1"));
+        searchEngine.addText("Sommar i Pekinganka", TextSearchIndex.Prio.HIGHEST, new MyItem("PodCast 3"));
+
+        MyItem podCast = new MyItem("PodCast Match");
+        searchEngine.addText("Sommar i Peking", TextSearchIndex.Prio.HIGH, podCast);
+        searchEngine.buildIndex();
+
+        Assert.assertTrue(searchEngine.lookup("Somm").size() == 3);
+    }
+
+
+    @Test
+    public void lookup_word_match_max_word_1() {
+        searchEngine = new TextSearchIndex<>(1);
+
+        searchEngine.addText("Sommar i ", TextSearchIndex.Prio.HIGHEST, new MyItem("PodCast 1"));
+        searchEngine.addText("Sommar i Pekinganka", TextSearchIndex.Prio.HIGHEST, new MyItem("PodCast 3"));
+
+        MyItem podCast = new MyItem("PodCast Match");
+        searchEngine.addText("Sommar i Peking", TextSearchIndex.Prio.HIGH, podCast);
+        searchEngine.buildIndex();
+
+        Assert.assertTrue(searchEngine.lookup("Somm").size() == 3);
+    }
+    @Test
     public void lookup_word_match() {
         searchEngine.addText("Sommar i ", TextSearchIndex.Prio.HIGHEST, new MyItem("PodCast 1"));
         searchEngine.addText("Sommar i x ", TextSearchIndex.Prio.HIGHEST, new MyItem("PodCast 2"));

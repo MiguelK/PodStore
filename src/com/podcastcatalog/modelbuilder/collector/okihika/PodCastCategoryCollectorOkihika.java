@@ -34,7 +34,7 @@ public class PodCastCategoryCollectorOkihika extends PodCastCollectorOkihika imp
     }
 
     public static PodCastCategoryCollectorOkihika createUS(TopList toplist, String title){
-        return new PodCastCategoryCollectorOkihika(Language.SWE, toplist, title, "????");
+        return new PodCastCategoryCollectorOkihika(Language.US, toplist, title, "????");
     }
 
     @Override
