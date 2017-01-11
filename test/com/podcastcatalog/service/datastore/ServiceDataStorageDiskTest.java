@@ -145,7 +145,7 @@ public class ServiceDataStorageDiskTest {
 
     @Test //(groups = TestUtil.SLOW_TEST)
     public void verify_order() throws InterruptedException {
-        storage = ServiceDataStorage.useDefault();
+        storage = TestUtil.createForTest();
         storage.deleteAll();
         storage.save(PodCastCatalogTest.createValidPodCastCatalogSWE());
 

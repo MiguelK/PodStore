@@ -23,7 +23,7 @@ public class PodCastCatalogUpdaterTest {
 
         Thread.sleep(15000);
 
-        PodCastCatalogVersion podCastCatalogVersion = ServiceDataStorage.useDefault().getCurrentVersion(PodCastCatalogLanguage.SWE).get();
+        PodCastCatalogVersion podCastCatalogVersion = TestUtil.createForTest().getCurrentVersion(PodCastCatalogLanguage.SWE).get();
 
         Assert.assertTrue(podCastCatalogVersion.getVersion()==2,"was=" + podCastCatalogVersion.getVersion());
 

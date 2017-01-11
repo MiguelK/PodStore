@@ -29,22 +29,28 @@ public class TextSearchIndexTest {
 
     @Test
     public void max_characters_to_index() {
-        searchEngine = new TextSearchIndex<>(1);
+        searchEngine = new TextSearchIndex<>();
 
-        searchEngine.addText("Sommar i ", TextSearchIndex.Prio.HIGHEST, new MyItem("PodCast 1"));
+        searchEngine.addText("Sommar i Mastering a few crucial Mac keyboard shortcuts will make using your" +
+                " Apple computer easier and much more efficient. Cutting your reliance on your mouse will help you work more quickly," +
+                " and you’ll undoubtedly impress your family, friends and co-workers to no end. " +
+                "You might end up becoming the go-to Mac person in your office, and we all know how wonderful that will be", TextSearchIndex.Prio.HIGHEST, new MyItem("PodCast 1"));
         searchEngine.addText("Sommar i Pekinganka", TextSearchIndex.Prio.HIGHEST, new MyItem("PodCast 3"));
+        searchEngine.addText("Sommar i Peking", TextSearchIndex.Prio.HIGH, new MyItem("PodCast Match"));
 
-        MyItem podCast = new MyItem("PodCast Match");
-        searchEngine.addText("Sommar i Peking", TextSearchIndex.Prio.HIGH, podCast);
         searchEngine.buildIndex();
 
-        Assert.assertTrue(searchEngine.lookup("Somm").size() == 3);
-    }
+        System.out.println(searchEngine.getStatus());
+        searchEngine.printIndex();
 
+        Assert.assertTrue(searchEngine.lookup("Somm").size() == 3);
+        Assert.assertTrue(searchEngine.lookup("Apple").size() == 1);
+
+    }
 
     @Test
     public void lookup_word_match_max_word_1() {
-        searchEngine = new TextSearchIndex<>(1);
+        searchEngine = new TextSearchIndex<>();
 
         searchEngine.addText("Sommar i ", TextSearchIndex.Prio.HIGHEST, new MyItem("PodCast 1"));
         searchEngine.addText("Sommar i Pekinganka", TextSearchIndex.Prio.HIGHEST, new MyItem("PodCast 3"));
@@ -105,6 +111,8 @@ public class TextSearchIndexTest {
         searchEngine.addText("Sommar i Peking kommer alltid före den i Sverige", TextSearchIndex.Prio.HIGHEST, podcast1);
 
         searchEngine.buildIndex();
+        searchEngine.printIndex();
+
 
         Assert.assertTrue(searchEngine.lookup("s").size() == 1);
         Assert.assertTrue(searchEngine.lookup("so").size() == 1);

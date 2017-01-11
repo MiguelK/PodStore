@@ -303,22 +303,15 @@ public class PodCastCatalogService {
                 readLock.unlock();
             }
 
-
-            TextSearchIndex<ResultItem> newTextSearchIndex = null;
+            TextSearchIndex<ResultItem> newTextSearchIndex = new TextSearchIndex<>();
 
             boolean swedishCatalog = podCastCatalogLanguage == PodCastCatalogLanguage.SWE;
-
-            if(swedishCatalog){
-                 newTextSearchIndex = new TextSearchIndex<>();
-            } else {
-                newTextSearchIndex = new TextSearchIndex<>(1); //Only one word save memory?
-            }
 
                 //FIXME test
                 List<PodCastEpisode> podCastEpisodes = bundleItemVisitor.getPodCastEpisodes();
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
                     PodCastEpisodeResultItem resultItem = new PodCastEpisodeResultItem(podCastEpisode);
-                    String text = podCastEpisode.getTitle() + " " + podCastEpisode.getDescription();
+                    String text = podCastEpisode.getTitle() ;// FIXME Need more JVM memory to index? + " " + podCastEpisode.getDescription();
                     newTextSearchIndex.addText(text, TextSearchIndex.Prio.HIGH, resultItem);
                 }
 

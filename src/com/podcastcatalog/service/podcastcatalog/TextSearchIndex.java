@@ -1,21 +1,32 @@
 package com.podcastcatalog.service.podcastcatalog;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class TextSearchIndex<T> {
+
+    private final static Logger LOG = Logger.getLogger(TextSearchIndex.class.getName());
 
     private static final int MAX_RESULT_SIZE = 50;
     private final Map<String, Node<T>> index;
 
     private final List<InputData> inputDatas;
-    private static final int MAX_WORDS_TO_INDEX = 4;
-    private int maxWordsToIndex  = MAX_WORDS_TO_INDEX;
-    private int maxCharactersLengthToIndex;
+    // private static final int MAX_WORDS_TO_INDEX = 4;
+   // private int maxWordsToIndex  = MAX_WORDS_TO_INDEX;
 
     public String getStatus() {
         return "TextSearchIndex: indexSize=" + index.size();
+    }
+    void printIndex(){
+        for (Map.Entry<String, Node<T>> entry : index.entrySet()) {
+            System.out.println("Key= " + entry.getKey() + ", length=" + entry.getKey().length());
+        }
+
+        System.out.printf(getStatus());
+
     }
 
     public enum Prio {
@@ -32,72 +43,93 @@ public class TextSearchIndex<T> {
         }
     }
 
-    public TextSearchIndex(int maxWordsToIndex) {
+    /*public TextSearchIndex(int maxWordsToIndex) {
         inputDatas = new ArrayList<>();
-        index = new HashMap<>();
+        index = new TreeMap<>();
         this.maxWordsToIndex = maxWordsToIndex;
-    }
+        this.maxCharactersLengthToIndex = 10;
+    }*/
 
     public TextSearchIndex() {
         inputDatas = new ArrayList<>();
-        index = new HashMap<>();
+        index = new TreeMap<>();
     }
 
     public void addText(String text, Prio prio, T targetObject) {
+        if(text.length()>20){
+            text = text.substring(0,13);
+
+        }
+        //Sommar i p5 dsdhs
+
         inputDatas.add(new InputData(StringUtils.trimToEmpty(text).toLowerCase(), prio, targetObject));
     }
 
+    private static final int maxcharacterslengthtoindex = 7;
+
     public void buildIndex() {
+
+        LOG.info("Start building TextSearchIndex... size=" + inputDatas.size());
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
 
         for (InputData inputData : inputDatas) {
             String text = inputData.getText();
-            List<String> words = Arrays.asList(StringUtils.split(text));
+            String inputTextPrefix = text.length()>maxcharacterslengthtoindex ? text.substring(0,maxcharacterslengthtoindex-1) : text;
 
-            if (words.size() > maxWordsToIndex && maxWordsToIndex>1) {
-                words = words.subList(0, maxWordsToIndex - 1);
-                int totalWordsEndOffset = text.indexOf(words.get(maxWordsToIndex - 2)) + 1;
-                text = text.substring(0, totalWordsEndOffset);
-            }
+            List<String> allWordsInInputText = Arrays.asList(StringUtils.split(text));
 
-            /*if (words.size() == 1) {
-                words = words.subList(0, 1);
-                int x = text.indexOf(words.get(0)) + 1;
-                text = text.substring(0, x);
-            }*/ //FIXME
+           /* int size = allWordsInInputText.size();
+            if(size>100){
+                LOG.info("allWordsInInputText size=" + size);
+              //  continue;
+                allWordsInInputText = allWordsInInputText.subList(0,99);
+            }*/
 
 
             int rank = inputData.getPrio().getRank();
-            Node<T> node = index.putIfAbsent(text, new Node<>(text, new TargetRelation<>(inputData.getTargetObject(), rank)));
+            TargetRelation<T> targetRelation = new TargetRelation<>(inputData.getTargetObject(), rank);
+
+            Node<T> node = index.putIfAbsent(inputTextPrefix, new Node<>(inputTextPrefix, targetRelation));
             if (node != null) {
-               // System.out.printf("node=" + text);
-                node.addTargetRelation(new TargetRelation<>(inputData.getTargetObject(), rank));
+                //Ok 2 or more inputTextPrefix are the same pointing to different targets.?
+             //   System.out.println("node=" + inputTextPrefix);
+                node.addTargetRelation(targetRelation);
             }
 
-            String allWordTerms = ""; //e.g Fallet Pe
+            String totaWordParts = ""; //e.g Fallet Pe
 
-            for (String word : words) {
-                String term = ""; //
+            //sommar,i,peking //maxCharacterLengthPart
+            int maxCharacterLengthPart = 7; //e.g sommaripeki
+            //Fallet Peter Mangs i Sverige  abc
+            for (String word : allWordsInInputText) {
+                String term = "";
 
                 Node<T> node1;
                 Node<T> node2;
 
+                if(totaWordParts.length()>maxCharacterLengthPart){
+                    totaWordParts = ""; //Reset
+                }
+
                 for (char c : word.toCharArray()) {
                     term += c;
-                    allWordTerms += c;
+                    totaWordParts += c;
 
                     if (term.equals(word)) {
                         rank += 600; //FIXME ?
                     }
 
-                    node1 = index.putIfAbsent(term, new Node<>(term, new TargetRelation<>(inputData.getTargetObject(), rank)));
+                    node1 = index.putIfAbsent(term, new Node<>(term, targetRelation));
                     if (node1 != null) {
                         //        System.out.println("Term=" + term);
-                        node1.addTargetRelation(new TargetRelation<>(inputData.getTargetObject(), rank));
+                        node1.addTargetRelation(targetRelation);
                     }
-                    node2 = index.putIfAbsent(allWordTerms, new Node<>(allWordTerms, new TargetRelation<>(inputData.getTargetObject(), rank)));
+
+                    node2 = index.putIfAbsent(totaWordParts, new Node<>(totaWordParts, targetRelation));
                     if (node2 != null) {
-                   //         System.out.println("allWordTerms=" + allWordTerms);
-                        node2.addTargetRelation(new TargetRelation<>(inputData.getTargetObject(), rank));
+                   //         System.out.println("totaWordParts=" + totaWordParts);
+                        node2.addTargetRelation(targetRelation);
                     }
                 }
             }
@@ -106,6 +138,11 @@ public class TextSearchIndex<T> {
         for (Node node : index.values()) {
             node.sortResult();
         }
+
+        stopWatch.stop();
+        LOG.info("Done building TextSearchIndex... size=" + inputDatas.size() + " index size=" + index.size() +
+                " Time elapsed=" + stopWatch.toString());
+
 
     }
 
