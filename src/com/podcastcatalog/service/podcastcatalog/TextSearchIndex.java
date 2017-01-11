@@ -15,12 +15,13 @@ public class TextSearchIndex<T> {
 
     private final List<InputData> inputDatas;
     // private static final int MAX_WORDS_TO_INDEX = 4;
-   // private int maxWordsToIndex  = MAX_WORDS_TO_INDEX;
+    // private int maxWordsToIndex  = MAX_WORDS_TO_INDEX;
 
     public String getStatus() {
         return "TextSearchIndex: indexSize=" + index.size();
     }
-    void printIndex(){
+
+    void printIndex() {
         for (Map.Entry<String, Node<T>> entry : index.entrySet()) {
             System.out.println("Key= " + entry.getKey() + ", length=" + entry.getKey().length());
         }
@@ -43,24 +44,16 @@ public class TextSearchIndex<T> {
         }
     }
 
-    /*public TextSearchIndex(int maxWordsToIndex) {
-        inputDatas = new ArrayList<>();
-        index = new TreeMap<>();
-        this.maxWordsToIndex = maxWordsToIndex;
-        this.maxCharactersLengthToIndex = 10;
-    }*/
-
     public TextSearchIndex() {
         inputDatas = new ArrayList<>();
         index = new TreeMap<>();
     }
 
     public void addText(String text, Prio prio, T targetObject) {
-        if(text.length()>20){
-            text = text.substring(0,13);
+        if (text.length() > 20) {
+            text = text.substring(0, 13);//FIXME more memory needed?
 
         }
-        //Sommar i p5 dsdhs
 
         inputDatas.add(new InputData(StringUtils.trimToEmpty(text).toLowerCase(), prio, targetObject));
     }
@@ -75,61 +68,76 @@ public class TextSearchIndex<T> {
 
         for (InputData inputData : inputDatas) {
             String text = inputData.getText();
-            String inputTextPrefix = text.length()>maxcharacterslengthtoindex ? text.substring(0,maxcharacterslengthtoindex-1) : text;
+            String inputTextPrefix = text.length() > maxcharacterslengthtoindex ? text.substring(0, maxcharacterslengthtoindex - 1) : text;
 
             List<String> allWordsInInputText = Arrays.asList(StringUtils.split(text));
 
-           /* int size = allWordsInInputText.size();
-            if(size>100){
-                LOG.info("allWordsInInputText size=" + size);
-              //  continue;
-                allWordsInInputText = allWordsInInputText.subList(0,99);
-            }*/
-
-
             int rank = inputData.getPrio().getRank();
-            TargetRelation<T> targetRelation = new TargetRelation<>(inputData.getTargetObject(), rank);
+            TargetRelation<T> targetRelation = new TargetRelation<>(inputData.getTargetObject(), 3000); //FIXME max
 
             Node<T> node = index.putIfAbsent(inputTextPrefix, new Node<>(inputTextPrefix, targetRelation));
             if (node != null) {
                 //Ok 2 or more inputTextPrefix are the same pointing to different targets.?
-             //   System.out.println("node=" + inputTextPrefix);
+                //   System.out.println("node=" + inputTextPrefix);
                 node.addTargetRelation(targetRelation);
             }
 
-            String totaWordParts = ""; //e.g Fallet Pe
+            // String totalWordParts = ""; //e.g Fallet Pe
+            //TargetRelation ->
 
             //sommar,i,peking //maxCharacterLengthPart
-            int maxCharacterLengthPart = 7; //e.g sommaripeki
+           // int maxCharacterLengthPart = 7; //e.g sommaripeki
             //Fallet Peter Mangs i Sverige  abc
-            for (String word : allWordsInInputText) {
-                String term = "";
 
-                Node<T> node1;
-                Node<T> node2;
+            int size = allWordsInInputText.size();
+            for (int i = 0; i < size; i++) {
+                String currentWord = allWordsInInputText.get(i);
 
-                if(totaWordParts.length()>maxCharacterLengthPart){
-                    totaWordParts = ""; //Reset
+                int next = i + 1;
+                String nextWord = null;
+                if (next < size) {
+                    nextWord = allWordsInInputText.get(next);
                 }
 
-                for (char c : word.toCharArray()) {
-                    term += c;
-                    totaWordParts += c;
+                if (nextWord != null) {
+                    String mergedWords = currentWord;
 
-                    if (term.equals(word)) {
-                        rank += 600; //FIXME ?
+                    char[] chars = nextWord.toCharArray();
+                    for (int j = 0; j < chars.length; j++) {
+
+                        if (j >= 3) { //FIXME max merge to right
+                            break;
+                        }
+
+                        char aChar = chars[j];
+
+                        mergedWords += aChar;
+
+                        Node<T> node2 = index.putIfAbsent(mergedWords, new Node<>(mergedWords, targetRelation));
+
+                        if (node2 != null) {
+                            //         System.out.println("totalWordParts=" + totalWordParts);
+                            node2.addTargetRelation(targetRelation);
+                        }
+                    }
+                }
+
+                String wordCharacters = "";
+
+                for (char c : currentWord.toCharArray()) {
+                    wordCharacters += c;
+                    Node<T> node1;
+
+                    if (wordCharacters.equals(currentWord)) {
+                     //   rank += 600; //FIXME ?
+                        node1 = index.putIfAbsent(wordCharacters, new Node<>(wordCharacters, new TargetRelation<>(inputData.getTargetObject(), 2000)));
+                    } else {
+                        node1 = index.putIfAbsent(wordCharacters, new Node<>(wordCharacters, new TargetRelation<>(inputData.getTargetObject(), 500)));
                     }
 
-                    node1 = index.putIfAbsent(term, new Node<>(term, targetRelation));
                     if (node1 != null) {
                         //        System.out.println("Term=" + term);
                         node1.addTargetRelation(targetRelation);
-                    }
-
-                    node2 = index.putIfAbsent(totaWordParts, new Node<>(totaWordParts, targetRelation));
-                    if (node2 != null) {
-                   //         System.out.println("totaWordParts=" + totaWordParts);
-                        node2.addTargetRelation(targetRelation);
                     }
                 }
             }
@@ -242,7 +250,7 @@ public class TextSearchIndex<T> {
 
     private static class TargetRelation<T> implements Comparable<TargetRelation<T>> {
         private final T targetObject;
-        private final int rank;
+        private  int rank;
 
         @Override
         public int compareTo(TargetRelation<T> targetRelation) {

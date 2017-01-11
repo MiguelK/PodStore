@@ -41,7 +41,7 @@ public class StartupServlet extends HttpServlet {
 
         // JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 20, TimeUnit.HOURS); //FIXME
-        JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 1, TimeUnit.HOURS); //FIXME change time, remove
+        JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 10, TimeUnit.SECONDS); //FIXME change time, remove
         JobManagerService.getInstance().startAsync();
 
         PodCastSubscriptionService.getInstance().start();
