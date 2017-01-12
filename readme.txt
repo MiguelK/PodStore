@@ -20,7 +20,10 @@ scp scp /Users/miguelkrantz/Documents/temp/PodStore.war 586e521b7628e1e473000140
 ssh 586e521b7628e1e473000140@podstore-itemstore.rhcloud.com
 
 * ALIAS
-tail -f /var/lib/openshift/566d72b989f5cf714300000b/wildfly/standalone/log/server.log
+cd /var/lib/openshift/586e521b7628e1e473000140/wildfly/standalone/log/
+
+
+tail -f /var/lib/openshift/586e521b7628e1e473000140/wildfly/standalone/log/server.log
 
 Check file sizes
 du -h * | sort -rh | head -50
@@ -32,7 +35,8 @@ quota -s
 
 
 * OPENSHIFT_DATA_DIR (All persistent data skall lagras här)
-/var/lib/openshift/572600af0c1e66233d000100/app-root/data
+ cd /var/lib/openshift/586e521b7628e1e473000140/app-root/data     /POD_DATA_HOME/PodCastCatalogVersions/SWE/8/SWE.dat
+
 
 More memory JVM OpenShidt
 https://developers.openshift.com/servers/tomcat/jvm-memory.html

@@ -14,8 +14,10 @@ public class PodCastCatalogUpdater implements Job {
 
         LOG.info(PodCastCatalogUpdater.class.getSimpleName() + " doWork()...");
 
+        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SWE);
+/*
         for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
             PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language);
-        }
+        }*/
     }
 }

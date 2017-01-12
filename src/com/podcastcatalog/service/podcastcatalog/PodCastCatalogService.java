@@ -181,6 +181,12 @@ public class PodCastCatalogService {
     }
 
     public void buildIndexAsync(PodCastCatalogLanguage podCastCatalogLanguage) {
+
+        if(podCastCatalogLanguage==PodCastCatalogLanguage.US){
+            LOG.info("Currently no episodeIndex is built for " + podCastCatalogLanguage + " more JVM memory needed");
+            return;//FIXME
+        }
+
         asyncExecutor.submit(new BuildIndexAction(podCastCatalogLanguage));
     }
 
