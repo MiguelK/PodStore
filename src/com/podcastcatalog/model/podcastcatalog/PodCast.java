@@ -11,15 +11,15 @@ import java.util.List;
 
 public class PodCast extends BundleItem {
     //FIXME stars,relations, recentioner etc ???
+
     private final String collectionId;
     private final String publisher; //Sveriges Radio
     private final LocalDateTime createdDate;
     private final String feedURL; //Get all episodes from this url
 
-    private  List<PodCastEpisode> podCastEpisodesInternal;
+    private  List<PodCastEpisode> podCastEpisodesInternal; //Only serlized not used in JSON, to large file,memory
 
-    private final List<PodCastEpisode> podCastEpisodes; //Used in JSON test FIXME
-
+    private  List<PodCastEpisode> podCastEpisodes; //Used in JSON test FIXME
 
     private final List<PodCastCategoryType> podCastCategories;
 
@@ -34,6 +34,16 @@ public class PodCast extends BundleItem {
         this.podCastEpisodesInternal = Collections.unmodifiableList(podCastEpisodes);
         this.podCastEpisodes = podCastEpisodes.size()>=10 ? new ArrayList<>(podCastEpisodes.subList(0,9)) : podCastEpisodes;
         this.podCastCategories = Collections.unmodifiableList(podCastCategories);
+    }
+
+    public static PodCast createWithAllEpisodes(PodCast podCast){
+
+        PodCast p = new  PodCast(podCast.getCollectionId(),podCast.getTitle(),podCast.getPublisher(),podCast.getDescription(),podCast.createdDate,
+                podCast.getFeedURL(),podCast.getPodCastEpisodes(),podCast.getPodCastCategories(),podCast.getArtworkUrl600());
+        p.podCastEpisodes = podCast.getPodCastEpisodesInternal(); //Transfer all episodes to client
+
+        return p;
+
     }
 
     public List<PodCastEpisode> getPodCastEpisodes() {

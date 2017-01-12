@@ -69,7 +69,7 @@ public class PodCastCatalogService {
                 return podCast;
             }
 
-            return podCastCatalogIndex.lookup(id);
+            return podCastCatalogIndex.lookup(id);//All podCast inMemory from the inMemory catalog(s)
         } finally {
             readLock.unlock();
         }

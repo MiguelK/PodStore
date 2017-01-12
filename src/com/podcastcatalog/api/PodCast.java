@@ -27,19 +27,23 @@ public class PodCast {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPodCastById(@PathParam("id") String id) {
 
-        Optional<com.podcastcatalog.model.podcastcatalog.PodCast> podCast = PodCastCatalogService.getInstance().getPodCastById(id);
+        Optional<com.podcastcatalog.model.podcastcatalog.PodCast> podCastInMemory = PodCastCatalogService.getInstance().getPodCastById(id);
 
-        if (!podCast.isPresent()) {
-            podCast = ItunesSearchAPI.lookupPodCast(id);
+        if(podCastInMemory.isPresent()){
+            com.podcastcatalog.model.podcastcatalog.PodCast withAllEpisodes =
+                    com.podcastcatalog.model.podcastcatalog.PodCast.createWithAllEpisodes(podCastInMemory.get());
+
+            return Response.status(Response.Status.OK).entity(withAllEpisodes).build();
         }
 
-        if (!podCast.isPresent()) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("No podcast with id= " + id + " exist").build();
+        Optional<com.podcastcatalog.model.podcastcatalog.PodCast>  podCastNotInMemory = ItunesSearchAPI.lookupPodCast(id);
+        if (!podCastNotInMemory.isPresent()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("No podcast with id= " + id + " exist in Itunes ").build();
         }
 
-        PodCastCatalogService.getInstance().updatePodCastIndex(podCast.get());
+        PodCastCatalogService.getInstance().updatePodCastIndex(podCastNotInMemory.get());
 
-        return Response.status(Response.Status.OK).entity(podCast.get()).build();
+        return Response.status(Response.Status.OK).entity(podCastNotInMemory.get()).build();
     }
 
     /**
