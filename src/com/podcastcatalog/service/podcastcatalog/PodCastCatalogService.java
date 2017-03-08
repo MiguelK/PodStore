@@ -36,7 +36,7 @@ public class PodCastCatalogService {
     private TextSearchIndex<ResultItem> podCastEpisodeIndexSWE; //FIXME One per language, podCastEpisodeIndexSWE
     private TextSearchIndex<ResultItem> podCastEpisodeIndexUS; //FIXME One per language, podCastEpisodeIndexSWE
     private final PodCastIndex podCastCatalogIndex;
-    private final PodCastIndex podCastIndex;
+   // private final PodCastIndex podCastIndex;
     private ServiceDataStorage storage;
     private final ExecutorService executorService;
     private final ExecutorService asyncExecutor;
@@ -47,7 +47,7 @@ public class PodCastCatalogService {
 
     private PodCastCatalogService() {
         podCastCatalogIndex = PodCastIndex.create();
-        podCastIndex = PodCastIndex.create();
+     //   podCastIndex = PodCastIndex.create();
         podCastEpisodeIndexSWE = new TextSearchIndex<>();
         podCastEpisodeIndexUS = new TextSearchIndex<>();
         podCastCatalogBuilders = new ArrayList<>();
@@ -64,10 +64,10 @@ public class PodCastCatalogService {
         readLock.lock();
         try {
             //podCastIndex updated every 10th minute @see PodCastSubscriptionUpdater.java
-            Optional<PodCast> podCast = podCastIndex.lookup(id);
+           /* Optional<PodCast> podCast = podCastIndex.lookup(id);
             if (podCast.isPresent()) {
                 return podCast;
-            }
+            }*/
 
             return podCastCatalogIndex.lookup(id);//All podCast inMemory from the inMemory catalog(s)
         } finally {
@@ -75,7 +75,7 @@ public class PodCastCatalogService {
         }
     }
 
-    public void updatePodCastIndex(PodCast podCast) {
+    /*public void updatePodCastIndex(PodCast podCast) {
         writeLock.lock();
 
         try {
@@ -83,7 +83,7 @@ public class PodCastCatalogService {
         } finally {
             writeLock.unlock();
         }
-    }
+    }*/
 
     public void registerPodCastCatalogBuilder(PodCastCatalogBuilder builder) {
         writeLock.lock();
@@ -165,7 +165,7 @@ public class PodCastCatalogService {
         readLock.lock();
         try {
 
-            List<ResultItem> result = new ArrayList<>();
+            List<ResultItem> result;
             if(podCastCatalogLanguage == PodCastCatalogLanguage.SWE){
                  result = podCastEpisodeIndexSWE.lookup(queryParam);
             } else {

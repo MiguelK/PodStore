@@ -79,14 +79,14 @@ public class PodCastCatalogServiceTest {
         Assert.assertNotNull(status);
     }
 
-    @Test(groups = TestUtil.SLOW_TEST)
+    /*@Test(groups = TestUtil.SLOW_TEST)
     public void getPodCastById() {
         PodCast podCast = PodCastTest.createValid().build();
         PodCastCatalogService.getInstance().updatePodCastIndex(podCast);
 
         Optional<PodCast> podCastById = PodCastCatalogService.getInstance().getPodCastById(podCast.getCollectionId());
         Assert.assertTrue(podCastById.isPresent());
-    }
+    }*/
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void buildPodCastCatalogs() throws InterruptedException, ExecutionException, TimeoutException {

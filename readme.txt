@@ -19,6 +19,9 @@ scp scp /Users/miguelkrantz/Documents/temp/PodStore.war 586e521b7628e1e473000140
 * Login OpenShift
 ssh 586e521b7628e1e473000140@podstore-itemstore.rhcloud.com
 
+* OPENSHIFT_DATA_DIR (All persistent data skall lagras här)
+ cd /var/lib/openshift/586e521b7628e1e473000140/app-root/data
+
 * ALIAS
 cd /var/lib/openshift/586e521b7628e1e473000140/wildfly/standalone/log/
 
@@ -34,8 +37,6 @@ To check if you're hitting the inode limit use quota command:
 quota -s
 
 
-* OPENSHIFT_DATA_DIR (All persistent data skall lagras här)
- cd /var/lib/openshift/586e521b7628e1e473000140/app-root/data     /POD_DATA_HOME/PodCastCatalogVersions/SWE/8/SWE.dat
 
 
 More memory JVM OpenShidt

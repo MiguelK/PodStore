@@ -41,7 +41,7 @@ public class PodCast {
             return Response.status(Response.Status.BAD_REQUEST).entity("No podcast with id= " + id + " exist in Itunes ").build();
         }
 
-        PodCastCatalogService.getInstance().updatePodCastIndex(podCastNotInMemory.get());
+       //FIXME Remove or clear after x minues? PodCastCatalogService.getInstance().updatePodCastIndex(podCastNotInMemory.get());
 
         return Response.status(Response.Status.OK).entity(podCastNotInMemory.get()).build();
     }
@@ -49,34 +49,34 @@ public class PodCast {
     /**
      * Called from playList to see if any locally stored podCast has newer episodes.
      *
-     * @param id One or many podCastIds e.g (123,455,33 comma seperated)
+     * @param ids One or many podCastIds e.g (123,455,33 comma seperated)
      * @return Map of latest episodes, and all located podCasts.
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPodCastByIds(@QueryParam(value = "id") String id) {
+    public Response getPodCastByIds(@QueryParam(value = "id") String ids) {
 
-        if (StringUtils.isEmpty(id)) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Missing id= " + id).build();
+        if (StringUtils.isEmpty(ids)) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Missing ids= " + ids).build();
         }
 
         Map<String, com.podcastcatalog.model.podcastcatalog.PodCast> podCastById = new HashMap<>();
 
-        List<String> podCastIds = Arrays.asList(StringUtils.split(StringUtils.trimToEmpty(id), ","));
+        List<String> podCastIds = Arrays.asList(StringUtils.split(StringUtils.trimToEmpty(ids), ","));
 
         for (String podCastId : podCastIds) {
             Optional<com.podcastcatalog.model.podcastcatalog.PodCast> podCast = PodCastCatalogService.getInstance().getPodCastById(podCastId);
 
             if (!podCast.isPresent()) {
-                podCast = ItunesSearchAPI.lookupPodCast(id);
+                podCast = ItunesSearchAPI.lookupPodCast(podCastId);
             }
 
             if (!podCast.isPresent()) {
-                //FIXME lOG? invalid id received?
+                //FIXME lOG? invalid ids received?
                 continue;
             }
 
-            PodCastCatalogService.getInstance().updatePodCastIndex(podCast.get());
+            //PodCastCatalogService.getInstance().updatePodCastIndex(podCast.get());
 
             podCastById.put(podCast.get().getCollectionId(), podCast.get());
         }
