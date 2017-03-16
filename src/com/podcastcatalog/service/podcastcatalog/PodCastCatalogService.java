@@ -156,9 +156,11 @@ public class PodCastCatalogService {
             LOG.warning("Failed to encode search param " + queryParam);
         }
 
+        String itunesSearchLang = podCastCatalogLanguage ==PodCastCatalogLanguage.SWE ? "SE" : "US";
+
         //FIXME set lang in search?
         if(encodedQueryParam!=null){
-            List<PodCastResultItem> podCasts = ItunesSearchAPI.searchPodCasts("term=" + encodedQueryParam + "&entity=podcast&limit=5");
+            List<PodCastResultItem> podCasts = ItunesSearchAPI.searchPodCasts("term=" + encodedQueryParam + "&entity=podcast&limit=7&country=" + itunesSearchLang);
             resultItems.addAll(podCasts);
         }
 

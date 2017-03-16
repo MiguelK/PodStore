@@ -1,8 +1,8 @@
-Todo:
-Subscription
-    - push
-    - save/load data
-    - Episode notifier job -> push episode
+Version 1.1
+- language suppurt in search query
+- fix for simplecast.com
+
+
 
 ##### Server
 WildFly 10 administrator added.  Please make note of these credentials:
