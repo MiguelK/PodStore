@@ -34,10 +34,13 @@
     </servlet>
 
 
-    <!--http://127.0.01:8080/FlowEngine_war_exploded/jsp/index.jsp OK-->
+    <!--   admin.jsp http://127.0.01:8080/FlowEngine_war_exploded/jsp/index.jsp OK-->
 
     <welcome-file-list>
-        <welcome-file>/jsp/admin.jsp</welcome-file>
+        <welcome-file>/jsp/play.jsp</welcome-file>
+
+
+
     </welcome-file-list>
 
 </web-app>
