@@ -196,12 +196,6 @@ public class ItunesSearchAPI implements PodCastCollector {
     private URL toURL(String url) {
 
         try {
-
-            if (url.contains("simplecast.com") ) { //Ugly fix for simplecast.com RSS feed 403 http error
-                String replaced = url.replace("simplecast.com","rss.simplecast.com");
-                return new URL(replaced);
-            }
-            //simplecast.com
             return new URL(url);
         } catch (MalformedURLException e) {
             LOG.warning("Unable to create URL " + url + " message=" + e.getMessage());
