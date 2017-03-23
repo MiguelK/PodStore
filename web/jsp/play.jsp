@@ -5,11 +5,22 @@
 <%@ page import="java.net.URLDecoder" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.Arrays" %>
+<%@ page import="com.podcastcatalog.util.UAgentInfo" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 
 <%
+    String userAgent = request.getHeader("User-Agent");
+    UAgentInfo agentInfo = new UAgentInfo(userAgent, null);
+
+    boolean isMobileDevice = agentInfo.detectMobileQuick();
+
+    if(!isMobileDevice){
+        response.sendRedirect("http://www.pods.one");
+        return;
+    }
+
     String podCastId = request.getParameter("pid");
     String podCastEpisodeId = request.getParameter("eid");
 
@@ -177,6 +188,8 @@ PodCastTitle:<%=podCastTitle%>
 <br>
 PodCastEpisodeTitle:<%=podCastEpisodeTitle%>
 <br>
+    isMobileDevice <%=isMobileDevice%>
+ <br>
 
 <%=request.getRequestURL()%>
     <br>
