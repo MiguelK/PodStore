@@ -16,10 +16,10 @@
 
     boolean isMobileDevice = agentInfo.detectMobileQuick();
 
-    if(!isMobileDevice){
+    /*if(!isMobileDevice){
         response.sendRedirect("http://www.pods.one");
         return;
-    }
+    }*/
 
     String podCastId = request.getParameter("pid");
     String podCastEpisodeId = request.getParameter("eid");
@@ -66,9 +66,9 @@
     }
 
 
-    String shareImageURL = "http://static-cdn.sr.se/sida/images/2071/c7f07d6b-937a-4b83-9658-db76c00a19b8.jpg";
-    String podCastTitle = "PodCast...";
-    String podCastEpisodeTitle = "Avsnitt...";
+    String shareImageURL = "http://www.cmpod.net/wp-content/uploads/2016/03/podcast-426x270.png";
+    String podCastTitle = "PodCast on Pods";
+    String podCastEpisodeTitle = "";
 
     if(podCastId!= null){
         Optional<PodCast> podCastById = PodCastCatalogService.getInstance().getPodCastById(podCastId);
@@ -77,7 +77,7 @@
         if(podCastById.isPresent()){
             podCast = podCastById.get();
             shareImageURL = podCast.getArtworkUrl600();
-            podCastTitle = podCast.getTitle();
+            podCastTitle = podCast.getTitle() + " on Pods";
         }
 
         if(podCast!= null && podCastEpisodeId!= null){
@@ -97,19 +97,43 @@
 
 <!-- Apple smart banner -->
 <meta name="apple-itunes-app" content="app-id=1209200428", app-argument=http://www.pods.one">
-<!-- <meta property="al:ios:url" content="example://applinks"/>
- <meta property="al:ios:app_store_id" content="1209200428"/>
- <meta property="al:ios:app_name" content="PodsApp"/> -->
+
+<!-- Schema.org markup for Google+ -->
+<meta itemprop="name" content="Pods PodCastPlayer ">
+<meta itemprop="description" content="<%=podCastTitle%>">
+<meta itemprop="image" content="<%=shareImageURL%>">
 
 <!-- Facebook -->
-<!-- https://developers.facebook.com/docs/sharing/opengraph/object-properties-->
 <meta property="og:title" content="<%=podCastTitle%>"/>
 <meta property="og:description"
       content="<%=podCastEpisodeTitle%>"/>
-<meta property="og:type" content="website"/>
+<meta property="og:type" content="article"/>
 <meta property="og:image" content="<%=shareImageURL%>"/>
 
-<!-- Lato font -->
+<!-- Twitter -->
+<meta name="twitter:site" content="@Pods">
+<meta name="twitter:title" content="<%=podCastTitle%>">
+<meta name="twitter:description" content=" <%=podCastEpisodeTitle%>">
+<meta name="twitter:image" content=" <%=shareImageURL%>">
+<meta name="twitter:card" content="summary_large_image">
+
+<%--
+<meta name="twitter:image" content="<%=shareImageURL%>"/>
+<meta name="twitter:image:src" content="<%=shareImageURL%>">
+<meta name="twitter:title" content="<%=podCastTitle%>"/>
+<meta name="twitter:creator" content="Pods Inc">
+<meta name="twitter:description"
+          content="<%=podCastEpisodeTitle%>"/>
+<meta name="twitter:app:country" content="SE">
+<meta name="twitter:app:name:iphone" content="Pods">
+<meta name="twitter:app:id:iphone" content="1209200428">
+<meta name="twitter:app:url:iphone" content="https://itunes.apple.com/se/app/pods-podcast-player/id1209200428?mt=8">
+<meta name="twitter:app:name:ipad" content="Pods">
+<meta name="twitter:app:id:ipad" content="1209200428">
+<meta name="twitter:app:url:ipad" content="https://itunes.apple.com/se/app/pods-podcast-player/id1209200428?mt=8">
+--%>
+
+    <!-- Lato font -->
 <link href='https://fonts.googleapis.com/css?family=Lato:300,400' rel='stylesheet' type='text/css'>
 
 <style>
@@ -140,25 +164,6 @@
         color: white;
     }
 
-    video#backgroundvid {
-        position: fixed;
-        right: 0;
-        bottom: 0;
-        min-width: 100%;
-        min-height: 100%;
-        width: auto;
-        height: auto;
-        z-index: -100;
-    }
-
-    video#videoStyle {
-        margin-left: auto;
-        margin-right: auto;
-        display: block;
-        width: 600px;
-        z-index: -100;
-    }
-
     h2 {
         font-family: 'Lato', sans-serif;
         color: white;
@@ -178,9 +183,9 @@
 
 <body style="background-color : rgb(37,40,45);">
 
+
+<%--
 Pods: The PodCast Player<br>
-
-
 <br>
 <p>ShareImageURL:<%=shareImageURL%>
 <br>
@@ -190,16 +195,22 @@ PodCastEpisodeTitle:<%=podCastEpisodeTitle%>
 <br>
     isMobileDevice <%=isMobileDevice%>
  <br>
+    userAgent = <%=userAgent%>
+    <br>
+    agentInfo = <%=agentInfo%>
 
 <%=request.getRequestURL()%>
     <br>
     <%
         StringBuilder keyValues = new StringBuilder();
-        for (String s : request.getParameterMap().keySet()) {
-            keyValues.append("Key=").append(s).append(" : Value=").append(Arrays.toString(request.getParameterMap().get(s))).append("<br>");
+        if(request.getParameterMap()!=null) {
+            for (String s : request.getParameterMap().keySet()) {
+                keyValues.append("Key=").append(s).append(" : Value=").append(Arrays.toString(request.getParameterMap().get(s))).append("<br>");
+            }
         }
     %>
     <%=keyValues%>
 </p>
+--%>
 </body>
 </html>
