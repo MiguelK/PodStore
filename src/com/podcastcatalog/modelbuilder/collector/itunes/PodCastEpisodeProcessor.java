@@ -5,6 +5,7 @@ import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeType;
 import com.podcastcatalog.modelbuilder.collector.PodCastFeedParser;
 import it.sauronsoftware.feed4j.bean.FeedItem;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.concurrent.RecursiveTask;
 
@@ -28,9 +29,18 @@ public class PodCastEpisodeProcessor extends RecursiveTask<PodCastEpisode> {
 
         String guid = feedItem.getGUID();
         //FIXME createdDate
+
         PodCastEpisode.Builder episodeBuilder = PodCastEpisode.newBuilder();
+
+        //FIX for Radioplay Nemo missing description.
+        if(StringUtils.isEmpty(podCastFeedItem.getDescription())) {
+            episodeBuilder.description(podCastFeedItem.getTitle());
+        } else {
+            episodeBuilder.description(podCastFeedItem.getDescription());
+        }
+
         episodeBuilder.title(podCastFeedItem.getTitle()).podCastCollectionId(collectionId).
-                createdDate(podCastFeedItem.getCreatedDate()).description(podCastFeedItem.getDescription()).id(guid).
+                createdDate(podCastFeedItem.getCreatedDate()).id(guid).
                 duration(podCastFeedItem.getDuration()).fileSizeInMegaByte(podCastFeedItem.getFileSizeInMegaByte()).
                 targetURL(podCastFeedItem.getTargetURL()).podCastType(podCastFeedItem.getPodCastType()); //FIXME type?
 
