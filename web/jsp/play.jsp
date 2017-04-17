@@ -6,82 +6,49 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.Arrays" %>
 <%@ page import="com.podcastcatalog.util.UAgentInfo" %>
+<%@ page import="com.podcastcatalog.util.PodCastURLParser" %>
+<%@ page import="com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI" %>
+<%@ page import="javax.ws.rs.core.Response" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 
 <%
-    String userAgent = request.getHeader("User-Agent");
-    UAgentInfo agentInfo = new UAgentInfo(userAgent, null);
+    PodCastURLParser.Parameters podCastRequestParameters = PodCastURLParser.parsePodCastEpisodeId(request.getQueryString());
 
-    boolean isMobileDevice = agentInfo.detectMobileQuick();
+    String podCastId = null;
+    String podCastEpisodeId = null;
 
-    /*if(!isMobileDevice){
-        response.sendRedirect("http://www.pods.one");
-        return;
-    }*/
-
-    String podCastId = request.getParameter("pid");
-    String podCastEpisodeId = request.getParameter("eid");
-
-    String queryString = URLDecoder.decode(request.getQueryString(), "UTF-8");
-
-    if(queryString!=null){
-
-        String[] split = queryString.split("&");
-
-        if(split.length>2){ //Always > 2 pis and optional eid plus isi
-            String[] pidKeyValue= split[0].split("=");
-
-            if(podCastId== null && pidKeyValue!=null && pidKeyValue.length==2 &&
-                    pidKeyValue[0].equals("pid")){
-                //pid = 302534426%26
-                podCastId = pidKeyValue[1];
-            }
-
-            //-1f2bfc50-64485d5b
-            String[] eidKeyValue = split[1].split("=");
-
-            if(podCastEpisodeId!=null && eidKeyValue!= null && eidKeyValue.length==2 &&
-                    eidKeyValue[0].equals("eid")){
-                podCastEpisodeId = eidKeyValue[1];
-            }
-        }
-
-/*
-        int pidStart = queryString.indexOf("pid");
-        int endIndex = queryString.lastIndexOf("isi")-1; //Exclude &
-        if(pidStart!=-1 && endIndex<= queryString.length()){
-            String linkParams = queryString.substring(pidStart, endIndex);
-            System.out.println("sdsds" + linkParams);
-        } */
+    if(podCastRequestParameters != null) {
+        podCastId = podCastRequestParameters.getPodCastId();
+        podCastEpisodeId = podCastRequestParameters.getPodCastEpisodeId();
     }
 
-    if(podCastId!=null){
-        podCastId = URLDecoder.decode(podCastId, "UTF-8");
-    }
-
-    if(podCastEpisodeId!=null){
-        podCastEpisodeId = URLDecoder.decode(podCastEpisodeId, "UTF-8");
-    }
-
-
-    String shareImageURL = "http://www.cmpod.net/wp-content/uploads/2016/03/podcast-426x270.png";
+    String podCastImageURL = "http://www.pods.one/site/images/default-share-image.png";
     String podCastTitle = "PodCast on Pods";
     String podCastEpisodeTitle = "";
 
     if(podCastId!= null){
-        Optional<PodCast> podCastById = PodCastCatalogService.getInstance().getPodCastById(podCastId);
+
+        Optional<PodCast> podCastInMemory = PodCastCatalogService.getInstance().getPodCastById(podCastId);
 
         PodCast podCast = null;
-        if(podCastById.isPresent()){
-            podCast = podCastById.get();
-            shareImageURL = podCast.getArtworkUrl600();
+        if(podCastInMemory.isPresent()){
+            podCast = podCastInMemory.get();
+        } else {
+
+            Optional<com.podcastcatalog.model.podcastcatalog.PodCast>  podCastNotInMemory = ItunesSearchAPI.lookupPodCast(podCastId);
+            if (podCastNotInMemory.isPresent()) {
+                podCast = podCastNotInMemory.get();
+            }
+        }
+
+        if(podCast!= null){
+            podCastImageURL = podCast.getArtworkUrl600();
             podCastTitle = podCast.getTitle() + " on Pods";
         }
 
         if(podCast!= null && podCastEpisodeId!= null){
-
             for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodesInternal()) {
                 if(podCastEpisode.getId().equals(podCastEpisodeId)){
                     podCastEpisodeTitle = podCastEpisode.getTitle();
@@ -90,6 +57,22 @@
             }
         }
     }
+
+    String parameters = "";
+    if(podCastId!=null && podCastId.length()>0) {
+        parameters = "?pid=" + podCastTitle;
+    }
+
+    if(podCastEpisodeTitle!=null && podCastEpisodeTitle.length()>0){
+        parameters+= "&eid=" + podCastEpisodeTitle;
+    }
+    if(podCastImageURL!=null && podCastImageURL.length()>0){
+        parameters+= "&podCastImage=" + podCastImageURL;
+    }
+
+    String redirectURL = "http://www.pods.one" + parameters; //?pid=" + podCastId + "&eid=" + podCastEpisodeTitle + "&podCastImage=" + podCastImageURL;
+    response.sendRedirect(redirectURL);
+
 %>
 
 <head>
@@ -99,22 +82,22 @@
 <meta name="apple-itunes-app" content="app-id=1209200428", app-argument=http://www.pods.one">
 
 <!-- Schema.org markup for Google+ -->
-<meta itemprop="name" content="Pods PodCastPlayer ">
-<meta itemprop="description" content="<%=podCastTitle%>">
-<meta itemprop="image" content="<%=shareImageURL%>">
+<meta itemprop="name" content="<%=podCastTitle%>">
+<meta itemprop="description" content="<%=podCastEpisodeTitle%>">
+<meta itemprop="image" content="<%=podCastImageURL%>">
 
 <!-- Facebook -->
 <meta property="og:title" content="<%=podCastTitle%>"/>
 <meta property="og:description"
       content="<%=podCastEpisodeTitle%>"/>
 <meta property="og:type" content="article"/>
-<meta property="og:image" content="<%=shareImageURL%>"/>
+<meta property="og:image" content="<%=podCastImageURL%>"/>
 
 <!-- Twitter -->
 <meta name="twitter:site" content="@Pods">
 <meta name="twitter:title" content="<%=podCastTitle%>">
-<meta name="twitter:description" content=" <%=podCastEpisodeTitle%>">
-<meta name="twitter:image" content=" <%=shareImageURL%>">
+<meta name="twitter:description" content="<%=podCastEpisodeTitle%>">
+<meta name="twitter:image" content="<%=podCastImageURL%>">
 <meta name="twitter:card" content="summary_large_image">
 
 <%--
