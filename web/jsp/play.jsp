@@ -70,130 +70,24 @@
         parameters+= "&podCastImage=" + podCastImageURL;
     }
 
-    String redirectURL = "http://www.pods.one" + parameters; //?pid=" + podCastId + "&eid=" + podCastEpisodeTitle + "&podCastImage=" + podCastImageURL;
-    response.sendRedirect(redirectURL);
+    String soundId = request.getParameter("sid");
 
+    if(soundId!=null && soundId.length()>0){
+        parameters+= "&sid=" + soundId;
+    }
+
+
+    //if(soundId != null) {
+        //FIXME Property
+    //    String redirectURL = "http://resourceservice-itemstore.rhcloud.com/ResourceService/stream/" + soundId;
+    //  response.sendRedirect(redirectURL);
+    //} else {
+        String redirectURL = "http://www.pods.one" + parameters; //?pid=" + podCastId + "&eid=" + podCastEpisodeTitle + "&podCastImage=" + podCastImageURL;
+        response.sendRedirect(redirectURL);
+    //}
 %>
-
-<head>
-<title>Pods @2017</title>
-
-<!-- Apple smart banner -->
-<meta name="apple-itunes-app" content="app-id=1209200428", app-argument=http://www.pods.one">
-
-<!-- Schema.org markup for Google+ -->
-<meta itemprop="name" content="<%=podCastTitle%>">
-<meta itemprop="description" content="<%=podCastEpisodeTitle%>">
-<meta itemprop="image" content="<%=podCastImageURL%>">
-
-<!-- Facebook -->
-<meta property="og:title" content="<%=podCastTitle%>"/>
-<meta property="og:description"
-      content="<%=podCastEpisodeTitle%>"/>
-<meta property="og:type" content="article"/>
-<meta property="og:image" content="<%=podCastImageURL%>"/>
-
-<!-- Twitter -->
-<meta name="twitter:site" content="@Pods">
-<meta name="twitter:title" content="<%=podCastTitle%>">
-<meta name="twitter:description" content="<%=podCastEpisodeTitle%>">
-<meta name="twitter:image" content="<%=podCastImageURL%>">
-<meta name="twitter:card" content="summary_large_image">
-
-<%--
-<meta name="twitter:image" content="<%=shareImageURL%>"/>
-<meta name="twitter:image:src" content="<%=shareImageURL%>">
-<meta name="twitter:title" content="<%=podCastTitle%>"/>
-<meta name="twitter:creator" content="Pods Inc">
-<meta name="twitter:description"
-          content="<%=podCastEpisodeTitle%>"/>
-<meta name="twitter:app:country" content="SE">
-<meta name="twitter:app:name:iphone" content="Pods">
-<meta name="twitter:app:id:iphone" content="1209200428">
-<meta name="twitter:app:url:iphone" content="https://itunes.apple.com/se/app/pods-podcast-player/id1209200428?mt=8">
-<meta name="twitter:app:name:ipad" content="Pods">
-<meta name="twitter:app:id:ipad" content="1209200428">
-<meta name="twitter:app:url:ipad" content="https://itunes.apple.com/se/app/pods-podcast-player/id1209200428?mt=8">
---%>
-
-    <!-- Lato font -->
-<link href='https://fonts.googleapis.com/css?family=Lato:300,400' rel='stylesheet' type='text/css'>
-
-<style>
-    table {
-        width: 100%;
-    }
-
-    table, th, td {
-        border: 1px solid rgb(92,161,192);
-        border-collapse: collapse;
-    }
-
-    th, td {
-        padding: 5px;
-        text-align: left;
-    }
-
-    table#t01 tr:nth-child(even) {
-        background-color: #eee;
-    }
-
-    table#t01 tr:nth-child(odd) {
-        background-color: #fff;
-    }
-
-    table#t01 th {
-        background-color: rgb(92,161,192);
-        color: white;
-    }
-
-    h2 {
-        font-family: 'Lato', sans-serif;
-        color: white;
-        font-size: 300%;
-    }
-    h3 {
-        color: white;
-        font-size: 200%;
-    }
-
-    p {
-        color: #4c6b87;
-    }
-
-</style>
-</head>
 
 <body style="background-color : rgb(37,40,45);">
 
-
-<%--
-Pods: The PodCast Player<br>
-<br>
-<p>ShareImageURL:<%=shareImageURL%>
-<br>
-PodCastTitle:<%=podCastTitle%>
-<br>
-PodCastEpisodeTitle:<%=podCastEpisodeTitle%>
-<br>
-    isMobileDevice <%=isMobileDevice%>
- <br>
-    userAgent = <%=userAgent%>
-    <br>
-    agentInfo = <%=agentInfo%>
-
-<%=request.getRequestURL()%>
-    <br>
-    <%
-        StringBuilder keyValues = new StringBuilder();
-        if(request.getParameterMap()!=null) {
-            for (String s : request.getParameterMap().keySet()) {
-                keyValues.append("Key=").append(s).append(" : Value=").append(Arrays.toString(request.getParameterMap().get(s))).append("<br>");
-            }
-        }
-    %>
-    <%=keyValues%>
-</p>
---%>
 </body>
 </html>
