@@ -10,6 +10,7 @@ import com.podcastcatalog.service.job.JobManagerService;
 import com.podcastcatalog.service.job.MemoryDumperJob;
 import com.podcastcatalog.service.job.PodCastCatalogUpdater;
 import com.podcastcatalog.service.job.SubscriptionNotifierJob;
+import com.podcastcatalog.service.job.UpdateSearchSuggestionsJob;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
 
@@ -42,6 +43,8 @@ public class StartupServlet extends HttpServlet {
         // JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 20, TimeUnit.HOURS); //FIXME
         JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 30, TimeUnit.SECONDS); //FIXME change time, remove
+        JobManagerService.getInstance().registerJob(new UpdateSearchSuggestionsJob(),5, 30 * 3600, TimeUnit.SECONDS); //FIXME change time, remove
+
         JobManagerService.getInstance().startAsync();
 
         PodCastSubscriptionService.getInstance().start();

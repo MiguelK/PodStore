@@ -66,6 +66,29 @@ public class ItunesSearchAPI implements PodCastCollector {
         return new ItunesSearchAPI(BASE_URL_SEARCH + parameters).searchPodCast();
     }
 
+    public static List<PodCastSearchResult.Row> lookupPodCastsByIds(List<Long> ids) {
+        String podCastIds = StringUtils.join(ids, ",");
+
+        if (podCastIds == null) {
+            return Collections.emptyList();
+        }
+
+        ItunesSearchAPI itunesSearchAPI = new ItunesSearchAPI(BASE_URL_LOOKUP + podCastIds);
+
+        return itunesSearchAPI.lookupPodCastsByIds();
+    }
+
+    private List<PodCastSearchResult.Row> lookupPodCastsByIds() {
+
+        PodCastSearchResult podCastSearchResult = performSearch();
+
+        if (podCastSearchResult == null) {
+            return Collections.emptyList();
+        }
+
+        return podCastSearchResult.getResults();
+    }
+
     @Override
     public List<PodCast> collectPodCasts() {
 
@@ -145,7 +168,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         return stringBuilder.toString();
     }
 
-    private class PodCastSearchResult {
+     public static class PodCastSearchResult {
         int resultCount;
         private final List<Row> results = new ArrayList<>();
 
@@ -153,7 +176,7 @@ public class ItunesSearchAPI implements PodCastCollector {
             return results;
         }
 
-        private class Row {
+        public static class Row {
             private String kind;
             private String collectionName;
             private String feedUrl;

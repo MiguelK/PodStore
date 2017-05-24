@@ -153,7 +153,7 @@ public class PodCastCollectorOkihika implements PodCastCollector {
         return ItunesSearchAPI.lookupPodCasts(podCastIds);
     }
 
-    private List<Long> getPodCastIds() {
+    public List<Long> getPodCastIds() {
         try {
             Document doc = Jsoup.parse(toURL(url), TIMEOUT_MILLIS);
 

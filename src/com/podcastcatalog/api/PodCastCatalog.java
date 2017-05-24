@@ -1,10 +1,12 @@
 package com.podcastcatalog.api;
 
 
+import com.podcastcatalog.model.podcastsearch.PodCastTitle;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastsearch.ResultItem;
 import com.podcastcatalog.model.podcastsearch.SearchResult;
+import com.podcastcatalog.service.search.SearchSuggestionService;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.GET;
@@ -69,5 +71,35 @@ public class PodCastCatalog {
         SearchResult searchResult = new SearchResult(podCastEpisodes);
 
         return Response.status(Response.Status.OK).entity(searchResult).build();
+    }
+
+    @GET
+    @Path("/podCastTitles")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPodCastTitles(@QueryParam("lang") String lang) {
+
+        PodCastCatalogLanguage podCastCatalogLanguage = PodCastCatalogLanguage.fromString(lang);
+        if (podCastCatalogLanguage == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid lang parameter " + lang).build();
+        }
+
+        List<PodCastTitle> podCastTitles = SearchSuggestionService.getInstance().getPodCastTitles();
+
+        return Response.status(Response.Status.OK).entity(podCastTitles).build();
+    }
+
+    @GET
+    @Path("/podCastTitlesTrending")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPodCastTitlesTrending(@QueryParam("lang") String lang) {
+
+        PodCastCatalogLanguage podCastCatalogLanguage = PodCastCatalogLanguage.fromString(lang);
+        if (podCastCatalogLanguage == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid lang parameter " + lang).build();
+        }
+
+        List<PodCastTitle> podCastTitlesTrending = SearchSuggestionService.getInstance().getPodCastTitlesTrending();
+
+        return Response.status(Response.Status.OK).entity(podCastTitlesTrending).build();
     }
 }

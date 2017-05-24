@@ -28,24 +28,30 @@ public class JobManagerService {
     }
 
     public void registerJob(Job job, int period, TimeUnit timeUnit) {
-        registerdJobs.add(new RegisterdJob(new WorkExecutor(job), period, timeUnit));
+        registerdJobs.add(new RegisterdJob(new WorkExecutor(job),period, period, timeUnit));
+    }
+
+    public void registerJob(Job job,long initialDelay, int period, TimeUnit timeUnit) {
+        registerdJobs.add(new RegisterdJob(new WorkExecutor(job),initialDelay, period, timeUnit));
     }
 
     public void startAsync() {
         for (RegisterdJob registerdJob : registerdJobs) {
             LOG.info("Schedule job:" + registerdJob.getWorkExecutor());
-            threadPool.scheduleAtFixedRate(registerdJob.getWorkExecutor(), registerdJob.getPeriod(), registerdJob.getPeriod(), registerdJob.getTimeUnit());
+            threadPool.scheduleAtFixedRate(registerdJob.getWorkExecutor(), registerdJob.getInitialDelay(), registerdJob.getPeriod(), registerdJob.getTimeUnit());
         }
     }
 
     private class RegisterdJob {
         final WorkExecutor workExecutor;
         final int period;
+        final long initialDelay;
         final TimeUnit timeUnit;
 
-        RegisterdJob(WorkExecutor workExecutor, int period, TimeUnit timeUnit) {
+        RegisterdJob(WorkExecutor workExecutor,long initialDelay, int period, TimeUnit timeUnit) {
             this.workExecutor = workExecutor;
             this.period = period;
+            this.initialDelay = initialDelay;
             this.timeUnit = timeUnit;
         }
 
@@ -55,6 +61,10 @@ public class JobManagerService {
 
         int getPeriod() {
             return period;
+        }
+
+        public long getInitialDelay() {
+            return initialDelay;
         }
 
         TimeUnit getTimeUnit() {
