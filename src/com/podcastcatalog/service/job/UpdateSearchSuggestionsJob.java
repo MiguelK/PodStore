@@ -5,6 +5,7 @@ import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCategoryCollectorOkihika;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCollectorOkihika;
 import com.podcastcatalog.service.search.SearchSuggestionService;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,25 +29,24 @@ public class UpdateSearchSuggestionsJob implements Job {
 
             LOG.info("Fetch PodCastTitles for " + list.name());
 
-            for(int i=0; i<podCastTitlesRows.size(); i++) {
-                ItunesSearchAPI.PodCastSearchResult.Row row = podCastTitlesRows.get(i);
-
-
-                String trimmedTitle = org.apache.commons.lang3.StringUtils.trimToNull(row.getCollectionName());
-                if(trimmedTitle == null){
+            PodCastTitle podCastTitleTrending = null; //Register 1 per category toplist
+            for (ItunesSearchAPI.PodCastSearchResult.Row row : podCastTitlesRows) {
+                String trimmedTitle = StringUtils.trimToNull(row.getCollectionName());
+                if (trimmedTitle == null) {
                     continue;
                 }
 
                 PodCastTitle podCastTitle = new PodCastTitle(trimmedTitle);
 
-                if(podCastTitles.contains(podCastTitle)) {
+                if (podCastTitles.contains(podCastTitle)) {
                     continue;
                 }
 
                 podCastTitles.add(podCastTitle);
 
-                if(i==0) {
+                if (podCastTitleTrending == null) {
                     podCastTitlesTrending.add(podCastTitle);
+                    podCastTitleTrending = podCastTitle;
                 }
             }
         }
