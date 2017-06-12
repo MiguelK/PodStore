@@ -40,6 +40,6 @@ public class RandomPodCastEpisodeBundleBuilder {
             }
         }
 
-        return new PodCastEpisodeBundle("?title?", "?description?", podCastEpisodes);//FIXME
+        return new PodCastEpisodeBundle("Avsnitt", "?description?", podCastEpisodes);//FIXME
     }
 }

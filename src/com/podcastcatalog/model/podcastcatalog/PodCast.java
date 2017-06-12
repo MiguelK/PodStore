@@ -13,7 +13,7 @@ public class PodCast extends BundleItem {
     //FIXME stars,relations, recentioner etc ???
 
     private final String collectionId;
-    private final String publisher; //Sveriges Radio
+    private final String publisher; //Sveriges Radio, //virtualPodCast for grouped pods e.g Running 30min, 60min, "your pods by tags"
     private final LocalDateTime createdDate;
     private final String feedURL; //Get all episodes from this url
 
@@ -92,11 +92,6 @@ public class PodCast extends BundleItem {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
-    }
-
-    public void removeEpisodes(){
-
-
     }
 
     public PodCastEpisode getLatestPodCastEpisode() {
