@@ -17,6 +17,6 @@ public class ServerInfo {
 
         LOG.info("OPENSHIFT_APP_DNS=" + appDns);
 
-        return appDns != null && appDns.contains("-us-");
+        return appDns != null && appDns.contains("podstoreus");
     }
 }
