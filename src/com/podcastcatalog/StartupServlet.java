@@ -13,6 +13,7 @@ import com.podcastcatalog.service.job.SubscriptionNotifierJob;
 import com.podcastcatalog.service.job.UpdateSearchSuggestionsJob;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
+import com.podcastcatalog.util.ServerInfo;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -32,14 +33,16 @@ public class StartupServlet extends HttpServlet {
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
-        System.out.println("StartupServlet....");
-        LOG.info("About to start PodStore..");
+
+        System.out.println("StartupServlet....serverMode US=" + ServerInfo.isUSMode());
+        LOG.info("About to start PodStore...");
 
         ServiceDataStorage serviceDataStorageDisk = ServiceDataStorage.useDefault();
         PodCastCatalogService.getInstance().setStorage(serviceDataStorageDisk);
 
         LOG.info("Starting PodCastCatalog..., working dir= " + serviceDataStorageDisk);
 
+        //OPENSHIFT_APP_DNS //FIXME SWE or US
         // JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 20, TimeUnit.HOURS); //FIXME
         JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 30, TimeUnit.SECONDS); //FIXME change time, remove
@@ -49,8 +52,11 @@ public class StartupServlet extends HttpServlet {
 
         PodCastSubscriptionService.getInstance().start();
 
-        loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderSE());
-  //     loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderUS());
+        if(ServerInfo.isUSMode()) {
+            loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderUS());
+        } else {
+            loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderSE());
+        }
     }
 
     private void loadPodCastCatalog(ServiceDataStorage serviceDataStorageDisk, PodCastCatalogBuilder builder) {

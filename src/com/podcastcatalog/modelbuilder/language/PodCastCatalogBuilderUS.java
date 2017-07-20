@@ -2,12 +2,14 @@ package com.podcastcatalog.modelbuilder.language;
 
 import com.podcastcatalog.model.podcastcatalog.Bundle;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
+import com.podcastcatalog.model.podcastcatalog.PodCastBundle;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastcatalog.PodCastCategory;
 import com.podcastcatalog.modelbuilder.*;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCategoryCollectorOkihika;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCollectorOkihika;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -20,9 +22,16 @@ public class PodCastCatalogBuilderUS implements PodCastCatalogBuilder {
     public List<Bundle> createFromFetchedData(List<PodCast> podCasts, List<PodCastCategory> podCastCategories) {
         RandomPodCastEpisodeBundleBuilder randomPodCastEpisodeBundleBuilder = new RandomPodCastEpisodeBundleBuilder(podCasts, podCastCategories);
 
-        Bundle bundle = randomPodCastEpisodeBundleBuilder.createEpisodeBundle();
+        List<Bundle> bundles = new ArrayList<>();
 
-        return Collections.singletonList(bundle);
+        Bundle bundle = randomPodCastEpisodeBundleBuilder.createEpisodeBundle();
+        bundles.add(bundle);
+
+        TimeDurationPodCastBundleBuilder timeDurationPodCastBundleBuilder = new TimeDurationPodCastBundleBuilder(podCasts, podCastCategories);
+        PodCastBundle podCastBundle = timeDurationPodCastBundleBuilder.createPodCastBundle("Time is money");
+        bundles.add(podCastBundle);
+
+        return bundles;
     }
 
     @Override
@@ -31,7 +40,7 @@ public class PodCastCatalogBuilderUS implements PodCastCatalogBuilder {
         PodCastBundleBuilder podCastBundle = BundleBuilder.newPodCastBundleBuilder("Toplist", "Best PodCasts");
         podCastBundle.addCollector(new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.US, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY, 20));
 
-        PodCastCategoryBundleBuilder categoryBundle = BundleBuilder.newPodCastCategoryBundleBuilder("All Categories", "???");
+        PodCastCategoryBundleBuilder categoryBundle = BundleBuilder.newPodCastCategoryBundleBuilder("Categories", "???");
         categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createUS(PodCastCollectorOkihika.TopList.NEWS_POLITICS, "News and Politics"));
         categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createUS(PodCastCollectorOkihika.TopList.MUSIC, "Music"));
         categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createUS(PodCastCollectorOkihika.TopList.ARTS, "Art"));

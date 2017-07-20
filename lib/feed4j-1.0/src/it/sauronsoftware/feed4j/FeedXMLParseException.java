@@ -2,7 +2,7 @@ package it.sauronsoftware.feed4j;
 
 /**
  * This kind of exception is thrown every time a XML parsing problem occour
- * during the parse process.
+ * during the parseSWE process.
  * 
  * @author Carlo Pelliccia
  */

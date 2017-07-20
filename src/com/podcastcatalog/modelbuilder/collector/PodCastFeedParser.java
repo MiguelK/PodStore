@@ -102,10 +102,10 @@ public class PodCastFeedParser {
 
 
         } catch (FeedXMLParseException e) {
-            LOG.info("Faild to parse PodCast from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount + " Message=" + e.getMessage());
+            LOG.info("Faild to parseSWE PodCast from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount + " Message=" + e.getMessage());
             return Optional.empty();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Faild to parse PodCast from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount, e);
+            LOG.log(Level.SEVERE, "Faild to parseSWE PodCast from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount, e);
             return Optional.empty();
         }
 

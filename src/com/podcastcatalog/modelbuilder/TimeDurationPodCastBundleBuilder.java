@@ -68,7 +68,7 @@ public class TimeDurationPodCastBundleBuilder {
         podCastsByDuration = new HashMap<>();
     }
 
-    public PodCastBundle createPodCastBundle() {
+    public PodCastBundle createPodCastBundle(String bundleName) {
 
         int success = 0;
         int failed = 0;
@@ -128,7 +128,7 @@ public class TimeDurationPodCastBundleBuilder {
         podCasts.add(podCastsByDuration.get(DurationInterval.two_hour).build());
 
 
-        return new PodCastBundle("För löprundan", "not used", podCasts);
+        return new PodCastBundle(bundleName, "not used", podCasts);
     }
 
     private void updatePodCastByDuration(PodCast podCast, PodCastEpisode podCastEpisode, DurationInterval durationInterval) {

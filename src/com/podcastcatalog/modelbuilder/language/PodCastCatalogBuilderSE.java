@@ -24,7 +24,7 @@ public class PodCastCatalogBuilderSE implements PodCastCatalogBuilder {
         bundles.add(bundle);
 
         TimeDurationPodCastBundleBuilder timeDurationPodCastBundleBuilder = new TimeDurationPodCastBundleBuilder(podCasts, podCastCategories);
-        PodCastBundle podCastBundle = timeDurationPodCastBundleBuilder.createPodCastBundle();
+        PodCastBundle podCastBundle = timeDurationPodCastBundleBuilder.createPodCastBundle("Tid är pengar");
         bundles.add(podCastBundle);
 
         return bundles;

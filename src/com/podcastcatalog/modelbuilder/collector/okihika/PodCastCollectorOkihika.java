@@ -167,7 +167,7 @@ public class PodCastCollectorOkihika implements PodCastCollector {
             ).boxed().collect(Collectors.toList());
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Unable to parse id from " + url, e);
+            LOG.log(Level.SEVERE, "Unable to parseSWE id from " + url, e);
             return Collections.emptyList();
         }
     }
@@ -189,7 +189,7 @@ public class PodCastCollectorOkihika implements PodCastCollector {
         try {
             return Long.parseLong(result.toString());
         } catch (Exception e) {
-            LOG.info(getClass().getSimpleName() + " failed to parse Itunes id=" + value + ", id=" + result.toString());
+            LOG.info(getClass().getSimpleName() + " failed to parseSWE Itunes id=" + value + ", id=" + result.toString());
             return null;
         }
     }
@@ -212,9 +212,12 @@ public class PodCastCollectorOkihika implements PodCastCollector {
         };
     }
 
-    //FIXME remove only used by test
-    public static PodCastCollectorOkihika parse(TopList toplist, int resultSize) {
+
+    public static PodCastCollectorOkihika parseSWE(TopList toplist, int resultSize) {
         return new PodCastCollectorOkihika(Language.SWE,toplist, resultSize);
     }
 
+    public static PodCastCollectorOkihika parseUS(TopList toplist, int resultSize) {
+        return new PodCastCollectorOkihika(Language.US,toplist, resultSize);
+    }
 }

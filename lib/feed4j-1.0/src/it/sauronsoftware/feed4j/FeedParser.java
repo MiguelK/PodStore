@@ -9,7 +9,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 
 /**
- * The feed parser. It can parse RSS 1.0, RSS 2.0, Atom 0.3 and Atom 1.0.
+ * The feed parser. It can parseSWE RSS 1.0, RSS 2.0, Atom 0.3 and Atom 1.0.
  * 
  * @author Carlo Pelliccia
  */

@@ -87,19 +87,19 @@ public class DateUtil {
 //                        System.out.println(trimmeddateTime);
 //                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
 
-//                        ZonedDateTime parse1 = ZonedDateTime.parse(trimmeddateTime);
+//                        ZonedDateTime parse1 = ZonedDateTime.parseSWE(trimmeddateTime);
 //                        LocalDateTime localDateTime = parse1.toLocalDateTime();
 //                        System.out.println(localDateTime);
 
 //                        System.out.println("10. " + DateFormat.getDateTimeInstance(
-//                                DateFormat.LONG, DateFormat.LONG).parse(trimmeddateTime));
+//                                DateFormat.LONG, DateFormat.LONG).parseSWE(trimmeddateTime));
 
 //                        DateTime date = formatter.withZone(DateTimeZone.forID("Europe/Paris")).parseDateTime(str);
 
-//                        LocalDateTime parse = LocalDateTime.parse(trimmeddateTime,
+//                        LocalDateTime parseSWE = LocalDateTime.parseSWE(trimmeddateTime,
 //                                formatter);//.withLocale(Locale.ENGLISH));
 
-                        return Optional.empty();//Optional.ofNullable(parse);
+                        return Optional.empty();//Optional.ofNullable(parseSWE);
 
                     }catch (Exception x){
                      x.printStackTrace();
