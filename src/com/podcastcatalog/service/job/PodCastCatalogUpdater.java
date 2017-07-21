@@ -2,6 +2,7 @@ package com.podcastcatalog.service.job;
 
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
+import com.podcastcatalog.util.ServerInfo;
 
 import java.util.logging.Logger;
 
@@ -14,8 +15,14 @@ public class PodCastCatalogUpdater implements Job {
 
         LOG.info(PodCastCatalogUpdater.class.getSimpleName() + " doWork()...");
 
-        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SWE);
-/*
+        if(ServerInfo.isUSMode()) {
+            PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.US);
+        } else {
+            PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SWE);
+        }
+
+
+        /*
         for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
             PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language);
         }*/

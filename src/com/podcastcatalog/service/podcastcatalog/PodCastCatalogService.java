@@ -8,6 +8,7 @@ import com.podcastcatalog.modelbuilder.BundleBuilder;
 import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
+import com.podcastcatalog.util.ServerInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -184,10 +185,10 @@ public class PodCastCatalogService {
 
     public void buildIndexAsync(PodCastCatalogLanguage podCastCatalogLanguage) {
 
-        if(podCastCatalogLanguage==PodCastCatalogLanguage.US){
+     /*   if(podCastCatalogLanguage==PodCastCatalogLanguage.US){
             LOG.info("Currently no episodeIndex is built for " + podCastCatalogLanguage + " more JVM memory needed");
             return;//FIXME
-        }
+        }*/
 
         asyncExecutor.submit(new BuildIndexAction(podCastCatalogLanguage));
     }
@@ -313,7 +314,7 @@ public class PodCastCatalogService {
 
             TextSearchIndex<ResultItem> newTextSearchIndex = new TextSearchIndex<>();
 
-            boolean swedishCatalog = podCastCatalogLanguage == PodCastCatalogLanguage.SWE;
+            //boolean swedishCatalog = podCastCatalogLanguage == PodCastCatalogLanguage.SWE;
 
                 //FIXME test
                 List<PodCastEpisode> podCastEpisodes = bundleItemVisitor.getPodCastEpisodes();
@@ -328,15 +329,14 @@ public class PodCastCatalogService {
                 writeLock.lock();
                 try {
 
-                if(swedishCatalog){
-                    podCastEpisodeIndexSWE = newTextSearchIndex;
-                    LOG.info("Done building podCastEpisodeIndexSWE=" + podCastEpisodeIndexSWE.getStatus());
-                    podCastCatalogIndex.buildIndex(bundleItemVisitor.getPodCasts()); //Only update for swe
-
-                } else {
-                    podCastEpisodeIndexUS = newTextSearchIndex;
-                    LOG.info("Done building podCastEpisodeIndexUS=" + podCastEpisodeIndexUS.getStatus());
-                }
+              if(ServerInfo.isUSMode()){
+                  podCastEpisodeIndexUS = newTextSearchIndex;
+                  LOG.info("Done building podCastEpisodeIndexUS=" + podCastEpisodeIndexUS.getStatus());
+              } else {
+                  podCastEpisodeIndexSWE = newTextSearchIndex;
+                  LOG.info("Done building podCastEpisodeIndexSWE=" + podCastEpisodeIndexSWE.getStatus());
+                  podCastCatalogIndex.buildIndex(bundleItemVisitor.getPodCasts()); //Only update for swe
+              }
 
             } finally {
                 writeLock.unlock();
