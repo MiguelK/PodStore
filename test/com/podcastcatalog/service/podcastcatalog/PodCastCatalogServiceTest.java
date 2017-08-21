@@ -173,7 +173,7 @@ public class PodCastCatalogServiceTest {
                                                       List<PodCastCategory> podCastCategories) {
 
                 RandomPodCastEpisodeBundleBuilder bundleBuilder = new RandomPodCastEpisodeBundleBuilder(podCas, podCastCategories);
-                Bundle episodeBundle = bundleBuilder.createEpisodeBundle();
+                Bundle episodeBundle = bundleBuilder.createEpisodeBundle("Populär avsnitt");
 
                 return Collections.singletonList(episodeBundle);
             }

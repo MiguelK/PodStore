@@ -24,7 +24,7 @@ public class PodCastCatalogBuilderUS implements PodCastCatalogBuilder {
 
         List<Bundle> bundles = new ArrayList<>();
 
-        Bundle bundle = randomPodCastEpisodeBundleBuilder.createEpisodeBundle();
+        Bundle bundle = randomPodCastEpisodeBundleBuilder.createEpisodeBundle("Populära avsnitt");
         bundles.add(bundle);
 
         TimeDurationPodCastBundleBuilder timeDurationPodCastBundleBuilder = new TimeDurationPodCastBundleBuilder(podCasts, podCastCategories);

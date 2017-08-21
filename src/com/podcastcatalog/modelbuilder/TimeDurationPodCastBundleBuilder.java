@@ -38,22 +38,35 @@ public class TimeDurationPodCastBundleBuilder {
         }
 
          String getImageUrl() {
-             return "http://pods.one/site/images/DSC_2321.jpg";
+             switch (this) {
+                 case  half_hour:
+                     return "http://pods.one/site/images/half_hour.jpg";
+                 case  hour:
+                     return "http://pods.one/site/images/hour.jpg";
+                 case  one_half_hour:
+                     return "http://pods.one/site/images/one_half_hour.jpg";
+                 case  two_hour:
+                     return "http://pods.one/site/images/two_hour.jpg";
+                 default:
+                     return "http://pods.one/site/images/half_hour.jpg"; //FIXME Not used
+             }
+
          }
+
 
         String getTitle() {
 
             switch (this) {
                 case  half_hour:
-                    return "30 minuter (5km)";
+                    return "30 min";
                 case  hour:
-                    return "1 timme (10km)";
+                    return "1 hour"; //FIXME lang?
                 case  one_half_hour:
-                    return "1:30 minuter";
+                    return "1:30";
                 case  two_hour:
-                    return "2 timmar";
+                    return "2 hours";  //FIXME Lang
                 default:
-                    return "Spring";
+                    return "Spring"; //FIXME Not used
             }
         }
     }
@@ -123,7 +136,6 @@ public class TimeDurationPodCastBundleBuilder {
 
         podCasts.add(podCastsByDuration.get(DurationInterval.half_hour).build());
         podCasts.add(podCastsByDuration.get(DurationInterval.hour).build());
-        podCasts.add(podCastsByDuration.get(DurationInterval.half_hour).build());
         podCasts.add(podCastsByDuration.get(DurationInterval.one_half_hour).build());
         podCasts.add(podCastsByDuration.get(DurationInterval.two_hour).build());
 

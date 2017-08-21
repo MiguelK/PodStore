@@ -20,7 +20,7 @@ public class RandomPodCastEpisodeBundleBuilder {
         this.podCastCategories = podCastCategories;
     }
 
-    public Bundle createEpisodeBundle() {
+    public Bundle createEpisodeBundle(String bundleName) {
 
         List<PodCastEpisode> podCastEpisodes = new ArrayList<>();
 
@@ -40,6 +40,6 @@ public class RandomPodCastEpisodeBundleBuilder {
             }
         }
 
-        return new PodCastEpisodeBundle("Avsnitt", "?description?", podCastEpisodes);//FIXME
+        return new PodCastEpisodeBundle(bundleName, "?description?", podCastEpisodes);//FIXME
     }
 }
