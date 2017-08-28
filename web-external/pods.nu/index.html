@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+ <!-- Schema.org markup for Google+ -->
+ <meta itemprop="name" content="The Title X">
+ <meta itemprop="description" content="The Episode Title X">
+ <meta itemprop="image" content="http://www.pods.one/site/images/default-share-image.png">
+
+ <!-- Facebook -->
+ <meta name="metaFacebookTitleId" property="og:title" content="The Title X"/>
+ <meta property="og:description"
+       content="The Episode Title X"/>
+ <meta property="og:type" content="article"/>
+ <meta property="og:image" content="http://www.pods.one/site/images/default-share-image.png"/>
+
+ <!-- Twitter -->
+ <meta name="twitter:site" content="@Pods">
+ <meta name="twitter:title" content="The Title X">
+ <meta name="twitter:description" content="The Episode Title X">
+ <meta name="twitter:image" content="http://www.pods.one/site/images/default-share-image.png">
+ <meta name="twitter:card" content="summary_large_image">
+
+
+ <style>
+  /* The Modal (background) */
+  /* z-index: 1; */ /* Sit on top */
+
+  .modal {
+   display: none; /* Hidden by default */
+   position: fixed; /* Stay in place */
+   left: 0;
+   top: 0;
+   width: 100%; /* Full width */
+   height: 100%; /* Full height */
+   overflow: auto; /* Enable scroll if needed */
+   background-color: rgb(127,182,145); /* Fallback color */
+   background-color: rgba(127, 182, 145, 0.4);  /* Black w/ opacity */
+   -webkit-animation-name: fadeIn; /* Fade in the background */
+   -webkit-animation-duration: 0.4s;
+   animation-name: fadeIn;
+   animation-duration: 0.4s
+  }
+
+  /* Modal Content */
+  .modal-content {
+   display: inline-block;
+   position: fixed;
+   bottom: 0;
+   background-color: rgb(37,40,45);
+   width: 100%;
+   -webkit-animation-name: slideIn;
+   -webkit-animation-duration: 0.4s;
+   animation-name: slideIn;
+   animation-duration: 0.4s
+  }
+
+  /* The Close Button */
+  .close {
+   color: white;
+   float: right;
+   font-size: 28px;
+   font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+   color: #000;
+   text-decoration: none;
+   cursor: pointer;
+  }
+
+  /* Add Animation */
+  @-webkit-keyframes slideIn {
+   from {bottom: -300px; opacity: 0}
+   to {bottom: 0; opacity: 1}
+  }
+
+  @keyframes slideIn {
+   from {bottom: -300px; opacity: 0}
+   to {bottom: 0; opacity: 1}
+  }
+
+  @-webkit-keyframes fadeIn {
+   from {opacity: 0}
+   to {opacity: 1}
+  }
+
+  @keyframes fadeIn {
+   from {opacity: 0}
+   to {opacity: 1}
+  }
+ </style>
+
+
+<meta name="description" content=" "><!-- <<<<   Add a brief decription of your app -->
+<meta name="copyright" content="Pods" />
+<meta name="apple-itunes-app" content="app-id=1209200428">
+
+<title>Pods -PodCast spelaren för alla</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+
+<link href="site/css/styles.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+
+<!-- <body onload="MM_preloadImages('site/images/header_background.png')"> -->
+
+
+<script type="application/javascript">
+ /**
+  * Get the value of a querystring
+  * @param  {String} field The field to get the value of
+  * @param  {String} url   The URL to get the value from (optional)
+  * @return {String}       The field value
+  */
+ var getQueryString = function ( field, url ) {
+  var href = url ? url : window.location.href;
+  var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
+  var string = reg.exec(href);
+  return string ? string[1] : null;
+ };
+
+</script>
+
+<!-- Do not remove myBtn-->
+
+<div style="text-align: center;margin-top: 10px">
+ <a href="https://appsto.re/se/S8Ueib.i" style="display:inline-block;overflow:hidden;background:url(//linkmaker.itunes.apple.com/assets/shared/badges/sv-se/appstore-lrg.svg) no-repeat;width:135px;height:40px;background-size:contain;"></a>
+</div>
+
+<button id="myBtn"></button>
+
+<div id="myModal" class="modal">
+
+ <div class="modal-content" id="modelContentId" >
+  <span class="close">&times;</span>
+  <p id="podCastTitleId" style="color:white;font-size:36px;text-align: center;margin-top: 10px">
+  <p id="podCastEpisodeTitleId" style="color:white;font-size:24px;text-align: center;margin-top: 10px">
+  </p>
+  <p style="text-align: center;margin-top: 10px">
+   <img id="podCastImageId" src="http://www.pods.one/site/images/default-share-image.png" alt="Mountain View" style="width:304px;height:304px">
+  </p>
+
+  <p style="text-align: center;margin-top: 10px">
+   <audio controls autoplay loop style="width:300px;height: auto; margin-top: 10px">
+    <source id="videoId"  src=""  />
+    <p>Your browser does not support HTML5 audio.</p>
+   </audio>
+  </p>
+
+
+ </div>
+
+</div>
+
+
+<script type="text/javascript">
+
+ // eis,pid and podCastImageURL parameters mus be same in play.jsp
+ document.getElementById('modelContentId').style.display = 'none';
+
+ var sid = getQueryString("sid");
+ if(sid) {
+  document.getElementById('modelContentId').style.display = 'block';
+  //var urlDecodedPodCastTitle = unescape(sid); //unescape handles swedsih characters decodeURIComponent(pid);
+
+  var streamUrl = "http://resourceservice-itemstore.rhcloud.com/ResourceService/stream/" + sid;
+  //alert('streamUrl=' + streamUrl);
+  document.getElementById("videoId").src = streamUrl;
+ }
+
+ var podCastImageURL = getQueryString("podCastImage");
+
+ if(podCastImageURL) {
+  document.getElementById('modelContentId').style.display = 'block';
+  var podCastImageElementId = document.getElementById("podCastImageId");
+  //var podCastImageId = decodeURIComponent(imageId);
+  podCastImageElementId.src = podCastImageURL;
+ }
+
+ var pid = getQueryString("pid");
+ if(pid) {
+  document.getElementById('modelContentId').style.display = 'block';
+  var urlDecodedPodCastTitle = unescape(pid); //unescape handles swedsih characters decodeURIComponent(pid);
+
+  document.getElementById("podCastTitleId").innerHTML = urlDecodedPodCastTitle;
+ }
+
+ var eid = getQueryString("eid");
+ if(eid) {
+  var urlDecodedPodCastEpisodeTitle = unescape(eid); // decodeURIComponent(eid);
+  document.getElementById("podCastEpisodeTitleId").innerHTML = urlDecodedPodCastEpisodeTitle;
+ }
+</script>
+<!-- End Modal-->
+
+<div class="section_one">
+<div class="waypoint"></div>
+<div class="inner_section">
+
+<div class="iphone_section_one"></div>
+
+<div class="section_text_wrapper">
+<h2>Blixtsnabb, avskalad podcastspelare för <strong>alla</strong></h2>
+<p>Ett klick för att spela ett avsnitt. <br>Tusentals poddar sökbara offline.</p>
+</div>
+</div>
+
+</div>
+
+<!----  Section two  ---->
+<div class="section_two">
+<div class="waypoint"></div>
+<div class="inner_section">
+<div class="section_text_wrapper">
+
+<h2>Tydlig <strong>spellista</strong></h2>
+<p>Visar snabbt dina podcasts</p>
+
+</div>
+<div class="iphone_section_two"></div>
+</div>
+</div>
+
+<!----  Section three  ---->
+
+<div class="section_three">
+<div class="waypoint"></div>
+<div class="inner_section">
+<div class="iphone_section_three"></div>
+<div class="section_text_wrapper">
+
+<h2>Spela dina <strong> avsnit</h2>
+<p>Hoppa fram och tillbaka i avsnittet</p>
+<p>Dela podden med andra</p>
+
+</div>
+</div>
+</div>
+
+
+<div class="divide"></div>
+
+<!----  Footer  ---->
+
+<div class="footer">
+<div class="inner_wrapper">
+
+<div class="footer_left"><p>Pods</p>© 2017</div>
+
+<div class="footer_right">
+<!--<a href="#" class="twitter_icon" title="Follow us on Twitter"></a>
+<a href="#" class="facebook_icon" title="Find us on Facebook"></a>-->
+ <p>
+  Maila:
+  <a href="mailto:podsplayer@gmail.com?Subject=Pods Support" target="_top">podsplayer@gmail.com</a>
+ </p>
+</div>
+
+
+<!----  Scripts ---->
+<script src="site/js/jquery-1.9.1.min.js"></script>
+<script src="site/js/waypoints.min.js"></script>
+<script src="site/js/site.js"></script>
+
+
+<!----  Preload Images  ---->
+<script>
+function MM_preloadImages() { //v3.0
+var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+
+ <!-- Load mdaal with PodCast-->
+ function get(name){
+ if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+  return decodeURIComponent(name[1]);
+}
+
+// Get the modal
+var modal = document.getElementById('myModal');
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+modal.style.display = "block";
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal
+btn.onclick = function() {
+ modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+ modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+ if (event.target == modal) {
+  modal.style.display = "none";
+ }
+}
+</script>
+
+<br>
+
+<div align="center">
+ <a href="https://appsto.re/se/S8Ueib.i" style="display:inline-block;overflow:hidden;background:url(//linkmaker.itunes.apple.com/assets/shared/badges/sv-se/appstore-lrg.svg) no-repeat;width:135px;height:40px;background-size:contain;"></a>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>
