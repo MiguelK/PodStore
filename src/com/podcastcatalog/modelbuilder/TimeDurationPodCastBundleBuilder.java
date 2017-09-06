@@ -16,11 +16,11 @@ import java.util.Map;
 
 public class TimeDurationPodCastBundleBuilder {
 
-    private static final int MAX_EPISODE_SIZE = 20;
+
+    public enum Lang {SWE, ENG}
 
     private enum DurationInterval {
         half_hour,hour,one_half_hour,two_hour;
-
 
          static DurationInterval fromTotalTimeInSeconds(int seconds){
 
@@ -54,17 +54,17 @@ public class TimeDurationPodCastBundleBuilder {
          }
 
 
-        String getTitle() {
+        String getTitle(Lang language) {
 
             switch (this) {
                 case  half_hour:
-                    return "30 min";
+                    return language == Lang.SWE ? "ca 30 minuter" : "about 30 minutes";
                 case  hour:
-                    return "1 hour"; //FIXME lang?
+                    return language == Lang.SWE ? "ca 1 timme" : "about 1 hour";
                 case  one_half_hour:
-                    return "1:30";
+                    return language == Lang.SWE ? "ca 1,5 timme" : "about 1,5 hours";
                 case  two_hour:
-                    return "2 hours";  //FIXME Lang
+                    return language == Lang.SWE ? "ca 2 timmar" : "about 2 hours";
                 default:
                     return "Spring"; //FIXME Not used
             }
@@ -74,11 +74,13 @@ public class TimeDurationPodCastBundleBuilder {
     private final List<PodCast> podCasts;
     private final List<PodCastCategory> podCastCategories;
     private final Map<DurationInterval, PodCast.Builder>  podCastsByDuration;
+    private final Lang language;
 
-    public TimeDurationPodCastBundleBuilder(List<PodCast> podCasts, List<PodCastCategory> podCastCategories) {
+    public TimeDurationPodCastBundleBuilder(Lang language, List<PodCast> podCasts, List<PodCastCategory> podCastCategories) {
         this.podCasts = podCasts;
         this.podCastCategories = podCastCategories;
         podCastsByDuration = new HashMap<>();
+        this.language = language;
     }
 
     public PodCastBundle createPodCastBundle(String bundleName) {
@@ -150,7 +152,7 @@ public class TimeDurationPodCastBundleBuilder {
             podCastBuilder = PodCast.newBuilder().
                     publisher("virtualPodCast").
                     setArtworkUrl600(durationInterval.getImageUrl()).
-                    description("not used").title(durationInterval.getTitle());
+                    description("not used").title(durationInterval.getTitle(language));
             podCastsByDuration.put(durationInterval,podCastBuilder);
         }
 
