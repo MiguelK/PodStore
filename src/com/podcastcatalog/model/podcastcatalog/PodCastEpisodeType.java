@@ -4,7 +4,7 @@ package com.podcastcatalog.model.podcastcatalog;
 import org.apache.commons.lang3.StringUtils;
 
 public enum PodCastEpisodeType {
-    Audio("audio/mpeg"),Video(""),PDF("application/pdf"),Unknown(null);
+    Audio("audio/mpeg"), Video(""),PDF("application/pdf"),Unknown(null);
 
     private final String mimeType;
     PodCastEpisodeType(String mimeType) {
@@ -25,6 +25,9 @@ public enum PodCastEpisodeType {
         for (PodCastEpisodeType podCastEpisodeType : values()) {
             if(mimeType.equalsIgnoreCase(podCastEpisodeType.getMimeType())){
                 return  podCastEpisodeType;
+            }
+            if(mime.equalsIgnoreCase("audio/x-m4a")) {
+                    return Audio;
             }
         }
 
