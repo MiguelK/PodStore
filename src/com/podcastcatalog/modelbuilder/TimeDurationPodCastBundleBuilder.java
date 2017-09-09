@@ -90,7 +90,7 @@ public class TimeDurationPodCastBundleBuilder {
 
         for (PodCastCategory podCastCategory : podCastCategories) {
             for (PodCast podCast : podCastCategory.getPodCasts()) {
-                for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodesInternal()) {
+                for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodes()) {
 
                     PodCastEpisodeDuration duration = podCastEpisode.getDuration();
                     if(duration == null){
@@ -111,7 +111,7 @@ public class TimeDurationPodCastBundleBuilder {
 
        for (PodCast podCast : podCasts) {
 
-            List<PodCastEpisode> episodesInternal = podCast.getPodCastEpisodesInternal();
+            List<PodCastEpisode> episodesInternal = podCast.getPodCastEpisodes();
 
             for (PodCastEpisode podCastEpisode : episodesInternal) {
 
