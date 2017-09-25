@@ -34,7 +34,7 @@ public class StartupServlet extends HttpServlet {
         super.init(servletConfig);
 
 
-        System.out.println("StartupServlet....serverMode A US=" + ServerInfo.isUSMode());
+        System.out.println("StartupServlet....serverMode SWE and US " + ServerInfo.isUSMode());
         LOG.info("About to start PodStore...");
 
         ServiceDataStorage serviceDataStorageDisk = ServiceDataStorage.useDefault();
@@ -45,18 +45,18 @@ public class StartupServlet extends HttpServlet {
         //OPENSHIFT_APP_DNS //FIXME SWE or US
         // JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 20, TimeUnit.HOURS); //FIXME
-        JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 30, TimeUnit.SECONDS); //FIXME change time, remove
+        JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 60, TimeUnit.SECONDS); //FIXME change time, remove
         JobManagerService.getInstance().registerJob(new UpdateSearchSuggestionsJob(),5, 30 * 3600, TimeUnit.SECONDS); //FIXME change time, remove
 
         JobManagerService.getInstance().startAsync();
 
         PodCastSubscriptionService.getInstance().start();
 
-        if(ServerInfo.isUSMode()) {
+        //if(ServerInfo.isUSMode()) {
             loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderUS());
-        } else {
+        //} else {
             loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderSE());
-        }
+        //}
     }
 
     private void loadPodCastCatalog(ServiceDataStorage serviceDataStorageDisk, PodCastCatalogBuilder builder) {
