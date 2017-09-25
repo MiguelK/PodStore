@@ -20,11 +20,11 @@ public class LocatorProduction implements PodHomeDirectoryLocator {
             return podDataHomeDir;
         }
 
-        String openShiftDataDir = System.getenv(OPENSHIFT_DATA_DIR);
+        //String openShiftDataDir = System.getenv(OPENSHIFT_DATA_DIR);
 
-        if (openShiftDataDir != null) {
-            podDataHomeDir = new File(openShiftDataDir, PODDA_HOME_DIR);
-        }
+        //if (openShiftDataDir != null) {
+            podDataHomeDir = new File("/var/lib/docker", PODDA_HOME_DIR);
+        //}
 
         if (!podDataHomeDir.exists()) {
             if (!podDataHomeDir.mkdirs()) {

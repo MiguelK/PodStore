@@ -1,0 +1,16 @@
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolumeClaim",
+  "metadata": {
+    "name": "mypod"
+  },
+  "spec": {
+    "accessModes": [ "ReadWriteOnce" ],
+    "resources": {
+      "requests": {
+        "storage": "5Gi"
+      },
+      "volumeName": "mypv"
+    }
+  }
+}
