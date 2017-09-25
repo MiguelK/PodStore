@@ -22,7 +22,7 @@ public class LocatorProduction implements PodHomeDirectoryLocator {
 
         //String openShiftDataDir = System.getenv(OPENSHIFT_DATA_DIR);
 
-        //if (openShiftDataDir != null) {
+        //if (openShiftDataDir != null) {/wildfly/standalone/
             podDataHomeDir = new File("/var/lib/docker", PODDA_HOME_DIR);
         //}
 
