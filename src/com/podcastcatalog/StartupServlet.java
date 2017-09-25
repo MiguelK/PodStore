@@ -34,7 +34,7 @@ public class StartupServlet extends HttpServlet {
         super.init(servletConfig);
 
 
-        System.out.println("StartupServlet....serverMode US=" + ServerInfo.isUSMode());
+        System.out.println("StartupServlet....serverMode A US=" + ServerInfo.isUSMode());
         LOG.info("About to start PodStore...");
 
         ServiceDataStorage serviceDataStorageDisk = ServiceDataStorage.useDefault();

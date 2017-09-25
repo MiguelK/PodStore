@@ -10,7 +10,7 @@ public class LocatorProduction implements PodHomeDirectoryLocator {
 
     @Override
     public File getPodDataHomeDirectory() {
-        File podDataHomeDir = new File("/home/krantmig/tools/temp" + File.separator + PODDA_HOME_DIR);
+        /*File podDataHomeDir = new File("/home/krantmig/tools/temp" + File.separator + PODDA_HOME_DIR);
         if (isReadAndWriteDirectory(podDataHomeDir)) {
             return podDataHomeDir;
         }
@@ -18,12 +18,12 @@ public class LocatorProduction implements PodHomeDirectoryLocator {
         podDataHomeDir = new File("/Users/miguelkrantz/Documents/temp/" + File.separator + PODDA_HOME_DIR);
         if (isReadAndWriteDirectory(podDataHomeDir)) {
             return podDataHomeDir;
-        }
+        }*/
 
         //String openShiftDataDir = System.getenv(OPENSHIFT_DATA_DIR);
 
         //if (openShiftDataDir != null) {/wildfly/standalone/
-            podDataHomeDir = new File("/var/lib/docker", PODDA_HOME_DIR);
+         File   podDataHomeDir = new File("/var/lib/docker", PODDA_HOME_DIR);
         //}
 
         if (!podDataHomeDir.exists()) {
