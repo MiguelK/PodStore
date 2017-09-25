@@ -329,7 +329,7 @@ public class PodCastCatalogService {
                 writeLock.lock();
                 try {
 
-              if(ServerInfo.isUSMode()){
+              if(podCastCatalogLanguage == PodCastCatalogLanguage.US) { //ServerInfo.isUSMode()){
                   podCastEpisodeIndexUS = newTextSearchIndex;
                   LOG.info("Done building podCastEpisodeIndexUS=" + podCastEpisodeIndexUS.getStatus());
               } else {

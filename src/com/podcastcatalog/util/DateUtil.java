@@ -78,7 +78,7 @@ public class DateUtil {
                                 new SimpleDateFormat(pattern);
 
                         Date parse = format.parse(trimmeddateTime);
-                        System.out.println(parse);
+                        //System.out.println(parse);
 
                         if(parse!=null){
                             return Optional.ofNullable(toLocalDateTime(parse));
