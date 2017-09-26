@@ -52,11 +52,13 @@ public class StartupServlet extends HttpServlet {
 
         PodCastSubscriptionService.getInstance().start();
 
-        //if(ServerInfo.isUSMode()) {
+        if(ServerInfo.isUSMode()) {
             loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderUS());
-        //} else {
+        }
+
+        if(ServerInfo.isSWEMode()) {
             loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderSE());
-        //}
+        }
     }
 
     private void loadPodCastCatalog(ServiceDataStorage serviceDataStorageDisk, PodCastCatalogBuilder builder) {

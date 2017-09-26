@@ -1,5 +1,6 @@
 package com.podcastcatalog.service.job;
 
+import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastsearch.PodCastTitle;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCategoryCollectorOkihika;
@@ -18,19 +19,30 @@ public class UpdateSearchSuggestionsJob implements Job {
 
     @Override
     public void doWork() {
+        if(ServerInfo.isUSMode()) {
+            buildSuggestionsFor(PodCastCatalogLanguage.US);
+        }
 
-         List<PodCastTitle> podCastTitles = new ArrayList<>();
-         List<PodCastTitle>  podCastTitlesTrending = new ArrayList<>();
+        if(ServerInfo.isSWEMode()) {
+            buildSuggestionsFor(PodCastCatalogLanguage.SWE);
+        }
+    }
+
+    private void buildSuggestionsFor(PodCastCatalogLanguage lang) {
+        List<PodCastTitle> podCastTitles = new ArrayList<>();
+        List<PodCastTitle>  podCastTitlesTrending = new ArrayList<>();
 
         LOG.info("Start fetching SearchSuggestions...");
 
         for (PodCastCollectorOkihika.TopList categoryName : PodCastCollectorOkihika.TopList.values()) {
 
-            List<Long> ids;
+            List<Long> ids = new ArrayList<>();
 
-            if(ServerInfo.isUSMode()) {
+            if(lang == PodCastCatalogLanguage.US) {
                 ids = PodCastCategoryCollectorOkihika.parseUS(categoryName, 100).getPodCastIds();
-            } else {
+            }
+
+            if(lang == PodCastCatalogLanguage.SWE) {
                 ids = PodCastCategoryCollectorOkihika.parseSWE(categoryName, 100).getPodCastIds();
             }
 
@@ -62,7 +74,7 @@ public class UpdateSearchSuggestionsJob implements Job {
 
         LOG.info("Done building SearchSuggestions podCastTitles= " + podCastTitles.size());
 
-        SearchSuggestionService.getInstance().setPodCastTitles(podCastTitles);
-        SearchSuggestionService.getInstance().setPodCastTitlesTrending(podCastTitlesTrending);
+        SearchSuggestionService.getInstance().setPodCastTitles(lang, podCastTitles);
+        SearchSuggestionService.getInstance().setPodCastTitlesTrending(lang, podCastTitlesTrending);
     }
 }

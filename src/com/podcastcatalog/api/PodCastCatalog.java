@@ -83,7 +83,7 @@ public class PodCastCatalog {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid lang parameter " + lang).build();
         }
 
-        List<PodCastTitle> podCastTitles = SearchSuggestionService.getInstance().getPodCastTitles();
+        List<PodCastTitle> podCastTitles = SearchSuggestionService.getInstance().getPodCastTitles(podCastCatalogLanguage);
 
         return Response.status(Response.Status.OK).entity(podCastTitles).build();
     }
@@ -98,7 +98,7 @@ public class PodCastCatalog {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid lang parameter " + lang).build();
         }
 
-        List<PodCastTitle> podCastTitlesTrending = SearchSuggestionService.getInstance().getPodCastTitlesTrending();
+        List<PodCastTitle> podCastTitlesTrending = SearchSuggestionService.getInstance().getPodCastTitlesTrending(podCastCatalogLanguage);
 
         return Response.status(Response.Status.OK).entity(podCastTitlesTrending).build();
     }

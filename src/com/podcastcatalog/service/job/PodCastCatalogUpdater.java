@@ -17,7 +17,8 @@ public class PodCastCatalogUpdater implements Job {
 
         if(ServerInfo.isUSMode()) {
             PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.US);
-        } else {
+        }
+        if(ServerInfo.isSWEMode()) {
             PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SWE);
         }
 
