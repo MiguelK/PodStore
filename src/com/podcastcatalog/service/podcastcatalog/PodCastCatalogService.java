@@ -375,6 +375,7 @@ public class PodCastCatalogService {
             return null;
         }
 
+        Collections.reverse(bundles);
         return PodCastCatalog.create(podCastCatalogBuilder.getPodCastCatalogLang(), bundles);
     }
 }

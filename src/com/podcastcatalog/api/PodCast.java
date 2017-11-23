@@ -43,7 +43,10 @@ public class PodCast {
 
        //FIXME Remove or clear after x minues? PodCastCatalogService.getInstance().updatePodCastIndex(podCastNotInMemory.get());
 
-        return Response.status(Response.Status.OK).entity(podCastNotInMemory.get()).build();
+        com.podcastcatalog.model.podcastcatalog.PodCast withAllEpisodes =
+                com.podcastcatalog.model.podcastcatalog.PodCast.createWithAllEpisodes(podCastNotInMemory.get());
+
+        return Response.status(Response.Status.OK).entity(withAllEpisodes).build();
     }
 
     /**
