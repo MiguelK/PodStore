@@ -20,12 +20,12 @@ public class PodCastCatalogBuilderSE implements PodCastCatalogBuilder {
         List<Bundle> bundles = new ArrayList<>();
 
         RandomPodCastEpisodeBundleBuilder randomPodCastEpisodeBundleBuilder = new RandomPodCastEpisodeBundleBuilder(podCasts, podCastCategories);
-        Bundle bundle = randomPodCastEpisodeBundleBuilder.createEpisodeBundle("Popular Episodes");
+        Bundle bundle = randomPodCastEpisodeBundleBuilder.createEpisodeBundle("Populära avsnitt");
         bundles.add(bundle);
 
         TimeDurationPodCastBundleBuilder timeDurationPodCastBundleBuilder = new TimeDurationPodCastBundleBuilder(TimeDurationPodCastBundleBuilder.Lang.SWE,
                 podCasts, podCastCategories);
-        PodCastBundle podCastBundle = timeDurationPodCastBundleBuilder.createPodCastBundle("Avsnittslängd");
+        PodCastBundle podCastBundle = timeDurationPodCastBundleBuilder.createPodCastBundle("Samlingar");
         bundles.add(podCastBundle);
 
         return bundles;

@@ -29,7 +29,7 @@ public class PodCastCatalogBuilderUS implements PodCastCatalogBuilder {
 
         TimeDurationPodCastBundleBuilder timeDurationPodCastBundleBuilder = new TimeDurationPodCastBundleBuilder(TimeDurationPodCastBundleBuilder.Lang.ENG,
                 podCasts, podCastCategories);
-        PodCastBundle podCastBundle = timeDurationPodCastBundleBuilder.createPodCastBundle("Section Length");
+        PodCastBundle podCastBundle = timeDurationPodCastBundleBuilder.createPodCastBundle("Collections");
         bundles.add(podCastBundle);
 
         return bundles;
