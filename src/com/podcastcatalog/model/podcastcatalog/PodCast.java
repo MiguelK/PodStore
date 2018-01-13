@@ -12,6 +12,7 @@ import java.util.List;
 public class PodCast extends BundleItem {
     //FIXME stars,relations, recentioner etc ???
 
+    public static final String VIRTUAL_PODCAST_PUBLISHER = "virtualPodCast";
     private final String collectionId;
     private final String publisher; //Sveriges Radio, //virtualPodCast for grouped pods e.g Running 30min, 60min, "your pods by tags"
     private final LocalDateTime createdDate;
@@ -44,6 +45,10 @@ public class PodCast extends BundleItem {
 
         return p;
 
+    }
+
+    public boolean isVirtualPodCast() {
+        return VIRTUAL_PODCAST_PUBLISHER.equals(publisher);
     }
 
     public List<PodCastEpisode> getPodCastEpisodes() {

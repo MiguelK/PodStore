@@ -19,7 +19,11 @@ public class PodCastIndex {
     void buildIndex(List<PodCast> podCasts) {
         index = new HashMap<>(); //clear?
 
-        podCasts.forEach(p -> index.put(p.getCollectionId(), p));
+        podCasts.forEach(p -> {//Never index and make virtualPodCasts be searchable in App
+                    if (!p.isVirtualPodCast() ) {
+                        index.put(p.getCollectionId(), p);
+                } }
+        );
     }
 
     public Optional<PodCast> lookup(String id) {
@@ -30,8 +34,4 @@ public class PodCastIndex {
         return "PodCastIndex: Size=" + index.size();
     }
 
-    public void update(PodCast podCast) {
-
-        index.put(podCast.getCollectionId(),podCast);
-    }
 }

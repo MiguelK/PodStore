@@ -150,7 +150,7 @@ public class TimeDurationPodCastBundleBuilder {
 
         if(podCastBuilder== null) {
             podCastBuilder = PodCast.newBuilder().
-                    publisher("virtualPodCast").
+                    publisher(PodCast.VIRTUAL_PODCAST_PUBLISHER).
                     setArtworkUrl600(durationInterval.getImageUrl()).
                     description("not used").title(durationInterval.getTitle(language));
             podCastsByDuration.put(durationInterval,podCastBuilder);
