@@ -33,7 +33,30 @@ public class LiveBundleGenerator {
 
     private String engIdPrefx = "eng_";
 
+
     @Test
+    public void featuredPodCast_Swe() {
+
+        FeaturedPodCastModel model = new FeaturedPodCastModel();
+        model.version = 1;
+        model.add(new PodCastModel("https://podtail.com/content/images/podcast/artwork/600/a/l/alice-bianca-har-du-sagt-a-far-du-saga-b.jpg","https://www.expressen.se/noje/bianca-ingrossos-ursakt-efter-hatet/","1316796982"));
+
+        saveAsJSON(model, "swe-featured.json");
+    }
+
+    @Test
+    public void featuredPodCast_Eng() {
+
+        FeaturedPodCastModel model = new FeaturedPodCastModel();
+        model.version = 2;
+
+        model.add(new PodCastModel("https://secureimg.stitcher.com/feedimagesplain328/54050.jpg","https://www.rollingstone.com/culture/lists/beyond-serial-10-true-crime-podcasts-you-need-to-follow-w429955","917918570"));
+
+        saveAsJSON(model, "eng-featured.json");
+    }
+
+
+        @Test
     public void podCast() {
 
         LiveBundles liveBundlesSWE = new LiveBundles();
@@ -147,13 +170,13 @@ public class LiveBundleGenerator {
     }
 
 
-    private void saveAsJSON(LiveBundles liveBundles, String fileName) {
+    private void saveAsJSON(Object object, String fileName) {
 
         File file = new File("/Users/miguelkrantz/Documents/intellij-projects/PodStore/web-external/pods.nu/liveBundles/" + fileName);
 
         try {
             try (Writer writer = new OutputStreamWriter(new FileOutputStream(file))) {
-                GSON.toJson(liveBundles, writer);
+                GSON.toJson(object, writer);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -189,6 +212,35 @@ public class LiveBundleGenerator {
         }
     }
 
+
+    public class PodCastModel {
+        String imageUrl;
+        String targetUrl;
+        String podCastCollectionId;
+        String podacstEpisodeTargetURL;
+
+        public PodCastModel(String imageUrl, String targetUrl, String podCastCollectionId) {
+            this.imageUrl = imageUrl;
+            this.targetUrl = targetUrl;
+            this.podCastCollectionId = podCastCollectionId;
+        }
+
+        public PodCastModel(String imageUrl, String targetUrl, String podCastCollectionId, String podacstEpisodeTargetURL) {
+            this.imageUrl = imageUrl;
+            this.targetUrl = targetUrl;
+            this.podCastCollectionId = podCastCollectionId;
+            this.podacstEpisodeTargetURL = podacstEpisodeTargetURL;
+        }
+    }
+
+    public class FeaturedPodCastModel {
+        List<PodCastModel> podCastModels = new ArrayList<>();
+        int version;
+
+        void add(PodCastModel model){
+            podCastModels.add(model);
+        }
+    }
 
     public class LiveBundles {
 
