@@ -2,10 +2,10 @@
   <library name="feed4j-1">
     <CLASSES>
       <root url="file://$PROJECT_DIR$/lib/feed4j-1.0" />
-      <root url="jar://$PROJECT_DIR$/lib/feed4j-1.0/lib/dom4j-1.6.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/feed4j-1.0/lib/nekohtml.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/feed4j-1.0/lib/xercesImpl.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/feed4j-1.0/lib/xml-apis.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/feed4j-1.0/lib/dom4j-2.1.0.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="file://$PROJECT_DIR$/lib/feed4j-1.0/javadoc" />

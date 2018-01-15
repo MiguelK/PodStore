@@ -33,6 +33,9 @@ public class StartupServlet extends HttpServlet {
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
+        //Important for FeedParser, could cause 403 otherwise.
+        System.setProperty("http.agent", "Chrome");
+
 
         System.out.println("StartupServlet....serverMode SWE and US " + ServerInfo.isUSMode());
         LOG.info("About to start PodStore...");
