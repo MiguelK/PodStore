@@ -13,9 +13,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import static com.podcastcatalog.TestUtil.GSON;
@@ -39,8 +49,57 @@ public class LiveBundleGenerator {
 
         FeaturedPodCastModel model = new FeaturedPodCastModel();
         model.version = 1;
-        model.add(new PodCastModel("https://podtail.com/content/images/podcast/artwork/600/a/l/alice-bianca-har-du-sagt-a-far-du-saga-b.jpg","https://www.expressen.se/noje/bianca-ingrossos-ursakt-efter-hatet/","1316796982"));
 
+        model.add(new PodCastModel("https://podtail.com/content/images/podcast/artwork/600/a/l/alice-bianca-har-du-sagt-a-far-du-saga-b.jpg","https://www.expressen.se/noje/bianca-ingrossos-ursakt-efter-hatet/","1316796982"));
+        model.add(new PodCastModel("http://is5.mzstatic.com/image/thumb/Music118/v4/22/ca/68/22ca6812-2fec-f4c8-b6ab-a2b16f3f108f/source/170x170bb.jpg",
+                "http://fallet.aftonbladet.se","979901114"));
+
+        model.add(new PodCastModel("http://is3.mzstatic.com/image/thumb/Music128/v4/09/29/8f/09298f1e-331b-4a17-0c58-63a72736d559/source/1200x630bb.jpg",
+                "https://www.expressen.se/noje/podcast/livshjulet/","645681893"));
+
+        model.add(new PodCastModel("https://brapodcast.se/cache/img/1305009993.jpg",
+                "http://iamready.se/livsstil/kan-sjalv-en-podcast-om-manskligt-beteende-negativa-spiraler-och-positiv-tankeprogrammering-med-marten-nylen/",
+                "1305009993"));
+
+        model.add(makePodCastModel("http://is5.mzstatic.com/image/thumb/Music128/v4/a4/ac/38/a4ac3836-feb5-90ba-bb27-73c2b847a306/source/170x170bb.jpg",
+                "http://www.lofsan.se/traningspodden-med-jessica-och-lofsan/","1032687266"));
+
+        model.add(makePodCastModel("http://is5.mzstatic.com/image/thumb/Music62/v4/c9/86/3b/c9863bdc-3f2f-c008-30da-ecaf3b2d53c6/source/170x170bb.jpg",
+                "https://www.breakit.se/artikel/3262/sa-mycket-omsatter-borspodden","702777888"));
+
+        model.add(makePodCastModel("http://is4.mzstatic.com/image/thumb/Music118/v4/3c/59/8c/3c598c80-205c-67d8-95e8-59dd1480250b/source/170x170bb.jpg",
+                "https://alexandra.elle.se/allt-ar-bra-med-anja-och-alex/","1330922969"));
+
+        model.add(makePodCastModel("http://is5.mzstatic.com/image/thumb/Music71/v4/9d/05/1f/9d051fe5-59f2-723f-3485-a1e03a021b0c/source/170x170bb.jpg",
+                "http://www.su.se/om-oss/evenemang/bildningspodden-en-podcast-för-vetgiriga-1.254430","1055815193"));
+        model.add(makePodCastModel("http://is3.mzstatic.com/image/thumb/Music118/v4/8c/82/16/8c8216c2-3615-ecae-47b1-a7002833c881/source/170x170bb.jpg",
+                "https://www.expressen.se/noje/william-spetz-aktuell-i-humorprogram-pa-p3/","1073050778"));
+        model.add(makePodCastModel("http://is5.mzstatic.com/image/thumb/Music118/v4/bc/94/ce/bc94cec1-b0df-e924-107c-7034fa3b9136/source/170x170bb.jpg",
+                "https://www.expressen.se/omtalat/sex-och-relationer/7-tips-sa-kommer-du-over-personen-som-dumpat-dig/","874008884"));
+        model.add(makePodCastModel("http://is4.mzstatic.com/image/thumb/Music128/v4/32/b7/4d/32b74dd5-9524-0356-d59c-699dc756644f/source/170x170bb.jpg",
+                "https://www.svt.se/kultur/medier/popular-podd-om-usa-valet-fortsatter","1080924446"));
+        model.add(makePodCastModel("http://is4.mzstatic.com/image/thumb/Music118/v4/48/f9/ad/48f9ad29-089a-4261-0389-ee006eb7a562/source/170x170bb.jpg",
+                "http://poddtoppen.fi/2016/12/veckans-poddtips-david-batras-podcast/","1151906794"));
+        model.add(makePodCastModel("http://is3.mzstatic.com/image/thumb/Music71/v4/42/7b/67/427b67be-aa0a-a65e-add9-4615eaf06778/source/170x170bb.jpg",
+                "http://kodsnack.se","561631498"));
+        model.add(makePodCastModel("http://is1.mzstatic.com/image/thumb/Music111/v4/02/cc/15/02cc1579-6f12-ec74-2c33-ddf6b8ced2aa/source/170x170bb.jpg",
+                "https://www.nyteknik.se/iot-podden/ny-teknik-startar-podd-om-internet-of-things-6832229","1215903822"));
+
+        Collections.reverse(model.podCastModels); //Latest will alway be first
+
+        /*  model.add(makePodCastModel("","",""));
+        model.add(makePodCastModel("","",""));
+        model.add(makePodCastModel("","",""));
+        model.add(makePodCastModel("","",""));
+        model.add(makePodCastModel("","",""));
+        model.add(makePodCastModel("","",""));
+        model.add(makePodCastModel("","",""));
+        model.add(makePodCastModel("","",""));
+        model.add(makePodCastModel("","",""));
+        model.add(makePodCastModel("","",""));
+*/
+
+        validate(model);
         saveAsJSON(model, "swe-featured.json");
     }
 
@@ -48,11 +107,96 @@ public class LiveBundleGenerator {
     public void featuredPodCast_Eng() {
 
         FeaturedPodCastModel model = new FeaturedPodCastModel();
-        model.version = 2;
+        model.version = 1;
 
         model.add(new PodCastModel("https://secureimg.stitcher.com/feedimagesplain328/54050.jpg","https://www.rollingstone.com/culture/lists/beyond-serial-10-true-crime-podcasts-you-need-to-follow-w429955","917918570"));
+        model.add(makePodCastModel("http://is4.mzstatic.com/image/thumb/Music127/v4/d0/e6/5f/d0e65f81-c2cf-7f59-38e4-6abcfab7e38a/source/170x170bb.jpg",
+                "https://en.wikipedia.org/wiki/The_Joe_Rogan_Experience","360084272"));
+        model.add(makePodCastModel("http://is4.mzstatic.com/image/thumb/Music128/v4/d9/ba/3a/d9ba3a5c-b57e-e767-0923-06f08ad0b401/source/170x170bb.jpg",
+                "https://www.indystar.com/story/sports/nfl/colts/2017/08/23/pat-mcafee-opens-up-life-after-football/588204001/","1134713453"));
+        model.add(makePodCastModel("http://is4.mzstatic.com/image/thumb/Music128/v4/3f/77/53/3f77530f-9c97-214e-141f-28366deb715d/source/170x170bb.jpg",
+                "https://www.eatingforfree.com","1332978675"));
+        model.add(makePodCastModel("http://is4.mzstatic.com/image/thumb/Music118/v4/ac/26/71/ac267185-232d-c64e-c57d-bbdc25f7ab83/source/170x170bb.jpg",
+                "http://allyssaarens.oucreate.com/music/podcast-recommendation-by-turned-up-by-jake-jones-and-robert-venable/","1273576074"));
+        model.add(makePodCastModel("http://is1.mzstatic.com/image/thumb/Music71/v4/a6/2d/e5/a62de5e5-947a-dfa5-433f-82f3a53eaa89/source/170x170bb.jpg",
+                "https://www.nytimes.com/column/popcast-pop-music-podcast","120315823"));
+        model.add(makePodCastModel("http://is5.mzstatic.com/image/thumb/Music62/v4/b7/e4/67/b7e46778-c171-9c44-ba31-cf42705467c7/source/170x170bb.jpg",
+                "http://awfulannouncing.com/online-outlets/pardon-take-took-sports-podcasting.html","1089022756"));
+        model.add(makePodCastModel("http://is2.mzstatic.com/image/thumb/Music71/v4/ec/3f/92/ec3f924d-e918-086c-777e-cc64e1237984/source/170x170bb.jpg",
+                "https://en.wikipedia.org/wiki/Monday_Morning_Podcast","480486345"));
+        model.add(makePodCastModel("http://is4.mzstatic.com/image/thumb/Music71/v4/2b/fd/92/2bfd9226-b330-491a-86cc-02624d253901/source/170x170bb.jpg",
+                "https://en.wikipedia.org/wiki/WTF_with_Marc_Maron","329875043"));
+        model.add(makePodCastModel("http://is4.mzstatic.com/image/thumb/Music128/v4/7e/c9/12/7ec9120c-4fdd-c0a7-eb8c-787bfb6e21df/source/170x170bb.jpg",
+                "https://en.wikipedia.org/wiki/Juliet_Litman","1330224581"));
+        model.add(makePodCastModel("http://is3.mzstatic.com/image/thumb/Music111/v4/15/09/d9/1509d9f7-9ad2-3f02-41e6-effa3dcc81f8/source/170x170bb.jpg",
+                "https://lifehacker.com/tag/the-upgrade","508117781"));
+        model.add(makePodCastModel("http://is5.mzstatic.com/image/thumb/Music19/v4/b5/f3/1e/b5f31eaa-a3d3-2c30-377f-cc74713cc07b/source/170x170bb.jpg",
+                "https://www.theverge.com/podcasts","430333725"));
+        model.add(makePodCastModel("http://is2.mzstatic.com/image/thumb/Music118/v4/6c/b6/ab/6cb6ab65-91d0-5a25-5199-9bae5bf2e89b/source/170x170bb.jpg",
+                "https://www.npr.org/templates/story/story.php?storyId=5013","214089682"));
+        model.add(makePodCastModel("http://is1.mzstatic.com/image/thumb/Music128/v4/c7/86/60/c7866006-f92c-3249-c406-8e7c3a7db877/source/170x170bb.jpg",
+                "https://twitter.com/hashtag/tumanbay?lang=sv","1278345733"));
+        model.add(makePodCastModel("http://is2.mzstatic.com/image/thumb/Music128/v4/fb/a0/a4/fba0a426-7293-ef1a-de0b-9c42b7a56c5a/source/170x170bb.jpg",
+                "https://en.wikipedia.org/wiki/Critical_Role","1243705452"));
+
+        validate(model);
+
+        //model.add(makePodCastModel("","",""));
+        Collections.reverse(model.podCastModels); //Latest will alway be first
+
 
         saveAsJSON(model, "eng-featured.json");
+    }
+
+    private PodCastModel makePodCastModel(String imageUrl,String targetUrl,String pid) {
+        return new PodCastModel(imageUrl,
+                targetUrl,pid);
+    }
+
+    private void validate(FeaturedPodCastModel model)  {
+
+
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+
+        List<Future<?>> features = new ArrayList<>();
+
+        for (PodCastModel podCastModel : model.podCastModels) {
+
+            Future<?> submit = executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        URL imageUrl = new URL(podCastModel.imageUrl.replace("https","http"));
+                        URLConnection conn = imageUrl.openConnection();
+                        conn.connect();
+
+                        URL targetUrl = new URL(podCastModel.targetUrl.replace("https","http"));
+                        URLConnection targetUrlConn = targetUrl.openConnection();
+                        targetUrlConn.connect();
+
+                    } catch (Exception e) {
+                        // the URL is not in a valid form
+                        throw new RuntimeException(e);
+                    }
+
+                }
+            });
+            features.add(submit);
+        }
+
+
+        for (Future<?> feature : features) {
+            try {
+                feature.get(3, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw  new RuntimeException(e);
+            }
+        }
+
+        System.out.println("Done validating model " + model.podCastModels.size());
+
+
     }
 
 

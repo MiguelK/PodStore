@@ -1,0 +1,1 @@
+//If this file is added to pods.one users installing the app will then never be presented with ADS
