@@ -1,5 +1,6 @@
 package com.podcastcatalog.util;
 
+import com.podcastcatalog.modelbuilder.collector.itunes.PodCastEpisodeProcessor2;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
@@ -14,8 +15,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class DateUtil {
+
+    private final static Logger LOG = Logger.getLogger(DateUtil.class.getName());
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
@@ -102,7 +106,9 @@ public class DateUtil {
                         return Optional.empty();//Optional.ofNullable(parseSWE);
 
                     }catch (Exception x){
-                     x.printStackTrace();
+                     //   LOG.info("Failed parsing Date " + x.getMessage() + ", trimmeddateTime=" + trimmeddateTime);
+
+                   //  x.printStackTrace();
                     }
                 }
 

@@ -125,5 +125,22 @@ public enum PodCastCategoryType {
         return Collections.emptyList();
     }
 
+    public static List<PodCastCategoryType> fromString(String[] category) {
+        if(category==null){
+            return Collections.emptyList();
+        }
+
+        //FXIME Only support for 1 category?
+        for (String c : category) {
+            for (PodCastCategoryType podCastCategoryTypeX : PodCastCategoryType.values()) {
+                if(podCastCategoryTypeX.getDisplayName().equalsIgnoreCase(c)){
+                    return podCastCategoryTypeX.getCategories();
+                }
+            }
+        }
+
+
+        return Collections.emptyList();
+    }
 
 }

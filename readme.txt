@@ -3,6 +3,7 @@ Version 1.1
 - fix for simplecast.com
 
 
+Local files will be here /tmp/POD_DATA_HOME/PodCastCatalogVersions
 
 ##### Server
 WildFly 10 administrator added.  Please make note of these credentials:

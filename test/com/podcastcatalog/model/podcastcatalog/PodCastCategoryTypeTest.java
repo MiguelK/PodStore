@@ -11,7 +11,7 @@ public class PodCastCategoryTypeTest {
     public void fromString_invalid() {
         Assert.assertTrue(PodCastCategoryType.fromString("unknown value").isEmpty());
         Assert.assertTrue(PodCastCategoryType.fromString(" ").isEmpty());
-        Assert.assertTrue(PodCastCategoryType.fromString(null).isEmpty());
+        Assert.assertTrue(PodCastCategoryType.fromString((String) null).isEmpty());
     }
 
     @Test

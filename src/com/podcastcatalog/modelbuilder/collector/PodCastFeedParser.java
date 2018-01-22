@@ -1,7 +1,13 @@
 package com.podcastcatalog.modelbuilder.collector;
 
+import com.icosillion.podengine.exceptions.InvalidFeedException;
+import com.icosillion.podengine.exceptions.MalformedFeedException;
+import com.icosillion.podengine.models.Episode;
+import com.icosillion.podengine.models.ITunesItemInfo;
+import com.icosillion.podengine.models.Podcast;
 import com.podcastcatalog.model.podcastcatalog.*;
 import com.podcastcatalog.modelbuilder.collector.itunes.PodCastEpisodeProcessor;
+import com.podcastcatalog.modelbuilder.collector.itunes.PodCastEpisodeProcessor2;
 import com.podcastcatalog.util.DateUtil;
 import it.sauronsoftware.feed4j.FeedParser;
 import it.sauronsoftware.feed4j.FeedXMLParseException;
@@ -50,12 +56,61 @@ public class PodCastFeedParser {
         return Optional.empty();
     }
 
+    public static Optional<PodCast> tryParseFailOver(URL feedURL, String artworkUrl600,
+                                                      String collectionId) {
+
+
+        PodCast.Builder podCastBuilder = PodCast.newBuilder()
+                .collectionId(collectionId).setArtworkUrl600(artworkUrl600);
+
+        try {
+            Podcast podcast = new Podcast(feedURL);
+            LocalDateTime createdDate = DateUtil.parse(podcast.getPubDate()).orElse(LocalDateTime.now());
+
+            String webMaster = podcast.getManagingEditor();
+            if(webMaster==null){
+                webMaster = "Unknown";
+            }
+
+            List<PodCastCategoryType> categoryTypes = PodCastCategoryType.fromString(podcast.getCategories());
+            if(categoryTypes.isEmpty()){
+                categoryTypes = Collections.singletonList(PodCastCategoryType.NEWS_POLITICS);
+            }
+
+            podCastBuilder.description(podcast.getDescription()).setPodCastCategories(categoryTypes)
+                    .title(podcast.getTitle()).publisher(webMaster).createdDate(createdDate).feedURL(feedURL.toString());
+
+            List<PodCastEpisodeProcessor2> tasks = new ArrayList<>();
+
+                for (Episode episode : podcast.getEpisodes()) {
+                    PodCastEpisodeProcessor2 podCastEpisodeProcessor = new PodCastEpisodeProcessor2(podcast, episode, collectionId);
+                    podCastEpisodeProcessor.fork();//FIXME
+                    tasks.add(podCastEpisodeProcessor);
+
+                    for (PodCastEpisodeProcessor2 task : tasks) {
+                        PodCastEpisode podCastEpisode = task.join();//FIXME
+                        if(podCastEpisode!=null){
+                            podCastBuilder.addPodCastEpisode(podCastEpisode);
+                        }
+                    }
+            }
+
+            return Optional.of(podCastBuilder.build());
+
+        } catch (Exception e) {
+            LOG.info("PodCast parse fail: Level 2 feed=" + feedURL + ", message=" + e.getMessage());
+        }
+
+        return Optional.empty();
+    }
+
     private static Optional<PodCast> parse(URL feedURL, String artworkUrl600, String collectionId, int maxFeedCount) {
         PodCast.Builder podCastBuilder = PodCast.newBuilder();
 
         int expectedEpisodeCount = -1;
         try {
             Feed feed = FeedParser.parse(feedURL);
+
             PodCastFeedHeader feedHeader = new PodCastFeedHeader(feed.getHeader());
 
             podCastBuilder.title(feedHeader.getTitle()).setArtworkUrl600(artworkUrl600).
@@ -101,19 +156,14 @@ public class PodCastFeedParser {
             }
 
 
-        } catch (FeedXMLParseException e) {
-            LOG.info("Faild to parseSWE PodCast from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount + " Message=" + e.getMessage());
-            return Optional.empty();
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Faild to parseSWE PodCast from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount, e);
-            return Optional.empty();
+        }  catch (Exception e) {
+            LOG.info("PodCast parse fail: Level 1, from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount + " message=" + e.getMessage());
+            return tryParseFailOver(feedURL, artworkUrl600, collectionId);
         }
 
 
-
         if (!podCastBuilder.isValid()) {
-            LOG.log(Level.SEVERE, "PodCast from feed=" + feedURL + " is not valid, expectedEpisodeCount=" + expectedEpisodeCount);
-            return Optional.empty();
+            return tryParseFailOver(feedURL, artworkUrl600, collectionId);
         }
 
         return Optional.of(podCastBuilder.build());

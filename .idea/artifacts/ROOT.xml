@@ -3,6 +3,11 @@
     <output-path>$PROJECT_DIR$</output-path>
     <root id="archive" name="ROOT.war">
       <element id="artifact" artifact-name="PodStore:war exploded" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="podengine-2.2" />
+        </element>
+      </element>
     </root>
   </artifact>
 </component>
