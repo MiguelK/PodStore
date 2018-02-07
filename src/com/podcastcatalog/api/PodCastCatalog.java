@@ -68,6 +68,9 @@ public class PodCastCatalog {
 
         List<ResultItem> podCastEpisodes = PodCastCatalogService.getInstance().search(podCastCatalogLanguage, queryParam);
 
+        LOG.info("Search=" + query + ", lang=" + lang + ", result=" + podCastEpisodes.size());
+
+
         SearchResult searchResult = new SearchResult(podCastEpisodes);
 
         return Response.status(Response.Status.OK).entity(searchResult).build();

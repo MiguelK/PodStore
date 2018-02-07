@@ -102,7 +102,7 @@ public class ItunesSearchAPI implements PodCastCollector {
 
         List<PodCast> podCasts = new ArrayList<>();
 
-        LOG.info("Start parsing " + podCastSearchResult.resultCount + " podcast(s)");
+        //LOG.info("Start parsing " + podCastSearchResult.resultCount + " podcast(s)");
 
         for (PodCastSearchResult.Row podCastRow : podCastSearchResult.getResults()) {
             URL feedURL = toURL(podCastRow.getFeedUrl());
@@ -114,7 +114,7 @@ public class ItunesSearchAPI implements PodCastCollector {
             }
         }
 
-        LOG.info("Done parsing " + podCasts.size() + " podCast(s), expected=" + podCastSearchResult.resultCount);
+        //LOG.info("Done parsing " + podCasts.size() + " podCast(s), expected=" + podCastSearchResult.resultCount);
 
         for (PodCastProcessor task : tasks) {
             PodCast join = task.join();

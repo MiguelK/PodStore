@@ -48,7 +48,14 @@ public class LiveBundleGenerator {
     public void featuredPodCast_Swe() {
 
         FeaturedPodCastModel model = new FeaturedPodCastModel();
-        model.version = 1;
+        model.version = 4;
+
+       model.add(new PodCastModel("http://is5.mzstatic.com/image/thumb/Music71/v4/c4/f8/91/c4f891d5-9df5-03a4-55af-1f1687d8c327/source/1200x630bb.jpg",
+                "https://www.breakit.se/podcast/163/aer-det-en-bra-affar-for-skattebetalarna-att-satsa-pa-startups","962159150"));
+
+        model.add(new PodCastModel("https://imgs.aftonbladet-cdn.se/v2/images/1a48f0e9-08e7-4158-ad95-b21dd14a0fbc?fit=crop&h=732&w=1100&s=b5104d3f210dbe3ede95f7e909a62e5d29f0d647",
+                "https://www.aftonbladet.se/nojesbladet/a/4p4rR/mia-skaringer-blev-sjukskriven--under-foraldraledigheten","1229724132"));
+        model.add(new PodCastModel("http://podcasts.nu/images/podcasts/5/sr-p3-dokumentar-standard.jpg","http://sverigesradio.se/sida/avsnitt/1012742?programid=2519","308339623"));
 
         model.add(new PodCastModel("https://podtail.com/content/images/podcast/artwork/600/a/l/alice-bianca-har-du-sagt-a-far-du-saga-b.jpg","https://www.expressen.se/noje/bianca-ingrossos-ursakt-efter-hatet/","1316796982"));
         model.add(new PodCastModel("http://is5.mzstatic.com/image/thumb/Music118/v4/22/ca/68/22ca6812-2fec-f4c8-b6ab-a2b16f3f108f/source/170x170bb.jpg",
@@ -85,7 +92,7 @@ public class LiveBundleGenerator {
         model.add(makePodCastModel("http://is1.mzstatic.com/image/thumb/Music111/v4/02/cc/15/02cc1579-6f12-ec74-2c33-ddf6b8ced2aa/source/170x170bb.jpg",
                 "https://www.nyteknik.se/iot-podden/ny-teknik-startar-podd-om-internet-of-things-6832229","1215903822"));
 
-        Collections.reverse(model.podCastModels); //Latest will alway be first
+        //Collections.reverse(model.podCastModels); //Latest will alway be first
 
         /*  model.add(makePodCastModel("","",""));
         model.add(makePodCastModel("","",""));
@@ -107,8 +114,13 @@ public class LiveBundleGenerator {
     public void featuredPodCast_Eng() {
 
         FeaturedPodCastModel model = new FeaturedPodCastModel();
-        model.version = 1;
+        model.version = 2;
 
+        model.add(new PodCastModel(
+                "https://pbs.twimg.com/profile_images/841467361119096833/HyCyoKBd.jpg",
+                "https://stownpodcast.org","1212558767"));
+        model.add(new PodCastModel("http://www.indiewire.com/wp-content/uploads/2017/07/levar-burton-reads.jpeg?w=780",
+                "http://www.indiewire.com/2017/07/neil-gaiman-levar-burton-reads-podcast-1201860114/","1244649384"));
         model.add(new PodCastModel("https://secureimg.stitcher.com/feedimagesplain328/54050.jpg","https://www.rollingstone.com/culture/lists/beyond-serial-10-true-crime-podcasts-you-need-to-follow-w429955","917918570"));
         model.add(makePodCastModel("http://is4.mzstatic.com/image/thumb/Music127/v4/d0/e6/5f/d0e65f81-c2cf-7f59-38e4-6abcfab7e38a/source/170x170bb.jpg",
                 "https://en.wikipedia.org/wiki/The_Joe_Rogan_Experience","360084272"));
@@ -142,7 +154,7 @@ public class LiveBundleGenerator {
         validate(model);
 
         //model.add(makePodCastModel("","",""));
-        Collections.reverse(model.podCastModels); //Latest will alway be first
+       // Collections.reverse(model.podCastModels); //Latest will alway be first
 
 
         saveAsJSON(model, "eng-featured.json");
