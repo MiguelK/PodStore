@@ -2,6 +2,9 @@ Version 1.1
 - language suppurt in search query
 - fix for simplecast.com
 
+Version 2.5.0 - October 2017
+============================
+
 
 Local files will be here /tmp/POD_DATA_HOME/PodCastCatalogVersions
 

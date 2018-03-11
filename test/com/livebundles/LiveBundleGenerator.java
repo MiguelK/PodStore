@@ -48,9 +48,14 @@ public class LiveBundleGenerator {
     public void featuredPodCast_Swe() {
 
         FeaturedPodCastModel model = new FeaturedPodCastModel();
-        model.version = 4;
+        model.version = 5;
 
-       model.add(new PodCastModel("http://is5.mzstatic.com/image/thumb/Music71/v4/c4/f8/91/c4f891d5-9df5-03a4-55af-1f1687d8c327/source/1200x630bb.jpg",
+
+        model.add(new PodCastModel("https://static-cdn.sr.se/sida/images/909/77f00286-6cbd-4407-b95b-202ebc736e27.jpg?preset=socialmedia-share-image",
+                "http://sverigesradio.se/sida/artikel.aspx?programid=909&artikel=2462939","302534426"));
+
+
+        model.add(new PodCastModel("http://is5.mzstatic.com/image/thumb/Music71/v4/c4/f8/91/c4f891d5-9df5-03a4-55af-1f1687d8c327/source/1200x630bb.jpg",
                 "https://www.breakit.se/podcast/163/aer-det-en-bra-affar-for-skattebetalarna-att-satsa-pa-startups","962159150"));
 
         model.add(new PodCastModel("https://imgs.aftonbladet-cdn.se/v2/images/1a48f0e9-08e7-4158-ad95-b21dd14a0fbc?fit=crop&h=732&w=1100&s=b5104d3f210dbe3ede95f7e909a62e5d29f0d647",
@@ -207,19 +212,17 @@ public class LiveBundleGenerator {
         }
 
         System.out.println("Done validating model " + model.podCastModels.size());
-
-
     }
 
-
-        @Test
+    @Test
     public void podCast() {
 
         LiveBundles liveBundlesSWE = new LiveBundles();
+        liveBundlesSWE.version = 2;
         liveBundlesSWE.addVirtualPodCast(make5_Kvinnliga_Idtrottare(sweIdPrefx + 1));
         liveBundlesSWE.addVirtualPodCast(make_musik_poddar(sweIdPrefx + 2));
         liveBundlesSWE.addVirtualPodCast(make_dokumentar_1(sweIdPrefx + 3));
-        liveBundlesSWE.addVirtualPodCast(make_best_episodes_1(sweIdPrefx + 4));
+        liveBundlesSWE.addVirtualPodCast(make_best_episodes_1(sweIdPrefx + 4)); //First episode on DiscoverVC2
         liveBundlesSWE.addVirtualPodCast(make_best_of_mordpodden(sweIdPrefx + 5));
         liveBundlesSWE.addVirtualPodCast(varvet(sweIdPrefx + 6));
 
@@ -227,6 +230,7 @@ public class LiveBundleGenerator {
 
 
         LiveBundles liveBundlesENG = new LiveBundles();
+        liveBundlesENG.version = 1;
         liveBundlesENG.addVirtualPodCast(make_pupular_5(engIdPrefx + 1));
         saveAsJSON(liveBundlesENG, "eng-liveBundles.json");
 
@@ -247,7 +251,7 @@ public class LiveBundleGenerator {
         episodes.add(new Episode("Amanda Ooms Bard", "508310996"));
         episodes.add(new Episode("charlotte kalla", "508310996"));
 
-        return new VirtualPodCast(id,"Det bästa från Värvet.","Av Kristoffer Triumf",
+        return new VirtualPodCast(id,"Värvet","Av Kristoffer Triumf",
                 imageHost + "varvet.jpg", episodes);
     }
     private VirtualPodCast make_best_of_mordpodden(String id) {
@@ -259,7 +263,7 @@ public class LiveBundleGenerator {
         episodes.add(new Episode("taggtrådsmordet", "1107993389"));
         episodes.add(new Episode("giftmordet", "1107993389"));
 
-        return new VirtualPodCast(id,"Det bästa från Mordpodden.",defaultPushBodyText,
+        return new VirtualPodCast(id,"Mordpodden",defaultPushBodyText,
                 imageHost +"mordpodden.jpg", episodes);
     }
 
@@ -277,7 +281,7 @@ public class LiveBundleGenerator {
         episodes.add(new Episode("191-glassresan", "492695082"));
 
 
-        return new VirtualPodCast(id,"Bästa avsnitten.",defaultPushBodyText,imageHost + "stars.jpg", episodes);
+        return new VirtualPodCast(id,"Trending",defaultPushBodyText,imageHost + "stars.jpg", episodes);
     }
     private VirtualPodCast make_dokumentar_1(String id) {
         List<Episode> episodes = new ArrayList<>();
@@ -288,7 +292,7 @@ public class LiveBundleGenerator {
         episodes.add(new Episode("Elin Krantz", "1067686460"));
         episodes.add(new Episode("Fallet Melissa", "987229238"));
 
-        return new VirtualPodCast(id,"Dokumentärtips.",defaultPushBodyText,imageHost + "murder.jpg", episodes);
+        return new VirtualPodCast(id,"Dokumentär",defaultPushBodyText,imageHost + "murder.jpg", episodes);
     }
 
     private VirtualPodCast make5_Kvinnliga_Idtrottare(String id) {
@@ -299,7 +303,7 @@ public class LiveBundleGenerator {
         episodes.add(new Episode("Elisabet Höglund", "1236563704"));   //id
         episodes.add(new Episode("Linnéa Claeson", "284610981"));   //id
 
-        return new VirtualPodCast(id,"Poddar om kvinnliga idrottare",defaultPushBodyText,imageHost + "idrott-1.jpg", episodes);
+        return new VirtualPodCast(id,"Idrottare",defaultPushBodyText,imageHost + "idrott-1.jpg", episodes);
     }
 
     private VirtualPodCast make_musik_poddar(String id) {
@@ -310,7 +314,7 @@ public class LiveBundleGenerator {
         episodes.add(new Episode("Dahlgren", "1049255623"));
         episodes.add(new Episode("Anna", "305632534"));   //id
 
-        return new VirtualPodCast(id,"Musik Musik","Inspererande poddar om några svenska musiker",imageHost + "music-1.jpg", episodes);
+        return new VirtualPodCast(id,"Musik","Inspererande poddar om några svenska musiker",imageHost + "music-1.jpg", episodes);
     }
 
     //ENG
@@ -322,7 +326,7 @@ public class LiveBundleGenerator {
         episodes.add(new Episode("Show 56", "173001861"));
         episodes.add(new Episode("John McEnroe", "342735925"));   //id
 
-        return new VirtualPodCast(id,"Popular podcasts","Listen here...",imageHost + "tennis.jpg", episodes);
+        return new VirtualPodCast(id,"Popular","Listen here...",imageHost + "tennis.jpg", episodes);
     }
 
 
@@ -400,6 +404,7 @@ public class LiveBundleGenerator {
 
     public class LiveBundles {
 
+        int version;
 
         List<VirtualPodCast> virtualPodCasts = new ArrayList<>(); //Samling episoder i en virtual pod "Veckans bästa avsnitt"
 
