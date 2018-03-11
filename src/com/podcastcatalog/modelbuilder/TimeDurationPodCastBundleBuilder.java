@@ -58,13 +58,13 @@ public class TimeDurationPodCastBundleBuilder {
 
             switch (this) {
                 case  half_hour:
-                    return language == Lang.SWE ? "ca 30 minuter" : "about 30 minutes";
+                    return language == Lang.SWE ? "30 min" : "30 min";
                 case  hour:
-                    return language == Lang.SWE ? "ca 1 timme" : "about 1 hour";
+                    return language == Lang.SWE ? "60 min" : "60 min";
                 case  one_half_hour:
-                    return language == Lang.SWE ? "ca 1,5 timme" : "about 1,5 hours";
+                    return language == Lang.SWE ? "90 min" : "90 min";
                 case  two_hour:
-                    return language == Lang.SWE ? "ca 2 timmar" : "about 2 hours";
+                    return language == Lang.SWE ? "120 min" : "120 min";
                 default:
                     return "Spring"; //FIXME Not used
             }

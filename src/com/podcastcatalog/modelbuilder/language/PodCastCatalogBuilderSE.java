@@ -38,21 +38,23 @@ public class PodCastCatalogBuilderSE implements PodCastCatalogBuilder {
         podCastBundle.addCollector(new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.SWE, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY, 30));
 
         PodCastCategoryBundleBuilder categoryBundle = BundleBuilder.newPodCastCategoryBundleBuilder("Kategorier", "???");
-        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.NEWS_POLITICS, "Nyheter och politik"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.VIDEO_GAMES, "Videospel"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.NEWS_POLITICS, "Nyheter & politik"));
         categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.MUSIC, "Musik"));
-        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.ARTS, "Konst"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.DESIGN, "Konst")); //DESIGN better then ARTS
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.HEALTH, "Hälsa"));
         categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.BUSINESS, "Näringsliv"));
         categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.COMEDY, "Komedi"));
         categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.K_12, "Utbildning"));
-        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.GAMES_HOBBIES, "Spel och hobbu"));
-        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.GOVERNMENT_ORGANIZATIONS, "Myndigheter och organistaioner"));
-        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.KIDS_FAMILY, "Barn och familj"));
-        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.RELIGION_SPIRITUALITY, "Religion och andligh"));
-        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.SCIENCE_MEDICINE, "Vetenskap och medecin"));
-        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.SOCIETY_CULTURE, "Samhälle och kultur"));
-        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.SPORTS_RECREATION, "Sport och fritid"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.GAMES_HOBBIES, "Spel & hobby"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.GOVERNMENT_ORGANIZATIONS, "Myndigheter & organisationer"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.KIDS_FAMILY, "Barn & familj"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.RELIGION_SPIRITUALITY, "Religion & andlighet"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.SCIENCE_MEDICINE, "Vetenskap & medicin"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.SOCIETY_CULTURE, "Samhälle & kultur"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.SPORTS_RECREATION, "Sport & fritid"));
         categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.TECHNOLOGY, "Teknologi"));
-        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.TV_FILM, "TV och film"));
+        categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.TV_FILM, "TV & film"));
 
         Set<BundleBuilder> bundleBuilders = new HashSet<>();
         bundleBuilders.add(podCastBundle);

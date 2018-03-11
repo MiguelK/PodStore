@@ -43,7 +43,7 @@ public class StartupServlet extends HttpServlet {
         ServiceDataStorage serviceDataStorageDisk = ServiceDataStorage.useDefault();
         PodCastCatalogService.getInstance().setStorage(serviceDataStorageDisk);
 
-        LOG.info("Starting PodCastCatalog..., working dir= " + serviceDataStorageDisk);
+        LOG.info("Starting PodCastCatalog..., working dir= " + serviceDataStorageDisk.getPodDataHomeDir().getAbsolutePath());
 
         //OPENSHIFT_APP_DNS //FIXME SWE or US
         // JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
