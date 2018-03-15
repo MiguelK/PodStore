@@ -10,7 +10,7 @@ import java.util.List;
  */
 public abstract class Bundle implements Serializable  {
 
-    private final String title; //Not used e.g "Alla Kategorier" //FIXME Remove?
+    private final String title; //Must be unique, used in App e.g Toplist
     private final String description; //Not used //FIXME Remove?
     private final BundleType bundleType;
 

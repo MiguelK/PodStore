@@ -1,5 +1,6 @@
 package com.podcastcatalog.modelbuilder.language;
 
+import com.podcastcatalog.model.podcastcatalog.BundleName;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastBundle;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
@@ -20,12 +21,12 @@ public class PodCastCatalogBuilderSE implements PodCastCatalogBuilder {
         List<Bundle> bundles = new ArrayList<>();
 
         RandomPodCastEpisodeBundleBuilder randomPodCastEpisodeBundleBuilder = new RandomPodCastEpisodeBundleBuilder(podCasts, podCastCategories);
-        Bundle bundle = randomPodCastEpisodeBundleBuilder.createEpisodeBundle("Populära avsnitt");
+        Bundle bundle = randomPodCastEpisodeBundleBuilder.createEpisodeBundle(BundleName.RandomPodCastEpisodes.name());
         bundles.add(bundle);
 
         TimeDurationPodCastBundleBuilder timeDurationPodCastBundleBuilder = new TimeDurationPodCastBundleBuilder(TimeDurationPodCastBundleBuilder.Lang.SWE,
                 podCasts, podCastCategories);
-        PodCastBundle podCastBundle = timeDurationPodCastBundleBuilder.createPodCastBundle("Samlingar");
+        PodCastBundle podCastBundle = timeDurationPodCastBundleBuilder.createPodCastBundle(BundleName.TimedPodCastCollections.name());
         bundles.add(podCastBundle);
 
         return bundles;
@@ -34,10 +35,10 @@ public class PodCastCatalogBuilderSE implements PodCastCatalogBuilder {
     @Override
     public Set<BundleBuilder> getBundleBuilders() {
 
-       PodCastBundleBuilder podCastBundle = BundleBuilder.newPodCastBundleBuilder("Toplistan", "De bästa i Sverige");//FIXME Image
+       PodCastBundleBuilder podCastBundle = BundleBuilder.newPodCastBundleBuilder(BundleName.PodCastTopList.name(), "De bästa i Sverige");//FIXME Image
         podCastBundle.addCollector(new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.SWE, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY, 30));
 
-        PodCastCategoryBundleBuilder categoryBundle = BundleBuilder.newPodCastCategoryBundleBuilder("Kategorier", "???");
+        PodCastCategoryBundleBuilder categoryBundle = BundleBuilder.newPodCastCategoryBundleBuilder(BundleName.PodCastCategoryTopLists.name(), "???");
         categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.VIDEO_GAMES, "Videospel"));
         categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.NEWS_POLITICS, "Nyheter & politik"));
         categoryBundle.addCollector(PodCastCategoryCollectorOkihika.createSWE(PodCastCollectorOkihika.TopList.MUSIC, "Musik"));
