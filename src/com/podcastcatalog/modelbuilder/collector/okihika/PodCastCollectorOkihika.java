@@ -1,6 +1,7 @@
 package com.podcastcatalog.modelbuilder.collector.okihika;
 
 import com.podcastcatalog.model.podcastcatalog.PodCast;
+import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastcatalog.PodCastCategoryType;
 import com.podcastcatalog.modelbuilder.collector.PodCastCollector;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
@@ -23,23 +24,27 @@ public class PodCastCollectorOkihika implements PodCastCollector {
     private final static Logger LOG = Logger.getLogger(PodCastCollectorOkihika.class.getName());
     private static final int TIMEOUT_MILLIS = 5000;
 
-    public enum Language{
-        SWE("http://podcast.okihika.com/SE/"),//Swedish
-        US("http://podcast.okihika.com/US/");//US-English
+    /*public enum Language{
+        SE("SE"),//Swedish
+        CN("CN"),//China
+        ES("ES"), //Spain
+        US("US");//US-English
 
         private final String rootUrl;
 
-        Language(String rootUrl) {
-            this.rootUrl = rootUrl;
+        Language(String lang) {
+            this.rootUrl = "http://podcast.okihika.com/" + lang + "/";
         }
 
         public String getRootUrl() {
             return rootUrl;
         }
     }
+*/
 
     private final String url;
     private final int resultSize;
+    private final PodCastCatalogLanguage language;
 
     public enum TopList {
         TOPLIST_COUNTRY("0"),
@@ -126,9 +131,10 @@ public class PodCastCollectorOkihika implements PodCastCollector {
     }
 
 
-    public PodCastCollectorOkihika(Language language, TopList toplist, int resultSize) {
-        this.url = language.getRootUrl() +  toplist.getCategoryId();
+    public PodCastCollectorOkihika(PodCastCatalogLanguage language, TopList toplist, int resultSize) {
+        this.url = "http://podcast.okihika.com/" + language.name() + "/" +  toplist.getCategoryId();
         this.resultSize = resultSize;
+        this.language = language;
     }
 
     @Override
@@ -160,11 +166,17 @@ public class PodCastCollectorOkihika implements PodCastCollector {
             Element table = doc.getElementById("itunes_result_table");
             Elements elements = table.getElementsByAttribute("href");
 
-            return elements.stream().filter(isValidItunesPodCastURL()).mapToLong((e) -> {
+            List<Long> longList = elements.stream().filter(isValidItunesPodCastURL()).mapToLong((e) -> {
                         String toString = e.toString();
                         return parseID(toString);
                     }
             ).boxed().collect(Collectors.toList());
+
+            if (longList.size() > resultSize) {
+                longList = longList.subList(0, resultSize);
+            }
+
+            return longList;
 
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Unable to parseSWE id from " + url, e);
@@ -189,7 +201,7 @@ public class PodCastCollectorOkihika implements PodCastCollector {
         try {
             return Long.parseLong(result.toString());
         } catch (Exception e) {
-            LOG.info(getClass().getSimpleName() + " failed to parseSWE Itunes id=" + value + ", id=" + result.toString());
+            LOG.info(getClass().getSimpleName() + " failed to parse Itunes id=" + value + ", id=" + result.toString());
             return null;
         }
     }
@@ -203,9 +215,10 @@ public class PodCastCollectorOkihika implements PodCastCollector {
     }
 
     private Predicate<Element> isValidItunesPodCastURL() {
+        String itunesPath = "itunes.apple.com/" + language.name().toLowerCase() + "/podcast";
         return e -> {
             String toString = e.toString();
-            boolean contains = toString.contains("itunes.apple.com/se/podcast") || toString.contains("itunes.apple.com/us/podcast") ;
+            boolean contains = toString.contains(itunesPath);
             return e.getElementsByAttribute("href") != null &&
                     contains &&
                     parseID(toString) != null;
@@ -214,10 +227,9 @@ public class PodCastCollectorOkihika implements PodCastCollector {
 
 
     public static PodCastCollectorOkihika parseSWE(TopList toplist, int resultSize) {
-        return new PodCastCollectorOkihika(Language.SWE,toplist, resultSize);
+        return new PodCastCollectorOkihika(PodCastCatalogLanguage.SE,toplist, resultSize);
     }
-
-    public static PodCastCollectorOkihika parseUS(TopList toplist, int resultSize) {
-        return new PodCastCollectorOkihika(Language.US,toplist, resultSize);
+    public static PodCastCollectorOkihika parse(PodCastCatalogLanguage lang, TopList toplist, int resultSize) {
+        return new PodCastCollectorOkihika(lang, toplist, resultSize);
     }
 }

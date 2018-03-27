@@ -241,7 +241,7 @@ public class LiveBundleGenerator {
         //Assert.assertTrue(item.getResultType()== ResultType.PODCAST);
     }
 
-    //SWE
+    //SE
     private VirtualPodCast varvet(String id) {
         List<Episode> episodes = new ArrayList<>();
         episodes.add(new Episode("Alexander Bard", "508310996"));

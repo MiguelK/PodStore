@@ -8,7 +8,6 @@ import com.podcastcatalog.modelbuilder.BundleBuilder;
 import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
-import com.podcastcatalog.util.ServerInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -157,7 +156,7 @@ public class PodCastCatalogService {
             LOG.warning("Failed to encode search param " + queryParam);
         }
 
-        String itunesSearchLang = podCastCatalogLanguage ==PodCastCatalogLanguage.SWE ? "SE" : "US";
+        String itunesSearchLang = podCastCatalogLanguage ==PodCastCatalogLanguage.SE ? "SE" : "US";
 
         //FIXME set lang in search?
         if(encodedQueryParam!=null){
@@ -169,7 +168,7 @@ public class PodCastCatalogService {
         try {
 
             List<ResultItem> result;
-            if(podCastCatalogLanguage == PodCastCatalogLanguage.SWE){
+            if(podCastCatalogLanguage == PodCastCatalogLanguage.SE){
                  result = podCastEpisodeIndexSWE.lookup(queryParam);
             } else {
                 result = podCastEpisodeIndexUS.lookup(queryParam);
@@ -314,7 +313,7 @@ public class PodCastCatalogService {
 
             TextSearchIndex<ResultItem> newTextSearchIndex = new TextSearchIndex<>();
 
-            //boolean swedishCatalog = podCastCatalogLanguage == PodCastCatalogLanguage.SWE;
+            //boolean swedishCatalog = podCastCatalogLanguage == PodCastCatalogLanguage.SE;
 
                 //FIXME test
                 List<PodCastEpisode> podCastEpisodes = bundleItemVisitor.getPodCastEpisodes();

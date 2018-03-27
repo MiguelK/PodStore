@@ -22,7 +22,7 @@ public class PodCastCatalogTest {
         bundles.add(PodCastBundleTest.createValid().build());
         bundles.add(PodCastCategoryBundleTest.createValid());
 
-        PodCastCatalog podCastCatalog = PodCastCatalog.create(PodCastCatalogLanguage.SWE, bundles);
+        PodCastCatalog podCastCatalog = PodCastCatalog.create(PodCastCatalogLanguage.SE, bundles);
 
         Assert.assertTrue(podCastCatalog.getBundles().size() == 3);
         String json = GSON.toJson(podCastCatalog);
@@ -94,17 +94,17 @@ public class PodCastCatalogTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalid_bundles_null() {
-        PodCastCatalog.create(PodCastCatalogLanguage.SWE, null);
+        PodCastCatalog.create(PodCastCatalogLanguage.SE, null);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalid_bundles_empty() {
-        PodCastCatalog.create(PodCastCatalogLanguage.SWE, Collections.emptyList());
+        PodCastCatalog.create(PodCastCatalogLanguage.SE, Collections.emptyList());
     }
 
     @Test
     public void podCastCatalogLanguage() {
-        Assert.assertEquals(createValidPodCastCatalogSWE().getPodCastCatalogLanguage(), PodCastCatalogLanguage.SWE);
+        Assert.assertEquals(createValidPodCastCatalogSWE().getPodCastCatalogLanguage(), PodCastCatalogLanguage.SE);
     }
 
     @Test
@@ -120,7 +120,7 @@ public class PodCastCatalogTest {
         podCastBundle1s.add(PodCastEpisodeBundleTest.craeteValid());
         podCastBundle1s.add(PodCastCategoryBundleTest.createValid());
 
-        return PodCastCatalog.create(PodCastCatalogLanguage.SWE, podCastBundle1s);
+        return PodCastCatalog.create(PodCastCatalogLanguage.SE, podCastBundle1s);
     }
 
     public static PodCastCatalog createValidPodCastCatalogUS() {

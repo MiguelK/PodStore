@@ -1,7 +1,12 @@
 package com.podcastcatalog.model.podcastcatalog;
 
 public enum PodCastCatalogLanguage {
-    SWE("SWE"),
+    SE("SE"),
+    CN("CN"), //China
+    ES("ES"),//Spain
+    NO("NO"),//Norway
+    FR("FR"),//France
+    DE("DE"),//Germany
     US("US");
 
     private final String lang;
@@ -16,6 +21,10 @@ public enum PodCastCatalogLanguage {
     public static PodCastCatalogLanguage fromString(String lang) {
         if(lang==null || lang.isEmpty()){
             return null;
+        }
+
+        if(lang.equalsIgnoreCase("SWE")) {
+            return SE; //REMOVE After next iOS version
         }
 
         String anObject = lang.trim().toUpperCase();

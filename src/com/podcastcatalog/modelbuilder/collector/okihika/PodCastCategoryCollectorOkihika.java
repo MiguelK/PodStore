@@ -1,6 +1,7 @@
 package com.podcastcatalog.modelbuilder.collector.okihika;
 
 import com.podcastcatalog.model.podcastcatalog.PodCast;
+import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.modelbuilder.collector.PodCastCategoryCollector;
 import com.podcastcatalog.model.podcastcatalog.PodCastCategory;
 import com.podcastcatalog.model.podcastcatalog.PodCastCategoryType;
@@ -16,25 +17,30 @@ public class PodCastCategoryCollectorOkihika extends PodCastCollectorOkihika imp
 
     //Only for test FIXME remove
     public PodCastCategoryCollectorOkihika(TopList toplist, int resultSize, String title, String description) {
-        super(Language.SWE, toplist, resultSize);
+        super(PodCastCatalogLanguage.SE, toplist, resultSize);
         this.title = title;
         this.description = description;
         this.podCastCategoryType = toplist.toPodCastCategoryType();
     }
 
-    private PodCastCategoryCollectorOkihika(Language language, TopList toplist, String title, String description) {
+    private PodCastCategoryCollectorOkihika(PodCastCatalogLanguage language, TopList toplist, String title, String description) {
         super(language,toplist, DEFAULT_RESULT_SIZE);
         this.title = title;
         this.description = description;
         this.podCastCategoryType = toplist.toPodCastCategoryType();
     }
 
+    public static PodCastCategoryCollectorOkihika create(PodCastCatalogLanguage lang, TopList toplist, String title){
+        return new PodCastCategoryCollectorOkihika(lang, toplist, title, "????");
+    }
+
+
     public static PodCastCategoryCollectorOkihika createSWE(TopList toplist, String title){
-        return new PodCastCategoryCollectorOkihika(Language.SWE, toplist, title, "????");
+        return new PodCastCategoryCollectorOkihika(PodCastCatalogLanguage.SE, toplist, title, "????");
     }
 
     public static PodCastCategoryCollectorOkihika createUS(TopList toplist, String title){
-        return new PodCastCategoryCollectorOkihika(Language.US, toplist, title, "????");
+        return new PodCastCategoryCollectorOkihika(PodCastCatalogLanguage.US, toplist, title, "????");
     }
 
     @Override

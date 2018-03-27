@@ -2,6 +2,7 @@ package com.podcastcatalog.modelbuilder.collector.okihika;
 
 import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
+import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastcatalog.PodCastCategoryType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -27,7 +28,7 @@ public class PodCastCollectorOkihikaTest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void toplist_SWE() {
-        PodCastCollectorOkihika swe = new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.SWE, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY,20);
+        PodCastCollectorOkihika swe = new PodCastCollectorOkihika(PodCastCatalogLanguage.SE, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY,20);
         List<PodCast> podCasts = swe.collectPodCasts();
 
         Assert.assertTrue(podCasts.size()>10, "Size=" + podCasts.size());
@@ -35,7 +36,7 @@ public class PodCastCollectorOkihikaTest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void toplist_US() {
-        PodCastCollectorOkihika us = new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.US, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY,20);
+        PodCastCollectorOkihika us = new PodCastCollectorOkihika(PodCastCatalogLanguage.US, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY,20);
         List<PodCast> podCasts = us.collectPodCasts();
 
         Assert.assertTrue(podCasts.size()>10, "Size=" + podCasts.size());

@@ -53,7 +53,7 @@ public class PodCastCatalogServlet extends HttpServlet {
 
         LOG.info("Writing podCastCatalog as JSON " + podCastCatalog);*/
 
-        File zipFile = serviceDataStorageDisk.getCurrentVersion(language).orElseGet(null).getLangJSONZipped();//FIXME Only SWE
+        File zipFile = serviceDataStorageDisk.getCurrentVersion(language).orElseGet(null).getLangJSONZipped();//FIXME Only SE
 
         if (zipFile == null) {
             response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "No PoCastCatalog with language=" + language + " exists, Loading in progress?");

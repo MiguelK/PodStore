@@ -19,7 +19,7 @@ public class JobManagerService {
     private final List<RegisterdJob> registerdJobs;
 
     private JobManagerService() {
-        threadPool = Executors.newScheduledThreadPool(5);
+        threadPool = Executors.newScheduledThreadPool(12);
         registerdJobs = new ArrayList<>();
     }
 

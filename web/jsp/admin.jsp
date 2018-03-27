@@ -33,7 +33,7 @@
 %>
 
 PodCastCatalog SWE <br>
-<%=StringFormatter.format(PodCastCatalogLanguage.SWE)%>
+<%=StringFormatter.format(PodCastCatalogLanguage.SE)%>
 <br>
 
 PodCastCatalog US <br>

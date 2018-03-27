@@ -32,10 +32,10 @@ public class PodCastCatalogServiceTest {
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilderSE());
 
          PodCastCatalogService
-                .getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SWE).get(16, TimeUnit.MINUTES);
+                .getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SE).get(16, TimeUnit.MINUTES);
 
 
-        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SWE);
+        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SE);
         System.out.println(podCastCatalog);
     }
 
@@ -57,15 +57,15 @@ public class PodCastCatalogServiceTest {
 
     @Test
     public void search_empty() {
-        Assert.assertTrue(PodCastCatalogService.getInstance().search(PodCastCatalogLanguage.SWE,null).isEmpty());
-        Assert.assertTrue(PodCastCatalogService.getInstance().search(PodCastCatalogLanguage.SWE,"").isEmpty());
-        Assert.assertTrue(PodCastCatalogService.getInstance().search(PodCastCatalogLanguage.SWE," ").isEmpty());
+        Assert.assertTrue(PodCastCatalogService.getInstance().search(PodCastCatalogLanguage.SE,null).isEmpty());
+        Assert.assertTrue(PodCastCatalogService.getInstance().search(PodCastCatalogLanguage.SE,"").isEmpty());
+        Assert.assertTrue(PodCastCatalogService.getInstance().search(PodCastCatalogLanguage.SE," ").isEmpty());
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void search_podcasts_no_episodes() {
 
-        List<ResultItem> resultItems = PodCastCatalogService.getInstance().search(PodCastCatalogLanguage.SWE,"p1");
+        List<ResultItem> resultItems = PodCastCatalogService.getInstance().search(PodCastCatalogLanguage.SE,"p1");
 
        Assert.assertTrue(resultItems.size()>=05);
 
@@ -114,13 +114,13 @@ public class PodCastCatalogServiceTest {
 
             @Override
             public PodCastCatalogLanguage getPodCastCatalogLang() {
-                return PodCastCatalogLanguage.SWE;
+                return PodCastCatalogLanguage.SE;
             }
         });
 
 
-        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SWE).get(5,TimeUnit.MINUTES);
-        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SWE);
+        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SE).get(5,TimeUnit.MINUTES);
+        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SE);
         Assert.assertNotNull(podCastCatalog);
         Assert.assertFalse(podCastCatalog.getBundles().isEmpty());
 
@@ -139,7 +139,7 @@ public class PodCastCatalogServiceTest {
         initPodCastCatalogs();
 
         //1# App start get current built catalog
-        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SWE);
+        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SE);
 
         TestUtil.assertToJSONNotNull(podCastCatalog);
 
@@ -153,7 +153,7 @@ public class PodCastCatalogServiceTest {
             @Override
             public Set<BundleBuilder> getBundleBuilders() {
                 PodCastBundleBuilder podCastBundleBuilder = BundleBuilder.newPodCastBundleBuilder("Toplistan", "10 bästa podcas i Sverige");
-                podCastBundleBuilder.addCollector(new PodCastCollectorOkihika(PodCastCollectorOkihika.Language.SWE, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY, 4));
+                podCastBundleBuilder.addCollector(new PodCastCollectorOkihika(PodCastCatalogLanguage.SE, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY, 4));
 
                 PodCastCategoryBundleBuilder categoryBundleBuilder = BundleBuilder.newPodCastCategoryBundleBuilder("Alla Kategorier", "???..");
                 categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 2, "Nyheter och politik", "???"));
@@ -180,12 +180,12 @@ public class PodCastCatalogServiceTest {
 
             @Override
             public PodCastCatalogLanguage getPodCastCatalogLang() {
-                return PodCastCatalogLanguage.SWE;
+                return PodCastCatalogLanguage.SE;
             }
         });
 
         PodCastCatalogService
-                .getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SWE).get(3, TimeUnit.MINUTES);
+                .getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SE).get(3, TimeUnit.MINUTES);
     }
 
 }

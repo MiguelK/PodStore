@@ -27,8 +27,8 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
     //private static final Gson GSON = new Gson();
 
     private final File podDataHomeDir;
-    private final File catalogVersionHomeDirSWE;
-    private final File catalogVersionHomeDirUS;
+   // private final File catalogVersionHomeDirSWE;
+   // private final File catalogVersionHomeDirUS;
     private static final String SUBSCRIPTION_DATA_FILE_NAME = "SubscriptionData.dat";
 
     private final File subscriptionDataFile;
@@ -46,17 +46,27 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         }
         this.podDataHomeDir = podDataHomeDir;
 
-        this.catalogVersionHomeDirSWE = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + PodCastCatalogLanguage.SWE.name());
-        this.catalogVersionHomeDirUS = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + PodCastCatalogLanguage.US.name());
+        for (PodCastCatalogLanguage lang : PodCastCatalogLanguage.values()) {
+            File catalogPath = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + lang.name());
+            if (!catalogPath.exists()) {
+                LOG.info("Creating lang directory " + catalogPath.getName());
+                catalogPath.mkdirs();
+            }
+        }
+
+
+        //this.catalogVersionHomeDirSWE = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + PodCastCatalogLanguage.SE.name());
+        // this.catalogVersionHomeDirUS = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + PodCastCatalogLanguage.US.name());
         File subscriptionService = new File(podDataHomeDir, "SubscriptionService");
 
-        if (!this.catalogVersionHomeDirSWE.exists()) {
+       /* if (!this.catalogVersionHomeDirSWE.exists()) {
             this.catalogVersionHomeDirSWE.mkdirs();
         }
 
         if (!this.catalogVersionHomeDirUS.exists()) {
             this.catalogVersionHomeDirUS.mkdirs();
-        }
+        }*/
+
         if (!subscriptionService.exists()) {
             subscriptionService.mkdirs();
         }
@@ -106,19 +116,43 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
     @Override
     public File getCatalogVersionHomeDirectory(PodCastCatalogLanguage language) {
 
-        switch (language) {
-            case SWE:
+        File catalogPath = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + language.name());
+
+        if(!catalogPath.exists()) {
+            throw new IllegalStateException("Unknown lang " + language + " dir does not exist " + catalogPath);
+        }
+
+        return catalogPath;
+
+       /* switch (language) {
+            case SE:
                 return catalogVersionHomeDirSWE;
             case US:
                 return catalogVersionHomeDirUS;
             default:
                 throw new IllegalStateException("Unknown lang " + language);
-        }
+        }*/
     }
+
 
     @Override
     public void deleteAll() {
-        if (!catalogVersionHomeDirSWE.exists() || !catalogVersionHomeDirSWE.isDirectory()) {
+
+        for (PodCastCatalogLanguage lang : PodCastCatalogLanguage.values()) {
+            File catalogPath = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + lang.name());
+
+            if (!catalogPath.exists()) {
+                continue;
+            }
+            try {
+                FileUtils.deleteDirectory(catalogPath);
+             } catch (IOException e) {
+                e.printStackTrace();//FIXME
+            }
+        }
+
+
+        /*if (!catalogVersionHomeDirSWE.exists() || !catalogVersionHomeDirSWE.isDirectory()) {
             return;
         }
 
@@ -127,7 +161,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
             FileUtils.deleteDirectory(catalogVersionHomeDirUS);
         } catch (IOException e) {
             e.printStackTrace();//FIXME
-        }
+        }*/
     }
 
 

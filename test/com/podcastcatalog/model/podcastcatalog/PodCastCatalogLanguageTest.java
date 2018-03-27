@@ -7,9 +7,9 @@ public class PodCastCatalogLanguageTest {
 
     @Test
     public void fromString_found() {
-       Assert.assertTrue(PodCastCatalogLanguage.fromString(" swe ")== PodCastCatalogLanguage.SWE);
-       Assert.assertTrue(PodCastCatalogLanguage.fromString("SWE")== PodCastCatalogLanguage.SWE);
-       Assert.assertTrue(PodCastCatalogLanguage.fromString(" Swe ")== PodCastCatalogLanguage.SWE);
+       Assert.assertTrue(PodCastCatalogLanguage.fromString(" swe ")== PodCastCatalogLanguage.SE);
+       Assert.assertTrue(PodCastCatalogLanguage.fromString("SE")== PodCastCatalogLanguage.SE);
+       Assert.assertTrue(PodCastCatalogLanguage.fromString(" Swe ")== PodCastCatalogLanguage.SE);
     }
 
     @Test
