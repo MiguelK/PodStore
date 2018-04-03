@@ -61,7 +61,8 @@ public class StartupServlet extends HttpServlet {
 
         int counter = 0;
         for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
-          //  JobManagerService.getInstance().registerJob(new UpdateSearchSuggestionsJob(language),5 + counter, period, TimeUnit.SECONDS); //FIXME change time, remove
+            JobManagerService.getInstance().registerJob(new UpdateSearchSuggestionsJob(language),
+                    5 + counter, period, TimeUnit.SECONDS); //FIXME change time, remove
 
             counter += 15;
         }
@@ -85,11 +86,8 @@ public class StartupServlet extends HttpServlet {
                     PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language); //.get(10,TimeUnit.SECONDS);
                 } catch (Exception e) {
                     LOG.info(e.getMessage());
-                   //e.printStackTrace();
                 }
             }
-
-            //PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SE.create());
         } else {
           loadPodCastCatalog(PodCastCatalogLanguage.US.create());
           loadPodCastCatalog(PodCastCatalogLanguage.SE.create());
@@ -99,21 +97,6 @@ public class StartupServlet extends HttpServlet {
 
       //  PodCastSubscriptionService.getInstance().start();
     }
-
-    /*private void buildLocalCatalog(ServiceDataStorage serviceDataStorageDisk, PodCastCatalogBuilder builder) {
-
-        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(builder);
-
-        PodCastCatalogLanguage language = builder.getPodCastCatalogLang();
-
-        Optional<PodCastCatalogVersion> currentVersion = serviceDataStorageDisk.getCurrentVersion(language);
-        if (currentVersion.isPresent()) {
-            LOG.info("Ignoring local catalog  PodCastCatalog " + currentVersion.get() + ", language=" + language);
-        } else {
-            LOG.info("No dev catalog exists. in homeDir=" + serviceDataStorageDisk + " for language=" + language);
-            PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language);
-        }
-    }*/
 
     private void loadPodCastCatalog(PodCastCatalogBuilder builder) {
 

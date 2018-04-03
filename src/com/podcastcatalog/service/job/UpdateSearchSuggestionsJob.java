@@ -27,46 +27,23 @@ public class UpdateSearchSuggestionsJob implements Job {
 
     @Override
     public void doWork() {
-LOG.info("Started UpdateSearchSuggestionsJob... language=" + language.name());
-
-        //for (PodCastCatalogLanguage castCatalogLanguage : PodCastCatalogLanguage.values()) {
             buildSuggestionsFor(language);
-        //}
-
-
-        /*if(ServerInfo.isUSMode()) {
-            buildSuggestionsFor(PodCastCatalogLanguage.US);
-        }
-
-        if(ServerInfo.isSWEMode()) {
-            buildSuggestionsFor(PodCastCatalogLanguage.SE);
-        }*/
     }
 
-    private void buildSuggestionsFor(PodCastCatalogLanguage lang) {
+    private void buildSuggestionsFor(PodCastCatalogLanguage language) {
         List<PodCastTitle> podCastTitles = new ArrayList<>();
         List<PodCastTitle>  podCastTitlesTrending = new ArrayList<>();
-
-
-        PodCastCatalogLanguage language = PodCastCatalogLanguage.valueOf(lang.name());
 
         LOG.info("Start building SearchSuggestions + trending pods for lang=" + language);
 
         for (PodCastCollectorOkihika.TopList categoryName : PodCastCollectorOkihika.TopList.values()) {
 
-            List<Long> ids = PodCastCategoryCollectorOkihika.parse(language,categoryName, 10).getPodCastIds();
+            List<Long> ids = PodCastCategoryCollectorOkihika.parse(language,categoryName, 40).getPodCastIds();
 
-          /*  if(lang == PodCastCatalogLanguage.US) {
-                ids = PodCastCategoryCollectorOkihika.parseUS(categoryName, 100).getPodCastIds();
-            }
-
-            if(lang == PodCastCatalogLanguage.SE) {
-                ids = PodCastCategoryCollectorOkihika.parseSWE(categoryName, 100).getPodCastIds();
-            }*/
 
             List<ItunesSearchAPI.PodCastSearchResult.Row> podCastTitlesRows = ItunesSearchAPI.lookupPodCastsByIds(ids);
 
-            LOG.info("Fetch " + podCastTitlesRows.size() + " PodCastTitles for " + categoryName.name() + ",language=" + language);
+            LOG.info("Fetched from Itunes=" + podCastTitlesRows.size() + " PodCastTitles for " + categoryName.name() + ",language=" + language);
 
             PodCastTitle podCastTitleTrending = null; //Register 1 per category toplist
             for (ItunesSearchAPI.PodCastSearchResult.Row row : podCastTitlesRows) {
@@ -90,9 +67,10 @@ LOG.info("Started UpdateSearchSuggestionsJob... language=" + language.name());
             }
         }
 
-        LOG.info("Done building SearchSuggestions podCastTitles= " + podCastTitles.size() + " lang=" + language);
+        LOG.info("Done building SearchSuggestions podCastTitles= " + podCastTitles.size() +
+                ",podCastTitlesTrending=" + podCastTitlesTrending.size() + " lang=" + language);
 
-        SearchSuggestionService.getInstance().setPodCastTitles(lang, podCastTitles);
-        SearchSuggestionService.getInstance().setPodCastTitlesTrending(lang, podCastTitlesTrending);
+        SearchSuggestionService.getInstance().setPodCastTitles(language, podCastTitles);
+        SearchSuggestionService.getInstance().setPodCastTitlesTrending(language, podCastTitlesTrending);
     }
 }
