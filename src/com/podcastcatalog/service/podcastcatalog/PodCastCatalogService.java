@@ -7,7 +7,9 @@ import com.podcastcatalog.model.podcastsearch.ResultItem;
 import com.podcastcatalog.modelbuilder.BundleBuilder;
 import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
+import com.podcastcatalog.service.datastore.PodCastCatalogVersion;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
+import com.podcastcatalog.util.ServerInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -23,7 +25,7 @@ import java.util.logging.Logger;
 
 public class PodCastCatalogService {
 
-    private static final int THREADS = 5;
+    private static final int THREADS = 25;
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
     private final Lock readLock = reentrantReadWriteLock.readLock();
     private final Lock writeLock = reentrantReadWriteLock.writeLock();
@@ -183,27 +185,23 @@ public class PodCastCatalogService {
     }
 
     public void buildIndexAsync(PodCastCatalogLanguage podCastCatalogLanguage) {
-
-     /*   if(podCastCatalogLanguage==PodCastCatalogLanguage.US){
-            LOG.info("Currently no episodeIndex is built for " + podCastCatalogLanguage + " more JVM memory needed");
-            return;//FIXME
-        }*/
-
         asyncExecutor.submit(new BuildIndexAction(podCastCatalogLanguage));
     }
 
     public Future buildPodCastCatalogsAsync(PodCastCatalogLanguage language) {
         validateState();
 
-       /* if(buildingInProgress && language == buildingInProgressLang){
-            LOG.info("Building is in progress language=" + language + " try again later.?");
-           return null;
-        }
+        PodCastCatalogBuilder podCastCatalogBuilder = podCastCatalogBuilders.stream().filter(b -> b.getPodCastCatalogLang() == language
+        ).findFirst().get();
 
-        buildingInProgress = true;
-        buildingInProgressLang = language; */ //FIXME
+        return asyncExecutor.submit(new BuildPodCastCatalogAction(podCastCatalogBuilder));
+    }
 
-        return asyncExecutor.submit(new BuildPodCastCatalogAction(language));
+    public Future buildPodCastCatalogsAsync(PodCastCatalogBuilder builder) {
+
+        validateState();
+
+        return asyncExecutor.submit(new BuildPodCastCatalogAction(builder));
     }
 
     public boolean isBuildingInProgress() {
@@ -223,52 +221,49 @@ public class PodCastCatalogService {
 
     private class BuildPodCastCatalogAction implements Runnable {
 
-        private PodCastCatalogLanguage podCastCatalogLanguage;
+        private PodCastCatalogBuilder podCastCatalogBuilder;
 
-        public BuildPodCastCatalogAction(PodCastCatalogLanguage podCastCatalogLanguage) {
-            this.podCastCatalogLanguage = podCastCatalogLanguage;
+        BuildPodCastCatalogAction(PodCastCatalogBuilder podCastCatalogBuilder) {
+            this.podCastCatalogBuilder = podCastCatalogBuilder;
         }
 
         @Override
         public void run() {
+
             readLock.lock();
-            //LOG.info(BuildPodCastCatalogAction.class.getSimpleName() + ", registered podCastCatalogBuilders=" + podCastCatalogBuilders.size());
 
-            Map<PodCastCatalogLanguage, PodCastCatalog> newCatalogs = new HashMap<>();
+            PodCastCatalog catalog;
+            PodCastCatalogLanguage podCastCatalogLang = podCastCatalogBuilder.getPodCastCatalogLang();
+
             try {
-                for (PodCastCatalogBuilder podCastCatalogBuilder : podCastCatalogBuilders) {
+                    LOG.info("Start building PodCastCatalog " + podCastCatalogLang + " ...");
 
-                    if (podCastCatalogBuilder.getPodCastCatalogLang() != podCastCatalogLanguage) {
-                        continue; //Only build one catalog = podCastCatalogLanguage
-                    }
+                    catalog = buildPodcastCatalog(podCastCatalogBuilder);
 
-                    LOG.info("Start building PodCastCatalog " + podCastCatalogBuilder.getPodCastCatalogLang() + " ...");
-
-                    PodCastCatalog catalog = buildPodcastCatalog(podCastCatalogBuilder);
-
-                    LOG.info("Done building PodCastCatalog Lang=" + podCastCatalogBuilder.getPodCastCatalogLang() + " Catalog=" + catalog);
+                    LOG.info("Done building PodCastCatalog Lang=" + podCastCatalogLang + " Catalog=" + catalog);
 
                     if (catalog != null) {
                         storage.save(catalog);
-                        newCatalogs.put(podCastCatalogBuilder.getPodCastCatalogLang(), catalog);
                     }
-                }
             } finally {
                 readLock.unlock();
             }
 
             writeLock.lock();
             try {
-                for (PodCastCatalogLanguage language : newCatalogs.keySet()) {
-                    LOG.info("PodCastCatalog " + language + " was updated with new version");
-                    podCastCatalogByLang.put(language, newCatalogs.get(language));
+
+                if (catalog != null && !ServerInfo.isLocalDevMode()) { //FIXME can work with memory?
+                    LOG.info("PodCastCatalog " + podCastCatalogLang + " was updated with new version");
+                    podCastCatalogByLang.put(podCastCatalogLang, catalog);
                 }
 
             } finally {
                 writeLock.unlock();
             }
 
-            buildIndexAsync(podCastCatalogLanguage);
+            if(!ServerInfo.isLocalDevMode()) { //FIXME can work with memory?
+                buildIndexAsync(podCastCatalogLang);
+            }
 
             buildingInProgress = false; //FIXME
         }

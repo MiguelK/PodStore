@@ -10,7 +10,9 @@ import java.util.Optional;
 
 public interface ServiceDataStorage {
 
-    static ServiceDataStorage useDefault() {
+     boolean exists(PodCastCatalogLanguage lang) ;
+
+        static ServiceDataStorage useDefault() {
         return new ServiceDataStorageDisk();
     }
 

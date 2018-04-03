@@ -46,7 +46,7 @@ public class PodCastCatalogVersion {
         return new PodCastCatalogVersion(versionRoot, podCastCatalogLanguage);
     }
 
-    void loadPodCastCatalogFromDisc() {
+    public void loadPodCastCatalogFromDisc() {
 
         ObjectInputStream in = null;
         FileInputStream fileIn = null;

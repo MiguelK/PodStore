@@ -157,7 +157,7 @@ public class PodCastFeedParser {
 
 
         }  catch (Exception e) {
-            LOG.info("PodCast parse fail: Level 1, from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount + " message=" + e.getMessage());
+        //    LOG.info("PodCast parse fail: Level 1, from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount + " message=" + e.getMessage());
             return tryParseFailOver(feedURL, artworkUrl600, collectionId);
         }
 
@@ -205,7 +205,10 @@ public class PodCastFeedParser {
                     && StringUtils.trimToNull(r.getValue()) != null).map(RawElement::getValue).findFirst();
 
             //2016-09-01T06:09:04.447
-            first.ifPresent(s -> LOG.info("FIXME Implement: CreatedDate from node " + s));
+          //  first.ifPresent(s -> LOG.info("FIXME Implement: CreatedDate from node " + s));
+
+
+
             return LocalDateTime.now();
         }
 
@@ -305,7 +308,7 @@ public class PodCastFeedParser {
 
                 return parse.orElseGet(() -> toLocalDateTime(feedItem.getPubDate()));
             } else {
-                LOG.warning("Will be eror in push...?//FIXME"); //FIXME
+               // LOG.warning("Will be eror in push...?//FIXME"); //FIXME
             }
 
 

@@ -9,6 +9,7 @@ import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.subscription.SubscriptionData;
+import com.podcastcatalog.util.ServerInfo;
 import com.podcastcatalog.util.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -75,6 +76,14 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
     }
 
 
+    public boolean exists(PodCastCatalogLanguage lang) {
+        String name = lang.name() + "_json.zip";
+        File devFile = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + name);
+
+        return devFile.exists();
+
+    }
+
     @Override
     public SubscriptionData loadSubscriptionData() {
         SubscriptionData load = load(subscriptionDataFile, SubscriptionData.class);
@@ -107,10 +116,30 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         LOG.info("Saving PodCastCatalog to " + versionDirectory.getLangDat().getAbsolutePath());
 
 
-        saveAsObject(podCastCatalog, versionDirectory.getLangDat());
+        if(!ServerInfo.isLocalDevMode()) { //FXME config
+            saveAsObject(podCastCatalog, versionDirectory.getLangDat());
+        }
+
         File json = saveAsJSON(podCastCatalog, versionDirectory);
 
-        ZipFile.zip(json, versionDirectory.getLangJSONZipped());
+        if(ServerInfo.isLocalDevMode()) { //FXME config
+
+
+            File devFile = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + versionDirectory.getLangJSONZipped().getName());
+
+            try {
+                devFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            LOG.info("Save for local " + devFile.getAbsolutePath());
+            ZipFile.zip(json, devFile);
+
+        } else {
+            ZipFile.zip(json, versionDirectory.getLangJSONZipped());
+        }
+
     }
 
     @Override
@@ -173,7 +202,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         }
 
         PodCastCatalogVersion podCastCatalogVersion = allVersions.get(0);
-        podCastCatalogVersion.loadPodCastCatalogFromDisc();
+        //podCastCatalogVersion.loadPodCastCatalogFromDisc();
 
         return Optional.of(podCastCatalogVersion);
     }

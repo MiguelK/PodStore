@@ -78,7 +78,7 @@ public class PodCastEpisodeProcessor2 extends RecursiveTask<PodCastEpisode> {
             return episodeBuilder.build();
 
         } catch (Exception e) {
-             LOG.info("Failed  parse Episode podCast=" + podCast.getFeedURL() + e.getMessage());
+             //LOG.info("Failed  parse Episode podCast=" + podCast.getFeedURL() + e.getMessage());
         }
 
 

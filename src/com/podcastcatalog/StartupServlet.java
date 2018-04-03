@@ -27,7 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 public class StartupServlet extends HttpServlet {
@@ -42,7 +44,7 @@ public class StartupServlet extends HttpServlet {
         System.setProperty("http.agent", "Chrome");
 
 
-        System.out.println("StartupServlet....serverMode SE and US " + ServerInfo.isUSMode());
+        System.out.println("StartupServlet....isLocalDevMode = " + ServerInfo.isLocalDevMode());
         LOG.info("About to start PodStore...");
 
         ServiceDataStorage serviceDataStorageDisk = ServiceDataStorage.useDefault();
@@ -53,51 +55,80 @@ public class StartupServlet extends HttpServlet {
         //OPENSHIFT_APP_DNS //FIXME SE or US
         // JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 20, TimeUnit.HOURS); //FIXME
-        JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 60, TimeUnit.MINUTES); //FIXME change time, remove
+        JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 60, TimeUnit.SECONDS); //FIXME change time, remove
         int period = 30 * 3600;
 
 
         int counter = 0;
         for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
-            JobManagerService.getInstance().registerJob(new UpdateSearchSuggestionsJob(language),5 + counter, period, TimeUnit.SECONDS); //FIXME change time, remove
+          //  JobManagerService.getInstance().registerJob(new UpdateSearchSuggestionsJob(language),5 + counter, period, TimeUnit.SECONDS); //FIXME change time, remove
 
-            counter += 7;
+            counter += 15;
+        }
+
+        if (ServerInfo.isLocalDevMode()) {
+            //Only executed locally, memory issue to have all catalogs in JVM
+
+            for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
+                PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(language.create());
+            }
+
+
+            for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
+
+                if(serviceDataStorageDisk.exists(language)) {
+                    LOG.info("Zip file already exist for " + language);
+                    continue;
+                }
+
+                try {
+                    PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language); //.get(10,TimeUnit.SECONDS);
+                } catch (Exception e) {
+                    LOG.info(e.getMessage());
+                   //e.printStackTrace();
+                }
+            }
+
+            //PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SE.create());
+        } else {
+          loadPodCastCatalog(PodCastCatalogLanguage.US.create());
+          loadPodCastCatalog(PodCastCatalogLanguage.SE.create());
         }
 
         JobManagerService.getInstance().startAsync();
 
-        PodCastSubscriptionService.getInstance().start();
-
-        if (ServerInfo.isLocalDevMode()) {
-            //Only executed locally, memory issue to have all catalogs in JVM
-            loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderSE());
-            loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderES());
-            loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderNO());
-            loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderFR());
-            loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderUS());
-            loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderCN());
-            loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderDE());
-        } else {
-            loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderUS());
-            loadPodCastCatalog(serviceDataStorageDisk, new PodCastCatalogBuilderSE());
-        }
+      //  PodCastSubscriptionService.getInstance().start();
     }
 
-    private void loadPodCastCatalog(ServiceDataStorage serviceDataStorageDisk, PodCastCatalogBuilder builder) {
+    /*private void buildLocalCatalog(ServiceDataStorage serviceDataStorageDisk, PodCastCatalogBuilder builder) {
 
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(builder);
 
         PodCastCatalogLanguage language = builder.getPodCastCatalogLang();
+
         Optional<PodCastCatalogVersion> currentVersion = serviceDataStorageDisk.getCurrentVersion(language);
         if (currentVersion.isPresent()) {
-            LOG.info("Loading existing PodCastCatalog " + currentVersion.get());
-            PodCastCatalogService.getInstance().loadPodCastCatalog(currentVersion.get().getPodCastCatalog());
-
-            if (!ServerInfo.isLocalDevMode()) {
-                PodCastCatalogService.getInstance().buildIndexAsync(language);
-            }
+            LOG.info("Ignoring local catalog  PodCastCatalog " + currentVersion.get() + ", language=" + language);
         } else {
-            LOG.info("No catalog exists. in homeDir=" + serviceDataStorageDisk);
+            LOG.info("No dev catalog exists. in homeDir=" + serviceDataStorageDisk + " for language=" + language);
+            PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language);
+        }
+    }*/
+
+    private void loadPodCastCatalog(PodCastCatalogBuilder builder) {
+
+        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(builder);
+
+        PodCastCatalogLanguage language = builder.getPodCastCatalogLang();
+
+        Optional<PodCastCatalogVersion> currentVersion = ServiceDataStorage.useDefault().getCurrentVersion(language);
+        if (currentVersion.isPresent()) {
+            LOG.info("Loading existing PodCastCatalog " + currentVersion.get());
+                currentVersion.get().loadPodCastCatalogFromDisc(); //Load .dat file used as PodCastCatalog
+                PodCastCatalogService.getInstance().loadPodCastCatalog(currentVersion.get().getPodCastCatalog());
+                PodCastCatalogService.getInstance().buildIndexAsync(language);
+        } else {
+            LOG.info("No catalog exists. in homeDir=" + ServiceDataStorage.useDefault() + " for language=" + language);
             PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language);
         }
     }
