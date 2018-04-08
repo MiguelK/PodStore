@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
@@ -350,7 +351,7 @@ public class PodCastCatalogService {
         try {
             List<Future<Bundle>> futureBundles = executorService.invokeAll(bundleBuilders);
             for (Future<Bundle> futureBundle : futureBundles) {
-                Bundle bundle = futureBundle.get();//FIXME Max timeout??
+                Bundle bundle = futureBundle.get(10, TimeUnit.MINUTES);//FIXME Max timeout??
                 bundles.add(bundle);
             }
 

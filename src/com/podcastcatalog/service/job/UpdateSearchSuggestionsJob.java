@@ -36,9 +36,15 @@ public class UpdateSearchSuggestionsJob implements Job {
 
         LOG.info("Start building SearchSuggestions + trending pods for lang=" + language);
 
+
         for (PodCastCollectorOkihika.TopList categoryName : PodCastCollectorOkihika.TopList.values()) {
 
-            List<Long> ids = PodCastCategoryCollectorOkihika.parse(language,categoryName, 40).getPodCastIds();
+            int fetchSize = 40;
+            if (ServerInfo.isLocalDevMode()) {
+                fetchSize = 3;
+            }
+
+            List<Long> ids = PodCastCategoryCollectorOkihika.parse(language,categoryName, fetchSize).getPodCastIds();
 
 
             List<ItunesSearchAPI.PodCastSearchResult.Row> podCastTitlesRows = ItunesSearchAPI.lookupPodCastsByIds(ids);

@@ -179,7 +179,7 @@ public class PodCastCollectorOkihika implements PodCastCollector {
             return longList;
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Unable to parseSWE id from " + url, e);
+            LOG.log(Level.SEVERE, "Unable to parse id(s) from " + url, e);
             return Collections.emptyList();
         }
     }
