@@ -158,7 +158,7 @@ public class PodCastCatalogService {
             LOG.warning("Failed to encode search param " + queryParam);
         }
 
-        String itunesSearchLang = podCastCatalogLanguage ==PodCastCatalogLanguage.SE ? "SE" : "US";
+        String itunesSearchLang = podCastCatalogLanguage.name();
 
         //FIXME set lang in search?
         if(encodedQueryParam!=null){

@@ -55,7 +55,7 @@ public class StartupServlet extends HttpServlet {
         //OPENSHIFT_APP_DNS //FIXME SE or US
         // JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 20, TimeUnit.HOURS); //FIXME
-        JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 60, TimeUnit.SECONDS); //FIXME change time, remove
+        JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 120, TimeUnit.MINUTES); //FIXME change time, remove
         int period = 30 * 3600;
 
 
