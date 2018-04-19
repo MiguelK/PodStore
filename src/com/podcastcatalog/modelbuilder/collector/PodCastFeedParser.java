@@ -57,7 +57,7 @@ public class PodCastFeedParser {
     }
 
     public static Optional<PodCast> tryParseFailOver(URL feedURL, String artworkUrl600,
-                                                      String collectionId) {
+                                                      String collectionId, int maxFeedCount) {
 
 
         PodCast.Builder podCastBuilder = PodCast.newBuilder()
@@ -82,18 +82,22 @@ public class PodCastFeedParser {
 
             List<PodCastEpisodeProcessor2> tasks = new ArrayList<>();
 
-                for (Episode episode : podcast.getEpisodes()) {
+            int size = podcast.getEpisodes().size();
+            List<Episode> episodesMax = size > maxFeedCount ? podcast.getEpisodes().subList(0, maxFeedCount) : podcast.getEpisodes();
+
+            for (Episode episode : episodesMax) {
                     PodCastEpisodeProcessor2 podCastEpisodeProcessor = new PodCastEpisodeProcessor2(podcast, episode, collectionId);
                     podCastEpisodeProcessor.fork();//FIXME
                     tasks.add(podCastEpisodeProcessor);
+                }
 
-                    for (PodCastEpisodeProcessor2 task : tasks) {
-                        PodCastEpisode podCastEpisode = task.join();//FIXME
-                        if(podCastEpisode!=null){
-                            podCastBuilder.addPodCastEpisode(podCastEpisode);
-                        }
-                    }
+            for (PodCastEpisodeProcessor2 task : tasks) {
+                PodCastEpisode podCastEpisode = task.join();//FIXME
+                if(podCastEpisode!=null){
+                    podCastBuilder.addPodCastEpisode(podCastEpisode);
+                }
             }
+
 
             return Optional.of(podCastBuilder.build());
 
@@ -158,12 +162,12 @@ public class PodCastFeedParser {
 
         }  catch (Exception e) {
         //    LOG.info("PodCast parse fail: Level 1, from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount + " message=" + e.getMessage());
-            return tryParseFailOver(feedURL, artworkUrl600, collectionId);
+            return tryParseFailOver(feedURL, artworkUrl600, collectionId, maxFeedCount);
         }
 
 
         if (!podCastBuilder.isValid()) {
-            return tryParseFailOver(feedURL, artworkUrl600, collectionId);
+            return tryParseFailOver(feedURL, artworkUrl600, collectionId, maxFeedCount);
         }
 
         return Optional.of(podCastBuilder.build());

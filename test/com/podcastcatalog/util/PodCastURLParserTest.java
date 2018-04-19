@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.podcastcatalog.util.PodCastURLParser.parsePodCastEpisodeId;
 import static org.testng.Assert.*;
@@ -54,6 +56,7 @@ public class PodCastURLParserTest {
         feedUrlString = "http://feeds.megaphone.fm/MRM9077223370";//, collectionId=1264843400
         feedUrlString = "http://feeds.megaphone.fm/watergate";//, collectionId=1315040130
         feedUrlString = "https://www.npr.org/rss/podcast.php?id=510313";
+        feedUrlString = "https://www.npr.org/rss/podcast.php?id=510253";
         //feedUrlString = "https://www.npr.org/rss/podcast.php?id=510313";//, collectionId=1150510297
         //feedUrlString = "https://rss.art19.com/the-daily-show-with-trevor-noah";//, collectionId=1334878780
         //feedUrlString = "https://www.npr.org/rss/podcast.php?id=344098539";//, collectionId=121493804
@@ -63,11 +66,11 @@ public class PodCastURLParserTest {
         String artworkUrl600 = "http://www.image.jpg";
         String collectionId = "19999999";
 
-        URL feedURL = new URL(feedUrlString);
+        //URL feedURL = new URL(feedUrlString);
 
-        PodCastFeedParser.tryParseFailOver(feedURL, artworkUrl600, collectionId);
+       // PodCastFeedParser.tryParseFailOver(feedURL, artworkUrl600, collectionId);
 
-       /* PodCast.Builder podCastBuilder = PodCast.newBuilder()
+        PodCast.Builder podCastBuilder = PodCast.newBuilder()
                 .collectionId(collectionId).setArtworkUrl600(artworkUrl600);
 
         URL feedURL = new URL(feedUrlString);
@@ -117,6 +120,8 @@ public class PodCastURLParserTest {
          //   System.out.println(podcast.getXMLData());
             System.out.println(podcast.getLastBuildDateString());
 
+            Set<String> uniqueGuids = new HashSet<>();
+
             for (Episode episode : podcast.getEpisodes()) {
 
                 PodCastEpisode.Builder episodeBuilder = PodCastEpisode.newBuilder();
@@ -130,6 +135,12 @@ public class PodCastURLParserTest {
 
                 LocalDateTime pubDate = DateUtil.parse(episode.getPubDate()).orElse(LocalDateTime.now());
                 String guid = episode.getGUID();
+
+                if(uniqueGuids.contains(guid)) {
+                    System.out.println("NOT UNIQUE GUID= " + guid);
+                }
+                uniqueGuids.add(guid);
+
                 URL targetUrl = episode.getLink();
 
                 if (targetUrl== null) {
@@ -181,7 +192,7 @@ public class PodCastURLParserTest {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
 }

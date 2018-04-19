@@ -7,7 +7,9 @@ import javax.xml.bind.annotation.XmlTransient;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PodCast extends BundleItem {
     //FIXME stars,relations, recentioner etc ???
@@ -32,8 +34,9 @@ public class PodCast extends BundleItem {
         this.publisher = publisher;
         this.createdDate = createdDate;
         this.feedURL = feedURL;
-        this.podCastEpisodesInternal = Collections.unmodifiableList(podCastEpisodes);
-        this.podCastEpisodes = podCastEpisodes.size()>=10 ? new ArrayList<>(podCastEpisodes.subList(0,9)) : podCastEpisodes;
+        Set<PodCastEpisode> cleanup1 = new HashSet<>(podCastEpisodes); //FIXME bug casuing duplicates somewhere...
+        this.podCastEpisodesInternal =  Collections.unmodifiableList(new ArrayList<>(cleanup1));
+        this.podCastEpisodes = podCastEpisodesInternal.size()>=10 ? new ArrayList<>(podCastEpisodesInternal.subList(0,9)) : podCastEpisodesInternal;
         this.podCastCategories = Collections.unmodifiableList(podCastCategories);
     }
 
