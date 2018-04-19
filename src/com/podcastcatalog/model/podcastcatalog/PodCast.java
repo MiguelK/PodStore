@@ -34,9 +34,9 @@ public class PodCast extends BundleItem {
         this.publisher = publisher;
         this.createdDate = createdDate;
         this.feedURL = feedURL;
-        Set<PodCastEpisode> cleanup1 = new HashSet<>(podCastEpisodes); //FIXME bug casuing duplicates somewhere...
-        this.podCastEpisodesInternal =  Collections.unmodifiableList(new ArrayList<>(cleanup1));
-        this.podCastEpisodes = podCastEpisodesInternal.size()>=10 ? new ArrayList<>(podCastEpisodesInternal.subList(0,9)) : podCastEpisodesInternal;
+
+        this.podCastEpisodesInternal = Collections.unmodifiableList(podCastEpisodes);
+        this.podCastEpisodes = podCastEpisodes.size()>=10 ? new ArrayList<>(podCastEpisodes.subList(0,9)) : podCastEpisodes;
         this.podCastCategories = Collections.unmodifiableList(podCastCategories);
     }
 
