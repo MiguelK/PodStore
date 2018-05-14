@@ -40,6 +40,15 @@ public class RandomPodCastEpisodeBundleBuilder {
             }
         }
 
+        if(podCastEpisodes.isEmpty()){
+            for (PodCastCategory podCastCategory : podCastCategories) {
+                    if(!podCastCategory.getPodCasts().isEmpty()){
+                        PodCastEpisode podCastEpisode = podCastCategory.getPodCasts().get(0).getPodCastEpisodesInternal().get(0);
+                        podCastEpisodes.add(podCastEpisode);
+                    }
+            }
+        }
+
         return new PodCastEpisodeBundle(bundleName, "?description?", podCastEpisodes);//FIXME
     }
 }

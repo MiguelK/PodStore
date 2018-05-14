@@ -7,6 +7,7 @@ import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastsearch.ResultItem;
 import com.podcastcatalog.model.podcastsearch.SearchResult;
 import com.podcastcatalog.service.search.SearchSuggestionService;
+import com.podcastcatalog.service.search.SearchTerm;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.GET;
@@ -68,7 +69,12 @@ public class PodCastCatalog {
 
         List<ResultItem> podCastEpisodes = PodCastCatalogService.getInstance().search(podCastCatalogLanguage, queryParam);
 
-        LOG.info("Search=" + query + ", lang=" + lang + ", result=" + podCastEpisodes.size());
+
+        if(!podCastEpisodes.isEmpty()){
+            LOG.info("Search=" + query + ", lang=" + lang + ", result=" + podCastEpisodes.size());
+
+            SearchSuggestionService.getInstance().addPopularSearchTerm(podCastCatalogLanguage, query);
+        }
 
 
         SearchResult searchResult = new SearchResult(podCastEpisodes);
@@ -104,5 +110,20 @@ public class PodCastCatalog {
         List<PodCastTitle> podCastTitlesTrending = SearchSuggestionService.getInstance().getPodCastTitlesTrending(podCastCatalogLanguage);
 
         return Response.status(Response.Status.OK).entity(podCastTitlesTrending).build();
+    }
+
+    @GET
+    @Path("/popularSearchTerms")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPopularSearchTerms(@QueryParam("lang") String lang) {
+
+        PodCastCatalogLanguage podCastCatalogLanguage = PodCastCatalogLanguage.fromString(lang);
+        if (podCastCatalogLanguage == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid lang parameter " + lang).build();
+        }
+
+        List<SearchTerm> popularSearchTerms = SearchSuggestionService.getInstance().getPopularSearchTerm(podCastCatalogLanguage);
+
+        return Response.status(Response.Status.OK).entity(popularSearchTerms).build();
     }
 }
