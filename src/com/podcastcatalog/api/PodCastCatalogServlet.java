@@ -1,6 +1,7 @@
 package com.podcastcatalog.api;
 
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
+import com.podcastcatalog.service.datastore.PodCastCatalogVersion;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import org.apache.commons.io.IOUtils;
 
@@ -21,6 +22,8 @@ import java.util.logging.Logger;
 public class PodCastCatalogServlet extends HttpServlet {
 
     private final static Logger LOG = Logger.getLogger(PodCastCatalogServlet.class.getName());
+
+
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         throw new UnsupportedOperationException();
@@ -53,10 +56,21 @@ public class PodCastCatalogServlet extends HttpServlet {
 
         LOG.info("Writing podCastCatalog as JSON " + podCastCatalog);*/
 
-        File zipFile = serviceDataStorageDisk.getCurrentVersion(language).orElseGet(null).getLangJSONZipped();//FIXME Only SE
+        PodCastCatalogVersion podCastCatalogVersion = serviceDataStorageDisk.getCurrentVersion(language).orElseGet(null);
+        if (podCastCatalogVersion == null) {
+            String message = "No podCastCatalogVersion with language=" + language + " exists, Loading in progress?";
+            LOG.info(message);
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, message);
+            return;
+        }
+
+        File zipFile = podCastCatalogVersion.getLangJSONZipped();//FIXME Only SE
 
         if (zipFile == null) {
-            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "No PoCastCatalog with language=" + language + " exists, Loading in progress?");
+            String message = "No zipFile with language=" + language + " exists, Loading in progress?";
+            LOG.info(message);
+
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, message);
             return;
         }
 

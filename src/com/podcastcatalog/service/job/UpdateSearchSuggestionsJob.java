@@ -49,7 +49,7 @@ public class UpdateSearchSuggestionsJob implements Job {
 
             List<ItunesSearchAPI.PodCastSearchResult.Row> podCastTitlesRows = ItunesSearchAPI.lookupPodCastsByIds(ids);
 
-            LOG.info("Fetched from Itunes=" + podCastTitlesRows.size() + " PodCastTitles for " + categoryName.name() + ",language=" + language);
+          //  LOG.info("Fetched from Itunes=" + podCastTitlesRows.size() + " PodCastTitles for " + categoryName.name() + ",language=" + language);
 
             PodCastTitle podCastTitleTrending = null; //Register 1 per category toplist
             for (ItunesSearchAPI.PodCastSearchResult.Row row : podCastTitlesRows) {
