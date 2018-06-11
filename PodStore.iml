@@ -43,5 +43,6 @@
     <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
     <orderEntry type="library" name="commons-lang3-3.4" level="project" />
     <orderEntry type="library" name="podengine-2.2" level="project" />
+    <orderEntry type="library" name="httpclient" level="project" />
   </component>
 </module>

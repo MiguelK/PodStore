@@ -1,5 +1,8 @@
 package com.podcastcatalog.service.job;
 
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.podcastcatalog.model.podcastcatalog.Bundle;
 import com.podcastcatalog.model.podcastcatalog.BundleItem;
 import com.podcastcatalog.model.podcastcatalog.BundleItemVisitor;
@@ -12,16 +15,30 @@ import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.util.ServerInfo;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.glassfish.jersey.server.Uri;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,6 +51,8 @@ public class CreateLinkPages implements Job {
     private final static Logger LOG = Logger.getLogger(CreateLinkPages.class.getName());
 
     private volatile boolean executedOnce = false;
+
+    private final Gson GSON = new Gson();
 
     @Override
     public void doWork() {
@@ -77,8 +96,8 @@ public class CreateLinkPages implements Job {
         List<PodCast> podCasts = bundleItemVisitor.getPodCasts();
         LOG.info("podCasts=" + podCasts.size());
 
-        int maxPodCasts = podCasts.size();
-        int maxEpisodes = 50;
+        int maxPodCasts = 1 ; //podCasts.size();
+        int maxEpisodes = 1;
         int podCastCounter = 0;
 
         for(PodCast podCast : podCasts) {
@@ -152,6 +171,154 @@ public class CreateLinkPages implements Job {
     }
 
 
+    /*public void createDynamicLink_Basic() {
+        // [START create_link_basic]
+        DynamicLink.Builder builder = new FirebaseDynamicLinks.Builder()
+                .createDynamicLink()
+                .setDynamicLinkDomain(domain)
+                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder()
+                        .setMinimumVersion(minVersion)
+                        .build())
+                .setLink(deepLink);
+
+        Uri dynamicLinkUri = dynamicLink.getUri();
+        // [END create_link_basic]
+    }*/
+
+     String createShortLink(String pid, String eid, String podCastTitle,
+                                   String podCastEpisodeTitle, String podCastImage) {
+
+         String linkValue = "http://www.podsapp.se?eid=" +
+                 eid + "&pid=" + pid + "&isi=1209200428&ibi=com.app.Pods&st=" +
+                 podCastTitle + "&sd=" + podCastEpisodeTitle + "&si=" + podCastImage;
+
+
+        HttpURLConnection con = null;
+
+        try {
+            String linkValueEncoded = URLEncoder.encode(linkValue, "UTF-8");
+            String longLink = "https://qw7xh.app.goo.gl?link=" + linkValueEncoded;
+
+            String webApiKey = "AIzaSyBbpNKapYpB4LtkPTI9Xbrd0TkG7wtw1mY";
+            String shortLinksURL = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + webApiKey;
+
+
+            HttpClient httpClient = HttpClientBuilder.create().build(); //Use this instead
+            HttpPost request = new HttpPost(shortLinksURL);
+            String longLink1 = longLink;
+            StringEntity params =new StringEntity("{\"longDynamicLink\":\" + " + longLink1 + " + \"} ");
+            request.addHeader("content-type", "application/json; charset=utf-8");
+            request.setEntity(params);
+
+            HttpResponse response = httpClient.execute(request);
+
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader((response.getEntity().getContent())));
+
+            String output;
+            System.out.println("Output from Server .... \n");
+            StringBuilder content1 = new StringBuilder();
+
+            while ((output = br.readLine()) != null) {
+                System.out.println(output);
+                content1.append(output);
+                content1.append(System.lineSeparator());
+            }
+
+            System.out.println("Response = " + response);
+
+           // if(true){
+                Map map = GSON.fromJson(content1.toString(), Map.class);
+
+                // System.out.println("MAP===" + map);
+
+                Object shortLink = map.get("shortLink");
+                // System.out.println("MAP===" + shortLink);
+                if(shortLink != null && shortLink instanceof String){
+                    return (String) shortLink;
+                }
+
+                return  "test";
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+            if(con!= null){
+                con.disconnect();
+            }
+        }
+
+         // }
+
+            //String urlParameters = "longDynamicLink=" + URLEncoder.encode(longLink, "UTF-8");
+
+            //  "  \"claimDateTime\": {\n" +
+          /*  String urlParameters = URLEncoder.encode("{\"longDynamicLink\"" + ": \"" +  longLink + "\"}",  "UTF-8");
+
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = gson.toJson(urlParameters);
+
+            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+            //yte[] postDataBytes = postData.toString().getBytes(“UTF-8”);
+
+            System.out.println("urlParameters " + urlParameters);
+
+
+            URL myurl = new URL(shortLinksURL);
+            con = (HttpURLConnection) myurl.openConnection();
+
+            con.setDoOutput(true);
+            con.setRequestMethod("POST");
+            con.setRequestProperty("User-Agent", "Java client");
+            con.setRequestProperty("Accept", "application/json");
+            con.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+
+            try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
+                wr.write(postData);
+            }
+
+            StringBuilder content;
+
+            try (BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()))) {
+
+                String line;
+                content = new StringBuilder();
+
+                while ((line = in.readLine()) != null) {
+                    content.append(line);
+                    content.append(System.lineSeparator());
+                }
+            }
+
+
+            Map map = GSON.fromJson(content.toString(), Map.class);
+
+           // System.out.println("MAP===" + map);
+
+            Object shortLink = map.get("shortLink");
+            // System.out.println("MAP===" + shortLink);
+            if(shortLink != null && shortLink instanceof String){
+                return (String) shortLink;
+            }
+
+         //   System.out.println(content.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+            if(con!= null){
+                con.disconnect();
+            }
+        }
+
+        return longLink;*/
+          return  "fail";
+    }
+
+
     private void replaceText(File sourceFile, File targetFile, PodCast podCast, PodCastEpisode podCastEpisode) {
         try {
             String pid= URLEncoder.encode( podCast.getCollectionId(), "UTF-8" );
@@ -159,10 +326,20 @@ public class CreateLinkPages implements Job {
 
             String podCastTitle = URLEncoder.encode( podCast.getTitle(), "UTF-8" );
             String podCastEpisodeTitle = URLEncoder.encode( podCastEpisode.getTitle(), "UTF-8" );
-            String podCastImage = podCast.getArtworkUrl600();
-            String targetLink = "https://qw7xh.app.goo.gl?link%3Dhttp://www.podsapp.se?pid%3D" +
-                    pid + "&eid%3D" + eid + "&isi%3D1209200428&ibi%3Dcom.app.Pods&st%3D" +
-                    podCastTitle + "&sd%3D" + podCastEpisodeTitle + "&si%3D" + podCastImage;
+            String podCastImage = URLEncoder.encode(podCast.getArtworkUrl600(), "UTF-8" );
+
+             pid=  podCast.getCollectionId();
+             eid=  podCastEpisode.getId();
+
+             podCastTitle =  podCast.getTitle();
+             podCastEpisodeTitle =  podCastEpisode.getTitle();
+             podCastImage = podCast.getArtworkUrl600();
+
+            /*String targetLink = "https://qw7xh.app.goo.gl?link=http://www.podsapp.se?pid=" +
+                    pid + "&eid=" + eid + "&isi=1209200428&ibi=com.app.Pods&st=" +
+                    podCastTitle + "&sd=" + podCastEpisodeTitle + "&si=" + podCastImage;
+*/
+            String targetLink  = createShortLink(pid, eid, podCastTitle, podCastEpisodeTitle, podCastImage);
 
 
             Path path = sourceFile.toPath();

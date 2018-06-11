@@ -14,6 +14,7 @@
           <element id="library" level="project" name="feed4j-1" />
           <element id="library" level="project" name="commons-lang3-3.4" />
           <element id="library" level="project" name="podengine-2.2" />
+          <element id="library" level="project" name="httpclient" />
         </element>
       </element>
     </root>

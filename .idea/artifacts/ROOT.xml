@@ -6,6 +6,7 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="lib">
           <element id="library" level="project" name="podengine-2.2" />
+          <element id="library" level="project" name="httpclient" />
         </element>
       </element>
     </root>
