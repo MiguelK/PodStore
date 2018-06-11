@@ -63,7 +63,7 @@ public class StartupServlet extends HttpServlet {
         }
 
         //FIXME prod
-       // loadPodCastCatalog(PodCastCatalogLanguage.US);
+        loadPodCastCatalog(PodCastCatalogLanguage.US);
         loadPodCastCatalog(PodCastCatalogLanguage.SE);
 
         /*if (ServerInfo.isLocalDevMode()) {
