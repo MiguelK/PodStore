@@ -96,14 +96,14 @@ public class CreateLinkPages implements Job {
         List<PodCast> podCasts = bundleItemVisitor.getPodCasts();
         LOG.info("podCasts=" + podCasts.size());
 
-        int maxPodCasts = 1 ; //podCasts.size();
-        int maxEpisodes = 2;
+        int maxPodCasts = podCasts.size();
+        int maxEpisodes = 1; //200;
         int podCastCounter = 0;
 
         for(PodCast podCast : podCasts) {
             podCastCounter++;
             int episodeCounter = 0;
-            for(PodCastEpisode podCastEpisode: podCast.getPodCastEpisodes()){
+            for(PodCastEpisode podCastEpisode: podCast.getPodCastEpisodesInternal()){
                 createLinkPage(templateRoot, linkPagesDir, podCast, podCastEpisode);
                 episodeCounter++;
                 if (episodeCounter>=maxEpisodes) {
@@ -164,7 +164,7 @@ public class CreateLinkPages implements Job {
             }
             //FIXME
             //Create QR code...
-            LOG.info("Created LinkPage " + podCastEpisode.getTitle());
+            LOG.info("Created LinkPage podCast=" + podCast.getTitle() + ", " + podCastEpisode.getTitle());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -183,7 +183,7 @@ public class CreateLinkPages implements Job {
             String linkValueEncoded = URLEncoder.encode(linkValue, "UTF-8");
             longLink = "https://qw7xh.app.goo.gl?link=" + linkValueEncoded;
 
-            String webApiKey = "AIzaSyBbpNKapYpB4LtkPTI9Xbrd0TkG7wtw1mY";
+            String webApiKey = "AIK SM GULD 2018";
             String shortLinksURL = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + webApiKey;
 
 
