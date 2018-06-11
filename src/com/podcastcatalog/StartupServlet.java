@@ -2,22 +2,14 @@ package com.podcastcatalog;
 
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
-import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderCN;
-import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderDE;
-import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderES;
-import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderFR;
-import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderNO;
-import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSE;
-import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderUS;
 import com.podcastcatalog.service.datastore.PodCastCatalogVersion;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
+import com.podcastcatalog.service.job.CreateLinkPages;
 import com.podcastcatalog.service.job.JobManagerService;
 import com.podcastcatalog.service.job.MemoryDumperJob;
 import com.podcastcatalog.service.job.PodCastCatalogUpdater;
-import com.podcastcatalog.service.job.SubscriptionNotifierJob;
 import com.podcastcatalog.service.job.UpdateSearchSuggestionsJob;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
-import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
 import com.podcastcatalog.util.ServerInfo;
 
 import javax.servlet.ServletConfig;
@@ -27,9 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 public class StartupServlet extends HttpServlet {
@@ -54,25 +44,38 @@ public class StartupServlet extends HttpServlet {
 
         //OPENSHIFT_APP_DNS //FIXME SE or US
         // JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
+        JobManagerService.getInstance().registerJob(new CreateLinkPages(),1,2, TimeUnit.MINUTES);
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 20, TimeUnit.HOURS); //FIXME
         JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 120, TimeUnit.MINUTES); //FIXME change time, remove
-        int period = 30 * 3600;
 
+        int period = 30 * 3600;
 
         int counter = 0;
         for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
+
+            if(!language.isInMemorySearchSuggestions()) {
+                continue;
+            }
+
             JobManagerService.getInstance().registerJob(new UpdateSearchSuggestionsJob(language),
                     5 + counter, period, TimeUnit.SECONDS); //FIXME change time, remove
-
             counter += 15;
         }
 
-        if (ServerInfo.isLocalDevMode()) {
+        //FIXME prod
+        loadPodCastCatalog(PodCastCatalogLanguage.US);
+        loadPodCastCatalog(PodCastCatalogLanguage.SE);
+
+        /*if (ServerInfo.isLocalDevMode()) {
             //Only executed locally, memory issue to have all catalogs in JVM
 
             for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
-                PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(language.create());
+        //        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(language.create());
             }
+
+            PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(PodCastCatalogLanguage.SE.create());
+
+            PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SE); //.get(10,TimeUnit.SECONDS);
 
 
             for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
@@ -91,29 +94,40 @@ public class StartupServlet extends HttpServlet {
         } else {
           loadPodCastCatalog(PodCastCatalogLanguage.US.create());
           loadPodCastCatalog(PodCastCatalogLanguage.SE.create());
-        }
+        }*/
 
         JobManagerService.getInstance().startAsync();
 
       //  PodCastSubscriptionService.getInstance().start();
     }
 
-    private void loadPodCastCatalog(PodCastCatalogBuilder builder) {
+    private void loadPodCastCatalog(PodCastCatalogLanguage language) {
 
+        PodCastCatalogBuilder builder = language.create();
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(builder);
 
-        PodCastCatalogLanguage language = builder.getPodCastCatalogLang();
-
         Optional<PodCastCatalogVersion> currentVersion = ServiceDataStorage.useDefault().getCurrentVersion(language);
-        if (currentVersion.isPresent()) {
-            LOG.info("Loading existing PodCastCatalog " + currentVersion.get());
-                currentVersion.get().loadPodCastCatalogFromDisc(); //Load .dat file used as PodCastCatalog
-                PodCastCatalogService.getInstance().loadPodCastCatalog(currentVersion.get().getPodCastCatalog());
-                PodCastCatalogService.getInstance().buildIndexAsync(language);
-        } else {
-            LOG.info("No catalog exists. in homeDir=" + ServiceDataStorage.useDefault() + " for language=" + language);
+
+        if (!currentVersion.isPresent()) {
+            LOG.info("No catalog exists. in homeDir=" + ServiceDataStorage.useDefault().getPodDataHomeDir().getAbsolutePath() + " for language=" + language);
             PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language);
+            return;
         }
+
+        LOG.info("PodCastCatalog " + currentVersion.get() + " exists");
+
+        if(language.isInMemory()) {
+            LOG.info("Loading existing PodCastCatalog " + currentVersion.get() + " inMemory");
+
+            currentVersion.get().loadPodCastCatalogFromDisc(); //Load .dat file used as PodCastCatalog
+            PodCastCatalogService.getInstance().loadPodCastCatalog(currentVersion.get().getPodCastCatalog());
+        }
+
+        if(language.isInMemoryIndex()){
+            LOG.info("Building search index for existing PodCastCatalog " + currentVersion.get());
+            PodCastCatalogService.getInstance().buildIndexAsync(language);
+        }
+
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

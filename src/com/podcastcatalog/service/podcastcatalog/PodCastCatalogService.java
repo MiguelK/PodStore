@@ -7,9 +7,7 @@ import com.podcastcatalog.model.podcastsearch.ResultItem;
 import com.podcastcatalog.modelbuilder.BundleBuilder;
 import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
-import com.podcastcatalog.service.datastore.PodCastCatalogVersion;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
-import com.podcastcatalog.util.ServerInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -253,7 +251,7 @@ public class PodCastCatalogService {
             writeLock.lock();
             try {
 
-                if (catalog != null && !ServerInfo.isLocalDevMode()) { //FIXME can work with memory?
+                if (catalog != null && podCastCatalogLang.isInMemory()) { //FIXME can work with memory?
                     LOG.info("PodCastCatalog " + podCastCatalogLang + " was updated with new version");
                     podCastCatalogByLang.put(podCastCatalogLang, catalog);
                 }
@@ -262,7 +260,7 @@ public class PodCastCatalogService {
                 writeLock.unlock();
             }
 
-            if(!ServerInfo.isLocalDevMode()) { //FIXME can work with memory?
+            if(podCastCatalogLang.isInMemoryIndex()) { //FIXME can work with memory?
                 buildIndexAsync(podCastCatalogLang);
             }
 

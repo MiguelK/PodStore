@@ -48,7 +48,7 @@ https://developers.openshift.com/servers/tomcat/jvm-memory.html
 
 
 ###### Admin  ######
-http://localhost:10080/PodStore
+http://localhost:8080/ResourceService_exploded/
 
 ###### API #######
 [podCastCatalog]

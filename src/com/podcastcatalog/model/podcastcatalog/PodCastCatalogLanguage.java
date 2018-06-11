@@ -10,19 +10,27 @@ import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSE;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderUS;
 
 public enum PodCastCatalogLanguage {
-    SE("SE", PodCastCatalogBuilderSE.class),
-    CN("CN", PodCastCatalogBuilderCN.class), //China
-    ES("ES", PodCastCatalogBuilderES.class),//Spain
-    NO("NO", PodCastCatalogBuilderNO.class),//Norway
-    FR("FR", PodCastCatalogBuilderFR.class),//France
-    DE("DE", PodCastCatalogBuilderDE.class),//Germany
-    US("US", PodCastCatalogBuilderUS.class);
+    SE("SE", PodCastCatalogBuilderSE.class, true, true, true),
+    CN("CN", PodCastCatalogBuilderCN.class, false, false, true), //China
+    ES("ES", PodCastCatalogBuilderES.class, false, false, true),//Spain
+    NO("NO", PodCastCatalogBuilderNO.class, false, false, true),//Norway
+    FR("FR", PodCastCatalogBuilderFR.class, false, false, true),//France
+    DE("DE", PodCastCatalogBuilderDE.class, false, false, true),//Germany
+    US("US", PodCastCatalogBuilderUS.class, true, true, true);
 
     private final String lang;
     private final Class catalogBuilder;
-    PodCastCatalogLanguage(String lang, Class<? extends PodCastCatalogBuilder> catalogBuilder) {
+    private final boolean inMemory;
+    private final boolean inMemoryIndex;
+    private final  boolean inMemorySearchSuggestions;
+
+    PodCastCatalogLanguage(String lang, Class<? extends PodCastCatalogBuilder> catalogBuilder,
+                           boolean inMemory, boolean inMemoryIndex, boolean inMemorySearchSuggestions) {
         this.lang = lang;
         this.catalogBuilder = catalogBuilder;
+        this.inMemory = inMemory;
+        this.inMemoryIndex = inMemoryIndex;
+        this.inMemorySearchSuggestions = inMemorySearchSuggestions;
     }
 
     private String getLang() {
@@ -35,6 +43,18 @@ public enum PodCastCatalogLanguage {
         } catch (Exception e) {
            throw new RuntimeException(e);
         }
+    }
+
+    public boolean isInMemorySearchSuggestions() {
+        return inMemorySearchSuggestions;
+    }
+
+    public boolean isInMemory() {
+        return inMemory;
+    }
+
+    public boolean isInMemoryIndex() {
+        return inMemoryIndex;
     }
 
     public static PodCastCatalogLanguage fromString(String lang) {

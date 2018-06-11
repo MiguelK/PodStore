@@ -133,6 +133,7 @@ public class PodCastCollectorOkihika implements PodCastCollector {
 
     public PodCastCollectorOkihika(PodCastCatalogLanguage language, TopList toplist, int resultSize) {
         this.url = "http://podcast.okihika.com/" + language.name() + "/" +  toplist.getCategoryId();
+        LOG.info("TEST=" + this.url);
         this.resultSize = resultSize;
         this.language = language;
     }

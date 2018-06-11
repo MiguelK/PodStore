@@ -27,6 +27,12 @@ public class UpdateSearchSuggestionsJob implements Job {
 
     @Override
     public void doWork() {
+
+        if(!ServerInfo.shouldBuildSuggestionIndex()){
+            LOG.info("Skip building SearchSuggestions for lang=" + language);
+            return;
+        }
+
             buildSuggestionsFor(language);
     }
 
