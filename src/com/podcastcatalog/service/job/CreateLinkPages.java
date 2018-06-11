@@ -97,7 +97,7 @@ public class CreateLinkPages implements Job {
         LOG.info("podCasts=" + podCasts.size());
 
         int maxPodCasts = 1 ; //podCasts.size();
-        int maxEpisodes = 1;
+        int maxEpisodes = 2;
         int podCastCounter = 0;
 
         for(PodCast podCast : podCasts) {
@@ -170,21 +170,6 @@ public class CreateLinkPages implements Job {
         }
     }
 
-
-    /*public void createDynamicLink_Basic() {
-        // [START create_link_basic]
-        DynamicLink.Builder builder = new FirebaseDynamicLinks.Builder()
-                .createDynamicLink()
-                .setDynamicLinkDomain(domain)
-                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder()
-                        .setMinimumVersion(minVersion)
-                        .build())
-                .setLink(deepLink);
-
-        Uri dynamicLinkUri = dynamicLink.getUri();
-        // [END create_link_basic]
-    }*/
-
      String createShortLink(String pid, String eid, String podCastTitle,
                                    String podCastEpisodeTitle, String podCastImage) {
 
@@ -192,21 +177,19 @@ public class CreateLinkPages implements Job {
                  eid + "&pid=" + pid + "&isi=1209200428&ibi=com.app.Pods&st=" +
                  podCastTitle + "&sd=" + podCastEpisodeTitle + "&si=" + podCastImage;
 
-
-        HttpURLConnection con = null;
-
+         String longLink = null;
+         HttpPost request = null;
         try {
             String linkValueEncoded = URLEncoder.encode(linkValue, "UTF-8");
-            String longLink = "https://qw7xh.app.goo.gl?link=" + linkValueEncoded;
+            longLink = "https://qw7xh.app.goo.gl?link=" + linkValueEncoded;
 
             String webApiKey = "AIzaSyBbpNKapYpB4LtkPTI9Xbrd0TkG7wtw1mY";
             String shortLinksURL = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + webApiKey;
 
 
             HttpClient httpClient = HttpClientBuilder.create().build(); //Use this instead
-            HttpPost request = new HttpPost(shortLinksURL);
-            String longLink1 = longLink;
-            StringEntity params =new StringEntity("{\"longDynamicLink\":\" + " + longLink1 + " + \"} ");
+            request = new HttpPost(shortLinksURL);
+            StringEntity params =new StringEntity("{\"longDynamicLink\":\" + " + longLink + " + \"} ");
             request.addHeader("content-type", "application/json; charset=utf-8");
             request.setEntity(params);
 
@@ -216,131 +199,42 @@ public class CreateLinkPages implements Job {
                     new InputStreamReader((response.getEntity().getContent())));
 
             String output;
-            System.out.println("Output from Server .... \n");
             StringBuilder content1 = new StringBuilder();
 
             while ((output = br.readLine()) != null) {
-                System.out.println(output);
                 content1.append(output);
                 content1.append(System.lineSeparator());
             }
 
-            System.out.println("Response = " + response);
-
-           // if(true){
                 Map map = GSON.fromJson(content1.toString(), Map.class);
 
-                // System.out.println("MAP===" + map);
-
                 Object shortLink = map.get("shortLink");
-                // System.out.println("MAP===" + shortLink);
                 if(shortLink != null && shortLink instanceof String){
                     return (String) shortLink;
                 }
-
-                return  "test";
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-
-            if(con!= null){
-                con.disconnect();
+            if(request!= null){
+                request.releaseConnection();
             }
         }
 
-         // }
-
-            //String urlParameters = "longDynamicLink=" + URLEncoder.encode(longLink, "UTF-8");
-
-            //  "  \"claimDateTime\": {\n" +
-          /*  String urlParameters = URLEncoder.encode("{\"longDynamicLink\"" + ": \"" +  longLink + "\"}",  "UTF-8");
-
-
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String json = gson.toJson(urlParameters);
-
-            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
-            //yte[] postDataBytes = postData.toString().getBytes(“UTF-8”);
-
-            System.out.println("urlParameters " + urlParameters);
-
-
-            URL myurl = new URL(shortLinksURL);
-            con = (HttpURLConnection) myurl.openConnection();
-
-            con.setDoOutput(true);
-            con.setRequestMethod("POST");
-            con.setRequestProperty("User-Agent", "Java client");
-            con.setRequestProperty("Accept", "application/json");
-            con.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-
-            try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
-                wr.write(postData);
-            }
-
-            StringBuilder content;
-
-            try (BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()))) {
-
-                String line;
-                content = new StringBuilder();
-
-                while ((line = in.readLine()) != null) {
-                    content.append(line);
-                    content.append(System.lineSeparator());
-                }
-            }
-
-
-            Map map = GSON.fromJson(content.toString(), Map.class);
-
-           // System.out.println("MAP===" + map);
-
-            Object shortLink = map.get("shortLink");
-            // System.out.println("MAP===" + shortLink);
-            if(shortLink != null && shortLink instanceof String){
-                return (String) shortLink;
-            }
-
-         //   System.out.println(content.toString());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-
-            if(con!= null){
-                con.disconnect();
-            }
-        }
-
-        return longLink;*/
-          return  "fail";
+         System.out.println("Failed creating shortLink using longLink=" + longLink);
+         return  longLink;
     }
 
 
     private void replaceText(File sourceFile, File targetFile, PodCast podCast, PodCastEpisode podCastEpisode) {
         try {
-            String pid= URLEncoder.encode( podCast.getCollectionId(), "UTF-8" );
-            String eid= URLEncoder.encode( podCastEpisode.getId(), "UTF-8" );
+            String pid=  podCast.getCollectionId();
+            String eid=  podCastEpisode.getId();
 
-            String podCastTitle = URLEncoder.encode( podCast.getTitle(), "UTF-8" );
-            String podCastEpisodeTitle = URLEncoder.encode( podCastEpisode.getTitle(), "UTF-8" );
-            String podCastImage = URLEncoder.encode(podCast.getArtworkUrl600(), "UTF-8" );
+            String podCastTitle =  podCast.getTitle();
+            String  podCastEpisodeTitle =  podCastEpisode.getTitle();
+            String  podCastImage = podCast.getArtworkUrl600();
 
-             pid=  podCast.getCollectionId();
-             eid=  podCastEpisode.getId();
-
-             podCastTitle =  podCast.getTitle();
-             podCastEpisodeTitle =  podCastEpisode.getTitle();
-             podCastImage = podCast.getArtworkUrl600();
-
-            /*String targetLink = "https://qw7xh.app.goo.gl?link=http://www.podsapp.se?pid=" +
-                    pid + "&eid=" + eid + "&isi=1209200428&ibi=com.app.Pods&st=" +
-                    podCastTitle + "&sd=" + podCastEpisodeTitle + "&si=" + podCastImage;
-*/
             String targetLink  = createShortLink(pid, eid, podCastTitle, podCastEpisodeTitle, podCastImage);
-
 
             Path path = sourceFile.toPath();
             Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
