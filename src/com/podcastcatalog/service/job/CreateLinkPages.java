@@ -36,9 +36,16 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -54,6 +61,10 @@ public class CreateLinkPages implements Job {
 
     private final Gson GSON = new Gson();
 
+    private final ForkJoinPool forkJoinPool = new ForkJoinPool();
+    private static final File TEMPLATE_ROOT_DIR = new File(ServerInfo.localPath, "web-external" + File.separator + "link-page-template");
+
+
     @Override
     public void doWork() {
 
@@ -61,13 +72,12 @@ public class CreateLinkPages implements Job {
             return;
         }
 
-        String name =  "json.zip";
         File templateRoot = new File(ServerInfo.localPath, "web-external" + File.separator + "link-page-template");
 
         PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SE);
 
         if(podCastCatalog==null) {
-            LOG.info("CreateLinkPages catalog not loaded yet" + templateRoot.getAbsolutePath());
+            LOG.info("CreateLinkPages catalog not loaded yet");
             return;
         }
 
@@ -86,7 +96,6 @@ public class CreateLinkPages implements Job {
 
        // LOG.info("CreateLinkPages bundleItemVisitor=" + bundleItemVisitor.getPodCastEpisodes().size() );
 
-
         File podDataHomeDir = ServiceDataStorage.useDefault().getPodDataHomeDir();
         File linkPagesDir = new File(podDataHomeDir, "LinkPages");
         if(!linkPagesDir.exists()) {
@@ -96,8 +105,28 @@ public class CreateLinkPages implements Job {
         List<PodCast> podCasts = bundleItemVisitor.getPodCasts();
         LOG.info("podCasts=" + podCasts.size());
 
-        int maxPodCasts = podCasts.size();
-        int maxEpisodes = 1; //200;
+        //List<ProcessPodCast> tasks = new ArrayList<>();
+        List<ForkJoinTask> forkJoinTasks = new ArrayList<>();
+        List<PodCast> podCasts1 = podCasts.subList(0, 10);
+        for (PodCast podCast : podCasts1) {
+
+            ProcessPodCast task = new ProcessPodCast(podCast);
+            //tasks.add(task);
+            forkJoinTasks.add(forkJoinPool.submit(task));
+        }
+
+        for (ForkJoinTask joinTask : forkJoinTasks) {
+            try {
+                joinTask.get(2, TimeUnit.MINUTES);
+            } catch (Exception e) {
+                LOG.info("Took more then 1 min to process ");
+                e.printStackTrace();
+            }
+        }
+
+
+      /*  int maxPodCasts = podCasts.size();
+        int maxEpisodes = 200;
         int podCastCounter = 0;
 
         for(PodCast podCast : podCasts) {
@@ -111,11 +140,12 @@ public class CreateLinkPages implements Job {
                 }
             }
 
+            LOG.info("podCastCounter=" + podCastCounter);
             if(podCastCounter >= maxPodCasts){
                 break;
             }
 
-        }
+        }*/
 
      //   createLinkPage(templateRoot, linkPagesDir, podCast, podCastEpisode);
     }
@@ -143,6 +173,7 @@ public class CreateLinkPages implements Job {
             if(linkPageRoot.exists()){
                 return;
             }
+            LOG.info("Create new link=" + linkPageRoot.getAbsolutePath());
             linkPageRoot.mkdirs();
 
 
@@ -164,7 +195,7 @@ public class CreateLinkPages implements Job {
             }
             //FIXME
             //Create QR code...
-            LOG.info("Created LinkPage podCast=" + podCast.getTitle() + ", " + podCastEpisode.getTitle());
+            LOG.info("Created LinkPage for PodCastEpisode podCast=" + podCast.getTitle() + ", " + podCastEpisode.getTitle());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -183,7 +214,7 @@ public class CreateLinkPages implements Job {
             String linkValueEncoded = URLEncoder.encode(linkValue, "UTF-8");
             longLink = "https://qw7xh.app.goo.gl?link=" + linkValueEncoded;
 
-            String webApiKey = "AIK SM GULD 2018";
+            String webApiKey = "AIzaSyBbpNKapYpB4LtkPTI9Xbrd0TkG7wtw1mY";
             String shortLinksURL = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + webApiKey;
 
 
@@ -253,4 +284,56 @@ public class CreateLinkPages implements Job {
             e.printStackTrace();
         }
     }
+
+
+    class ProcessPodCastEpisode extends RecursiveAction {
+
+        private PodCastEpisode podCastEpisode;
+
+        File linkPagesDir;
+        PodCast podCast;
+
+        ProcessPodCastEpisode(File linkPagesDir, PodCast podCast, PodCastEpisode podCastEpisode) {
+            this.podCastEpisode = podCastEpisode;
+            this.linkPagesDir = linkPagesDir;
+            this.podCast = podCast;
+        }
+
+        protected void computeDirectly() {
+           createLinkPage(TEMPLATE_ROOT_DIR, linkPagesDir, podCast, podCastEpisode);
+        }
+            @Override
+        protected void compute() {
+            computeDirectly();
+        }
+    }
+
+    class ProcessPodCast extends RecursiveAction {
+
+           private PodCast podCast;
+           File linkPagesDir;
+
+            public ProcessPodCast(PodCast podCast) {
+                this.podCast = podCast;
+
+                File podDataHomeDir = ServiceDataStorage.useDefault().getPodDataHomeDir();
+                linkPagesDir = new File(podDataHomeDir, "LinkPages");
+                if(!linkPagesDir.exists()) {
+                    linkPagesDir.mkdirs();
+                }
+            }
+
+            @Override
+            protected void compute() {
+
+                List<ProcessPodCastEpisode> tasks = new ArrayList<>();
+                List<PodCastEpisode> podCastEpisodes = podCast.getPodCastEpisodesInternal();
+                LOG.info("ProcessPodCast: " + podCast.getTitle() + " Episodes=" + podCastEpisodes.size());
+                for (PodCastEpisode podCastEpisode : podCastEpisodes) {
+                    tasks.add(new ProcessPodCastEpisode(linkPagesDir, podCast, podCastEpisode));
+                }
+
+                invokeAll(tasks);
+            }
+        }
 }
