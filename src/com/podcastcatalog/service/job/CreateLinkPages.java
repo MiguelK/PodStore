@@ -107,8 +107,8 @@ public class CreateLinkPages implements Job {
 
         //List<ProcessPodCast> tasks = new ArrayList<>();
         List<ForkJoinTask> forkJoinTasks = new ArrayList<>();
-        List<PodCast> podCasts1 = podCasts.subList(0, 10);
-        for (PodCast podCast : podCasts1) {
+       //List<PodCast> podCasts1 = podCasts.subList(0, 10);
+        for (PodCast podCast : podCasts) {
 
             ProcessPodCast task = new ProcessPodCast(podCast);
             //tasks.add(task);
@@ -243,6 +243,7 @@ public class CreateLinkPages implements Job {
                 if(shortLink != null && shortLink instanceof String){
                     return (String) shortLink;
                 }
+            System.out.println("Error creating shortLink" + shortLink);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -266,6 +267,11 @@ public class CreateLinkPages implements Job {
             String  podCastImage = podCast.getArtworkUrl600();
 
             String targetLink  = createShortLink(pid, eid, podCastTitle, podCastEpisodeTitle, podCastImage);
+
+            if(targetLink==null){
+                //Failed creating short link, do not create episode dir.
+                return;
+            }
 
             Path path = sourceFile.toPath();
             Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
