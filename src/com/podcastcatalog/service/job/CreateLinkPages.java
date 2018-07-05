@@ -2,7 +2,6 @@ package com.podcastcatalog.service.job;
 
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.podcastcatalog.model.podcastcatalog.Bundle;
 import com.podcastcatalog.model.podcastcatalog.BundleItem;
 import com.podcastcatalog.model.podcastcatalog.BundleItemVisitor;
@@ -20,32 +19,24 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.glassfish.jersey.server.Uri;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,6 +47,8 @@ import java.util.stream.Stream;
 public class CreateLinkPages implements Job {
 
     private final static Logger LOG = Logger.getLogger(CreateLinkPages.class.getName());
+    public static final int MAX_PODCAST_EPISODE = 5;
+    public static final int MAX_PODCAST = 5;
 
     private volatile boolean executedOnce = false;
 
@@ -63,7 +56,6 @@ public class CreateLinkPages implements Job {
 
     private final ForkJoinPool forkJoinPool = new ForkJoinPool();
     private static final File TEMPLATE_ROOT_DIR = new File(ServerInfo.localPath, "web-external" + File.separator + "link-page-template");
-
 
     @Override
     public void doWork() {
@@ -105,49 +97,22 @@ public class CreateLinkPages implements Job {
         List<PodCast> podCasts = bundleItemVisitor.getPodCasts();
         LOG.info("podCasts=" + podCasts.size());
 
-        //List<ProcessPodCast> tasks = new ArrayList<>();
         List<ForkJoinTask> forkJoinTasks = new ArrayList<>();
-       //List<PodCast> podCasts1 = podCasts.subList(0, 10);
-        for (PodCast podCast : podCasts) {
 
-            ProcessPodCast task = new ProcessPodCast(podCast);
-            //tasks.add(task);
-            forkJoinTasks.add(forkJoinPool.submit(task));
+        podCasts = podCasts.subList(0, MAX_PODCAST); //FIXME
+
+        for (PodCast podCast : podCasts) {
+            forkJoinTasks.add(forkJoinPool.submit(new PodCastAction(podCast)));
         }
 
         for (ForkJoinTask joinTask : forkJoinTasks) {
             try {
                 joinTask.get(2, TimeUnit.MINUTES);
             } catch (Exception e) {
-                LOG.info("Took more then 1 min to process ");
+                LOG.info("Took more then 2 min to process ");
                 e.printStackTrace();
             }
         }
-
-
-      /*  int maxPodCasts = podCasts.size();
-        int maxEpisodes = 200;
-        int podCastCounter = 0;
-
-        for(PodCast podCast : podCasts) {
-            podCastCounter++;
-            int episodeCounter = 0;
-            for(PodCastEpisode podCastEpisode: podCast.getPodCastEpisodesInternal()){
-                createLinkPage(templateRoot, linkPagesDir, podCast, podCastEpisode);
-                episodeCounter++;
-                if (episodeCounter>=maxEpisodes) {
-                    break;
-                }
-            }
-
-            LOG.info("podCastCounter=" + podCastCounter);
-            if(podCastCounter >= maxPodCasts){
-                break;
-            }
-
-        }*/
-
-     //   createLinkPage(templateRoot, linkPagesDir, podCast, podCastEpisode);
     }
 
     private String changeSwedishCharactersAndWhitespace(String string) {
@@ -161,47 +126,8 @@ public class CreateLinkPages implements Job {
                 replaceAll("\\s", "-");
         return newString;
     }
-    private void createLinkPage(File templateRoot, File linkPagesDir, PodCast podCast, PodCastEpisode podCastEpisode) {
-        try {
 
-            String episodeName = podCastEpisode.getTitle().replaceAll("\\s", "-");
-            String podCastName = podCast.getTitle().replaceAll("\\s", "-");
-            episodeName = changeSwedishCharactersAndWhitespace(episodeName);// URLEncoder.encode( episodeName, "UTF-8" );
-            podCastName = changeSwedishCharactersAndWhitespace(podCastName); // URLEncoder.encode( podCastName, "UTF-8" );
-
-            File linkPageRoot = new File(linkPagesDir, podCastName + File.separator + episodeName);
-            if(linkPageRoot.exists()){
-                return;
-            }
-            LOG.info("Create new link=" + linkPageRoot.getAbsolutePath());
-            linkPageRoot.mkdirs();
-
-
-        File templateCss = new File(templateRoot, "default.css");
-       // LOG.info("CreateLinkPages episodeRoot=" + linkPageRoot.getAbsolutePath() + "templateCss=" + templateCss );
-
-        File indexFile = new File(templateRoot, "index.html");
-        File targetIndexFile = new File(linkPageRoot, "index.html");
-        File targetImage = new File(linkPageRoot, "image.jpg");
-
-            FileUtils.copyFileToDirectory(templateCss, linkPageRoot);
-            replaceText(indexFile, targetIndexFile, podCast, podCastEpisode);
-
-            String artworkUrl600 = podCastEpisode.getArtworkUrl600();
-           // LOG.info("download image artworkUrl600=" + artworkUrl600);
-
-            try(InputStream in = new URL(artworkUrl600).openStream()){
-                Files.copy(in, targetImage.toPath()); // Paths.get("C:/File/To/Save/To/image.jpg"));
-            }
-            //FIXME
-            //Create QR code...
-            LOG.info("Created LinkPage for PodCastEpisode podCast=" + podCast.getTitle() + ", " + podCastEpisode.getTitle());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-     String createShortLink(String pid, String eid, String podCastTitle,
+    String createShortLink(String pid, String eid, String podCastTitle,
                                    String podCastEpisodeTitle, String podCastImage) {
 
          String linkValue = "http://www.podsapp.se?eid=" +
@@ -257,7 +183,31 @@ public class CreateLinkPages implements Job {
     }
 
 
-    private void replaceText(File sourceFile, File targetFile, PodCast podCast, PodCastEpisode podCastEpisode) {
+    private void updateText(PodCast podCast, PodCastEpisode podCastEpisode,  File linkPageRoot) {
+        File targetFile = new File(linkPageRoot, "index.html");
+        File sourceFile = new File(linkPageRoot, "index.html");
+
+        try {
+            Path path = sourceFile.toPath();
+            Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
+            List <String> replaced = lines.map(line -> line.replaceAll("template_podcast_title",podCast.getTitle()).
+                    replaceAll("template_meta_description",podCast.getDescription()).
+                    replaceAll("template_podcast_image",podCast.getArtworkUrl600()).
+                            replaceAll("template_podcast_episode_title",podCastEpisode.getTitle()).
+                            replaceAll("template_podcast_episode_description",podCastEpisode.getDescription()
+
+                            )).collect(Collectors.toList());
+            Files.write(targetFile.toPath(), replaced);
+            lines.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void replaceText(PodCast podCast, PodCastEpisode podCastEpisode,  File linkPageRoot) {
+        File targetFile = new File(linkPageRoot, "index.html");
+        File sourceFile = new File(TEMPLATE_ROOT_DIR, "index.html"); //If new
+
         try {
             String pid=  podCast.getCollectionId();
             String eid=  podCastEpisode.getId();
@@ -292,21 +242,64 @@ public class CreateLinkPages implements Job {
     }
 
 
-    class ProcessPodCastEpisode extends RecursiveAction {
+    private class PodCastEpisodeAction extends RecursiveAction {
 
         private PodCastEpisode podCastEpisode;
 
         File linkPagesDir;
         PodCast podCast;
 
-        ProcessPodCastEpisode(File linkPagesDir, PodCast podCast, PodCastEpisode podCastEpisode) {
+        PodCastEpisodeAction(File linkPagesDir, PodCast podCast, PodCastEpisode podCastEpisode) {
             this.podCastEpisode = podCastEpisode;
             this.linkPagesDir = linkPagesDir;
             this.podCast = podCast;
         }
 
-        protected void computeDirectly() {
-           createLinkPage(TEMPLATE_ROOT_DIR, linkPagesDir, podCast, podCastEpisode);
+        void computeDirectly() {
+            try {
+
+                String episodeName = podCastEpisode.getTitle().replaceAll("\\s", "-");
+                String podCastName = podCast.getTitle().replaceAll("\\s", "-");
+                episodeName = changeSwedishCharactersAndWhitespace(episodeName);// URLEncoder.encode( episodeName, "UTF-8" );
+                podCastName = changeSwedishCharactersAndWhitespace(podCastName); // URLEncoder.encode( podCastName, "UTF-8" );
+
+                File linkPageRoot = new File(linkPagesDir, podCastName + File.separator + episodeName);
+
+                boolean isUpdateTextRequest = false;
+                if(linkPageRoot.exists()){
+                    //FIXME Do update no new UniversalLink
+                    LOG.info("Update " + episodeName);
+                    isUpdateTextRequest = true;
+                } else {
+                    LOG.info("Create new link=" + linkPageRoot.getAbsolutePath());
+                    linkPageRoot.mkdirs();
+                }
+
+                if(!isUpdateTextRequest) {
+                    File templateCss = new File(TEMPLATE_ROOT_DIR, "default.css");
+                    FileUtils.copyFileToDirectory(templateCss, linkPageRoot);
+                }
+
+                if(isUpdateTextRequest) {
+                    updateText(podCast, podCastEpisode, linkPageRoot);
+                } else {
+                    replaceText(podCast, podCastEpisode, linkPageRoot);
+                }
+
+
+                if(!isUpdateTextRequest) {
+                    String artworkUrl600 = podCastEpisode.getArtworkUrl600();
+                    File targetImage = new File(linkPageRoot, "image.jpg");
+                    try (InputStream in = new URL(artworkUrl600).openStream()) {
+                        Files.copy(in, targetImage.toPath()); // Paths.get("C:/File/To/Save/To/image.jpg"));
+                    }
+                }
+                //FIXME
+                //Create QR code...
+                LOG.info("Created LinkPage for PodCastEpisode podCast=" + podCast.getTitle() + ", " + podCastEpisode.getTitle());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
             @Override
         protected void compute() {
@@ -314,12 +307,12 @@ public class CreateLinkPages implements Job {
         }
     }
 
-    class ProcessPodCast extends RecursiveAction {
+    class PodCastAction extends RecursiveAction {
 
            private PodCast podCast;
            File linkPagesDir;
 
-            public ProcessPodCast(PodCast podCast) {
+            PodCastAction(PodCast podCast) {
                 this.podCast = podCast;
 
                 File podDataHomeDir = ServiceDataStorage.useDefault().getPodDataHomeDir();
@@ -332,11 +325,13 @@ public class CreateLinkPages implements Job {
             @Override
             protected void compute() {
 
-                List<ProcessPodCastEpisode> tasks = new ArrayList<>();
+                List<PodCastEpisodeAction> tasks = new ArrayList<>();
                 List<PodCastEpisode> podCastEpisodes = podCast.getPodCastEpisodesInternal();
-                LOG.info("ProcessPodCast: " + podCast.getTitle() + " Episodes=" + podCastEpisodes.size());
+                podCastEpisodes = podCastEpisodes.size() > MAX_PODCAST_EPISODE ? podCastEpisodes.subList(0, MAX_PODCAST_EPISODE) : podCastEpisodes;
+
+                LOG.info("PodCastAction: " + podCast.getTitle() + " Episodes=" + podCastEpisodes.size());
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
-                    tasks.add(new ProcessPodCastEpisode(linkPagesDir, podCast, podCastEpisode));
+                    tasks.add(new PodCastEpisodeAction(linkPagesDir, podCast, podCastEpisode));
                 }
 
                 invokeAll(tasks);
