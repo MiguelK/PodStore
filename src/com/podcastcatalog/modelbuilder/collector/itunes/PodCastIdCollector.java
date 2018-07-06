@@ -2,7 +2,9 @@ package com.podcastcatalog.modelbuilder.collector.itunes;
 
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
+import com.podcastcatalog.model.podcastcatalog.PodCastCategory;
 import com.podcastcatalog.model.podcastcatalog.PodCastCategoryType;
+import com.podcastcatalog.modelbuilder.collector.PodCastCategoryCollector;
 import com.podcastcatalog.modelbuilder.collector.PodCastCollector;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
  */
 
 //
-public class PodCastIdCollector implements PodCastCollector {
+public class PodCastIdCollector implements PodCastCollector, PodCastCategoryCollector  {
 
     private final static Logger LOG = Logger.getLogger(PodCastIdCollector.class.getName());
 
@@ -32,7 +34,10 @@ public class PodCastIdCollector implements PodCastCollector {
     private final PodCastCatalogLanguage language;
     private final int resultSize;
     private final String url;
+    private final String categoryTitle;
 
+
+    private final Category category;
     public enum Category {
         TOPLIST_COUNTRY("not used"),
         ARTS("https://itunes.apple.com/{LANGUAGE}/genre/podcaster-konst/id1301?mt=2"),
@@ -117,9 +122,11 @@ public class PodCastIdCollector implements PodCastCollector {
         }
     }
 
-    public PodCastIdCollector(PodCastCatalogLanguage language, Category category) {
+    public PodCastIdCollector(PodCastCatalogLanguage language, Category category, String categoryTitle) {
         this.language = language;
         this.resultSize = 50;
+        this.category = category;
+        this.categoryTitle = categoryTitle;
         this.url = category.getCategoryUrl().replace("{LANGUAGE}", language.name().toLowerCase());
     }
 
@@ -215,5 +222,18 @@ public class PodCastIdCollector implements PodCastCollector {
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException(url, e);
         }
+    }
+
+    @Override
+    public PodCastCategory collectCategories() {
+        List<PodCast> podCasts = collectPodCasts();
+
+        String artworkUrl600 = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Color_icon_red.svg/220px-Color_icon_red.svg.png";//FIXME Default error image?
+
+        if (!podCasts.isEmpty()) {
+            artworkUrl600 = podCasts.get(0).getArtworkUrl600();
+        }
+
+        return new PodCastCategory(categoryTitle, "", artworkUrl600, podCasts, category.toPodCastCategoryType());
     }
 }

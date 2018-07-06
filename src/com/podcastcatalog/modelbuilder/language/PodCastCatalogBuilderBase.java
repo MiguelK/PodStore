@@ -24,18 +24,18 @@ import java.util.Set;
 public abstract class PodCastCatalogBuilderBase implements PodCastCatalogBuilder {
 
     static class CategoryName {
-        private PodCastCollectorOkihika.TopList category;
+        private PodCastIdCollector.Category category;
         private String categoryTitle;
 
-        private CategoryName(PodCastCollectorOkihika.TopList category, String categoryTitle) {
+        private CategoryName(PodCastIdCollector.Category category, String categoryTitle) {
             this.category = category;
             this.categoryTitle = categoryTitle;
         }
-        static CategoryName create(PodCastCollectorOkihika.TopList category, String categoryTitle) {
+        static CategoryName create(PodCastIdCollector.Category category, String categoryTitle) {
                 return new CategoryName(category, categoryTitle);
         }
 
-        public PodCastCollectorOkihika.TopList getCategory() {
+        public PodCastIdCollector.Category getCategory() {
             return category;
         }
 
@@ -47,7 +47,7 @@ public abstract class PodCastCatalogBuilderBase implements PodCastCatalogBuilder
     class CategoryContext {
         private List<CategoryName> categoryNames = new ArrayList<>();
 
-        void add(PodCastCollectorOkihika.TopList category, String categoryTitle){
+        void add(PodCastIdCollector.Category category, String categoryTitle){
             categoryNames.add(new CategoryName(category, categoryTitle));
         }
 
@@ -75,10 +75,12 @@ public abstract class PodCastCatalogBuilderBase implements PodCastCatalogBuilder
         for (CategoryName categoryName : categoryContext.getCategoryNames()) {
 
 
-            //pods = new PodCastIdCollector(podCastCatalogLang, )
+            PodCastIdCollector podCastIdCollector = new PodCastIdCollector(podCastCatalogLang, categoryName.getCategory(), categoryName.getCategoryTitle());
+            categoryBundle.addCollector(podCastIdCollector);
+
             //PodCastCategoryCollector(podsCollector, title)
-            categoryBundle.addCollector(PodCastCategoryCollectorOkihika.create(podCastCatalogLang,
-                    categoryName.getCategory(), categoryName.getCategoryTitle()));
+            //categoryBundle.addCollector(PodCastCategoryCollectorOkihika.create(podCastCatalogLang,
+              //      categoryName.getCategory(), categoryName.getCategoryTitle()));
         }
 
         bundleBuilders.add(categoryBundle);

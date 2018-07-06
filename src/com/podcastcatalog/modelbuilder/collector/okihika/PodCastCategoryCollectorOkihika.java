@@ -53,6 +53,6 @@ public class PodCastCategoryCollectorOkihika extends PodCastCollectorOkihika imp
             artworkUrl600 = podCasts.get(0).getArtworkUrl600();
         }
 
-        return new PodCastCategory(title, description, artworkUrl600, podCasts, podCastCategoryType);
+        return new PodCastCategory(title, "", artworkUrl600, podCasts, podCastCategoryType);
     }
 }

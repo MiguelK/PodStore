@@ -14,7 +14,7 @@ public class PodCastIdCollectorTest {
     @Test
     public void testParseId() throws Exception {
 
-        PodCastIdCollector podCastIdCollector = new PodCastIdCollector(PodCastCatalogLanguage.US, PodCastIdCollector.Category.ARTS);
+        PodCastIdCollector podCastIdCollector = new PodCastIdCollector(PodCastCatalogLanguage.US, PodCastIdCollector.Category.ARTS, "");
 
         List<Long> podCastIds = podCastIdCollector.getPodCastIds();
 

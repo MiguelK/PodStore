@@ -1,29 +1,30 @@
 package com.podcastcatalog.modelbuilder.language;
 
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
+import com.podcastcatalog.modelbuilder.collector.itunes.PodCastIdCollector;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCollectorOkihika;
 
 public class PodCastCatalogBuilderNO extends PodCastCatalogBuilderBase {
 
     @Override
     void addCategoryNames(CategoryContext categoryContext) {
-        categoryContext.add(PodCastCollectorOkihika.TopList.VIDEO_GAMES, "video");
-        categoryContext.add(PodCastCollectorOkihika.TopList.NEWS_POLITICS, "Nyheter og politikk");
-        categoryContext.add(PodCastCollectorOkihika.TopList.MUSIC, "Musikk");
-        categoryContext.add(PodCastCollectorOkihika.TopList.DESIGN, "Kunst"); //DESIGN better then ARTS
-        categoryContext.add(PodCastCollectorOkihika.TopList.HEALTH, "Helse");
-        categoryContext.add(PodCastCollectorOkihika.TopList.BUSINESS, "Forretnings");
-        categoryContext.add(PodCastCollectorOkihika.TopList.COMEDY, "Komedie");
-        categoryContext.add(PodCastCollectorOkihika.TopList.K_12, "Trening");
-        categoryContext.add(PodCastCollectorOkihika.TopList.GAMES_HOBBIES, "Spill og hobby");
-        categoryContext.add(PodCastCollectorOkihika.TopList.GOVERNMENT_ORGANIZATIONS, "Myndigheter og organisasjoner");
-        categoryContext.add(PodCastCollectorOkihika.TopList.KIDS_FAMILY, "Barn og familie");
-        categoryContext.add(PodCastCollectorOkihika.TopList.RELIGION_SPIRITUALITY, "Religion og åndelighet");
-        categoryContext.add(PodCastCollectorOkihika.TopList.SCIENCE_MEDICINE, "Vitenskap og medisin");
-        categoryContext.add(PodCastCollectorOkihika.TopList.SOCIETY_CULTURE, "Samfunn og kultur");
-        categoryContext.add(PodCastCollectorOkihika.TopList.SPORTS_RECREATION, "Sport og fritid");
-        categoryContext.add(PodCastCollectorOkihika.TopList.TECHNOLOGY, "Teknologi");
-        categoryContext.add(PodCastCollectorOkihika.TopList.TV_FILM, "TV og film");
+        categoryContext.add(PodCastIdCollector.Category.VIDEO_GAMES, "video");
+        categoryContext.add(PodCastIdCollector.Category.NEWS_POLITICS, "Nyheter og politikk");
+        categoryContext.add(PodCastIdCollector.Category.MUSIC, "Musikk");
+        categoryContext.add(PodCastIdCollector.Category.DESIGN, "Kunst"); //DESIGN better then ARTS
+        categoryContext.add(PodCastIdCollector.Category.HEALTH, "Helse");
+        categoryContext.add(PodCastIdCollector.Category.BUSINESS, "Forretnings");
+        categoryContext.add(PodCastIdCollector.Category.COMEDY, "Komedie");
+        categoryContext.add(PodCastIdCollector.Category.K_12, "Trening");
+        categoryContext.add(PodCastIdCollector.Category.GAMES_HOBBIES, "Spill og hobby");
+        categoryContext.add(PodCastIdCollector.Category.GOVERNMENT_ORGANIZATIONS, "Myndigheter og organisasjoner");
+        categoryContext.add(PodCastIdCollector.Category.KIDS_FAMILY, "Barn og familie");
+        categoryContext.add(PodCastIdCollector.Category.RELIGION_SPIRITUALITY, "Religion og åndelighet");
+        categoryContext.add(PodCastIdCollector.Category.SCIENCE_MEDICINE, "Vitenskap og medisin");
+        categoryContext.add(PodCastIdCollector.Category.SOCIETY_CULTURE, "Samfunn og kultur");
+        categoryContext.add(PodCastIdCollector.Category.SPORTS_RECREATION, "Sport og fritid");
+        categoryContext.add(PodCastIdCollector.Category.TECHNOLOGY, "Teknologi");
+        categoryContext.add(PodCastIdCollector.Category.TV_FILM, "TV og film");
     }
 
     @Override
