@@ -12,6 +12,7 @@ import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
 import com.podcastcatalog.modelbuilder.PodCastCategoryBundleBuilder;
 import com.podcastcatalog.modelbuilder.RandomPodCastEpisodeBundleBuilder;
 import com.podcastcatalog.modelbuilder.TimeDurationPodCastBundleBuilder;
+import com.podcastcatalog.modelbuilder.collector.itunes.PodCastIdCollector;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCategoryCollectorOkihika;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCollectorOkihika;
 
@@ -72,6 +73,10 @@ public abstract class PodCastCatalogBuilderBase implements PodCastCatalogBuilder
         addCategoryNames(categoryContext);
 
         for (CategoryName categoryName : categoryContext.getCategoryNames()) {
+
+
+            //pods = new PodCastIdCollector(podCastCatalogLang, )
+            //PodCastCategoryCollector(podsCollector, title)
             categoryBundle.addCollector(PodCastCategoryCollectorOkihika.create(podCastCatalogLang,
                     categoryName.getCategory(), categoryName.getCategoryTitle()));
         }

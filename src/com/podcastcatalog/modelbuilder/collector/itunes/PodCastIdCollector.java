@@ -2,6 +2,7 @@ package com.podcastcatalog.modelbuilder.collector.itunes;
 
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
+import com.podcastcatalog.model.podcastcatalog.PodCastCategoryType;
 import com.podcastcatalog.modelbuilder.collector.PodCastCollector;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,7 +11,6 @@ import org.jsoup.select.Elements;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -22,24 +22,105 @@ import java.util.stream.Collectors;
  * Created by miguelkrantz on 2018-07-05.
  */
 
-//PodCastIdCollector
-public class ItunesGenreCollector implements PodCastCollector {
+//
+public class PodCastIdCollector implements PodCastCollector {
 
-    private final static Logger LOG = Logger.getLogger(ItunesGenreCollector.class.getName());
-
+    private final static Logger LOG = Logger.getLogger(PodCastIdCollector.class.getName());
 
     private static final int TIMEOUT_MILLIS = 5000;
-
 
     private final PodCastCatalogLanguage language;
     private final int resultSize;
     private final String url;
 
+    public enum Category {
+        TOPLIST_COUNTRY("not used"),
+        ARTS("https://itunes.apple.com/{LANGUAGE}/genre/podcaster-konst/id1301?mt=2"),
+        DESIGN("1402"),
+        FASHION_BEAUTY("1459"),
+        FOOD("1306"),
+        LITERATURE("1401"),
+        PERFORMING_ARTS("1405"),
+        VISUAL_ARTS("1406"),
+        COMEDY("1303"),
+        EDUCATION("1304"),
+        EDUCATIONAL_TECHNOLOGY("1468"),
+        HIGHER_EDUCATION("1416"),
+        K_12("1415"),//K_12
+        LANGUAGE_COURSES("1469"),
+        TRAINING("1470"),
+        KIDS_FAMILY("1305"),
+        HEALTH("1307"),
+        ALTERNATIVE_HEALTH("1481"),
+        FITNESS_NUTRITION("1417"),
+        SELF_HELP("1420"),
+        SEXUALITY("1421"),
+        TV_FILM("1309"),
+        MUSIC("1310"),
+        NEWS_POLITICS("1311"),
+        RELIGION_SPIRITUALITY("1314"),
+        BUDDHISM("1438"),
+        CHRISTIANITY("1439"),
+        HINDUISM("1463"),
+        ISLAM("1440"),
+        JUDAISM("1441"),
+        OTHER("1464"),
+        SPIRITUALITY("1444"),
+        SCIENCE_MEDICINE("1315"),
+        MEDICINE("1478"),
+        NATURAL_SCIENCES("1477"),
+        SOCIAL_SCIENCES("1479"),
+        SPORTS_RECREATION("1316"),
+        AMATEUR("1467"),
+        COLLEGE_HIGH_SCHOOL("1466"),
+        OUTDOOR("1456"),
+        PROFESSIONAL("1465"),
+        TECHNOLOGY("1318"),
+        GADGETS("1446"),
+        PODCASTING("1450"),
+        SOFTWARE_HOW_TO("1480"),
+        TECH_NEWS("1448"),
+        BUSINESS("1321"),
+        BUSINESS_NEWS("1471"),
+        CAREERS("1410"),
+        INVESTING("1412"),
+        MANAGEMENT_MARKETING("1413"),
+        SHOPPING("1472"),
+        GAMES_HOBBIES("1323"),
+        AUTOMOTIVE("1454"),
+        AVIATION("1455"),
+        HOBBIES("1460"),
+        OTHER_GAMES("1461"),
+        VIDEO_GAMES("1404"),
+        SOCIETY_CULTURE("1324"),
+        HISTORY("1462"),
+        PERSONAL_JOURNALS("1302"),
+        PHILOSOPHY("1443"),
+        PLACES_TRAVEL("1320"),
+        GOVERNMENT_ORGANIZATIONS("1325"),
+        LOCAL("1475"),
+        NATIONAL("1473"),
+        NON_PROFIT("1476"),
+        REGIONAL("1474");
+        private final String categoryUrl;
 
-    public ItunesGenreCollector(PodCastCatalogLanguage language, int resultSize, String url) {
+        Category(String categoryUrl) {
+            this.categoryUrl =  categoryUrl;
+        }
+
+        public String getCategoryUrl() {
+            return categoryUrl;
+        }
+
+        public PodCastCategoryType toPodCastCategoryType() {
+            return PodCastCategoryType.valueOf(this.name());
+        }
+    }
+
+    public PodCastIdCollector(PodCastCatalogLanguage language, Category category) {
         this.language = language;
-        this.resultSize = resultSize;
-        this.url = url;
+        this.resultSize = 50;
+        this.url = category.getCategoryUrl().replace("{LANGUAGE}", language.name().toLowerCase());
     }
 
     @Override
@@ -66,13 +147,7 @@ public class ItunesGenreCollector implements PodCastCollector {
 
            // Element table = doc.getElementById("itunes_result_table");
            // Elements elements = table.getElementsByAttribute("href");
-
             Elements elements = doc.getElementsByAttribute("href");
-
-
-            //  <li><a href="https://itunes.apple.com/se/podcast/sigges-netflixpodd/id1354405336?mt=2">Sigges Netflixpodd</a> </li>
-
-           // System.out.println(elements);
 
            List<Long> longList = elements.stream().filter(isValidItunesPodCastURL()).mapToLong((e) -> {
                         String toString = e.toString();
@@ -127,8 +202,7 @@ public class ItunesGenreCollector implements PodCastCollector {
         String itunesPath = "itunes.apple.com/" + language.name().toLowerCase() + "/podcast";
         return e -> {
             String toString = e.toString();
-            System.out.println("HREF====== " + toString);
-            boolean containsPath = toString.contains(itunesPath);
+               boolean containsPath = toString.contains(itunesPath);
             return e.getElementsByAttribute("href") != null &&
                     containsPath &&
                     parseID(toString) != null;
