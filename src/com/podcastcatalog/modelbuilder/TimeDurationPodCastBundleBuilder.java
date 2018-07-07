@@ -131,11 +131,24 @@ public class TimeDurationPodCastBundleBuilder {
         List<PodCast> podCasts = new ArrayList<>();
 
 
-        podCasts.add(podCastsByDuration.get(DurationInterval.half_hour).build());
-        podCasts.add(podCastsByDuration.get(DurationInterval.hour).build());
-        podCasts.add(podCastsByDuration.get(DurationInterval.one_half_hour).build());
-        podCasts.add(podCastsByDuration.get(DurationInterval.two_hour).build());
+        PodCast.Builder builder3 = podCastsByDuration.get(DurationInterval.half_hour);
+        if(builder3!=null) {
+            podCasts.add(builder3.build());
+        }
+        PodCast.Builder builder2 = podCastsByDuration.get(DurationInterval.hour);
+        if(builder2!=null) {
+            podCasts.add(builder2.build());
+        }
+        PodCast.Builder builder1 = podCastsByDuration.get(DurationInterval.one_half_hour);
 
+        if(builder1!=null) {
+            podCasts.add(builder1.build());
+        }
+
+        PodCast.Builder builder = podCastsByDuration.get(DurationInterval.two_hour);
+        if(builder!=null) {
+            podCasts.add(builder.build());
+        }
 
         return new PodCastBundle(bundleName, "not used", podCasts);
     }
