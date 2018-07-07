@@ -45,9 +45,6 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
     private final Category category;
     private static final String DEFAULT_EMPTY_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Color_icon_red.svg/220px-Color_icon_red.svg.png";
 
-    public static PodCastIdCollector createPodCastIdCollector(PodCastCatalogLanguage language, Category category) {
-        return new PodCastIdCollector(language, category);
-    }
 
     public enum Category {
         TOPLIST_COUNTRY("https://rss.itunes.apple.com/api/v1/{LANGUAGE}/podcasts/top-podcasts/all/{RESULT_SIZE}/explicit.json"),
@@ -130,16 +127,21 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
         }
     }
 
+    public static PodCastIdCollector createPodCastIdCollector(PodCastCatalogLanguage language, Category category) {
+        return new PodCastIdCollector(language, category);
+    }
+
     public PodCastIdCollector(PodCastCatalogLanguage language, Category category, String categoryTitle) {
         this.language = language;
         this.resultSize = ServerInfo.isLocalDevMode() ? 3: 50;
         this.category = category;
         this.categoryTitle = categoryTitle;
-        this.url = category.categoryUrl.replace("{LANGUAGE}", language.name().toLowerCase()).replace("{RESULT_SIZE}",String.valueOf(resultSize));
+        this.url = category.categoryUrl.replace("{LANGUAGE}",
+                language.name().toLowerCase()).replace("{RESULT_SIZE}",String.valueOf(resultSize));
     }
 
     private PodCastIdCollector(PodCastCatalogLanguage language, Category category) {
-        this(language, category, "");
+        this(language, category, "???");
     }
 
     @Override
@@ -321,7 +323,7 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
 
         String artworkUrl600 = podCasts.isEmpty() ? DEFAULT_EMPTY_IMAGE :  podCasts.get(0).getArtworkUrl600();
 
-        return new PodCastCategory(categoryTitle, "", artworkUrl600, podCasts, category.toPodCastCategoryType());
+        return new PodCastCategory(categoryTitle, "???", artworkUrl600, podCasts, category.toPodCastCategoryType());
     }
 
 

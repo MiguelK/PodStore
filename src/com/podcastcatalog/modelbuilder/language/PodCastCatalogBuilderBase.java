@@ -64,7 +64,11 @@ public abstract class PodCastCatalogBuilderBase implements PodCastCatalogBuilder
         PodCastCatalogLanguage podCastCatalogLang = getPodCastCatalogLang();
 
         PodCastBundleBuilder podCastBundle = BundleBuilder.newPodCastBundleBuilder(BundleName.PodCastTopList.name(), "???");//FIXME Image
-        podCastBundle.addCollector(new PodCastCollectorOkihika(podCastCatalogLang, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY, 30));
+
+        PodCastIdCollector podCastIdCollector1 = PodCastIdCollector.createPodCastIdCollector(podCastCatalogLang, PodCastIdCollector.Category.TOPLIST_COUNTRY);
+        //podCastBundle.addCollector(new PodCastCollectorOkihika(podCastCatalogLang, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY, 30));
+        podCastBundle.addCollector(podCastIdCollector1);
+
         bundleBuilders.add(podCastBundle);
 
         PodCastCategoryBundleBuilder categoryBundle = BundleBuilder.newPodCastCategoryBundleBuilder(BundleName.PodCastCategoryTopLists.name(), "???");
