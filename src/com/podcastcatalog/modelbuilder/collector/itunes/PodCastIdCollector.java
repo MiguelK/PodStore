@@ -1,18 +1,25 @@
 package com.podcastcatalog.modelbuilder.collector.itunes;
 
+import com.google.gson.Gson;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastcatalog.PodCastCategory;
 import com.podcastcatalog.model.podcastcatalog.PodCastCategoryType;
 import com.podcastcatalog.modelbuilder.collector.PodCastCategoryCollector;
 import com.podcastcatalog.modelbuilder.collector.PodCastCollector;
+import com.podcastcatalog.util.ServerInfo;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -29,6 +36,8 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
 
     private static final int TIMEOUT_MILLIS = 5000;
 
+    private static final Gson GSON = new Gson();
+
     private final PodCastCatalogLanguage language;
     private final int resultSize;
     private final String url;
@@ -36,9 +45,12 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
     private final Category category;
     private static final String DEFAULT_EMPTY_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Color_icon_red.svg/220px-Color_icon_red.svg.png";
 
+    public static PodCastIdCollector createPodCastIdCollector(PodCastCatalogLanguage language, Category category) {
+        return new PodCastIdCollector(language, category);
+    }
 
     public enum Category {
-        TOPLIST_COUNTRY("not used"),
+        TOPLIST_COUNTRY("https://rss.itunes.apple.com/api/v1/{LANGUAGE}/podcasts/top-podcasts/all/{RESULT_SIZE}/explicit.json"),
         ARTS("https://itunes.apple.com/{LANGUAGE}/genre/podcaster-konst/id1301?mt=2"),
         DESIGN("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-arts-design/id1402?mt=2"),
         FASHION_BEAUTY("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-arts-fashion-beauty/id1459?mt=2"),
@@ -112,9 +124,6 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
             this.categoryUrl =  categoryUrl;
         }
 
-        public String getCategoryUrl() {
-            return categoryUrl;
-        }
 
         public PodCastCategoryType toPodCastCategoryType() {
             return PodCastCategoryType.valueOf(this.name());
@@ -123,10 +132,14 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
 
     public PodCastIdCollector(PodCastCatalogLanguage language, Category category, String categoryTitle) {
         this.language = language;
-        this.resultSize = 50;
+        this.resultSize = ServerInfo.isLocalDevMode() ? 3: 50;
         this.category = category;
         this.categoryTitle = categoryTitle;
-        this.url = category.getCategoryUrl().replace("{LANGUAGE}", language.name().toLowerCase());
+        this.url = category.categoryUrl.replace("{LANGUAGE}", language.name().toLowerCase()).replace("{RESULT_SIZE}",String.valueOf(resultSize));
+    }
+
+    private PodCastIdCollector(PodCastCatalogLanguage language, Category category) {
+        this(language, category, "");
     }
 
     @Override
@@ -146,8 +159,99 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
         return ItunesSearchAPI.lookupPodCasts(podCastIds);
 
     }
+    private PodCastToplist parseJSON(String url) {
+
+        HttpsURLConnection connection;
+        try {
+            URL request = new URL(url);
+            connection = (HttpsURLConnection) request.openConnection();
+            String content = IOUtils.toString(connection.getInputStream(), "UTF-8");
+
+           // String content = getResultContent(connection);
+            return GSON.fromJson(content, PodCastToplist.class);
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Unable to get Itunes Search API result using query=" + url, e);
+        }
+
+        return null;
+    }
+
+    public static class PodCastToplist {
+
+        private Feed feed;
+        public static class Feed {
+            String title;
+            String id;
+            private final List<PodCastToplist.Row> results = new ArrayList<>();
+        }
+
+        List<PodCastToplist.Row> getResults(){
+            if(feed == null){
+                return null;
+            }
+            return feed.results;
+        }
+
+        public static class Row {
+            private String artistName;
+            private String id;
+            private String name;
+            private String artistId;
+            private String artistUrl;
+            private String artworkUrl100;
+        }
+    }
 
     public List<Long> getPodCastIds() {
+
+        if(category == Category.TOPLIST_COUNTRY) {
+
+            PodCastToplist podCastToplist = parseJSON(url);
+            System.out.println("podCastToplist=" + podCastToplist);
+
+            /*List<Long> longList = elements.stream().filter(isValidItunesPodCastURL()).mapToLong((e) -> {
+                        String toString = e.toString();
+                        return parseID(toString);
+                    }
+            ).boxed().collect(Collectors.toList());*/
+
+
+            if(podCastToplist != null) {
+
+                List<Long> collect = podCastToplist.getResults().stream().filter(row -> {
+
+                    if(row.id != null) {
+                   //     System.out.println(row.name +" 1-ROW=== " + row.artistId + " " + row.id);
+
+                        return true;
+                    } else {
+                        System.out.println(row.name + " ROW=== " + row.artistName + " " + row.id);
+                      return false;
+                    }
+
+                })
+                        .mapToLong(value -> {
+
+                                    return Long.parseLong(value.id);
+
+                                    // NumberUtils.toLong()
+                           /* try {
+                                Long.parseLong(value.artistId);
+                        }catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                                }*/
+                                }
+
+                            ).boxed().collect(Collectors.toList());
+
+                return  collect;
+            }
+
+            return Collections.emptyList();
+        }
+
+
         try {
             Document doc = Jsoup.parse(toURL(url), TIMEOUT_MILLIS);
 
@@ -179,22 +283,10 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
         int start = value.indexOf("/id") + 3;
         int end = value.lastIndexOf("?mt");
 
-        String substring = value.substring(start, end); // value.length());
-
-       // System.out.println("value=" + value + " ======= substring=" +substring);
-
-        //StringBuilder result = new StringBuilder();
-
-        /*for (char c : substring.toCharArray()) {
-            if (Character.isDigit(c)) {
-                result.append(c);
-            } else {
-                break;
-            }
-        }*/
+        String substring = value.substring(start, end);
 
         try {
-            return Long.parseLong(substring ) ; //result.toString());
+            return Long.parseLong(substring ) ;
         } catch (Exception e) {
             LOG.info(getClass().getSimpleName() + " failed to parse Itunes id=" + value + ", id=" + substring);
             return null;
@@ -231,4 +323,6 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
 
         return new PodCastCategory(categoryTitle, "", artworkUrl600, podCasts, category.toPodCastCategoryType());
     }
+
+
 }

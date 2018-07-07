@@ -63,7 +63,7 @@ public class StartupServlet extends HttpServlet {
         }
 
         //FIXME prod
-        loadPodCastCatalog(PodCastCatalogLanguage.US);
+        //loadPodCastCatalog(PodCastCatalogLanguage.US);
         loadPodCastCatalog(PodCastCatalogLanguage.SE);
 
         /*if (ServerInfo.isLocalDevMode()) {
@@ -103,8 +103,7 @@ public class StartupServlet extends HttpServlet {
 
     private void loadPodCastCatalog(PodCastCatalogLanguage language) {
 
-        PodCastCatalogBuilder builder = language.create();
-        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(builder);
+        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(language.create());
 
         Optional<PodCastCatalogVersion> currentVersion = ServiceDataStorage.useDefault().getCurrentVersion(language);
 
@@ -114,7 +113,9 @@ public class StartupServlet extends HttpServlet {
             return;
         }
 
-        LOG.info("PodCastCatalog " + currentVersion.get() + " exists");
+        LOG.info("PodCastCatalog " + currentVersion.get()
+                + " exists, loadInMemory=" + language.isInMemory()
+                + ", buildInMemoryIndex=" + language.isInMemoryIndex());
 
         if(language.isInMemory()) {
             LOG.info("Loading existing PodCastCatalog " + currentVersion.get() + " inMemory");
@@ -127,7 +128,6 @@ public class StartupServlet extends HttpServlet {
             LOG.info("Building search index for existing PodCastCatalog " + currentVersion.get());
             PodCastCatalogService.getInstance().buildIndexAsync(language);
         }
-
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

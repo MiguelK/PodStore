@@ -3,6 +3,7 @@ package com.podcastcatalog.service.job;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastsearch.PodCastTitle;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
+import com.podcastcatalog.modelbuilder.collector.itunes.PodCastIdCollector;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCategoryCollectorOkihika;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCollectorOkihika;
 import com.podcastcatalog.service.search.SearchSuggestionService;
@@ -43,15 +44,11 @@ public class UpdateSearchSuggestionsJob implements Job {
         LOG.info("Start building SearchSuggestions + trending pods for lang=" + language);
 
 
-        for (PodCastCollectorOkihika.TopList categoryName : PodCastCollectorOkihika.TopList.values()) {
 
-            int fetchSize = 40;
-            if (ServerInfo.isLocalDevMode()) {
-                fetchSize = 3;
-            }
+        for (PodCastIdCollector.Category categoryName : PodCastIdCollector.Category.values()) {
 
-            List<Long> ids = PodCastCategoryCollectorOkihika.parse(language,categoryName, fetchSize).getPodCastIds();
 
+            List<Long> ids =  PodCastIdCollector.createPodCastIdCollector(language, categoryName).getPodCastIds();
 
             List<ItunesSearchAPI.PodCastSearchResult.Row> podCastTitlesRows = ItunesSearchAPI.lookupPodCastsByIds(ids);
 
