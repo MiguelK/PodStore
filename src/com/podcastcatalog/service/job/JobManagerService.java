@@ -37,7 +37,6 @@ public class JobManagerService {
 
     public void startAsync() {
         for (RegisterdJob registerdJob : registerdJobs) {
-            LOG.info("Schedule job:" + registerdJob.getWorkExecutor());
             threadPool.scheduleAtFixedRate(registerdJob.getWorkExecutor(), registerdJob.getInitialDelay(), registerdJob.getPeriod(), registerdJob.getTimeUnit());
         }
     }

@@ -29,8 +29,8 @@ public class UpdateSearchSuggestionsJob implements Job {
     @Override
     public void doWork() {
 
-        if(!ServerInfo.shouldBuildSuggestionIndex()){
-            LOG.info("Skip building SearchSuggestions for lang=" + language);
+        if(ServerInfo.isLocalDevMode()){
+            LOG.info("LocalDevMode, Skip building SearchSuggestions for lang=" + language);
             return;
         }
 

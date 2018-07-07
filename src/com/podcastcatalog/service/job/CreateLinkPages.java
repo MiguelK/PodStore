@@ -13,6 +13,8 @@ import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.util.ServerInfo;
+import com.redfin.sitemapgenerator.WebSitemapGenerator;
+import com.redfin.sitemapgenerator.WebSitemapUrl;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -25,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -47,8 +50,8 @@ import java.util.stream.Stream;
 public class CreateLinkPages implements Job {
 
     private final static Logger LOG = Logger.getLogger(CreateLinkPages.class.getName());
-    public static final int MAX_PODCAST_EPISODE = 5;
-    public static final int MAX_PODCAST = 5;
+    public static final int MAX_PODCAST_EPISODE = 10;
+    public static final int MAX_PODCAST = 2;
 
     private volatile boolean executedOnce = false;
 
@@ -57,6 +60,7 @@ public class CreateLinkPages implements Job {
     private final ForkJoinPool forkJoinPool = new ForkJoinPool();
     private static final File TEMPLATE_ROOT_DIR = new File(ServerInfo.localPath, "web-external" + File.separator + "link-page-template");
 
+    private WebSitemapGenerator webSitemapGenerator;
     @Override
     public void doWork() {
 
@@ -64,9 +68,11 @@ public class CreateLinkPages implements Job {
             return;
         }
 
+
         File templateRoot = new File(ServerInfo.localPath, "web-external" + File.separator + "link-page-template");
 
-        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SE);
+        PodCastCatalogLanguage language = PodCastCatalogLanguage.SE; //FIXME
+        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(language);
 
         if(podCastCatalog==null) {
             LOG.info("CreateLinkPages catalog not loaded yet");
@@ -94,6 +100,13 @@ public class CreateLinkPages implements Job {
             linkPagesDir.mkdirs();
         }
 
+        try {
+            webSitemapGenerator = new WebSitemapGenerator("https://www.pods.one", linkPagesDir);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+
         List<PodCast> podCasts = bundleItemVisitor.getPodCasts();
         LOG.info("podCasts=" + podCasts.size());
 
@@ -107,12 +120,16 @@ public class CreateLinkPages implements Job {
 
         for (ForkJoinTask joinTask : forkJoinTasks) {
             try {
-                joinTask.get(2, TimeUnit.MINUTES);
+                joinTask.get(3, TimeUnit.MINUTES);
             } catch (Exception e) {
                 LOG.info("Took more then 2 min to process ");
                 e.printStackTrace();
             }
         }
+
+        //webSitemapGenerator.write(); //Write sitemap
+        webSitemapGenerator.writeSitemapsWithIndex();
+
     }
 
     private String changeSwedishCharactersAndWhitespace(String string) {
@@ -224,6 +241,7 @@ public class CreateLinkPages implements Job {
             }
 
             Path path = sourceFile.toPath();
+
             Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
             List <String> replaced = lines.map(line -> line.replaceAll("template_podcast_title",podCast.getTitle()).
                     replaceAll("template_target_link",targetLink).
@@ -265,6 +283,11 @@ public class CreateLinkPages implements Job {
 
                 File linkPageRoot = new File(linkPagesDir, podCastName + File.separator + episodeName);
 
+                String lang = PodCastCatalogLanguage.SE.name();
+                String externalURL =  "https://www.pods.one/podcast/" + lang + "/" + podCastName + File.separator + episodeName;
+                System.out.println("External=" + externalURL);
+
+                webSitemapGenerator.addUrl(externalURL);
                 boolean isUpdateTextRequest = false;
                 if(linkPageRoot.exists()){
                     //FIXME Do update no new UniversalLink

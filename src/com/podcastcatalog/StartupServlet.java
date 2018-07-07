@@ -44,7 +44,7 @@ public class StartupServlet extends HttpServlet {
 
         //OPENSHIFT_APP_DNS //FIXME SE or US
         // JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
-        JobManagerService.getInstance().registerJob(new CreateLinkPages(),1,2, TimeUnit.MINUTES);
+        JobManagerService.getInstance().registerJob(new CreateLinkPages(),20,20, TimeUnit.SECONDS);
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 20, TimeUnit.HOURS); //FIXME
         JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 120, TimeUnit.MINUTES); //FIXME change time, remove
 
@@ -53,7 +53,7 @@ public class StartupServlet extends HttpServlet {
         int counter = 0;
         for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
 
-            if(!language.isInMemorySearchSuggestions()) {
+            if(ServerInfo.isLocalDevMode() || !language.isInMemorySearchSuggestions()) {
                 continue;
             }
 
