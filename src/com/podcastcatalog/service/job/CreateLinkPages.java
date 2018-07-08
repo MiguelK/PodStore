@@ -130,8 +130,39 @@ public class CreateLinkPages implements Job {
 
         File linkPageLangRootDir = linkPageLangRootDir(podCastCatalog.getPodCastCatalogLanguage());
 
+        File podCastTemplate = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "podcast-template" + File.separator + "index.html");
+        StringBuilder allPodCastsHtml = new StringBuilder();
+
         for (PodCast podCast : podCasts) {
             forkJoinTasks.add(forkJoinPool.submit(new PodCastAction(podCast, linkPageLangRootDir,podCastCatalog.getPodCastCatalogLanguage())));
+
+            String podCastImage = podCast.getArtworkUrl600();
+            String podCastTitle = podCast.getTitle();
+            int episodeCount = podCast.getPodCastEpisodesInternal().size();
+            String x = "<figure class=\"snip1584\"><img src=\"" + podCastImage + "\" alt=\"sample87\"/>\n" +
+                    "  <figcaption>\n" +
+                    "    <h3>" + podCastTitle + "</h3>\n" +
+                    "    <h5>Show all (" + episodeCount + ") episodes</h5>\n" +
+                    "  </figcaption><a href=\"http://www.dn.se\"></a>\n" +
+                    "</figure>";
+            allPodCastsHtml.append(x);
+        }
+
+        try {
+            //FileUtils.copyFileToDirectory(podCastTemplate, linkPagesDir);
+
+            File podCastTemplateTarget = new File(linkPageLangRootDir(podCastCatalog.getPodCastCatalogLanguage()), "index.html");
+
+            Path path = podCastTemplate.toPath();
+            Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
+
+            List <String> replaced = lines.map(line -> line.replaceAll("template_all_podcasts_fragments", allPodCastsHtml.toString())).collect(Collectors.toList());
+
+            Files.write(podCastTemplateTarget.toPath(), replaced);
+
+            lines.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         for (ForkJoinTask joinTask : forkJoinTasks) {
@@ -379,17 +410,24 @@ public class CreateLinkPages implements Job {
 
                 LOG.info("PodCastAction: " + podCast.getTitle() + " Episodes=" + podCastEpisodes.size());
 
-                File podCastTemplate = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "podcast-template" + File.separator + "index.html");
-                try {
-                    FileUtils.copyFileToDirectory(podCastTemplate, linkPagesDir);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+              //  File podCastTemplate = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "podcast-template" + File.separator + "index.html");
 
 
+                StringBuilder allPodCastsHtml = new StringBuilder();
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
                     tasks.add(new PodCastEpisodeAction(linkPagesDir, podCast, podCastEpisode, lang));
+
+                /*    String x = "<figure class=\"snip1584\"><img src=\"https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/sample87.jpg\" alt=\"sample87\"/>\n" +
+                            "  <figcaption>\n" +
+                            "    <h3>P3 Dokumentär</h3>\n" +
+                            "    <h5>Show all (123) episodes</h5>\n" +
+                            "  </figcaption><a href=\"http://www.dn.se\"></a>\n" +
+                            "</figure>";
+                    allPodCastsHtml.append(x);*/
                 }
+
+
+
 
                 invokeAll(tasks);
 
