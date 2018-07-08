@@ -14,7 +14,6 @@ import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.util.ServerInfo;
 import com.redfin.sitemapgenerator.WebSitemapGenerator;
-import com.redfin.sitemapgenerator.WebSitemapUrl;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -34,14 +33,12 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -52,7 +49,7 @@ import java.util.stream.Stream;
 public class CreateLinkPages implements Job {
 
     private final static Logger LOG = Logger.getLogger(CreateLinkPages.class.getName());
-    public static final int MAX_PODCAST_EPISODE = 10;
+    public static final int MAX_PODCAST_EPISODE = 2;
     public static final int MAX_PODCAST = 2;
 
     private volatile boolean executedOnce = false;
@@ -60,7 +57,10 @@ public class CreateLinkPages implements Job {
     private final Gson GSON = new Gson();
 
     private final ForkJoinPool forkJoinPool = new ForkJoinPool();
-    private static final File TEMPLATE_ROOT_DIR = new File(ServerInfo.localPath, "web-external" + File.separator + "link-page-template");
+
+    private static final File LINK_PAGES_ROOT_DIR = new File(ServerInfo.localPath, "web-external");
+
+    private static final File TEMPLATE_ROOT_DIR = new File(LINK_PAGES_ROOT_DIR , "link-page-template");
 
     private WebSitemapGenerator webSitemapGenerator;
     @Override
@@ -72,13 +72,17 @@ public class CreateLinkPages implements Job {
 
         executedOnce = true;
 
-        File templateRoot = new File(ServerInfo.localPath, "web-external" + File.separator + "link-page-template");
-
         File linkPagesDir = linkPageRootDir();
 
         try {
+            File templateCss = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "css" + File.separator + "style.css");
+            FileUtils.copyFileToDirectory(templateCss, linkPagesDir);
+
+            File templateJs = new File(LINK_PAGES_ROOT_DIR,  "LinkPages" + File.separator + "js" + File.separator + "index.js");
+            FileUtils.copyFileToDirectory(templateJs, linkPagesDir);
+
             webSitemapGenerator = new WebSitemapGenerator("https://www.pods.one", linkPagesDir);
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return;
         }
@@ -94,18 +98,15 @@ public class CreateLinkPages implements Job {
 
             LOG.info("CreateLinkPages for lang=" + podCastCatalogLanguage);
 
-            createPages(templateRoot, podCastCatalog);
+            createPages(podCastCatalog);
         }
-
-      //  PodCastCatalogLanguage language = PodCastCatalogLanguage.SE; //FIXME
 
         webSitemapGenerator.write(); //Write sitemap
         webSitemapGenerator.writeSitemapsWithIndex();
 
     }
 
-    private void createPages(File templateRoot, PodCastCatalog podCastCatalog) {
-        LOG.info("CreateLinkPages " + templateRoot.getAbsolutePath());
+    private void createPages(PodCastCatalog podCastCatalog) {
         BundleItemVisitor bundleItemVisitor = new BundleItemVisitor();
 
         for (Bundle bundle : podCastCatalog.getBundles()) {
@@ -155,7 +156,7 @@ public class CreateLinkPages implements Job {
 
     private File linkPageRootDir() {
         File podDataHomeDir = ServiceDataStorage.useDefault().getPodDataHomeDir();
-        File linkPagesDir = new File(podDataHomeDir, "LinkPages"); // + File.pathSeparator + podCastCatalog.getPodCastCatalogLanguage().name());
+        File linkPagesDir = new File(podDataHomeDir, "LinkPages");
         if(!linkPagesDir.exists()) {
             linkPagesDir.mkdirs();
         }
@@ -366,7 +367,7 @@ public class CreateLinkPages implements Job {
             PodCastAction(PodCast podCast, File linkPageLangRootDir, PodCastCatalogLanguage lang) {
                 this.podCast = podCast;
                 this.lang = lang;
-                linkPagesDir = linkPageLangRootDir; //new File(podDataHomeDir, "LinkPages");
+                linkPagesDir = linkPageLangRootDir;
             }
 
             @Override
@@ -377,14 +378,21 @@ public class CreateLinkPages implements Job {
                 podCastEpisodes = podCastEpisodes.size() > MAX_PODCAST_EPISODE ? podCastEpisodes.subList(0, MAX_PODCAST_EPISODE) : podCastEpisodes;
 
                 LOG.info("PodCastAction: " + podCast.getTitle() + " Episodes=" + podCastEpisodes.size());
+
+                File podCastTemplate = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "podcast-template" + File.separator + "index.html");
+                try {
+                    FileUtils.copyFileToDirectory(podCastTemplate, linkPagesDir);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
                     tasks.add(new PodCastEpisodeAction(linkPagesDir, podCast, podCastEpisode, lang));
                 }
 
-                Collection<PodCastEpisodeAction> podCastEpisodeActions = invokeAll(tasks);
+                invokeAll(tasks);
 
-
-                //podCastEpisodeActions.stream()
             }
         }
 }
