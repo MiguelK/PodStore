@@ -33,12 +33,15 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -80,6 +83,13 @@ public class CreateLinkPages implements Job {
 
             File templateJs = new File(LINK_PAGES_ROOT_DIR,  "LinkPages" + File.separator + "js" + File.separator + "index.js");
             FileUtils.copyFileToDirectory(templateJs, linkPagesDir);
+
+            //Episode template stuff
+            File templateCss2 = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "css" + File.separator + "style-episode.css");
+            FileUtils.copyFileToDirectory(templateCss2, linkPagesDir);
+
+            File templateJs2 = new File(LINK_PAGES_ROOT_DIR,  "LinkPages" + File.separator + "js" + File.separator + "index-episode.js");
+            FileUtils.copyFileToDirectory(templateJs2, linkPagesDir);
 
             webSitemapGenerator = new WebSitemapGenerator("https://www.pods.one", linkPagesDir);
         } catch (Exception e) {
@@ -136,14 +146,18 @@ public class CreateLinkPages implements Job {
         for (PodCast podCast : podCasts) {
             forkJoinTasks.add(forkJoinPool.submit(new PodCastAction(podCast, linkPageLangRootDir,podCastCatalog.getPodCastCatalogLanguage())));
 
+            String podCastName = podCast.getTitle().replaceAll("\\s", "-");
+            podCastName = changeSwedishCharactersAndWhitespace(podCastName); // URLEncoder.encode( podCastName, "UTF-8" );
+
             String podCastImage = podCast.getArtworkUrl600();
             String podCastTitle = podCast.getTitle();
             int episodeCount = podCast.getPodCastEpisodesInternal().size();
+            String podCastOverviewURL =  podCastName + "/index.html";
             String x = "<figure class=\"snip1584\"><img src=\"" + podCastImage + "\" alt=\"sample87\"/>\n" +
                     "  <figcaption>\n" +
                     "    <h3>" + podCastTitle + "</h3>\n" +
                     "    <h5>Show all (" + episodeCount + ") episodes</h5>\n" +
-                    "  </figcaption><a href=\"http://www.dn.se\"></a>\n" +
+                    "  </figcaption><a href=\"" + podCastOverviewURL + "\"></a>\n" +
                     "</figure>";
             allPodCastsHtml.append(x);
         }
@@ -410,8 +424,8 @@ public class CreateLinkPages implements Job {
 
                 LOG.info("PodCastAction: " + podCast.getTitle() + " Episodes=" + podCastEpisodes.size());
 
-              //  File podCastTemplate = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "podcast-template" + File.separator + "index.html");
 
+                //String episodeName = podCastEpisode.getTitle().replaceAll("\\s", "-");
 
                 StringBuilder allPodCastsHtml = new StringBuilder();
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
@@ -426,10 +440,36 @@ public class CreateLinkPages implements Job {
                     allPodCastsHtml.append(x);*/
                 }
 
+                Collection<PodCastEpisodeAction> podCastEpisodeActions = invokeAll(tasks);
 
+                for (PodCastEpisodeAction action : podCastEpisodeActions) {
+                    try {
+                        action.get(20,TimeUnit.SECONDS);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
 
+                try {
+                    File episodeTemplate = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "episode-template" + File.separator + "index.html");
 
-                invokeAll(tasks);
+                    String podCastName = podCast.getTitle().replaceAll("\\s", "-");
+                    //episodeName = changeSwedishCharactersAndWhitespace(episodeName);// URLEncoder.encode( episodeName, "UTF-8" );
+                    podCastName = changeSwedishCharactersAndWhitespace(podCastName); // URLEncoder.encode( podCastName, "UTF-8" );
+                    File podCastLinkPageRoot = new File(linkPagesDir, podCastName);
+
+                    File episodeTemplateTarget = new File(podCastLinkPageRoot, "index.html");
+
+                    Path path = episodeTemplate.toPath();
+                    Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
+                    List <String> replaced = lines.map(line -> line.replaceAll("template_all_podcasts_fragments", allPodCastsHtml.toString())).collect(Collectors.toList());
+
+                    Files.write(episodeTemplateTarget.toPath(), replaced);
+                    lines.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
 
             }
         }

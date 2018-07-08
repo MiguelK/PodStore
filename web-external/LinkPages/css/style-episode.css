@@ -1,0 +1,70 @@
+@import url(https://fonts.googleapis.com/css?family=Raleway:400,500);
+@import url(https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css);
+button.snip0076 {
+  font-family: 'Raleway', Arial, sans-serif;
+  border: none;
+  background-color: #000000;
+  border-radius: 5px;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 10px 30px;
+  display: inline-block;
+  margin: 15px 30px;
+  text-transform: uppercase;
+  line-height: 1.5em;
+  font-weight: 400;
+  font-size: 1em;
+  outline: none;
+  position: relative;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+button.snip0076 span {
+  display: inline-block;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  opacity: 0.8;
+}
+
+button.snip0076 i {
+  font-size: 21px;
+  right: 22px;
+  position: absolute;
+  opacity: 0;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+button.snip0076:hover span,
+button.snip0076.hover span {
+  -webkit-transform: translate3d(-10px, 0px, 0px);
+  transform: translate3d(-10px, 0px, 0px);
+  opacity: 1;
+}
+
+button.snip0076:hover i,
+button.snip0076.hover i {
+  opacity: 0.8;
+}
+
+button.snip0076:active span {
+  -webkit-transform: translate3d(-14px, 0px, 0px);
+  transform: translate3d(-14px, 0px, 0px);
+}
+
+button.snip0076:active i {
+  right: 18px;
+}
+
+button.snip0076.blue {
+  background-color: #20638f;
+}
+
+button.snip0076.red {
+  background-color: #962d22;
+}
+
+button.snip0076.yellow {
+  background-color: #a85913;
+}
