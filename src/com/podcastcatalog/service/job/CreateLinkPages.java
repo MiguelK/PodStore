@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -52,8 +53,8 @@ import java.util.stream.Stream;
 public class CreateLinkPages implements Job {
 
     private final static Logger LOG = Logger.getLogger(CreateLinkPages.class.getName());
-    public static final int MAX_PODCAST_EPISODE = 2;
-    public static final int MAX_PODCAST = 2;
+    public static final int MAX_PODCAST_EPISODE = 3;
+    public static final int MAX_PODCAST = 4;
 
     private volatile boolean executedOnce = false;
 
@@ -166,7 +167,6 @@ public class CreateLinkPages implements Job {
         }
 
         try {
-            //FileUtils.copyFileToDirectory(podCastTemplate, linkPagesDir);
 
             File podCastTemplateTarget = new File(linkPageLangRootDir(podCastCatalog.getPodCastCatalogLanguage()), "index.html");
 
@@ -220,7 +220,19 @@ public class CreateLinkPages implements Job {
                 replaceAll("Å", "A").
                 replaceAll("Ä", "A").
                 replaceAll("Ö", "O").
+                replaceAll("/", "-").
+                replaceAll(",", "-").
+                replaceAll(";", "-").
+                replaceAll("''", "-").
+                replaceAll(":", "-").
                 replaceAll("\\s", "-");
+
+      /*  try {
+            return URLEncoder.encode(newString, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            LOG.info("Failed encode string " + newString + ", " + e.getMessage());
+            return newString;
+        }*/
         return newString;
     }
 
@@ -230,6 +242,11 @@ public class CreateLinkPages implements Job {
          String linkValue = "http://www.podsapp.se?eid=" +
                  eid + "&pid=" + pid + "&isi=1209200428&ibi=com.app.Pods&st=" +
                  podCastTitle + "&sd=" + podCastEpisodeTitle + "&si=" + podCastImage;
+
+         if(eid==null){
+              linkValue = "http://www.podsapp.se?pid=" + pid + "&isi=1209200428&ibi=com.app.Pods&st=" +
+                     podCastTitle + "&si=" + podCastImage;
+         }
 
          String longLink = null;
          HttpPost request = null;
@@ -456,6 +473,11 @@ public class CreateLinkPages implements Job {
                 }
 
                 try {
+                    String podCastTitle =  podCast.getTitle();
+                    String  podCastImage = podCast.getArtworkUrl600();
+
+                    String podCastDynamicLink  = createShortLink(podCast.getCollectionId(), null, podCastTitle, null, podCastImage);
+
                     File episodeTemplate = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "episode-template" + File.separator + "index.html");
 
                     String podCastName = podCast.getTitle().replaceAll("\\s", "-");
@@ -467,7 +489,9 @@ public class CreateLinkPages implements Job {
                     Path path = episodeTemplate.toPath();
                     Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
                     List <String> replaced = lines.map(line -> line.replaceAll("template_all_episodes_fragments",
-                            allEpisodessHtml.toString()).replaceAll("template_podcast_title", podCast.getTitle())).collect(Collectors.toList());
+                            allEpisodessHtml.toString()).replaceAll("template_podcast_title", podCast.getTitle()).
+                            replaceAll("template_podcast_link",podCastDynamicLink).
+                            replaceAll("template_podcast_image",podCast.getArtworkUrl600())).collect(Collectors.toList());
 
                     Files.write(episodeTemplateTarget.toPath(), replaced);
                     lines.close();
