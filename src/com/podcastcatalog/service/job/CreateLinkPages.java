@@ -15,6 +15,7 @@ import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.util.ServerInfo;
 import com.redfin.sitemapgenerator.WebSitemapGenerator;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -26,8 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -37,12 +36,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -102,7 +99,6 @@ public class CreateLinkPages implements Job {
         }
 
         for (PodCastCatalogLanguage podCastCatalogLanguage : PodCastCatalogLanguage.values()) {
-
             PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(podCastCatalogLanguage);
 
             if(podCastCatalog==null) {
@@ -141,14 +137,11 @@ public class CreateLinkPages implements Job {
 
         podCasts = podCasts.subList(0, MAX_PODCAST); //FIXME
 
-
-        File linkPageLangRootDir = linkPageLangRootDir(podCastCatalog.getPodCastCatalogLanguage());
-
         File podCastTemplate = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "podcast-template" + File.separator + "index.html");
         StringBuilder allPodCastsHtml = new StringBuilder();
 
         for (PodCast podCast : podCasts) {
-            forkJoinTasks.add(forkJoinPool.submit(new PodCastAction(podCast, linkPageLangRootDir,podCastCatalog.getPodCastCatalogLanguage())));
+            forkJoinTasks.add(forkJoinPool.submit(new PodCastAction(podCast, podCastCatalog.getPodCastCatalogLanguage())));
 
             String podCastName = podCast.getTitle().replaceAll("\\s", "-");
             podCastName = changeSwedishCharactersAndWhitespace(podCastName); // URLEncoder.encode( podCastName, "UTF-8" );
@@ -227,13 +220,15 @@ public class CreateLinkPages implements Job {
                 replaceAll(":", "-").
                 replaceAll("\\s", "-");
 
+        String s = newString.replaceAll("[^A-Za-z0-9]", "");
+
       /*  try {
             return URLEncoder.encode(newString, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             LOG.info("Failed encode string " + newString + ", " + e.getMessage());
             return newString;
         }*/
-        return newString;
+        return s;
     }
 
     String createShortLink(String pid, String eid, String podCastTitle,
@@ -424,16 +419,17 @@ public class CreateLinkPages implements Job {
         }
     }
 
+    //Creates LANG/PodCastDir
     class PodCastAction extends RecursiveAction {
 
-           private PodCast podCast;
-           File linkPagesDir;
-        PodCastCatalogLanguage lang;
+        private PodCast podCast;
+        private File linkPagesDir;
+        private PodCastCatalogLanguage lang;
 
-            PodCastAction(PodCast podCast, File linkPageLangRootDir, PodCastCatalogLanguage lang) {
+            PodCastAction(PodCast podCast, PodCastCatalogLanguage lang) {
                 this.podCast = podCast;
                 this.lang = lang;
-                linkPagesDir = linkPageLangRootDir;
+                linkPagesDir = linkPageLangRootDir(lang);
             }
 
             @Override
@@ -445,9 +441,7 @@ public class CreateLinkPages implements Job {
 
                 LOG.info("PodCastAction: " + podCast.getTitle() + " Episodes=" + podCastEpisodes.size());
 
-
                 StringBuilder allEpisodessHtml = new StringBuilder();
-                //String podCastName = podCast.getTitle().replaceAll("\\s", "-");
 
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
                     tasks.add(new PodCastEpisodeAction(linkPagesDir, podCast, podCastEpisode, lang));

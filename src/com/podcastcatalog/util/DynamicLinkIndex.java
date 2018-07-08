@@ -1,5 +1,6 @@
 package com.podcastcatalog.util;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,14 @@ public class DynamicLinkIndex {
 
 
     public void addLink(String key, String url){
+
+    }
+
+    void saveTo(File file){
+
+    }
+
+    void loadFrom(File file){
 
     }
 
