@@ -78,6 +78,9 @@ public class CreateLinkPages implements Job {
         File linkPagesDir = linkPageRootDir();
 
         try {
+            File templateDefaultCSS = new File(TEMPLATE_ROOT_DIR, "default.css");
+            FileUtils.copyFileToDirectory(templateDefaultCSS, linkPagesDir);
+
             File templateCss = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "css" + File.separator + "style.css");
             FileUtils.copyFileToDirectory(templateCss, linkPagesDir);
 
@@ -170,7 +173,8 @@ public class CreateLinkPages implements Job {
             Path path = podCastTemplate.toPath();
             Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
 
-            List <String> replaced = lines.map(line -> line.replaceAll("template_all_podcasts_fragments", allPodCastsHtml.toString())).collect(Collectors.toList());
+            List <String> replaced = lines.map(line -> line.replaceAll("template_all_podcasts_fragments",
+                    allPodCastsHtml.toString())).collect(Collectors.toList());
 
             Files.write(podCastTemplateTarget.toPath(), replaced);
 
@@ -380,8 +384,8 @@ public class CreateLinkPages implements Job {
                 if(isUpdateTextRequest) {
                     updateText(podCast, podCastEpisode, linkPageRoot);
                 } else {
-                    File templateCss = new File(TEMPLATE_ROOT_DIR, "default.css");
-                    FileUtils.copyFileToDirectory(templateCss, linkPageRoot);
+                 //   File templateCss = new File(TEMPLATE_ROOT_DIR, "default.css");
+                   // FileUtils.copyFileToDirectory(templateCss, linkPageRoot);
                     replaceText(podCast, podCastEpisode, linkPageRoot);
                     String artworkUrl600 = podCastEpisode.getArtworkUrl600();
                     File targetImage = new File(linkPageRoot, "image.jpg");
@@ -425,19 +429,20 @@ public class CreateLinkPages implements Job {
                 LOG.info("PodCastAction: " + podCast.getTitle() + " Episodes=" + podCastEpisodes.size());
 
 
-                //String episodeName = podCastEpisode.getTitle().replaceAll("\\s", "-");
+                StringBuilder allEpisodessHtml = new StringBuilder();
+                //String podCastName = podCast.getTitle().replaceAll("\\s", "-");
 
-                StringBuilder allPodCastsHtml = new StringBuilder();
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
                     tasks.add(new PodCastEpisodeAction(linkPagesDir, podCast, podCastEpisode, lang));
 
-                /*    String x = "<figure class=\"snip1584\"><img src=\"https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/sample87.jpg\" alt=\"sample87\"/>\n" +
-                            "  <figcaption>\n" +
-                            "    <h3>P3 Dokumentär</h3>\n" +
-                            "    <h5>Show all (123) episodes</h5>\n" +
-                            "  </figcaption><a href=\"http://www.dn.se\"></a>\n" +
-                            "</figure>";
-                    allPodCastsHtml.append(x);*/
+                    String episodeName = podCastEpisode.getTitle().replaceAll("\\s", "-");
+                    episodeName = changeSwedishCharactersAndWhitespace(episodeName);
+
+                    String episodeLinkTitle = podCastEpisode.getTitle() ;
+                    String episodeLink =  episodeName + "/index.html";
+                    String x = "<button onclick=\"window.location.href='" + episodeLink + "'\" class=\"snip0076 hover blue\"><span>" + episodeLinkTitle + " (Read More) </span><i class=\"ion-android-arrow-forward\"></i></button><br/>\n";
+
+                    allEpisodessHtml.append(x);
                 }
 
                 Collection<PodCastEpisodeAction> podCastEpisodeActions = invokeAll(tasks);
@@ -454,15 +459,15 @@ public class CreateLinkPages implements Job {
                     File episodeTemplate = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "episode-template" + File.separator + "index.html");
 
                     String podCastName = podCast.getTitle().replaceAll("\\s", "-");
-                    //episodeName = changeSwedishCharactersAndWhitespace(episodeName);// URLEncoder.encode( episodeName, "UTF-8" );
-                    podCastName = changeSwedishCharactersAndWhitespace(podCastName); // URLEncoder.encode( podCastName, "UTF-8" );
+                    podCastName = changeSwedishCharactersAndWhitespace(podCastName);
                     File podCastLinkPageRoot = new File(linkPagesDir, podCastName);
 
                     File episodeTemplateTarget = new File(podCastLinkPageRoot, "index.html");
 
                     Path path = episodeTemplate.toPath();
                     Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
-                    List <String> replaced = lines.map(line -> line.replaceAll("template_all_podcasts_fragments", allPodCastsHtml.toString())).collect(Collectors.toList());
+                    List <String> replaced = lines.map(line -> line.replaceAll("template_all_episodes_fragments",
+                            allEpisodessHtml.toString()).replaceAll("template_podcast_title", podCast.getTitle())).collect(Collectors.toList());
 
                     Files.write(episodeTemplateTarget.toPath(), replaced);
                     lines.close();
