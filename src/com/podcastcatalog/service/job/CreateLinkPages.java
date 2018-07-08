@@ -440,7 +440,7 @@ public class CreateLinkPages implements Job {
 
                     String episodeLinkTitle = podCastEpisode.getTitle() ;
                     String episodeLink =  episodeName + "/index.html";
-                    String x = "<button onclick=\"window.location.href='" + episodeLink + "'\" class=\"snip0076 hover blue\"><span>" + episodeLinkTitle + " (Read More) </span><i class=\"ion-android-arrow-forward\"></i></button><br/>\n";
+                    String x = "<button onclick=\"window.location.href='" + episodeLink + "'\" class=\"snip0076 hover blue\"><span>" + episodeLinkTitle + " </span><i class=\"ion-android-arrow-forward\"></i></button><br/>\n";
 
                     allEpisodessHtml.append(x);
                 }
