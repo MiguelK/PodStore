@@ -34,12 +34,14 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -249,6 +251,7 @@ public class CreateLinkPages implements Job {
         }
     }
 
+    //createEpisodeNode
     private void replaceText(PodCast podCast, PodCastEpisode podCastEpisode,  File linkPageRoot) {
         File targetFile = new File(linkPageRoot, "index.html");
         File sourceFile = new File(TEMPLATE_ROOT_DIR, "index.html"); //If new
@@ -328,25 +331,19 @@ public class CreateLinkPages implements Job {
                     linkPageRoot.mkdirs();
                 }
 
-                if(!isUpdateTextRequest) {
-                    File templateCss = new File(TEMPLATE_ROOT_DIR, "default.css");
-                    FileUtils.copyFileToDirectory(templateCss, linkPageRoot);
-                }
-
                 if(isUpdateTextRequest) {
                     updateText(podCast, podCastEpisode, linkPageRoot);
                 } else {
+                    File templateCss = new File(TEMPLATE_ROOT_DIR, "default.css");
+                    FileUtils.copyFileToDirectory(templateCss, linkPageRoot);
                     replaceText(podCast, podCastEpisode, linkPageRoot);
-                }
-
-
-                if(!isUpdateTextRequest) {
                     String artworkUrl600 = podCastEpisode.getArtworkUrl600();
                     File targetImage = new File(linkPageRoot, "image.jpg");
                     try (InputStream in = new URL(artworkUrl600).openStream()) {
                         Files.copy(in, targetImage.toPath()); // Paths.get("C:/File/To/Save/To/image.jpg"));
                     }
                 }
+
                 //FIXME
                 //Create QR code...
                 LOG.info("Created LinkPage for PodCastEpisode podCast=" + podCast.getTitle() + ", " + podCastEpisode.getTitle());
@@ -384,7 +381,10 @@ public class CreateLinkPages implements Job {
                     tasks.add(new PodCastEpisodeAction(linkPagesDir, podCast, podCastEpisode, lang));
                 }
 
-                invokeAll(tasks);
+                Collection<PodCastEpisodeAction> podCastEpisodeActions = invokeAll(tasks);
+
+
+                //podCastEpisodeActions.stream()
             }
         }
 }
