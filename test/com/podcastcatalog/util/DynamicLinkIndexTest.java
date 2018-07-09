@@ -1,6 +1,7 @@
 package com.podcastcatalog.util;
 
 import com.podcastcatalog.TestUtil;
+import com.podcastcatalog.service.datastore.LocatorProduction;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -20,7 +21,10 @@ public class DynamicLinkIndexTest {
         linkIndex.addLink("a1", "Test 1");
         linkIndex.addLink("a2", "Test 2");
 
-        linkIndex.saveTo(new File(TestUtil.IO_TEMP_DATA_DIRECTORY, "links.index"));
+        LocatorProduction locatorProduction = new LocatorProduction();
+
+
+        linkIndex.saveTo(new File(locatorProduction.getPodDataHomeDirectory(), "links.json"));
 
 
     }

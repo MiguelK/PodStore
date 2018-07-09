@@ -12,6 +12,7 @@ import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
+import com.podcastcatalog.util.DynamicLinkIndex;
 import com.podcastcatalog.util.ServerInfo;
 import com.redfin.sitemapgenerator.WebSitemapGenerator;
 import org.apache.commons.io.FileUtils;
@@ -51,7 +52,7 @@ public class CreateLinkPages implements Job {
 
     private final static Logger LOG = Logger.getLogger(CreateLinkPages.class.getName());
     public static final int MAX_PODCAST_EPISODE = 3;
-    public static final int MAX_PODCAST = 4;
+    public static final int MAX_PODCAST = 2;
 
     private volatile boolean executedOnce = false;
 
@@ -64,6 +65,8 @@ public class CreateLinkPages implements Job {
     private static final File TEMPLATE_ROOT_DIR = new File(LINK_PAGES_ROOT_DIR , "link-page-template");
 
     private WebSitemapGenerator webSitemapGenerator;
+    private DynamicLinkIndex linkIndex;
+
     @Override
     public void doWork() {
 
@@ -74,6 +77,10 @@ public class CreateLinkPages implements Job {
         executedOnce = true;
 
         File linkPagesDir = linkPageRootDir();
+
+        linkIndex = new DynamicLinkIndex();
+        File dynamicLinksIndex = new File(linkPagesDir, "dynamic-links-index.json");
+        linkIndex.loadFrom(dynamicLinksIndex);
 
         try {
             File templateDefaultCSS = new File(TEMPLATE_ROOT_DIR, "default.css");
@@ -111,34 +118,18 @@ public class CreateLinkPages implements Job {
             createPages(podCastCatalog);
         }
 
+        linkIndex.saveTo(dynamicLinksIndex);
         webSitemapGenerator.write(); //Write sitemap
         webSitemapGenerator.writeSitemapsWithIndex();
 
     }
 
     private void createPages(PodCastCatalog podCastCatalog) {
-        BundleItemVisitor bundleItemVisitor = new BundleItemVisitor();
+        List<PodCast> podCasts = getPodCasts(podCastCatalog);
 
-        for (Bundle bundle : podCastCatalog.getBundles()) {
-            if(bundle.getBundleType() == BundleType.Category) {
-                for (BundleItem bundleItem : bundle.getBundleItems()) {
-                    bundleItem.accept(bundleItemVisitor);
-                }
-            }
-        }
-
-        // LOG.info("CreateLinkPages bundleItemVisitor=" + bundleItemVisitor.getPodCastEpisodes().size() );
-
-
-        List<PodCast> podCasts = bundleItemVisitor.getPodCasts();
-        LOG.info("podCasts=" + podCasts.size());
+        StringBuilder allPodCastsHtml = new StringBuilder();
 
         List<ForkJoinTask> forkJoinTasks = new ArrayList<>();
-
-        podCasts = podCasts.subList(0, MAX_PODCAST); //FIXME
-
-        File podCastTemplate = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "podcast-template" + File.separator + "index.html");
-        StringBuilder allPodCastsHtml = new StringBuilder();
 
         for (PodCast podCast : podCasts) {
             forkJoinTasks.add(forkJoinPool.submit(new PodCastAction(podCast, podCastCatalog.getPodCastCatalogLanguage())));
@@ -160,9 +151,9 @@ public class CreateLinkPages implements Job {
         }
 
         try {
-
             File podCastTemplateTarget = new File(linkPageLangRootDir(podCastCatalog.getPodCastCatalogLanguage()), "index.html");
 
+            File podCastTemplate = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "podcast-template" + File.separator + "index.html");
             Path path = podCastTemplate.toPath();
             Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
 
@@ -170,7 +161,6 @@ public class CreateLinkPages implements Job {
                     allPodCastsHtml.toString())).collect(Collectors.toList());
 
             Files.write(podCastTemplateTarget.toPath(), replaced);
-
             lines.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -186,6 +176,23 @@ public class CreateLinkPages implements Job {
         }
     }
 
+    private List<PodCast> getPodCasts(PodCastCatalog podCastCatalog) {
+        BundleItemVisitor bundleItemVisitor = new BundleItemVisitor();
+
+        for (Bundle bundle : podCastCatalog.getBundles()) {
+            if(bundle.getBundleType() == BundleType.Category) {
+                for (BundleItem bundleItem : bundle.getBundleItems()) {
+                    bundleItem.accept(bundleItemVisitor);
+                }
+            }
+        }
+
+        List<PodCast> podCasts = bundleItemVisitor.getPodCasts();
+        LOG.info("podCasts=" + podCasts.size());
+
+        podCasts = podCasts.subList(0, MAX_PODCAST); //FIXME
+        return podCasts;
+    }
 
 
     private File linkPageLangRootDir(PodCastCatalogLanguage podCastCatalogLanguage) {
@@ -296,6 +303,8 @@ public class CreateLinkPages implements Job {
         File targetFile = new File(linkPageRoot, "index.html");
         File sourceFile = new File(linkPageRoot, "index.html");
 
+        handleEpisodeTargetIndexFile(targetFile);
+
         try {
             Path path = sourceFile.toPath();
             Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
@@ -311,6 +320,32 @@ public class CreateLinkPages implements Job {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void handleEpisodeTargetIndexFile(File indexFile){
+        //FIXME Read dynamic link add
+        try {
+            Path path = indexFile.toPath();
+            Stream<String> lines = Files.lines(path, Charset.forName("UTF-8"));
+
+            String line = lines.filter(s -> s.contains("https://qw7xh.app.goo.gl")).findFirst().orElseGet(null);
+            System.out.println("Line to search in " + line);
+
+            //lines.filter(s -> s.)
+
+          /*  List <String> replaced = lines.map(line -> line.replaceAll("template_podcast_title",podCast.getTitle()).
+                    replaceAll("template_meta_description",podCast.getDescription()).
+                    replaceAll("template_podcast_image",podCast.getArtworkUrl600()).
+                    replaceAll("template_podcast_episode_title",podCastEpisode.getTitle()).
+                    replaceAll("template_podcast_episode_description",podCastEpisode.getDescription()
+
+                    )).collect(Collectors.toList());
+            Files.write(targetFile.toPath(), replaced);
+            lines.close();*/
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     //createEpisodeNode
@@ -332,6 +367,8 @@ public class CreateLinkPages implements Job {
                 //Failed creating short link, do not create episode dir.
                 return;
             }
+            String key = pid + "###" + eid;
+            linkIndex.addLink(key, targetLink);
 
             Path path = sourceFile.toPath();
 
@@ -441,7 +478,7 @@ public class CreateLinkPages implements Job {
 
                 LOG.info("PodCastAction: " + podCast.getTitle() + " Episodes=" + podCastEpisodes.size());
 
-                StringBuilder allEpisodessHtml = new StringBuilder();
+                StringBuilder allEpisodesHtml = new StringBuilder();
 
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
                     tasks.add(new PodCastEpisodeAction(linkPagesDir, podCast, podCastEpisode, lang));
@@ -453,7 +490,7 @@ public class CreateLinkPages implements Job {
                     String episodeLink =  episodeName + "/index.html";
                     String x = "<button onclick=\"window.location.href='" + episodeLink + "'\" class=\"snip0076 hover blue\"><span>" + episodeLinkTitle + " </span><i class=\"ion-android-arrow-forward\"></i></button><br/>\n";
 
-                    allEpisodessHtml.append(x);
+                    allEpisodesHtml.append(x);
                 }
 
                 Collection<PodCastEpisodeAction> podCastEpisodeActions = invokeAll(tasks);
@@ -483,7 +520,7 @@ public class CreateLinkPages implements Job {
                     Path path = episodeTemplate.toPath();
                     Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
                     List <String> replaced = lines.map(line -> line.replaceAll("template_all_episodes_fragments",
-                            allEpisodessHtml.toString()).replaceAll("template_podcast_title", podCast.getTitle()).
+                            allEpisodesHtml.toString()).replaceAll("template_podcast_title", podCast.getTitle()).
                             replaceAll("template_podcast_link",podCastDynamicLink).
                             replaceAll("template_podcast_image",podCast.getArtworkUrl600())).collect(Collectors.toList());
 
