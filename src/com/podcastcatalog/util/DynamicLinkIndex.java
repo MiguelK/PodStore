@@ -30,11 +30,47 @@ public class DynamicLinkIndex {
         index = new Index();
     }
 
-    public void addLink(String key, String url){
-        if(StringUtils.isEmpty(key) || StringUtils.isEmpty(url)){
-            throw new IllegalArgumentException();
+    public static class Key {
+
+        private final String key;
+
+        private Key(String pid, String eid) {
+            this.key = pid + (eid == null ? "" : "###" + eid);
         }
-        index.put(key, url);
+
+        public static Key createKey(String pid, String eid) {
+            return new Key(pid, eid);
+        }
+        public static Key createKey(String pid) {
+            return new Key(pid, null);
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Key key1 = (Key) o;
+
+            return key.equals(key1.key);
+        }
+
+        @Override
+        public int hashCode() {
+            return key.hashCode();
+        }
+    }
+
+    public String getValue(Key key){
+        return index.keyValues.get(key.getKey());
+    }
+
+    public void addLink(Key key, String url){
+        index.keyValues.put(key.getKey(), url);
     }
 
     public void saveTo(File file){
@@ -67,12 +103,11 @@ public class DynamicLinkIndex {
             reader = new JsonReader(new FileReader(file));
             this.index = GSON.fromJson(reader, Index.class);
             LOG.info("Loaded dynamicLink index from file " + file.getAbsolutePath() + ", size=" + index.keyValues.values().size());
-
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
-
 
     class Index {
         private Map<String,String> keyValues = new HashMap<>();

@@ -16,7 +16,7 @@ public class DynamicLinkIndexTest {
     @Test
     public void testAddLink()  {
 
-        DynamicLinkIndex linkIndex = new DynamicLinkIndex();
+        /*DynamicLinkIndex linkIndex = new DynamicLinkIndex();
 
         linkIndex.addLink("a1", "Test 1");
         linkIndex.addLink("a2", "Test 2");
@@ -24,7 +24,7 @@ public class DynamicLinkIndexTest {
         LocatorProduction locatorProduction = new LocatorProduction();
 
 
-        linkIndex.saveTo(new File(locatorProduction.getPodDataHomeDirectory(), "links.json"));
+        linkIndex.saveTo(new File(locatorProduction.getPodDataHomeDirectory(), "links.json"));*/
 
 
     }
