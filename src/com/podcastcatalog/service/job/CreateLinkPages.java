@@ -51,8 +51,8 @@ public class CreateLinkPages implements Job {
 
     private final static Logger LOG = Logger.getLogger(CreateLinkPages.class.getName());
 
-    private static final int MAX_PODCAST_EPISODE = 1;
-    private static final int MAX_PODCAST = 1;
+    private static final int MAX_PODCAST_EPISODE = 2;
+    private static final int MAX_PODCAST = 3;
     private static final File LINK_PAGES_ROOT_DIR = new File(ServerInfo.localPath, "web-external");
     private static final File TEMPLATE_ROOT_DIR = new File(LINK_PAGES_ROOT_DIR , "link-page-template");
 
