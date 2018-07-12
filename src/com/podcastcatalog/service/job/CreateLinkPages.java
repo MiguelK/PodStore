@@ -51,7 +51,7 @@ public class CreateLinkPages implements Job {
 
     private final static Logger LOG = Logger.getLogger(CreateLinkPages.class.getName());
 
-    private static final int MAX_PODCAST_EPISODE = 3;
+    private static final int MAX_PODCAST_EPISODE = 4;
     private static final int MAX_PODCAST = 5;
 
     private static final File SOURCE_LINK_PAGES_ROOT_DIR = new File(ServerInfo.localPath, "web-external" + File.separator + "LinkPages");
@@ -168,7 +168,7 @@ public class CreateLinkPages implements Job {
             Files.write(targetIndex.toPath(), replaced);
             lines.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         for (ForkJoinTask joinTask : forkJoinTasks) {
@@ -321,7 +321,6 @@ public class CreateLinkPages implements Job {
         }
 
         throw new RuntimeException("Failed creating shortLink ");
-       //  System.out.println("Failed creating shortLink using longLink=" + longLink);
     }
 
 
@@ -408,7 +407,7 @@ public class CreateLinkPages implements Job {
             Files.write(targetFile.toPath(), replaced);
             lines.close();
         } catch (Exception e) {
-            LOG.info("replaceText target=" + linkPageRoot.getAbsolutePath());
+            LOG.info("Error replaceText target=" + linkPageRoot.getAbsolutePath() + ", message=" + e.getMessage());
             throw  new RuntimeException(e);
         }
     }
@@ -448,11 +447,6 @@ public class CreateLinkPages implements Job {
                     LOG.info("Create PodCastEpisodeRoot =" + targetPodCastEpisodeRootDir.getAbsolutePath());
                     targetPodCastEpisodeRootDir.mkdirs();
                     replaceText(podCast, podCastEpisode, targetPodCastEpisodeRootDir);
-                  /*  String artworkUrl600 = podCastEpisode.getArtworkUrl600();
-                    File targetImage = new File(targetPodCastEpisodeRootDir, "image.jpg");
-                    try (InputStream in = new URL(artworkUrl600).openStream()) {
-                        Files.copy(in, targetImage.toPath());
-                    }*/
                 }
 
                 webSitemapGenerator.addUrl(externalURL);
@@ -460,11 +454,9 @@ public class CreateLinkPages implements Job {
                 //FIXME
                 //Create QR code...
          //       LOG.info("Created LinkPage for PodCastEpisode podCast=" + podCast.getTitle() + ", " + podCastEpisode.getTitle());
-            } catch (IOException e) {
+            } catch (Exception e) {
                 LOG.info("Error Created LinkPage " + e.getMessage());
                 FileUtils.deleteQuietly(targetPodCastEpisodeRootDir);
-
-          //      e.printStackTrace();
             }
         }
             @Override
@@ -484,9 +476,13 @@ public class CreateLinkPages implements Job {
             }
 
             @Override
+
             protected void compute() {
 
-                String podCastTitle =  podCast.getTitle();
+                File podCastRootDirTarget = null;
+                try {
+
+                 String podCastTitle =  podCast.getTitle();
                 String  podCastImage = podCast.getArtworkUrl600();
 
                 String podCastDynamicLink  = createShortLink(podCast.getCollectionId(), null, podCastTitle, null, podCastImage);
@@ -518,18 +514,16 @@ public class CreateLinkPages implements Job {
                     try {
                         action.get(30,TimeUnit.SECONDS);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.info("Failed to create PodCastEpisode " + e.getMessage());
                     }
                 }
-
-                try {
 
                     File sourceIndex = new File(SOURCE_PODCAST_ROOT_DIR, "index.html");
 
                     String podCastName = podCast.getTitle().replaceAll("\\s", "-");
                     podCastName = changeSwedishCharactersAndWhitespace(podCastName);
 
-                    File podCastRootDirTarget = new File(targetLanguageRootDir(lang), podCastName);
+                    podCastRootDirTarget = new File(targetLanguageRootDir(lang), podCastName);
 
                     File targetIndex = new File(podCastRootDirTarget, "index.html");
 
@@ -548,8 +542,9 @@ public class CreateLinkPages implements Job {
                     try (InputStream in = new URL(artworkUrl600).openStream()) {
                         Files.copy(in, targetImage.toPath());
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                   LOG.info("Failed create PodCast dir " + e.getMessage());
+                    FileUtils.deleteQuietly(podCastRootDirTarget);
                 }
             }
         }
