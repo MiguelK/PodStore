@@ -52,9 +52,16 @@ public class CreateLinkPages implements Job {
     private final static Logger LOG = Logger.getLogger(CreateLinkPages.class.getName());
 
     private static final int MAX_PODCAST_EPISODE = 2;
-    private static final int MAX_PODCAST = 3;
-    private static final File LINK_PAGES_ROOT_DIR = new File(ServerInfo.localPath, "web-external");
-    private static final File TEMPLATE_ROOT_DIR = new File(LINK_PAGES_ROOT_DIR , "link-page-template");
+    private static final int MAX_PODCAST = 2;
+
+    private static final File SOURCE_LINK_PAGES_ROOT_DIR = new File(ServerInfo.localPath, "web-external" + File.separator + "LinkPages");
+    private static final File SOURCE_LINK_PAGES_CSS_ROOT_DIR = new File(SOURCE_LINK_PAGES_ROOT_DIR, "css");
+    private static final File SOURCE_LINK_PAGES_JS_ROOT_DIR = new File(SOURCE_LINK_PAGES_ROOT_DIR, "js");
+
+    private static final File SOURCE_LANGUAGE_ROOT_DIR = new File(SOURCE_LINK_PAGES_ROOT_DIR, "LanguageRootDir");
+    private static final File SOURCE_PODCAST_ROOT_DIR = new File(SOURCE_LANGUAGE_ROOT_DIR, "PodcastRootDir");
+    private static final File SOURCE_PODCAST_EPISODE_ROOT_DIR = new File(SOURCE_PODCAST_ROOT_DIR, "PodcastEpisodeRootDir");
+
 
     private volatile boolean executedOnce = false;
 
@@ -74,30 +81,30 @@ public class CreateLinkPages implements Job {
 
         executedOnce = true;
 
-        File linkPagesDir = linkPageRootDir();
+        File targetLinkPageRootDir = targetLinkPageRootDir();
 
         linkIndex = new DynamicLinkIndex();
-        File dynamicLinksIndex = new File(linkPagesDir.getParentFile(), "dynamicLinks-index.json");
+        File dynamicLinksIndex = new File(targetLinkPageRootDir.getParentFile(), "dynamicLinks-index.json");
         linkIndex.loadFrom(dynamicLinksIndex);
 
         try {
-            File templateDefaultCSS = new File(TEMPLATE_ROOT_DIR, "default.css");
-            FileUtils.copyFileToDirectory(templateDefaultCSS, linkPagesDir);
+            File templateDefaultCSS = new File(SOURCE_LINK_PAGES_CSS_ROOT_DIR, "default.css");
+            FileUtils.copyFileToDirectory(templateDefaultCSS, targetLinkPageRootDir);
 
-            File templateCss = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "css" + File.separator + "style.css");
-            FileUtils.copyFileToDirectory(templateCss, linkPagesDir);
+            File templateCss = new File(SOURCE_LINK_PAGES_CSS_ROOT_DIR, "style.css");
+            FileUtils.copyFileToDirectory(templateCss, targetLinkPageRootDir);
 
-            File templateJs = new File(LINK_PAGES_ROOT_DIR,  "LinkPages" + File.separator + "js" + File.separator + "index.js");
-            FileUtils.copyFileToDirectory(templateJs, linkPagesDir);
+            File templateJs = new File(SOURCE_LINK_PAGES_JS_ROOT_DIR,  "index.js");
+            FileUtils.copyFileToDirectory(templateJs, targetLinkPageRootDir);
 
             //Episode template stuff
-            File templateCss2 = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "css" + File.separator + "style-episode.css");
-            FileUtils.copyFileToDirectory(templateCss2, linkPagesDir);
+            File templateCss2 = new File(SOURCE_LINK_PAGES_CSS_ROOT_DIR, "style-episode.css");
+            FileUtils.copyFileToDirectory(templateCss2, targetLinkPageRootDir);
 
-            File templateJs2 = new File(LINK_PAGES_ROOT_DIR,  "LinkPages" + File.separator + "js" + File.separator + "index-episode.js");
-            FileUtils.copyFileToDirectory(templateJs2, linkPagesDir);
+            File templateJs2 = new File(SOURCE_LINK_PAGES_JS_ROOT_DIR,  "index-episode.js");
+            FileUtils.copyFileToDirectory(templateJs2, targetLinkPageRootDir);
 
-            webSitemapGenerator = new WebSitemapGenerator("https://www.pods.one", linkPagesDir);
+            webSitemapGenerator = new WebSitemapGenerator("https://www.pods.one", targetLinkPageRootDir);
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -150,15 +157,15 @@ public class CreateLinkPages implements Job {
 
         try {
 
-            File podCastTemplate = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "podcast-template" + File.separator + "index.html");
-            Path path = podCastTemplate.toPath();
+            File sourceIndex = new File(SOURCE_LANGUAGE_ROOT_DIR, "index.html");
+            Path path = sourceIndex.toPath();
             Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
 
             List <String> replaced = lines.map(line -> line.replaceAll("template_all_podcasts_fragments",
                     allPodCastsHtml.toString())).collect(Collectors.toList());
 
-            File podCastTemplateTarget = new File(linkPageLangRootDir(podCastCatalogLanguage), "index.html");
-            Files.write(podCastTemplateTarget.toPath(), replaced);
+            File targetIndex = new File(targetLanguageRootDir(podCastCatalogLanguage), "index.html");
+            Files.write(targetIndex.toPath(), replaced);
             lines.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -193,15 +200,15 @@ public class CreateLinkPages implements Job {
     }
 
 
-    private File linkPageLangRootDir(PodCastCatalogLanguage podCastCatalogLanguage) {
-        File linkPagesDir = new File(linkPageRootDir(), podCastCatalogLanguage.name());
+    private File targetLanguageRootDir(PodCastCatalogLanguage podCastCatalogLanguage) {
+        File linkPagesDir = new File(targetLinkPageRootDir(), podCastCatalogLanguage.name());
         if(!linkPagesDir.exists()) {
             linkPagesDir.mkdirs();
         }
         return linkPagesDir;
     }
 
-    private File linkPageRootDir() {
+    private File targetLinkPageRootDir() {
         File podDataHomeDir = ServiceDataStorage.useDefault().getPodDataHomeDir();
         File linkPagesDir = new File(podDataHomeDir, "LinkPages");
         if(!linkPagesDir.exists()) {
@@ -209,6 +216,7 @@ public class CreateLinkPages implements Job {
         }
         return linkPagesDir;
     }
+
 
     private String changeSwedishCharactersAndWhitespace(String string) {
         String newString = string.
@@ -317,12 +325,12 @@ public class CreateLinkPages implements Job {
     }
 
 
-    private void updateText(PodCast podCast, PodCastEpisode podCastEpisode,  File linkPageRoot) {
-        File targetFile = new File(linkPageRoot, "index.html");
-        File sourceFile = new File(linkPageRoot, "index.html");
+    private void updateText(PodCast podCast, PodCastEpisode podCastEpisode,  File targetPodCastEpisodeRootDir) {
+        File targetFile = new File(targetPodCastEpisodeRootDir, "index.html");
+        File sourceFile = new File(targetPodCastEpisodeRootDir, "index.html");
 
         if(!sourceFile.exists()){
-            replaceText(podCast, podCastEpisode, linkPageRoot);
+            replaceText(podCast, podCastEpisode, targetPodCastEpisodeRootDir);
             return;
         }
 
@@ -372,7 +380,7 @@ public class CreateLinkPages implements Job {
     //createEpisodeNode
     private void replaceText(PodCast podCast, PodCastEpisode podCastEpisode,  File linkPageRoot) {
         File targetFile = new File(linkPageRoot, "index.html");
-        File sourceFile = new File(TEMPLATE_ROOT_DIR, "index.html"); //If new
+        File sourceFile = new File(SOURCE_PODCAST_EPISODE_ROOT_DIR, "index.html"); //If new
 
         try {
             String pid=  podCast.getCollectionId();
@@ -432,25 +440,25 @@ public class CreateLinkPages implements Job {
                 episodeName = changeSwedishCharactersAndWhitespace(episodeName);// URLEncoder.encode( episodeName, "UTF-8" );
                 podCastName = changeSwedishCharactersAndWhitespace(podCastName); // URLEncoder.encode( podCastName, "UTF-8" );
 
-                File podCastEpisodeDirectoryRoot = new File(linkPageLangRootDir(lang), podCastName + File.separator + episodeName);
+                File targetPodCastEpisodeRootDir = new File(targetLanguageRootDir(lang), podCastName + File.separator + episodeName);
 
                 String externalURL =  "https://www.pods.one/podcast/" + lang.name() + "/" + podCastName + File.separator + episodeName;
                // System.out.println("External=" + externalURL);
 
                 webSitemapGenerator.addUrl(externalURL);
 
-                if(podCastEpisodeDirectoryRoot.exists()) {
+                if(targetPodCastEpisodeRootDir.exists()) {
                     LOG.info("Update PodCastEpisode " + episodeName);
-                    updateText(podCast, podCastEpisode, podCastEpisodeDirectoryRoot);
+                    updateText(podCast, podCastEpisode, targetPodCastEpisodeRootDir);
                 } else {
-                    LOG.info("Create PodCastEpisodeRoot =" + podCastEpisodeDirectoryRoot.getAbsolutePath());
-                    podCastEpisodeDirectoryRoot.mkdirs();
-                    replaceText(podCast, podCastEpisode, podCastEpisodeDirectoryRoot);
-                    String artworkUrl600 = podCastEpisode.getArtworkUrl600();
-                    File targetImage = new File(podCastEpisodeDirectoryRoot, "image.jpg");
+                    LOG.info("Create PodCastEpisodeRoot =" + targetPodCastEpisodeRootDir.getAbsolutePath());
+                    targetPodCastEpisodeRootDir.mkdirs();
+                    replaceText(podCast, podCastEpisode, targetPodCastEpisodeRootDir);
+                  /*  String artworkUrl600 = podCastEpisode.getArtworkUrl600();
+                    File targetImage = new File(targetPodCastEpisodeRootDir, "image.jpg");
                     try (InputStream in = new URL(artworkUrl600).openStream()) {
                         Files.copy(in, targetImage.toPath());
-                    }
+                    }*/
                 }
 
                 //FIXME
@@ -517,24 +525,30 @@ public class CreateLinkPages implements Job {
 
                     String podCastDynamicLink  = createShortLink(podCast.getCollectionId(), null, podCastTitle, null, podCastImage);
 
-                    File episodeTemplate = new File(LINK_PAGES_ROOT_DIR, "LinkPages" + File.separator + "episode-template" + File.separator + "index.html");
+                    File sourceIndex = new File(SOURCE_PODCAST_ROOT_DIR, "index.html");
 
                     String podCastName = podCast.getTitle().replaceAll("\\s", "-");
                     podCastName = changeSwedishCharactersAndWhitespace(podCastName);
 
-                    File podCastLinkPageRoot = new File(linkPageLangRootDir(lang), podCastName);
+                    File podCastRootDirTarget = new File(targetLanguageRootDir(lang), podCastName);
 
-                    File episodeTemplateTarget = new File(podCastLinkPageRoot, "index.html");
+                    File targetIndex = new File(podCastRootDirTarget, "index.html");
 
-                    Path path = episodeTemplate.toPath();
+                    Path path = sourceIndex.toPath();
                     Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
                     List <String> replaced = lines.map(line -> line.replaceAll("template_all_episodes_fragments",
                             allEpisodesHtml.toString()).replaceAll("template_podcast_title", podCast.getTitle()).
                             replaceAll("template_podcast_link",podCastDynamicLink).
                             replaceAll("template_podcast_image",podCast.getArtworkUrl600())).collect(Collectors.toList());
 
-                    Files.write(episodeTemplateTarget.toPath(), replaced);
+                    Files.write(targetIndex.toPath(), replaced);
                     lines.close();
+
+                    String artworkUrl600 = podCast.getArtworkUrl600();
+                    File targetImage = new File(podCastRootDirTarget, "image.jpg");
+                    try (InputStream in = new URL(artworkUrl600).openStream()) {
+                        Files.copy(in, targetImage.toPath());
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
