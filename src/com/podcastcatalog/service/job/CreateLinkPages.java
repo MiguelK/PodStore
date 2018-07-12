@@ -51,8 +51,8 @@ public class CreateLinkPages implements Job {
 
     private final static Logger LOG = Logger.getLogger(CreateLinkPages.class.getName());
 
-    private static final int MAX_PODCAST_EPISODE = 2;
-    private static final int MAX_PODCAST = 2;
+    private static final int MAX_PODCAST_EPISODE = 10;
+    private static final int MAX_PODCAST = 10;
 
     private static final File SOURCE_LINK_PAGES_ROOT_DIR = new File(ServerInfo.localPath, "web-external" + File.separator + "LinkPages");
     private static final File SOURCE_LINK_PAGES_CSS_ROOT_DIR = new File(SOURCE_LINK_PAGES_ROOT_DIR, "css");
@@ -176,7 +176,7 @@ public class CreateLinkPages implements Job {
                 joinTask.get(15, TimeUnit.MINUTES);
             } catch (Exception e) {
                 LOG.info("Took more then 15 min to process " + e.getMessage());
-                //e.printStackTrace();
+                e.printStackTrace();
             }
         }
     }
@@ -320,7 +320,7 @@ public class CreateLinkPages implements Job {
             }
         }
 
-       //  System.out.println("Failed creating shortLink using longLink=" + longLink);
+         System.out.println("Failed creating shortLink using longLink=" + longLink);
          return  null; //longLink;
     }
 
@@ -415,7 +415,7 @@ public class CreateLinkPages implements Job {
             lines.close();
         } catch (Exception e) {
             LOG.info("replaceText target=" + linkPageRoot.getAbsolutePath());
-            e.printStackTrace();
+            throw  new RuntimeException(e);
         }
     }
 
@@ -433,6 +433,8 @@ public class CreateLinkPages implements Job {
         }
 
         void computeDirectly() {
+
+            File targetPodCastEpisodeRootDir = null;
             try {
 
                 String episodeName = podCastEpisode.getTitle().replaceAll("\\s", "-");
@@ -440,7 +442,7 @@ public class CreateLinkPages implements Job {
                 episodeName = changeSwedishCharactersAndWhitespace(episodeName);// URLEncoder.encode( episodeName, "UTF-8" );
                 podCastName = changeSwedishCharactersAndWhitespace(podCastName); // URLEncoder.encode( podCastName, "UTF-8" );
 
-                File targetPodCastEpisodeRootDir = new File(targetLanguageRootDir(lang), podCastName + File.separator + episodeName);
+                targetPodCastEpisodeRootDir = new File(targetLanguageRootDir(lang), podCastName + File.separator + episodeName);
 
                 String externalURL =  "https://www.pods.one/podcast/" + lang.name() + "/" + podCastName + File.separator + episodeName;
                // System.out.println("External=" + externalURL);
@@ -465,8 +467,9 @@ public class CreateLinkPages implements Job {
                 //Create QR code...
                 LOG.info("Created LinkPage for PodCastEpisode podCast=" + podCast.getTitle() + ", " + podCastEpisode.getTitle());
             } catch (IOException e) {
-                LOG.info("Error Created LinkPage");
-                e.printStackTrace();
+                LOG.info("Error Created LinkPage " + e.getMessage());
+                FileUtils.deleteQuietly(targetPodCastEpisodeRootDir);
+          //      e.printStackTrace();
             }
         }
             @Override
@@ -487,6 +490,14 @@ public class CreateLinkPages implements Job {
 
             @Override
             protected void compute() {
+
+                String podCastTitle =  podCast.getTitle();
+                String  podCastImage = podCast.getArtworkUrl600();
+
+                String podCastDynamicLink  = createShortLink(podCast.getCollectionId(), null, podCastTitle, null, podCastImage);
+                if(podCastDynamicLink==null) {
+                    return;
+                }
 
                 List<PodCastEpisodeDirectoryAction> tasks = new ArrayList<>();
                 List<PodCastEpisode> podCastEpisodes = podCast.getPodCastEpisodesInternal();
@@ -520,10 +531,6 @@ public class CreateLinkPages implements Job {
                 }
 
                 try {
-                    String podCastTitle =  podCast.getTitle();
-                    String  podCastImage = podCast.getArtworkUrl600();
-
-                    String podCastDynamicLink  = createShortLink(podCast.getCollectionId(), null, podCastTitle, null, podCastImage);
 
                     File sourceIndex = new File(SOURCE_PODCAST_ROOT_DIR, "index.html");
 
