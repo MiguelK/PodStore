@@ -15,7 +15,7 @@
           <element id="library" level="project" name="commons-lang3-3.4" />
           <element id="library" level="project" name="podengine-2.2" />
           <element id="library" level="project" name="httpclient" />
-          <element id="library" level="project" name="sitemapgen4j-1.0.1" />
+          <element id="library" level="project" name="sitemapgen4j-1.1.0" />
         </element>
       </element>
     </root>

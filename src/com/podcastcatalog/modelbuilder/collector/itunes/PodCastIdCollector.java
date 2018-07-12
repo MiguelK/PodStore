@@ -133,7 +133,7 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
 
     public PodCastIdCollector(PodCastCatalogLanguage language, Category category, String categoryTitle) {
         this.language = language;
-        this.resultSize = ServerInfo.isLocalDevMode() ? 3: 50;
+        this.resultSize = 50;
         this.category = category;
         this.categoryTitle = categoryTitle;
         this.url = category.categoryUrl.replace("{LANGUAGE}",
