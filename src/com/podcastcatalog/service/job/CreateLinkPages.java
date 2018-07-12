@@ -51,8 +51,8 @@ public class CreateLinkPages implements Job {
 
     private final static Logger LOG = Logger.getLogger(CreateLinkPages.class.getName());
 
-    private static final int MAX_PODCAST_EPISODE = 4;
-    private static final int MAX_PODCAST = 5;
+    private static final int MAX_PODCAST_EPISODE = 10;
+    private static final int MAX_PODCAST = 10;
 
     private static final File SOURCE_LINK_PAGES_ROOT_DIR = new File(ServerInfo.localPath, "web-external" + File.separator + "LinkPages");
     private static final File SOURCE_LINK_PAGES_CSS_ROOT_DIR = new File(SOURCE_LINK_PAGES_ROOT_DIR, "css");
@@ -377,9 +377,7 @@ public class CreateLinkPages implements Job {
     }
 
     //createEpisodeNode
-    private void replaceText(PodCast podCast, PodCastEpisode podCastEpisode,  File linkPageRoot) {
-        File targetFile = new File(linkPageRoot, "index.html");
-        File sourceFile = new File(SOURCE_PODCAST_EPISODE_ROOT_DIR, "index.html"); //If new
+    private void replaceText(PodCast podCast, PodCastEpisode podCastEpisode,  File targetPodCastEpisodeRootDir) {
 
         try {
             String pid=  podCast.getCollectionId();
@@ -391,6 +389,10 @@ public class CreateLinkPages implements Job {
 
 
             String targetLink  = createShortLink(pid, eid, podCastTitle, podCastEpisodeTitle, podCastImage);
+
+            targetPodCastEpisodeRootDir.mkdirs();
+            File targetFile = new File(targetPodCastEpisodeRootDir, "index.html");
+            File sourceFile = new File(SOURCE_PODCAST_EPISODE_ROOT_DIR, "index.html"); //If new
 
             Path path = sourceFile.toPath();
 
@@ -407,7 +409,7 @@ public class CreateLinkPages implements Job {
             Files.write(targetFile.toPath(), replaced);
             lines.close();
         } catch (Exception e) {
-            LOG.info("Error replaceText target=" + linkPageRoot.getAbsolutePath() + ", message=" + e.getMessage());
+            LOG.info("Error replaceText target=" + targetPodCastEpisodeRootDir.getAbsolutePath() + ", message=" + e.getMessage());
             throw  new RuntimeException(e);
         }
     }
@@ -437,7 +439,6 @@ public class CreateLinkPages implements Job {
 
                 targetPodCastEpisodeRootDir = new File(targetLanguageRootDir(lang), podCastName + File.separator + episodeName);
 
-                String externalURL =  "https://www.pods.one/podcast/" + lang.name() + "/" + podCastName + File.separator + episodeName;
                // System.out.println("External=" + externalURL);
 
                 if(targetPodCastEpisodeRootDir.exists()) {
@@ -445,10 +446,10 @@ public class CreateLinkPages implements Job {
                     updateText(podCast, podCastEpisode, targetPodCastEpisodeRootDir);
                 } else {
                     LOG.info("Create PodCastEpisodeRoot =" + targetPodCastEpisodeRootDir.getAbsolutePath());
-                    targetPodCastEpisodeRootDir.mkdirs();
                     replaceText(podCast, podCastEpisode, targetPodCastEpisodeRootDir);
                 }
 
+                String externalURL =  "https://www.pods.one/podcast/" + lang.name() + "/" + podCastName + File.separator + episodeName;
                 webSitemapGenerator.addUrl(externalURL);
 
                 //FIXME
@@ -542,6 +543,10 @@ public class CreateLinkPages implements Job {
                     try (InputStream in = new URL(artworkUrl600).openStream()) {
                         Files.copy(in, targetImage.toPath());
                     }
+
+                    String externalURL =  "https://www.pods.one/podcast/" + lang.name() + "/" + podCastName;
+                    webSitemapGenerator.addUrl(externalURL);
+
                 } catch (Exception e) {
                    LOG.info("Failed create PodCast dir " + e.getMessage());
                     FileUtils.deleteQuietly(podCastRootDirTarget);
