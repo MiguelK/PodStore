@@ -40,6 +40,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -62,6 +63,8 @@ public class CreateLinkPages implements Job {
     private static final File SOURCE_PODCAST_ROOT_DIR = new File(SOURCE_LANGUAGE_ROOT_DIR, "PodcastRootDir");
     private static final File SOURCE_PODCAST_EPISODE_ROOT_DIR = new File(SOURCE_PODCAST_ROOT_DIR, "PodcastEpisodeRootDir");
 
+    private AtomicInteger cachedDynamicLinks = new AtomicInteger();
+    private AtomicInteger createNewDynamicLinks = new AtomicInteger();
 
     private volatile boolean executedOnce = false;
 
@@ -257,6 +260,7 @@ public class CreateLinkPages implements Job {
         String targetLink = linkIndex.getValue(key);
 
         if(targetLink!=null){
+            LOG.info("Using cached DynamicLink " + cachedDynamicLinks.incrementAndGet());
             return targetLink;
         }
 
@@ -273,6 +277,8 @@ public class CreateLinkPages implements Job {
          HttpPost request = null;
         try {
             String quotaUser = podCastTitle.length() >10 ? podCastTitle.substring(0, 10) : "A123";
+
+            LOG.info("Create new DynamicLink " + createNewDynamicLinks.incrementAndGet());
 
             //quotaUser Testing FIXME
             String linkValueEncoded = URLEncoder.encode(linkValue + "&quotaUser="  + quotaUser, "UTF-8");
