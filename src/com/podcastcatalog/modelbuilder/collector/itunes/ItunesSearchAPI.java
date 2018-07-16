@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastsearch.PodCastResultItem;
 import com.podcastcatalog.modelbuilder.collector.PodCastCollector;
+import com.podcastcatalog.util.ServerInfo;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -193,6 +195,12 @@ public class ItunesSearchAPI implements PodCastCollector {
             }
 
             public String getFeedUrl() {
+                if(feedUrl== null){
+                    return null;
+                }
+                if(ServerInfo.isLocalDevMode()){
+                    return feedUrl.replace("https", "http"); //Certifcate problems running locally
+                }
                 return feedUrl;
             }
 
