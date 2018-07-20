@@ -52,8 +52,9 @@ public class CreateLinkPages implements Job {
 
     private final static Logger LOG = Logger.getLogger(CreateLinkPages.class.getName());
 
-    private static final int MAX_PODCAST_EPISODE = 10;
-    private static final int MAX_PODCAST = 10;
+    private static final int MAX_PODCAST_EPISODE = 200;
+    private static final int MAX_PODCAST = 400;
+    private static final boolean USE_ONLY_CACHED_DYNAMIC_LINKS = true;
 
     private static final File SOURCE_LINK_PAGES_ROOT_DIR = new File(ServerInfo.localPath, "web-external" + File.separator + "LinkPages");
     private static final File SOURCE_LINK_PAGES_CSS_ROOT_DIR = new File(SOURCE_LINK_PAGES_ROOT_DIR, "css");
@@ -125,6 +126,12 @@ public class CreateLinkPages implements Job {
 
             List<PodCast> podCasts = getPodCasts(podCastCatalog);
 
+            if(USE_ONLY_CACHED_DYNAMIC_LINKS) {
+                //Only use podcasts with cached links
+                podCasts =  podCasts.stream().filter(podCast -> linkIndex.getValue(DynamicLinkIndex.Key.createKey(podCast.getCollectionId(), null) )
+                        != null).collect(Collectors.toList());
+            }
+
             createLanguageRootDirectory(podCasts, podCastCatalogLanguage);
         }
 
@@ -176,7 +183,7 @@ public class CreateLinkPages implements Job {
 
         for (ForkJoinTask joinTask : forkJoinTasks) {
             try {
-                joinTask.get(15, TimeUnit.MINUTES);
+                joinTask.get(55, TimeUnit.MINUTES);
             } catch (Exception e) {
                 LOG.info("Took more then 15 min to process " + e.getMessage());
          //       e.printStackTrace();
@@ -198,7 +205,7 @@ public class CreateLinkPages implements Job {
         List<PodCast> podCasts = bundleItemVisitor.getPodCasts();
         LOG.info("podCasts=" + podCasts.size());
 
-       podCasts = podCasts.subList(0, MAX_PODCAST); //FIXME
+       //podCasts = podCasts.subList(0, MAX_PODCAST); //FIXME
         return podCasts;
     }
 
@@ -251,7 +258,7 @@ public class CreateLinkPages implements Job {
                                    String podCastEpisodeTitle, String podCastImage) {
 
         try {
-            Thread.sleep(15 * 1000);
+            Thread.sleep(5 * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -497,6 +504,12 @@ public class CreateLinkPages implements Job {
                 List<PodCastEpisodeDirectoryAction> tasks = new ArrayList<>();
                 List<PodCastEpisode> podCastEpisodes = podCast.getPodCastEpisodesInternal();
                 podCastEpisodes = podCastEpisodes.size() > MAX_PODCAST_EPISODE ? podCastEpisodes.subList(0, MAX_PODCAST_EPISODE) : podCastEpisodes;
+
+                    if(USE_ONLY_CACHED_DYNAMIC_LINKS) {
+                        //Only use podcasts with cached links
+                        podCastEpisodes =  podCastEpisodes.stream().filter(podCastEpisode -> linkIndex.getValue(DynamicLinkIndex.Key.createKey(podCast.getCollectionId(), podCastEpisode.getId()) )
+                                != null).collect(Collectors.toList());
+                    }
 
                 LOG.info("PodCastDirectoryAction: " + podCast.getTitle() + " Episodes=" + podCastEpisodes.size());
 

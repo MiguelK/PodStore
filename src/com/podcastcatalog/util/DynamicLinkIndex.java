@@ -41,9 +41,6 @@ public class DynamicLinkIndex {
         public static Key createKey(String pid, String eid) {
             return new Key(pid, eid);
         }
-        public static Key createKey(String pid) {
-            return new Key(pid, null);
-        }
 
         public String getKey() {
             return key;
@@ -70,6 +67,11 @@ public class DynamicLinkIndex {
     }
 
     public void addLink(Key key, String url){
+
+        if(index.keyValues.containsKey(key.getKey())) {
+            return;
+        }
+
         index.keyValues.put(key.getKey(), url);
     }
 
@@ -85,7 +87,7 @@ public class DynamicLinkIndex {
                 // gson.toJson(123, writer);
                 GSON.toJson(index,writer);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -36,7 +36,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="feed4j-1" level="project" />
-    <orderEntry type="library" name="gson-2" level="project" />
     <orderEntry type="library" name="jsoup-1.9" level="project" />
     <orderEntry type="library" name="commons-io-2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Jersey-2.2" level="project" />
@@ -45,5 +44,6 @@
     <orderEntry type="library" name="podengine-2.2" level="project" />
     <orderEntry type="library" name="httpclient" level="project" />
     <orderEntry type="library" name="sitemapgen4j-1.1.0" level="project" />
+    <orderEntry type="library" name="gson-2.8.5" level="project" />
   </component>
 </module>

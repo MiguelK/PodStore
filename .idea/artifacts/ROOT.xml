@@ -8,6 +8,7 @@
           <element id="library" level="project" name="podengine-2.2" />
           <element id="library" level="project" name="httpclient" />
           <element id="library" level="project" name="sitemapgen4j-1.1.0" />
+          <element id="library" level="project" name="gson-2.8.5" />
         </element>
       </element>
     </root>
