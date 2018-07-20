@@ -52,8 +52,8 @@ public class CreateLinkPages implements Job {
 
     private final static Logger LOG = Logger.getLogger(CreateLinkPages.class.getName());
 
-    private static final int MAX_PODCAST_EPISODE = 200;
-    private static final int MAX_PODCAST = 400;
+    private static final int MAX_PODCAST_EPISODE = 10;
+    private static final int MAX_PODCAST = 10;
     private static final boolean USE_ONLY_CACHED_DYNAMIC_LINKS = true;
 
     private static final File SOURCE_LINK_PAGES_ROOT_DIR = new File(ServerInfo.localPath, "web-external" + File.separator + "LinkPages");
@@ -92,6 +92,15 @@ public class CreateLinkPages implements Job {
         linkIndex.loadFrom(dynamicLinksIndex);
 
         try {
+            File rootIndex = new File(SOURCE_LINK_PAGES_ROOT_DIR, "index.html");
+            FileUtils.copyFileToDirectory(rootIndex, targetLinkPageRootDir);
+
+            File rootCSS = new File(SOURCE_LINK_PAGES_CSS_ROOT_DIR, "root-style.css");
+            FileUtils.copyFileToDirectory(rootCSS, targetLinkPageRootDir);
+
+            File rootJS = new File(SOURCE_LINK_PAGES_JS_ROOT_DIR,  "root-index.js");
+            FileUtils.copyFileToDirectory(rootJS, targetLinkPageRootDir);
+
             File templateDefaultCSS = new File(SOURCE_LINK_PAGES_CSS_ROOT_DIR, "default.css");
             FileUtils.copyFileToDirectory(templateDefaultCSS, targetLinkPageRootDir);
 
@@ -205,7 +214,7 @@ public class CreateLinkPages implements Job {
         List<PodCast> podCasts = bundleItemVisitor.getPodCasts();
         LOG.info("podCasts=" + podCasts.size());
 
-       //podCasts = podCasts.subList(0, MAX_PODCAST); //FIXME
+       podCasts = podCasts.size() > MAX_PODCAST ? podCasts.subList(0, MAX_PODCAST) : podCasts; //FIXME
         return podCasts;
     }
 
@@ -257,10 +266,12 @@ public class CreateLinkPages implements Job {
     String createShortLink(String pid, String eid, String podCastTitle,
                                    String podCastEpisodeTitle, String podCastImage) {
 
-        try {
-            Thread.sleep(5 * 1000);
+        if(!USE_ONLY_CACHED_DYNAMIC_LINKS) {
+       /* try {
+            Thread.sleep(2 * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }*/
         }
 
         DynamicLinkIndex.Key key = DynamicLinkIndex.Key.createKey(pid, eid);
@@ -455,10 +466,10 @@ public class CreateLinkPages implements Job {
                // System.out.println("External=" + externalURL);
 
                 if(targetPodCastEpisodeRootDir.exists()) {
-                    LOG.info("Update PodCastEpisode " + episodeName);
+                   // LOG.info("Update PodCastEpisode " + episodeName);
                     updateText(podCast, podCastEpisode, targetPodCastEpisodeRootDir);
                 } else {
-                    LOG.info("Create PodCastEpisodeRoot =" + targetPodCastEpisodeRootDir.getAbsolutePath());
+                    //LOG.info("Create PodCastEpisodeRoot =" + targetPodCastEpisodeRootDir.getAbsolutePath());
                     replaceText(podCast, podCastEpisode, targetPodCastEpisodeRootDir);
                 }
 
@@ -511,7 +522,7 @@ public class CreateLinkPages implements Job {
                                 != null).collect(Collectors.toList());
                     }
 
-                LOG.info("PodCastDirectoryAction: " + podCast.getTitle() + " Episodes=" + podCastEpisodes.size());
+              //  LOG.info("PodCastDirectoryAction: " + podCast.getTitle() + " Episodes=" + podCastEpisodes.size());
 
                 StringBuilder allEpisodesHtml = new StringBuilder();
 
