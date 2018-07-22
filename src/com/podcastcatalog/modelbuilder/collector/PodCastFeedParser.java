@@ -124,10 +124,13 @@ public class PodCastFeedParser {
                     .publisher(feedHeader.getPublisher())
                     .feedURL(feedHeader.getFeedURL());
 
-            expectedEpisodeCount = feed.getItemCount(); //> maxFeedCount ? maxFeedCount : feed.getItemCount(); //FIXME
+            boolean max = feed.getItemCount() > maxFeedCount; //1400
+            int offset = max ? feed.getItemCount() - maxFeedCount : 0;
+
+            expectedEpisodeCount = feed.getItemCount(); // > maxFeedCount ? maxFeedCount : feed.getItemCount(); //FIXME
 
             List<PodCastEpisodeProcessor> tasks = new ArrayList<>();
-            for (int i = 0; i < expectedEpisodeCount; i++) {
+            for (int i = offset; i < expectedEpisodeCount; i++) {
                 FeedItem item = feed.getItem(i);
                 PodCastEpisodeProcessor podCastEpisodeProcessor = new PodCastEpisodeProcessor(item, collectionId);
                 podCastEpisodeProcessor.fork();//FIXME
