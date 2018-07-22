@@ -52,9 +52,9 @@ public class CreateLinkPages implements Job {
 
     private final static Logger LOG = Logger.getLogger(CreateLinkPages.class.getName());
 
-    private static final int MAX_PODCAST_EPISODE = 10;
-    private static final int MAX_PODCAST = 10;
-    private static final boolean USE_ONLY_CACHED_DYNAMIC_LINKS = true;
+    private static final int MAX_PODCAST_EPISODE = 400;
+    private static final int MAX_PODCAST = 20;
+    private static final boolean USE_ONLY_CACHED_DYNAMIC_LINKS = false;
 
     private static final File SOURCE_LINK_PAGES_ROOT_DIR = new File(ServerInfo.localPath, "web-external" + File.separator + "LinkPages");
     private static final File SOURCE_LINK_PAGES_CSS_ROOT_DIR = new File(SOURCE_LINK_PAGES_ROOT_DIR, "css");
@@ -267,11 +267,11 @@ public class CreateLinkPages implements Job {
                                    String podCastEpisodeTitle, String podCastImage) {
 
         if(!USE_ONLY_CACHED_DYNAMIC_LINKS) {
-       /* try {
-            Thread.sleep(2 * 1000);
+        try {
+            Thread.sleep(4 * 100);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }*/
+        }
         }
 
         DynamicLinkIndex.Key key = DynamicLinkIndex.Key.createKey(pid, eid);
@@ -296,7 +296,6 @@ public class CreateLinkPages implements Job {
         try {
             String quotaUser = podCastTitle.length() >10 ? podCastTitle.substring(0, 10) : "A123";
 
-            LOG.info("Create new DynamicLink " + createNewDynamicLinks.incrementAndGet());
 
             //quotaUser Testing FIXME
             String linkValueEncoded = URLEncoder.encode(linkValue + "&quotaUser="  + quotaUser, "UTF-8");
@@ -332,6 +331,7 @@ public class CreateLinkPages implements Job {
                 if(shortLink != null && shortLink instanceof String){
                     String shortLink1 = (String) shortLink;
                     linkIndex.addLink(key, shortLink1);
+                    LOG.info("SUCCESS: Create new DynamicLink " + createNewDynamicLinks.incrementAndGet());
                     return shortLink1;
 
                 }
