@@ -7,24 +7,23 @@
  <!-- Schema.org markup for Google+ -->
  <meta itemprop="name" content="Pods - Podcast Player">
  <meta itemprop="description" content="Simple and fast Podcastplayer">
- <meta itemprop="image" content="http://www.pods.one/site/images/default-share-image.png">
+ <meta itemprop="image" content="https://www.pods.one/site/images/default-share-image.png">
 
  <!-- Facebook -->
  <meta name="metaFacebookTitleId" property="og:title" content="Pod - Podcast Player"/>
  <meta property="og:description"
        content="The Episode Title X"/>
  <meta property="og:type" content="article"/>
- <meta property="og:image" content="http://www.pods.one/site/images/default-share-image.png"/>
+ <meta property="og:image" content="https://www.pods.one/site/images/default-share-image.png"/>
 
  <!-- Twitter -->
  <meta name="twitter:site" content="@Pods">
  <meta name="twitter:title" content="Pods - Podcast Player">
  <meta name="twitter:description" content="Simple and fast Podcastplayer">
- <meta name="twitter:image" content="http://www.pods.one/site/images/default-share-image.png">
+ <meta name="twitter:image" content="https://www.pods.one/site/images/default-share-image.png">
  <meta name="twitter:card" content="summary_large_image">
 
  <!-- Apple -->
- <span itemprop="reviewCount">123</span>
  <meta itemprop="ratingValue" content="4.9">
 
  <style>
@@ -238,78 +237,82 @@
 
 
 <div id="myModal" class="modal">
+ <!--
+  <div class="modal-content" id="modelContentId" >
+   <span class="close">&times;</span>
+   <p id="podCastTitleId" style="color:white;font-size:36px;text-align: center;margin-top: 10px">
+   <p id="podCastEpisodeTitleId" style="color:white;font-size:24px;text-align: center;margin-top: 10px">
+   </p>
+   <p style="text-align: center;margin-top: 10px">
+    <img id="podCastImageId" src="https://www.pods.one/site/images/default-share-image.png" alt="Mountain View" style="width:304px;height:304px">
+   </p>
 
- <div class="modal-content" id="modelContentId" >
-  <span class="close">&times;</span>
-  <p id="podCastTitleId" style="color:white;font-size:36px;text-align: center;margin-top: 10px">
-  <p id="podCastEpisodeTitleId" style="color:white;font-size:24px;text-align: center;margin-top: 10px">
-  </p>
-  <p style="text-align: center;margin-top: 10px">
-   <img id="podCastImageId" src="http://www.pods.one/site/images/default-share-image.png" alt="Mountain View" style="width:304px;height:304px">
-  </p>
-
-  <p style="text-align: center;margin-top: 10px">
-   <audio controls autoplay loop style="width:300px;height: auto; margin-top: 10px">
-    <source id="videoId"  src=""  />
-    <p>Your browser does not support HTML5 audio.</p>
-   </audio>
-  </p>
+   <p style="text-align: center;margin-top: 10px">
+    <audio controls autoplay loop style="width:300px;height: auto; margin-top: 10px">
+     <source id="videoId"  src=""  />
+     <p>Your browser does not support HTML5 audio.</p>
+    </audio>
+   </p>
 
 
- </div>
-
+  </div>
+ -->
 </div>
 
 
 <script type="text/javascript">
 
  // eis,pid and podCastImageURL parameters mus be same in play.jsp
- document.getElementById('modelContentId').style.display = 'none';
+ //document.getElementById('modelContentId').style.display = 'none';
 
  var sid = getQueryString("sid");
  if(sid) {
-  document.getElementById('modelContentId').style.display = 'block';
+ // document.getElementById('modelContentId').style.display = 'block';
   //var urlDecodedPodCastTitle = unescape(sid); //unescape handles swedsih characters decodeURIComponent(pid);
 
   var streamUrl = "http://resource-server-pods-eng.b9ad.pro-us-east-1.openshiftapps.com/stream/" + sid;
   //alert('streamUrl=' + streamUrl);
-  document.getElementById("videoId").src = streamUrl;
+     //document.getElementById("videoId").src = streamUrl;
  }
 
  var podCastImageURL = getQueryString("podCastImage");
 
  if(podCastImageURL) {
-  document.getElementById('modelContentId').style.display = 'block';
+ // document.getElementById('modelContentId').style.display = 'block';
   var podCastImageElementId = document.getElementById("podCastImageId");
   //var podCastImageId = decodeURIComponent(imageId);
-  podCastImageElementId.src = podCastImageURL;
+     // podCastImageElementId.src = podCastImageURL;
  }
 
  var pid = getQueryString("pid");
  if(pid) {
-  document.getElementById('modelContentId').style.display = 'block';
+  //document.getElementById('modelContentId').style.display = 'block';
   var urlDecodedPodCastTitle = unescape(pid); //unescape handles swedsih characters decodeURIComponent(pid);
 
-  document.getElementById("podCastTitleId").innerHTML = urlDecodedPodCastTitle;
+ // document.getElementById("podCastTitleId").innerHTML = urlDecodedPodCastTitle;
  }
 
  var eid = getQueryString("eid");
  if(eid) {
   var urlDecodedPodCastEpisodeTitle = unescape(eid); // decodeURIComponent(eid);
-  document.getElementById("podCastEpisodeTitleId").innerHTML = urlDecodedPodCastEpisodeTitle;
+     // document.getElementById("podCastEpisodeTitleId").innerHTML = urlDecodedPodCastEpisodeTitle;
  }
 </script>
 <!-- End Modal-->
 
+
 <div class="section_one">
-<div class="waypoint"></div>
 
  <div align="center">
- <h1 style="font-size: xx-large;color: white"> <a href="http://pods.one/podcast/SE/index.html" style="color: white"> Podcasts SWE >> </a></h1>
-  <h1 style="font-size: xx-large;color: white"> <a href="http://pods.one/podcast/US/index.html" style="color: white"> Podcast US >> </a></h1>
-
-
+  <p style="font-size: xx-large;color: white"> <a href="/podcast/SE/index.html" style="color: white"> Visa populära svenska podcast >> </a></p>
+  <br/>
+  <p style="font-size: xx-large;color: white"> <a href="/podcast/index.html" style="color: white"> Show Podcasts from USA and Sweden >> </a></p>
  </div>
+
+
+ <div class="waypoint"></div>
+
+
 <div class="inner_section">
 
 <div class="iphone_section_one"></div>
@@ -422,35 +425,36 @@ if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
 
 
  <!-- Load mdaal with PodCast-->
+
  function get(name){
  if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
   return decodeURIComponent(name[1]);
 }
 
 // Get the modal
-var modal = document.getElementById('myModal');
+//var modal = document.getElementById('myModal');
 
 // Get the button that opens the modal
-var btn = document.getElementById("myBtn");
-modal.style.display = "block";
+//var btn = document.getElementById("myBtn");
+//modal.style.display = "block";
 
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
 
 // When the user clicks the button, open the modal
-btn.onclick = function() {
- modal.style.display = "block";
-}
+//btn.onclick = function() {
+//modal.style.display = "block";
+//}
 
 // When the user clicks on <span> (x), close the modal
-span.onclick = function() {
- modal.style.display = "none";
-}
+//span.onclick = function() {
+//modal.style.display = "none";
+//}
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
  if (event.target == modal) {
-  modal.style.display = "none";
+     // modal.style.display = "none";
  }
 }
 </script>
