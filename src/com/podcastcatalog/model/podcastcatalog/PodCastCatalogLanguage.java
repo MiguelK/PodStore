@@ -16,7 +16,7 @@ public enum PodCastCatalogLanguage {
     NO("NO", PodCastCatalogBuilderNO.class, false, false, true),//Norway
     FR("FR", PodCastCatalogBuilderFR.class, false, false, true),//France
     DE("DE", PodCastCatalogBuilderDE.class, false, false, true),//Germany
-    US("US", PodCastCatalogBuilderUS.class, true, true, true);
+    US("US", PodCastCatalogBuilderUS.class, true, false, true);
 
     private final String lang;
     private final Class catalogBuilder;
