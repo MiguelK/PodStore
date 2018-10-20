@@ -27,17 +27,20 @@ public class PodCast {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPodCastById(@PathParam("id") String id) {
 
-        Optional<com.podcastcatalog.model.podcastcatalog.PodCast> podCastInMemory = PodCastCatalogService.getInstance().getPodCastById(id);
 
-        if(podCastInMemory.isPresent()){
-            com.podcastcatalog.model.podcastcatalog.PodCast withAllEpisodes =
-                    com.podcastcatalog.model.podcastcatalog.PodCast.createWithAllEpisodes(podCastInMemory.get());
-
-            return Response.status(Response.Status.OK).entity(withAllEpisodes).build();
-        }
-
+        //BUGFIX olways fetch latest, only use cached pods if failing. Breakit pods
         Optional<com.podcastcatalog.model.podcastcatalog.PodCast>  podCastNotInMemory = ItunesSearchAPI.lookupPodCast(id);
         if (!podCastNotInMemory.isPresent()) {
+
+            Optional<com.podcastcatalog.model.podcastcatalog.PodCast> podCastInMemory = PodCastCatalogService.getInstance().getPodCastById(id);
+
+            if(podCastInMemory.isPresent()){
+                    com.podcastcatalog.model.podcastcatalog.PodCast withAllEpisodes =
+                    com.podcastcatalog.model.podcastcatalog.PodCast.createWithAllEpisodes(podCastInMemory.get());
+
+                    return Response.status(Response.Status.OK).entity(withAllEpisodes).build();
+            }
+
             return Response.status(Response.Status.BAD_REQUEST).entity("No podcast with id= " + id + " exist in Itunes ").build();
         }
 
