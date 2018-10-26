@@ -24,7 +24,7 @@
     String language = request.getParameter("actionBuildPodCastCatalog");
 
     if (language != null) {
-        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.fromString(language));
+        //PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.fromString(language));
         out.println("Start building PodCastCatalog " + language + " ...<br><br>");
     }
     if(PodCastCatalogService.getInstance().isBuildingInProgress()){

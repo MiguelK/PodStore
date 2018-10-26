@@ -102,7 +102,7 @@ public class PodCastFeedParser {
             return Optional.of(podCastBuilder.build());
 
         } catch (Exception e) {
-            LOG.info("PodCast parse fail: Level 2 feed=" + feedURL + ", message=" + e.getMessage());
+           //FIXME LOG.info("PodCast parse fail: Level 2 feed=" + feedURL + ", message=" + e.getMessage());
         }
 
         return Optional.empty();

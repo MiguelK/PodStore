@@ -53,7 +53,7 @@ public class PodCastCatalogService {
         podCastEpisodeIndexUS = new TextSearchIndex<>();
         podCastCatalogBuilders = new ArrayList<>();
         podCastCatalogByLang = new HashMap<>();
-        asyncExecutor = Executors.newFixedThreadPool(THREADS);
+        asyncExecutor = Executors.newFixedThreadPool(1); //Single builder Thread memory issue
         executorService = Executors.newFixedThreadPool(5);//Important single thread!
     }
 
@@ -196,12 +196,6 @@ public class PodCastCatalogService {
         return asyncExecutor.submit(new BuildPodCastCatalogAction(podCastCatalogBuilder));
     }
 
-    public Future buildPodCastCatalogsAsync(PodCastCatalogBuilder builder) {
-
-        validateState();
-
-        return asyncExecutor.submit(new BuildPodCastCatalogAction(builder));
-    }
 
     public boolean isBuildingInProgress() {
         return buildingInProgress;

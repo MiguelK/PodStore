@@ -17,8 +17,6 @@ public class PodCastCatalogUpdater implements Job {
     @Override
     public void doWork() {
 
-        LOG.info(PodCastCatalogUpdater.class.getSimpleName() + " doWork()...");
-
 
         LOG.info("PodCastCatalogUpdater start building Catalog SE");
 
@@ -26,7 +24,9 @@ public class PodCastCatalogUpdater implements Job {
 
         try {
             //Minimize memory only one building at a time
-            future.get(10, TimeUnit.MINUTES);
+            long sleepMillis =  TimeUnit.MINUTES.toMillis(20); // 20 minuts
+            Thread.sleep(sleepMillis);
+     //       future.get(20, TimeUnit.MINUTES);
         } catch (Exception e) {
             LOG.info("Building SE Catalog took more than 10 minutes");
         }
