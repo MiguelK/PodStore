@@ -19,7 +19,7 @@ import java.util.Optional;
 public class Subscriber {
 
 
-    @GET
+ /*   @GET
     @Path("{deviceToken}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSubscriberPodCasts(@PathParam(value = "deviceToken") String deviceToken) {
@@ -35,7 +35,7 @@ public class Subscriber {
         Map<String, PodCast> podCastById = new HashMap<>();
 
         for (Subscription subscription : subscriber.getSubscriptions()) {
-            String podCastId = subscription.getContentId();
+            String podCastId = subscription.getPodCastId();
             Optional<PodCast> podCast = PodCastCatalogService.getInstance().
                     getPodCastById(podCastId);
 
@@ -56,8 +56,9 @@ public class Subscriber {
 
         return Response.status(Response.Status.OK).entity(podCastStatus).build();
     }
+*/
 
-    @POST
+   /* @POST
     @Path("{deviceToken}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response registerSubscriber(@PathParam("deviceToken") String deviceToken) {
@@ -68,7 +69,7 @@ public class Subscriber {
         }
 
         return Response.status(Response.Status.OK).build();
-    }
+    }*/
 
     @DELETE
     @Path("{deviceToken}")

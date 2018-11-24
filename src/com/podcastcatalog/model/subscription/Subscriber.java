@@ -21,6 +21,17 @@ public class Subscriber implements Serializable{
         this.deviceToken = deviceTokenTrimmed;
     }
 
+   /* public String getLatestPushedPodCastEpisodeId(Subscription s) {
+
+        for (Subscription subscription : subscriptions) {
+            if (subscription.equals(s)) {
+                return subscription.getLatestPodCastEpisodeId();
+            }
+        }
+
+        return s.getLatestPodCastEpisodeId();
+    }*/
+
     public String getDeviceToken() {
         return deviceToken;
     }

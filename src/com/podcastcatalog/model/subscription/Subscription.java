@@ -8,22 +8,26 @@ import java.util.List;
 
 public class Subscription {
 
-    private String latestPushedPodCastEpisodeId;
+    private String latestPodCastEpisodeId;
     private LocalDateTime latestPushedDateTime;
-    private String contentId;
+    private String podCastId;
 
     //All user Subscribers for this content
     private final List<Subscriber> subscribers = new ArrayList<>();
 
-    public Subscription(String contentId) {
-        if(StringUtils.isEmpty(contentId)){
-            throw  new IllegalArgumentException("contentId is mandatory");
+    public Subscription(String podCastId) {
+        if(StringUtils.isEmpty(podCastId)){
+            throw  new IllegalArgumentException("podCastId is mandatory");
         }
-        this.contentId = StringUtils.trimToNull(contentId);
+        this.podCastId = StringUtils.trimToNull(podCastId);
     }
 
-    public String getContentId() {
-        return contentId;
+    public String getLatestPodCastEpisodeId() {
+        return latestPodCastEpisodeId;
+    }
+
+    public String getPodCastId() {
+        return podCastId;
     }
 
     public List<Subscriber> getSubscribers() {
@@ -43,7 +47,7 @@ public class Subscription {
     }
 
     public boolean isNotAlreadyPushed(String id){
-        return !StringUtils.trimToEmpty(latestPushedPodCastEpisodeId).equals(StringUtils.trimToEmpty(id));
+        return !StringUtils.trimToEmpty(latestPodCastEpisodeId).equals(StringUtils.trimToEmpty(id));
     }
 
     public void setLatestPushedDateTime(LocalDateTime latestPushedDateTime) {
@@ -61,13 +65,13 @@ public class Subscription {
 
         Subscription that = (Subscription) o;
 
-        return contentId.equals(that.contentId);
+        return podCastId.equals(that.podCastId);
 
     }
 
     @Override
     public int hashCode() {
-        return contentId.hashCode();
+        return podCastId.hashCode();
     }
 
     public boolean hasNoSubscribers() {

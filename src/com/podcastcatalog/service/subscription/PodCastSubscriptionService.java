@@ -7,6 +7,7 @@ import com.podcastcatalog.model.subscription.SubscriptionData;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
@@ -29,29 +30,37 @@ public class PodCastSubscriptionService {
     }
 
     public void start() {
+
+        //FIXME
+        File file = new File("/Users/miguelkrantz/Documents/intellij-projects/FirebaseClient/pods-service.account.json");
+
+        PushMessageClient.getInstance().configure(file);
         subscriptionData = ServiceDataStorage.useDefault().loadSubscriptionData();
     }
 
-    public void subscribe(String subscriberId, String contentId, ContentIdValidator contentIdValidator) {
-
-        if (!contentIdValidator.isValidContentId(contentId)) {
-            throw new IllegalArgumentException("Invalid contentId " + contentId + " not accepted by " + contentIdValidator);
-        }
+    public void subscribe(String deviceToken, String podCastId) {
 
         writeLock.lock();
 
-        Subscriber subscriber = subscriptionData.getSubscriber(subscriberId);
-        Subscription subscription = subscriptionData.getSubscription(contentId);
+        Subscriber subscriber = subscriptionData.getSubscriber(deviceToken);
+        if (subscriber == null) {
+            subscriber = new Subscriber(deviceToken);
+            subscriptionData.registerSubscriber(subscriber);
+        }
+
+        Subscription subscription = subscriptionData.getSubscription(podCastId);
+        //Ok forts subscriber for this content
+        if (subscription == null) {
+            subscription = new Subscription(podCastId);
+            subscriptionData.addSubscription(subscription);
+        }
 
         try {
-            //Ok forts subscriber for this content
-            if (subscription == null) {
-                subscription = new Subscription(contentId);
-                subscriptionData.addSubscription(subscription);
-            }
-
             subscriber.addSubscription(subscription);
             subscription.addSubscriber(subscriber);
+
+
+            LOG.info("subscriptionData= " + subscriptionData);
         } finally {
             writeLock.unlock();
         }
@@ -60,7 +69,8 @@ public class PodCastSubscriptionService {
     public void unSubscribe(String deviceToken, String contentId) {
         writeLock.lock();
         try {
-            subscriptionData.unsubscribe(deviceToken, contentId);
+            subscriptionData.unSubscribe(deviceToken, contentId);
+            LOG.info("subscriptionData= " + subscriptionData);
         } finally {
             writeLock.unlock();
         }
@@ -104,12 +114,12 @@ public class PodCastSubscriptionService {
         }
     }
 
-    public void pushMessage(String message, String contentId) {
+    public void pushMessage(String title, String body, String deviceToken) {
         //FIXME add to queu
         //FIXME Update pushDateTime
-        Optional<Subscription> subscription = getSubscription(contentId);
-        subscription.ifPresent(subscription1 -> LOG.info("Send push message " + message + " to contentId=" + subscription1));
 
+        PushMessageClient.getInstance().pushMessageWithToken(title,
+                body, deviceToken);
     }
 
     public String getStatusAsHTLM() {

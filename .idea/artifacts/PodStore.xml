@@ -10,6 +10,12 @@
           <element id="library" level="project" name="httpclient" />
           <element id="library" level="project" name="sitemapgen4j-1.1.0" />
           <element id="library" level="project" name="gson-2.8.5" />
+          <element id="library" level="project" name="Pushraven-1.0.1" />
+          <element id="library" level="project" name="guava-jdk5-17.0" />
+          <element id="library" level="project" name="json-simple-1.1.1" />
+          <element id="library" level="project" name="google-api-client-1.23.0" />
+          <element id="library" level="project" name="google-api-client-appengine-1.23.0" />
+          <element id="library" level="project" name="google-api-client-1.23.0 (2)" />
         </element>
       </element>
     </root>

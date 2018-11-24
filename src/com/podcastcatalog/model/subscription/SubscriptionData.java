@@ -11,24 +11,22 @@ import java.util.Map;
 //Data only serializabe to disk
 public class SubscriptionData implements Serializable {
 
-    private final Map<String, Subscriber> subscriberById = new HashMap<>();
-    private final Map<String, Subscription> subscriptionByContentId = new HashMap<>();
+    private final Map<String, Subscriber> subscriberByDeviceToken = new HashMap<>();
+    private final Map<String, Subscription> subscriptionByPodCastId = new HashMap<>();
 
     public SubscriptionData() {
     }
 
-    public void unsubscribe(String subscriptionId, String contentId) {
+    public void unSubscribe(String deviceToken, String podCastId) {
+        String podCastIdTrimmed = StringUtils.trimToNull(podCastId);
 
-        String subscriptionIdTrimmed = StringUtils.trimToNull(subscriptionId);
-
-        Subscriber subscriber = subscriberById.get(subscriptionIdTrimmed);
+        Subscriber subscriber = subscriberByDeviceToken.get(podCastIdTrimmed);
 
         if (subscriber == null) {
             return;
         }
 
-        String contentIdTrimmed = StringUtils.trimToNull(contentId);
-        Subscription subscription = subscriptionByContentId.get(contentIdTrimmed);
+        Subscription subscription = subscriptionByPodCastId.get(podCastIdTrimmed);
 
         if (subscription == null) {
             return;
@@ -38,43 +36,37 @@ public class SubscriptionData implements Serializable {
         subscriber.removeSubscription(subscription);
 
         if (subscription.hasNoSubscribers()) {
-            subscriptionByContentId.remove(contentIdTrimmed);
+            subscriptionByPodCastId.remove(podCastIdTrimmed);
         }
     }
 
     public void deleteSubscriber(String deviceToken) {
 
-        subscriberById.remove(StringUtils.trimToEmpty(deviceToken));
+        subscriberByDeviceToken.remove(StringUtils.trimToEmpty(deviceToken));
     }
 
-    public Subscriber getSubscriber(String id) {
-
-        Subscriber subscriber = subscriberById.get(StringUtils.trimToEmpty(id));
-        if (subscriber == null) {
-            throw new IllegalArgumentException("No Subscriber with id " + id + " exists");
-        }
-
-        return subscriber;
+    public Subscriber getSubscriber(String deviceToken) {
+        return subscriberByDeviceToken.get(StringUtils.trimToEmpty(deviceToken));
     }
 
     public void registerSubscriber(Subscriber subscriber) {
-        subscriberById.put(subscriber.getDeviceToken(), subscriber);
+        subscriberByDeviceToken.put(subscriber.getDeviceToken(), subscriber);
     }
 
-    public Subscription getSubscription(String contentId) {
-        return subscriptionByContentId.get(StringUtils.trimToEmpty(contentId));
+    public Subscription getSubscription(String podCastId) {
+        return subscriptionByPodCastId.get(StringUtils.trimToEmpty(podCastId));
     }
 
     public void addSubscription(Subscription subscription) {
-        subscriptionByContentId.put(subscription.getContentId(), subscription);
+        subscriptionByPodCastId.put(subscription.getPodCastId(), subscription);
     }
 
     public List<Subscriber> getSubscribers() {
-        return new ArrayList<>(subscriberById.values());
+        return new ArrayList<>(subscriberByDeviceToken.values());
     }
 
     public List<Subscription> getSubscriptions() {
-        return new ArrayList<>(subscriptionByContentId.values());
+        return new ArrayList<>(subscriptionByPodCastId.values());
     }
 
     @Override
@@ -84,14 +76,22 @@ public class SubscriptionData implements Serializable {
 
         SubscriptionData that = (SubscriptionData) o;
 
-        if (!subscriberById.equals(that.subscriberById)) return false;
-        return subscriptionByContentId.equals(that.subscriptionByContentId);
+        if (!subscriberByDeviceToken.equals(that.subscriberByDeviceToken)) return false;
+        return subscriptionByPodCastId.equals(that.subscriptionByPodCastId);
     }
 
     @Override
     public int hashCode() {
-        int result = subscriberById.hashCode();
-        result = 31 * result + subscriptionByContentId.hashCode();
+        int result = subscriberByDeviceToken.hashCode();
+        result = 31 * result + subscriptionByPodCastId.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "SubscriptionData{" +
+                "subscriberByDeviceToken=" + subscriberByDeviceToken +
+                ", subscriptionByPodCastId=" + subscriptionByPodCastId +
+                '}';
     }
 }

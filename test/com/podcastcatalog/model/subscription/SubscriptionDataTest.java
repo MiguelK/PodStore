@@ -40,7 +40,7 @@ public class SubscriptionDataTest {
         Assert.assertEquals(a,b);
     }
 
-    @Test
+   /* @Test
     public void equal_SubscriptionData_same_subscriber() {
         SubscriptionData a = new SubscriptionData();
         a.addSubscription(new Subscription("123"));
@@ -58,5 +58,5 @@ public class SubscriptionDataTest {
         b.addSubscription(new Subscription("333"));
 
         Assert.assertEquals(a,b);
-    }
+    }*/
 }

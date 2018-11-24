@@ -1,5 +1,6 @@
 package com.podcastcatalog.service.job;
 
+import com.podcastcatalog.model.subscription.Subscriber;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
@@ -18,29 +19,50 @@ public class SubscriptionNotifierJob implements Job {
     static final String PUSH_PAYLOAD_NEW_LINE = "\\r\\n";
 
     public void doWork() {
-        List<Subscription> subscriptions = getSubscriptions();
+        List<Subscription> subscriptions = PodCastSubscriptionService.getInstance().getSubscriptions();
 
         if (!subscriptions.isEmpty()) {
-            LOG.info(getClass().getSimpleName() + " looking for PodCastEpisode updates. subscriptions=" + subscriptions.size());
+            LOG.info(getClass().getSimpleName() +
+                    " looking for PodCastEpisode updates. subscriptions=" + subscriptions.size());
         }
 
+        //Loop all PodCasts that anyone subscribes to
         for (Subscription subscription : subscriptions) {
-            PodCast podCast = getPodCast(subscription.getContentId());
+            PodCast podCast = getPodCast(subscription.getPodCastId());
 
             if (podCast == null) {
-                LOG.warning("podCast is null for contentId=" + subscription.getContentId());
+                LOG.warning("podCast is null for contentId=" + subscription.getPodCastId());
                 continue;
             }
 
             Optional<PodCastEpisode> latestPodCastEpisode = getLatestPodCastEpisodeFromSourceServer(podCast);
 
             if (!latestPodCastEpisode.isPresent()) {
-                LOG.warning("latestRemotePodCast is null for contentId=" + subscription.getContentId());
+                LOG.warning("latestRemotePodCast is null for contentId=" + subscription.getPodCastId());
                 continue;
             }
 
+            //Can subscribe to pods not in-memory Chines, German etc
             PodCastEpisode latestRemote = latestPodCastEpisode.get();
-            PodCastEpisode latestInMemory = podCast.getLatestPodCastEpisode();
+            String latestPodCastEpisodeId = subscription.getLatestPodCastEpisodeId();
+
+       //FIXME test     if ( !latestRemote.equals(latestPodCastEpisodeId) ) {
+            LOG.info("PUSH message to ..." + subscription.getSubscribers().size() + " subscribers" );
+
+                for (Subscriber subscriber : subscription.getSubscribers()) {
+                    LOG.info("PUSH to this subscriber?");
+                        String title = podCast.getTitle();
+                      PodCastSubscriptionService.getInstance().pushMessage(title, "Server body", subscriber.getDeviceToken());
+                }
+            //}
+
+            //Get all subscribers for this PodCast
+
+
+
+            //latestRemote.getId()
+
+            /*PodCastEpisode latestInMemory = podCast.getLatestPodCastEpisode();
 
             if (latestRemote.getCreatedDate().isAfter(latestInMemory.getCreatedDate())) {
                 //Ok, later episode than in-memoru catalog version exist...
@@ -48,19 +70,12 @@ public class SubscriptionNotifierJob implements Job {
 
                 if (!remoteLatestId.equals(latestInMemory.getId()) && subscription.isNotAlreadyPushed(remoteLatestId)) {
                     //push message and update subscriptionPushDate //FIXME format message. lang?
-                    pushMessage(podCast.getTitle() + PUSH_PAYLOAD_NEW_LINE + " Nytt avsnitt: " + latestRemote.getTitle(), subscription.getContentId());
+                    pushMessage(podCast.getTitle() + PUSH_PAYLOAD_NEW_LINE + " Nytt avsnitt: " + latestRemote.getTitle(), subscription.getPodCastId());
                 }
-            }
+            }*/
         }
     }
 
-    void pushMessage(String message, String contentId) {
-        PodCastSubscriptionService.getInstance().pushMessage(message, contentId);
-    }
-
-    List<Subscription> getSubscriptions() {
-        return PodCastSubscriptionService.getInstance().getSubscriptions();
-    }
 
     PodCast getPodCast(String podCastId) {
 

@@ -8,8 +8,10 @@ import com.podcastcatalog.service.job.CreateLinkPages;
 import com.podcastcatalog.service.job.JobManagerService;
 import com.podcastcatalog.service.job.MemoryDumperJob;
 import com.podcastcatalog.service.job.PodCastCatalogUpdater;
+import com.podcastcatalog.service.job.SubscriptionNotifierJob;
 import com.podcastcatalog.service.job.UpdateSearchSuggestionsJob;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
+import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
 import com.podcastcatalog.util.ServerInfo;
 
 import javax.servlet.ServletConfig;
@@ -42,9 +44,11 @@ public class StartupServlet extends HttpServlet {
 
         LOG.info("Starting PodCastCatalog..., working dir= " + serviceDataStorageDisk.getPodDataHomeDir().getAbsolutePath());
 
+        PodCastSubscriptionService.getInstance().start();
+
         //OPENSHIFT_APP_DNS //FIXME SE or US
-        // JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 10, TimeUnit.SECONDS); //FIXME
-        JobManagerService.getInstance().registerJob(new CreateLinkPages(),20,20, TimeUnit.SECONDS);
+        JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 30, TimeUnit.SECONDS); //FIXME
+      //  JobManagerService.getInstance().registerJob(new CreateLinkPages(),20,20, TimeUnit.SECONDS);
            //FIXME Memory problem max maxFeedCount == 400? ALL
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 12, TimeUnit.HOURS); //FIXME
         //JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 120, TimeUnit.MINUTES); //FIXME change time, remove
@@ -99,7 +103,7 @@ public class StartupServlet extends HttpServlet {
 
         JobManagerService.getInstance().startAsync();
 
-      //  PodCastSubscriptionService.getInstance().start();
+
     }
 
     private void loadPodCastCatalog(PodCastCatalogLanguage language) {

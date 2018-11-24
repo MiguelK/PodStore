@@ -1,6 +1,7 @@
 package com.podcastcatalog.api;
 
 import com.podcastcatalog.model.podcastcatalog.PodCast;
+import com.podcastcatalog.service.job.SubscriptionNotifierJob;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
 
@@ -8,40 +9,37 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 //FIXME Remove, not used. version 1?
 @Path("/podCastSubscription")
 public class PodCastSubscription {
 
+    private final static Logger LOG = Logger.getLogger(PodCastSubscription.class.getName());
+
     @POST
-    @Path("{deviceToken}/{contentId}")
+    @Path("{deviceToken}/{podCastId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response subscribe(@PathParam("deviceToken") String deviceToken,
-                              @PathParam("contentId") String contentId) {
+                              @PathParam("podCastId") String podCastId) {
 
-        try {
-            PodCastSubscriptionService.getInstance().subscribe(deviceToken, contentId, contentId1 -> {
-                Optional<PodCast> podCast = PodCastCatalogService.getInstance().getPodCastById(contentId);
-                return podCast.isPresent();
-            });
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Failed to subscribe " + e.getMessage()).build();
-        }
+        LOG.info("subscribe= " + deviceToken + ", podCastId=" + podCastId);
+
+        PodCastSubscriptionService.getInstance().subscribe(deviceToken, podCastId);
 
         return Response.status(Response.Status.OK).build();
     }
 
     @DELETE
-    @Path("{deviceToken}/{contentId}")
+    @Path("{deviceToken}/{podCastId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response unSubscribe(@PathParam("deviceToken") String deviceToken,
-                                @PathParam("contentId") String contentId) {
+                                @PathParam("podCastId") String podCastId) {
 
-        try {
-            PodCastSubscriptionService.getInstance().unSubscribe(deviceToken, contentId);
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Failed to unSubscribe " + e.getMessage()).build();
-        }
+
+        LOG.info("unSubscribe= " + deviceToken + ", podCastId=" + podCastId);
+
+        PodCastSubscriptionService.getInstance().unSubscribe(deviceToken, podCastId);
 
         return Response.status(Response.Status.OK).build();
     }
