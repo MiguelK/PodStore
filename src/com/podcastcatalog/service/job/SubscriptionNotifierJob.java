@@ -8,6 +8,7 @@ import com.podcastcatalog.modelbuilder.collector.PodCastFeedParser;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
 import com.podcastcatalog.model.subscription.Subscription;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,8 @@ public class SubscriptionNotifierJob implements Job {
     private final static Logger LOG = Logger.getLogger(SubscriptionNotifierJob.class.getName());
     static final String PUSH_PAYLOAD_NEW_LINE = "\\r\\n";
 
+    private final boolean testMode = true;
+
     public void doWork() {
         List<Subscription> subscriptions = PodCastSubscriptionService.getInstance().getSubscriptions();
 
@@ -27,6 +30,7 @@ public class SubscriptionNotifierJob implements Job {
         }
 
         //Loop all PodCasts that anyone subscribes to
+        boolean isDirty = false;
         for (Subscription subscription : subscriptions) {
             PodCast podCast = getPodCast(subscription.getPodCastId());
 
@@ -46,16 +50,38 @@ public class SubscriptionNotifierJob implements Job {
             PodCastEpisode latestRemote = latestPodCastEpisode.get();
             String latestPodCastEpisodeId = subscription.getLatestPodCastEpisodeId();
 
-       //FIXME test     if ( !latestRemote.equals(latestPodCastEpisodeId) ) {
-            LOG.info("PUSH message to ..." + subscription.getSubscribers().size() + " subscribers" );
+            if (latestPodCastEpisodeId == null) {
+                subscription.setLatestPodCastEpisodeId(latestRemote.getId());
+                isDirty = true;
+            }
 
-                for (Subscriber subscriber : subscription.getSubscribers()) {
-                    LOG.info("PUSH to this subscriber " + podCast.getTitle() + ", episode=" + latestRemote.getTitle());
-                      String title = latestRemote.getTitle();
-                      PodCastSubscriptionService.getInstance().
-                              pushMessage(title, podCast.getTitle(),latestRemote.getPodCastCollectionId(),
-                                      latestRemote.getId(),  subscriber.getDeviceToken());
+            if (testMode) {
+                LOG.info("PUSH message to ..." + subscription.getSubscribers().size() + " subscribers");
+                sendPushMessage(subscription.getSubscribers(), podCast, latestRemote);
+            } else {
+                if (latestPodCastEpisodeId != null &&
+                        !latestRemote.getId().equals(latestPodCastEpisodeId)) {
+                    LOG.info("Prod PUSH message to ..." + subscription.getSubscribers().size() + " subscribers");
+                    sendPushMessage(subscription.getSubscribers(), podCast, latestRemote);
                 }
+            }
+        }
+
+        if(isDirty) {
+            LOG.info("Saving and uploading to one.com");
+            PodCastSubscriptionService.getInstance().uploadToOneCom();
+        }
+
+
+    }
+
+    private void sendPushMessage(List<Subscriber> subscribers, PodCast podCast, PodCastEpisode latestRemote) {
+        for (Subscriber subscriber : subscribers) {
+              LOG.info("PUSH to this subscriber " + podCast.getTitle() + ", episode=" + latestRemote.getTitle());
+              String title = latestRemote.getTitle();
+              PodCastSubscriptionService.getInstance().
+                      pushMessage(title, podCast.getTitle(),latestRemote.getPodCastCollectionId(),
+                              latestRemote.getId(),  subscriber.getDeviceToken());
         }
     }
 

@@ -39,13 +39,14 @@ public class PodCastSubscriptionService {
             LOG.info("Account file= " + accountConfFile.getAbsolutePath());
             PushMessageClient.getInstance().configure(accountConfFile);
 
-       /* File file = new File("/pods-service.account.json");
-        LOG.info("Account file= " + file.getAbsolutePath());
-        if (!file.exists()) {
-            LOG.warning("Unable to fine config file for push " + file.getAbsolutePath());
-        }*/
-
         subscriptionData = ServiceDataStorage.useDefault().loadSubscriptionData();
+    }
+
+    public void uploadToOneCom() {
+        //FtpFileUploader
+        //1 subscriptionData -> JSON file
+        //2 ftp upload json file to one.com
+
     }
 
     public void subscribe(String deviceToken, String podCastId) {
