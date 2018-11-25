@@ -7,6 +7,7 @@ import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -32,12 +33,18 @@ public class PodCastSubscriptionService {
         return INSTANCE;
     }
 
-    public void start() {
+    public void start(File accountConfFile) {
 
         //FIXME
-        File file = new File("/Users/miguelkrantz/Documents/intellij-projects/FirebaseClient/pods-service.account.json");
+            LOG.info("Account file= " + accountConfFile.getAbsolutePath());
+            PushMessageClient.getInstance().configure(accountConfFile);
 
-        PushMessageClient.getInstance().configure(file);
+       /* File file = new File("/pods-service.account.json");
+        LOG.info("Account file= " + file.getAbsolutePath());
+        if (!file.exists()) {
+            LOG.warning("Unable to fine config file for push " + file.getAbsolutePath());
+        }*/
+
         subscriptionData = ServiceDataStorage.useDefault().loadSubscriptionData();
     }
 
@@ -97,16 +104,10 @@ public class PodCastSubscriptionService {
     }
 
     public void pushMessage(String title, String body, String pid, String eid, String deviceToken) {
-        //FIXME add to queu
-        //FIXME Update pushDateTime
-
-        threadPool.submit(new Runnable() {
-            @Override
-            public void run() {
-                //Nytt avsnitt från
-                PushMessageClient.getInstance().pushMessageWithToken(title,
-                        body, pid, eid, deviceToken);
-            }
+        threadPool.submit(() -> {
+            //Nytt avsnitt från
+            PushMessageClient.getInstance().pushMessageWithToken(title,
+                    body, pid, eid, deviceToken);
         });
     }
 }

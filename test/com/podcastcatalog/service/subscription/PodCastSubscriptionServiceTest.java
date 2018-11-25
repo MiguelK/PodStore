@@ -16,7 +16,7 @@ public class PodCastSubscriptionServiceTest {
 
     @BeforeMethod(alwaysRun = true)
     public void setUp() {
-        PodCastSubscriptionService.getInstance().start();
+        //PodCastSubscriptionService.getInstance().start();
       //  PodCastSubscriptionService.getInstance().registerSubscriber(VALID_SUBSCRIBER);
     }
 

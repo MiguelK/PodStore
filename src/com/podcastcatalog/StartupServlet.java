@@ -19,7 +19,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -32,6 +34,17 @@ public class StartupServlet extends HttpServlet {
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
+
+        try {
+            String accountFile = servletConfig.getServletContext().getResource("/WEB-INF/pods-service.account.json").getFile();
+            File file = new File(accountFile);
+            PodCastSubscriptionService.getInstance().start(file);
+
+
+            LOG.info("PATH==== " + file);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         //Important for FeedParser, could cause 403 otherwise.
         System.setProperty("http.agent", "Chrome");
 
@@ -44,7 +57,6 @@ public class StartupServlet extends HttpServlet {
 
         LOG.info("Starting PodCastCatalog..., working dir= " + serviceDataStorageDisk.getPodDataHomeDir().getAbsolutePath());
 
-        PodCastSubscriptionService.getInstance().start();
 
         //OPENSHIFT_APP_DNS //FIXME SE or US
         JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 30, TimeUnit.SECONDS); //FIXME
