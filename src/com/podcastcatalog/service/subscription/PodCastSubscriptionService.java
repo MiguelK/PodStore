@@ -1,6 +1,5 @@
 package com.podcastcatalog.service.subscription;
 
-import com.podcastcatalog.model.subscription.ContentIdValidator;
 import com.podcastcatalog.model.subscription.Subscriber;
 import com.podcastcatalog.model.subscription.Subscription;
 import com.podcastcatalog.model.subscription.SubscriptionData;
@@ -10,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
@@ -24,6 +25,8 @@ public class PodCastSubscriptionService {
     private final static Logger LOG = Logger.getLogger(PodCastSubscriptionService.class.getName());
 
     private SubscriptionData subscriptionData = new SubscriptionData();
+
+    private final ExecutorService threadPool =  Executors.newFixedThreadPool(1);
 
     public static PodCastSubscriptionService getInstance() {
         return INSTANCE;
@@ -59,18 +62,17 @@ public class PodCastSubscriptionService {
             subscriber.addSubscription(subscription);
             subscription.addSubscriber(subscriber);
 
-
-            LOG.info("subscriptionData= " + subscriptionData);
+            LOG.info("subscribe= " + subscriptionData);
         } finally {
             writeLock.unlock();
         }
     }
 
-    public void unSubscribe(String deviceToken, String contentId) {
+    public void unSubscribe(String deviceToken, String podCastId) {
         writeLock.lock();
         try {
-            subscriptionData.unSubscribe(deviceToken, contentId);
-            LOG.info("subscriptionData= " + subscriptionData);
+            subscriptionData.unSubscribe(deviceToken, podCastId);
+            LOG.info("unSubscribe= " + subscriptionData);
         } finally {
             writeLock.unlock();
         }
@@ -94,56 +96,17 @@ public class PodCastSubscriptionService {
         }
     }
 
-
-    public Subscriber getSubscriber(String deviceToken) {
-        readLock.lock();
-        try {
-            return subscriptionData.getSubscriber(StringUtils.trimToEmpty(deviceToken));
-        } finally {
-            readLock.unlock();
-        }
-    }
-
-    public void registerSubscriber(String deviceToken) {
-        Subscriber subscriber = new Subscriber(deviceToken);
-        writeLock.lock();
-        try {
-            subscriptionData.registerSubscriber(subscriber);
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-    public void pushMessage(String title, String body, String deviceToken) {
+    public void pushMessage(String title, String body, String pid, String eid, String deviceToken) {
         //FIXME add to queu
         //FIXME Update pushDateTime
 
-        PushMessageClient.getInstance().pushMessageWithToken(title,
-                body, deviceToken);
-    }
-
-    public String getStatusAsHTLM() {
-
-        StringBuilder html = new StringBuilder("<table>");
-        html.append("<tr><td>Subscribers</td><td>").append(subscriptionData.getSubscribers().size()).append("</td></tr>");
-        html.append("<tr><td>Subscriptions</td><td>").append(subscriptionData.getSubscriptions().size()).append("</td></tr>");
-        for (Subscriber subscriber : subscriptionData.getSubscribers()) {
-            html.append("<tr><td>").append(subscriber.getDeviceToken())
-                    .append("</td>").append("<td>").append(subscriber.getSubscriptions().size())
-                    .append("</td>").append("</tr>");
-        }
-
-        html.append("</table>");
-
-        return html.toString();
-    }
-
-    private Optional<Subscription> getSubscription(String contentId) {
-        readLock.lock();
-        try {
-            return Optional.ofNullable(subscriptionData.getSubscription(StringUtils.trimToEmpty(contentId)));
-        } finally {
-            readLock.unlock();
-        }
+        threadPool.submit(new Runnable() {
+            @Override
+            public void run() {
+                //Nytt avsnitt från
+                PushMessageClient.getInstance().pushMessageWithToken(title,
+                        body, pid, eid, deviceToken);
+            }
+        });
     }
 }

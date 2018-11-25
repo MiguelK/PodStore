@@ -9,7 +9,6 @@ import java.util.List;
 public class Subscription {
 
     private String latestPodCastEpisodeId;
-    private LocalDateTime latestPushedDateTime;
     private String podCastId;
 
     //All user Subscribers for this content
@@ -26,6 +25,10 @@ public class Subscription {
         return latestPodCastEpisodeId;
     }
 
+    public void setLatestPodCastEpisodeId(String latestPodCastEpisodeId) {
+        this.latestPodCastEpisodeId = latestPodCastEpisodeId;
+    }
+
     public String getPodCastId() {
         return podCastId;
     }
@@ -37,26 +40,11 @@ public class Subscription {
     public void addSubscriber(Subscriber subscriber) {
         subscribers.add(subscriber);
     }
+
     public void removeSubscriber(Subscriber subscriber) {
         subscribers.remove(subscriber);
     }
 
-    public LocalDateTime getLatestPushedDateTime() {
-        //FIXME
-        return latestPushedDateTime;
-    }
-
-    public boolean isNotAlreadyPushed(String id){
-        return !StringUtils.trimToEmpty(latestPodCastEpisodeId).equals(StringUtils.trimToEmpty(id));
-    }
-
-    public void setLatestPushedDateTime(LocalDateTime latestPushedDateTime) {
-        this.latestPushedDateTime = latestPushedDateTime;
-    }
-
-    public boolean hasSentPushMessage(){
-        return  latestPushedDateTime!=null;
-    }
 
     @Override
     public boolean equals(Object o) {

@@ -34,7 +34,7 @@ public class PushMessageClient {
         Pushraven.setProjectId("pods-20bd0");
     }
 
-    void pushMessageWithToken(String title, String body, String token) {
+    void pushMessageWithToken(String title, String body, String pid, String eid, String token) {
 
         try {
 
@@ -50,7 +50,8 @@ public class PushMessageClient {
         aps.addAttributeMap("aps", values);
 
         Payload  alertPayload = new Payload();
-        alertPayload.addAttribute("articleId", "test1234");
+        alertPayload.addAttribute("pid", pid);
+        alertPayload.addAttribute("eid", eid);
         aps.addAttributePayload("aps", alertPayload);
 
         apnsConfig.payload(aps);

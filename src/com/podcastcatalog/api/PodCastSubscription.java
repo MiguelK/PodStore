@@ -1,17 +1,16 @@
 package com.podcastcatalog.api;
 
-import com.podcastcatalog.model.podcastcatalog.PodCast;
-import com.podcastcatalog.service.job.SubscriptionNotifierJob;
-import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
 
-import javax.ws.rs.*;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Optional;
 import java.util.logging.Logger;
 
-//FIXME Remove, not used. version 1?
 @Path("/podCastSubscription")
 public class PodCastSubscription {
 
@@ -36,17 +35,10 @@ public class PodCastSubscription {
     public Response unSubscribe(@PathParam("deviceToken") String deviceToken,
                                 @PathParam("podCastId") String podCastId) {
 
-
         LOG.info("unSubscribe= " + deviceToken + ", podCastId=" + podCastId);
 
         PodCastSubscriptionService.getInstance().unSubscribe(deviceToken, podCastId);
 
         return Response.status(Response.Status.OK).build();
-    }
-
-    @GET
-    @Produces(MediaType.TEXT_HTML)
-    public Response getStatus() {
-        return Response.status(Response.Status.OK).entity(PodCastSubscriptionService.getInstance().getStatusAsHTLM()).build();
     }
 }

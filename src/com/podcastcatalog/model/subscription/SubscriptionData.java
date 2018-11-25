@@ -18,15 +18,14 @@ public class SubscriptionData implements Serializable {
     }
 
     public void unSubscribe(String deviceToken, String podCastId) {
-        String podCastIdTrimmed = StringUtils.trimToNull(podCastId);
 
-        Subscriber subscriber = subscriberByDeviceToken.get(podCastIdTrimmed);
+        Subscriber subscriber = subscriberByDeviceToken.get(deviceToken);
 
         if (subscriber == null) {
             return;
         }
 
-        Subscription subscription = subscriptionByPodCastId.get(podCastIdTrimmed);
+        Subscription subscription = subscriptionByPodCastId.get( podCastId);
 
         if (subscription == null) {
             return;
@@ -36,12 +35,15 @@ public class SubscriptionData implements Serializable {
         subscriber.removeSubscription(subscription);
 
         if (subscription.hasNoSubscribers()) {
-            subscriptionByPodCastId.remove(podCastIdTrimmed);
+            subscriptionByPodCastId.remove(podCastId);
+        }
+
+        if (subscriber.getSubscriptions().isEmpty()) {
+            subscriberByDeviceToken.remove(deviceToken);
         }
     }
 
     public void deleteSubscriber(String deviceToken) {
-
         subscriberByDeviceToken.remove(StringUtils.trimToEmpty(deviceToken));
     }
 
@@ -59,10 +61,6 @@ public class SubscriptionData implements Serializable {
 
     public void addSubscription(Subscription subscription) {
         subscriptionByPodCastId.put(subscription.getPodCastId(), subscription);
-    }
-
-    public List<Subscriber> getSubscribers() {
-        return new ArrayList<>(subscriberByDeviceToken.values());
     }
 
     public List<Subscription> getSubscriptions() {

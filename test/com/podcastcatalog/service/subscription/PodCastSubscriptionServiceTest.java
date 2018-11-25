@@ -17,7 +17,7 @@ public class PodCastSubscriptionServiceTest {
     @BeforeMethod(alwaysRun = true)
     public void setUp() {
         PodCastSubscriptionService.getInstance().start();
-        PodCastSubscriptionService.getInstance().registerSubscriber(VALID_SUBSCRIBER);
+      //  PodCastSubscriptionService.getInstance().registerSubscriber(VALID_SUBSCRIBER);
     }
 
     @AfterMethod
@@ -25,33 +25,9 @@ public class PodCastSubscriptionServiceTest {
         PodCastSubscriptionService.getInstance().deleteSubscriber(VALID_SUBSCRIBER);
     }
 
-    @Test
-    public void deleteSubscriber_success() {
-        String deviceToken = "123dsdsd";
-        PodCastSubscriptionService.getInstance().registerSubscriber(deviceToken);
-        Assert.assertNotNull(PodCastSubscriptionService.getInstance().getSubscriber(deviceToken));
 
-        PodCastSubscriptionService.getInstance().deleteSubscriber(deviceToken);
-    }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void deleteSubscriber_removed() {
-        String deviceToken = "123dsdsd";
-        PodCastSubscriptionService.getInstance().registerSubscriber(deviceToken);
-        Assert.assertNotNull(PodCastSubscriptionService.getInstance().getSubscriber(deviceToken));
-
-        PodCastSubscriptionService.getInstance().deleteSubscriber(deviceToken);
-
-        Assert.assertNotNull(PodCastSubscriptionService.getInstance().getSubscriber(deviceToken));
-    }
-
-    @Test
-    public void getSubscriber_success() {
-        PodCastSubscriptionService.getInstance().registerSubscriber("123");
-        Assert.assertNotNull(PodCastSubscriptionService.getInstance().getSubscriber(" 123 "));
-    }
-
-    @Test(groups = TestUtil.SLOW_TEST)
+    /*@Test(groups = TestUtil.SLOW_TEST)
     public void subscribe_success() {
         String deviceToken = "123";
         PodCastSubscriptionService.getInstance().registerSubscriber(deviceToken);
@@ -65,9 +41,9 @@ public class PodCastSubscriptionServiceTest {
         Assert.assertEquals(subscription.getPodCastId(), "999");
 
         PodCastSubscriptionService.getInstance().unSubscribe("123", "99");
-    }
+    }*/
 
-    @Test(groups = TestUtil.SLOW_TEST)
+    /*@Test(groups = TestUtil.SLOW_TEST)
     public void subscribe_unsubscribe() {
         String deviceToken = "123";
         PodCastSubscriptionService.getInstance().registerSubscriber(deviceToken);
@@ -91,5 +67,5 @@ public class PodCastSubscriptionServiceTest {
         Document parse = Jsoup.parse(html);
 
         Assert.assertNotNull(parse);
-    }
+    }*/
 }

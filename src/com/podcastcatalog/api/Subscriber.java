@@ -99,9 +99,9 @@ public class Subscriber {
         return Response.status(Response.Status.OK).entity(subscriber).build();
     }*/
 
-    @GET
+   /* @GET
     @Produces(MediaType.TEXT_HTML)
     public Response getStatus() {
         return Response.status(Response.Status.OK).entity(PodCastSubscriptionService.getInstance().getStatusAsHTLM()).build();
-    }
+    }*/
 }

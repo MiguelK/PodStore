@@ -50,34 +50,17 @@ public class SubscriptionNotifierJob implements Job {
             LOG.info("PUSH message to ..." + subscription.getSubscribers().size() + " subscribers" );
 
                 for (Subscriber subscriber : subscription.getSubscribers()) {
-                    LOG.info("PUSH to this subscriber?");
-                        String title = podCast.getTitle();
-                      PodCastSubscriptionService.getInstance().pushMessage(title, "Server body", subscriber.getDeviceToken());
+                    LOG.info("PUSH to this subscriber " + podCast.getTitle() + ", episode=" + latestRemote.getTitle());
+                      String title = latestRemote.getTitle();
+                      PodCastSubscriptionService.getInstance().
+                              pushMessage(title, podCast.getTitle(),latestRemote.getPodCastCollectionId(),
+                                      latestRemote.getId(),  subscriber.getDeviceToken());
                 }
-            //}
-
-            //Get all subscribers for this PodCast
-
-
-
-            //latestRemote.getId()
-
-            /*PodCastEpisode latestInMemory = podCast.getLatestPodCastEpisode();
-
-            if (latestRemote.getCreatedDate().isAfter(latestInMemory.getCreatedDate())) {
-                //Ok, later episode than in-memoru catalog version exist...
-                String remoteLatestId = latestRemote.getId();
-
-                if (!remoteLatestId.equals(latestInMemory.getId()) && subscription.isNotAlreadyPushed(remoteLatestId)) {
-                    //push message and update subscriptionPushDate //FIXME format message. lang?
-                    pushMessage(podCast.getTitle() + PUSH_PAYLOAD_NEW_LINE + " Nytt avsnitt: " + latestRemote.getTitle(), subscription.getPodCastId());
-                }
-            }*/
         }
     }
 
 
-    PodCast getPodCast(String podCastId) {
+    private PodCast getPodCast(String podCastId) {
 
         Optional<PodCast> castById = PodCastCatalogService.getInstance().getPodCastById(podCastId);
         if (castById.isPresent()) {
