@@ -35,12 +35,21 @@ public class StartupServlet extends HttpServlet {
         super.init(servletConfig);
 
 
+        ServiceDataStorage serviceDataStorageDisk = ServiceDataStorage.useDefault();
+        PodCastCatalogService.getInstance().setStorage(serviceDataStorageDisk);
+
+        System.out.println("StartupServlet....isLocalDevMode = " + ServerInfo.isLocalDevMode());
+        LOG.info("About to start PodStore...");
+
         try {
+
+            File temp = new File(serviceDataStorageDisk.getPodDataHomeDir(), "temp");
+            temp.mkdirs();
+            LOG.info("Temp dir=" + temp.getAbsolutePath());
+
             String accountFile = servletConfig.getServletContext().getResource("/WEB-INF/pods-service.account.json").getFile();
             File file = new File(accountFile);
             PodCastSubscriptionService.getInstance().start(file);
-
-
             LOG.info("PATH==== " + file);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -49,11 +58,7 @@ public class StartupServlet extends HttpServlet {
         System.setProperty("http.agent", "Chrome");
 
 
-        System.out.println("StartupServlet....isLocalDevMode = " + ServerInfo.isLocalDevMode());
-        LOG.info("About to start PodStore...");
 
-        ServiceDataStorage serviceDataStorageDisk = ServiceDataStorage.useDefault();
-        PodCastCatalogService.getInstance().setStorage(serviceDataStorageDisk);
 
         LOG.info("Starting PodCastCatalog..., working dir= " + serviceDataStorageDisk.getPodDataHomeDir().getAbsolutePath());
 

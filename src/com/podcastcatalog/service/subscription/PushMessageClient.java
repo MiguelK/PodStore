@@ -13,6 +13,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by miguelkrantz on 2018-11-23.
@@ -21,8 +23,10 @@ public class PushMessageClient {
 
    private static final  PushMessageClient INSTANCE = new PushMessageClient();
 
+    private final static Logger LOG = Logger.getLogger(PushMessageClient.class.getName());
 
-   private File googleCredentialFile;
+
+    private File googleCredentialFile;
 
     public static PushMessageClient getInstance() {
         return INSTANCE;
@@ -34,11 +38,13 @@ public class PushMessageClient {
         Pushraven.setProjectId("pods-20bd0");
     }
 
-    void pushMessageWithToken(String title, String body, String pid, String eid, String token) {
+    void pushMessageWithToken(String title, String body,
+                              String description, String pid,
+                              String eid, String token) {
 
         try {
 
-        Notification not = new Notification()
+        Notification notification = new Notification()
                 .title(title)
                 .body(body);
 
@@ -52,13 +58,15 @@ public class PushMessageClient {
         Payload  alertPayload = new Payload();
         alertPayload.addAttribute("pid", pid);
         alertPayload.addAttribute("eid", eid);
+        alertPayload.addAttribute("episodeDescription", description);
         aps.addAttributePayload("aps", alertPayload);
 
         apnsConfig.payload(aps);
 
+      //  String test = "fcHTPu8jdTo:APA91bFOt8RCA3MEBe9FvbobKvzcEmNSNlsHkb7akDxZkMEoXagi-vtjEbcqySiYBx88TqAtYFIhtmiQyiPUhvnI03qN3kFKmess5Ego_B7_D-4Wi3m1f4Zl59Xc15aBxFPWnpVNTsF3";
         Message raven = new Message()
                 .name("id")
-                .notification(not)
+                .notification(notification)
                 .apns(apnsConfig)
              .token(token);
 
@@ -66,7 +74,7 @@ public class PushMessageClient {
         System.out.println("Response=" + fcmResponse);
 
         }catch (Exception e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, "Failed send push message", e);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.podcastcatalog.service.subscription;
 
+import com.google.gson.Gson;
 import com.podcastcatalog.model.subscription.Subscriber;
 import com.podcastcatalog.model.subscription.Subscription;
 import com.podcastcatalog.model.subscription.SubscriptionData;
@@ -7,6 +8,10 @@ import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +24,7 @@ import java.util.logging.Logger;
 public class PodCastSubscriptionService {
 
     private static final PodCastSubscriptionService INSTANCE = new PodCastSubscriptionService();
+    private static final String SUBSCRIPTIONS_JSON_FILE = "Subscriptions.json";
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
     private final Lock readLock = reentrantReadWriteLock.readLock();
     private final Lock writeLock = reentrantReadWriteLock.writeLock();
@@ -33,20 +39,35 @@ public class PodCastSubscriptionService {
         return INSTANCE;
     }
 
+    private final Gson GSON = new Gson();
+
     public void start(File accountConfFile) {
 
         //FIXME
-            LOG.info("Account file= " + accountConfFile.getAbsolutePath());
+            LOG.info("Starting PodCastSubscriptionService using account file= " + accountConfFile.getAbsolutePath());
             PushMessageClient.getInstance().configure(accountConfFile);
 
         subscriptionData = ServiceDataStorage.useDefault().loadSubscriptionData();
     }
 
     public void uploadToOneCom() {
-        //FtpFileUploader
-        //1 subscriptionData -> JSON file
-        //2 ftp upload json file to one.com
 
+        //1# Write to temp file... subscriptions.json
+        File file = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), SUBSCRIPTIONS_JSON_FILE);
+        saveAsJSON(file);
+
+        FtpFileUploader.getInstance().uploadToOneCom(file);
+    }
+
+    private void saveAsJSON(File target) {
+
+        try {
+            try (Writer writer = new OutputStreamWriter(new FileOutputStream(target))) {
+                GSON.toJson(subscriptionData, writer);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void subscribe(String deviceToken, String podCastId) {
@@ -104,11 +125,10 @@ public class PodCastSubscriptionService {
         }
     }
 
-    public void pushMessage(String title, String body, String pid, String eid, String deviceToken) {
+    public void pushMessage(String title, String body, String description, String pid, String eid, String deviceToken) {
         threadPool.submit(() -> {
-            //Nytt avsnitt från
             PushMessageClient.getInstance().pushMessageWithToken(title,
-                    body, pid, eid, deviceToken);
+                    body, description, pid, eid, deviceToken);
         });
     }
 }

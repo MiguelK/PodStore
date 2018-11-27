@@ -12,6 +12,7 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 public class SubscriptionNotifierJob implements Job {
@@ -22,54 +23,62 @@ public class SubscriptionNotifierJob implements Job {
     private final boolean testMode = true;
 
     public void doWork() {
-        List<Subscription> subscriptions = PodCastSubscriptionService.getInstance().getSubscriptions();
 
-        if (!subscriptions.isEmpty()) {
-            LOG.info(getClass().getSimpleName() +
-                    " looking for PodCastEpisode updates. subscriptions=" + subscriptions.size());
-        }
+        try {
+            List<Subscription> subscriptions = PodCastSubscriptionService.getInstance().getSubscriptions();
 
-        //Loop all PodCasts that anyone subscribes to
-        boolean isDirty = false;
-        for (Subscription subscription : subscriptions) {
-            PodCast podCast = getPodCast(subscription.getPodCastId());
-
-            if (podCast == null) {
-                LOG.warning("podCast is null for contentId=" + subscription.getPodCastId());
-                continue;
+            if (!subscriptions.isEmpty()) {
+                LOG.info(getClass().getSimpleName() +
+                        " looking for PodCastEpisode updates. subscriptions=" + subscriptions.size());
             }
 
-            Optional<PodCastEpisode> latestPodCastEpisode = getLatestPodCastEpisodeFromSourceServer(podCast);
+            //Loop all PodCasts that anyone subscribes to
+            boolean isDirty = false;
+            for (Subscription subscription : subscriptions) {
+                PodCast podCast = getPodCast(subscription.getPodCastId());
 
-            if (!latestPodCastEpisode.isPresent()) {
-                LOG.warning("latestRemotePodCast is null for contentId=" + subscription.getPodCastId());
-                continue;
-            }
+                if (podCast == null) {
+                    LOG.warning("podCast is null for contentId=" + subscription.getPodCastId());
+                    continue;
+                }
 
-            //Can subscribe to pods not in-memory Chines, German etc
-            PodCastEpisode latestRemote = latestPodCastEpisode.get();
-            String latestPodCastEpisodeId = subscription.getLatestPodCastEpisodeId();
+                Optional<PodCastEpisode> latestPodCastEpisode = getLatestPodCastEpisodeFromSourceServer(podCast);
 
-            if (latestPodCastEpisodeId == null) {
-                subscription.setLatestPodCastEpisodeId(latestRemote.getId());
-                isDirty = true;
-            }
+                if (!latestPodCastEpisode.isPresent()) {
+                    LOG.warning("latestRemotePodCast is null for contentId=" + subscription.getPodCastId());
+                    continue;
+                }
 
-            if (testMode) {
-                LOG.info("PUSH message to ..." + subscription.getSubscribers().size() + " subscribers");
-                sendPushMessage(subscription.getSubscribers(), podCast, latestRemote);
-            } else {
-                if (latestPodCastEpisodeId != null &&
-                        !latestRemote.getId().equals(latestPodCastEpisodeId)) {
-                    LOG.info("Prod PUSH message to ..." + subscription.getSubscribers().size() + " subscribers");
+                //Can subscribe to pods not in-memory Chines, German etc
+                PodCastEpisode latestRemote = latestPodCastEpisode.get();
+                String latestPodCastEpisodeId = subscription.getLatestPodCastEpisodeId();
+
+                if (latestPodCastEpisodeId == null) {
+                    subscription.setLatestPodCastEpisodeId(latestRemote.getId());
+                    isDirty = true;
+                }
+
+
+                if (testMode) {
+                    LOG.info("PUSH message to ..." + subscription.getSubscribers().size() + " subscribers");
+                    isDirty = true;
                     sendPushMessage(subscription.getSubscribers(), podCast, latestRemote);
+                } else {
+                    if (!subscription.getLatestPodCastEpisodeId().equals(latestRemote.getId())) {
+                        isDirty = true;
+                        LOG.info("Prod PUSH message to ..." + subscription.getSubscribers().size() + " subscribers");
+                        sendPushMessage(subscription.getSubscribers(), podCast, latestRemote);
+                    }
                 }
             }
-        }
 
-        if(isDirty) {
-            LOG.info("Saving and uploading to one.com");
-            PodCastSubscriptionService.getInstance().uploadToOneCom();
+            if (isDirty) {
+                LOG.info("Saving and uploading to one.com");
+                PodCastSubscriptionService.getInstance().uploadToOneCom();
+            }
+
+        } catch (Exception e) {
+            LOG.info("Failed push message" + e.getMessage());
         }
 
 
@@ -79,8 +88,9 @@ public class SubscriptionNotifierJob implements Job {
         for (Subscriber subscriber : subscribers) {
               LOG.info("PUSH to this subscriber " + podCast.getTitle() + ", episode=" + latestRemote.getTitle());
               String title = latestRemote.getTitle();
+              String description = latestRemote.getDescription();
               PodCastSubscriptionService.getInstance().
-                      pushMessage(title, podCast.getTitle(),latestRemote.getPodCastCollectionId(),
+                      pushMessage(title, podCast.getTitle(),latestRemote.getPodCastCollectionId(), description,
                               latestRemote.getId(),  subscriber.getDeviceToken());
         }
     }
