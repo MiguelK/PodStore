@@ -5,26 +5,34 @@ import com.podcastcatalog.model.subscription.Subscriber;
 import com.podcastcatalog.model.subscription.Subscription;
 import com.podcastcatalog.model.subscription.SubscriptionData;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class PodCastSubscriptionService {
 
     private static final PodCastSubscriptionService INSTANCE = new PodCastSubscriptionService();
-    private static final String SUBSCRIPTIONS_JSON_FILE = "Subscriptions.json";
+    private static final String SUBSCRIPTIONS_JSON_FILE = "Subscriptions.dat";
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
     private final Lock readLock = reentrantReadWriteLock.readLock();
     private final Lock writeLock = reentrantReadWriteLock.writeLock();
@@ -33,40 +41,113 @@ public class PodCastSubscriptionService {
 
     private SubscriptionData subscriptionData = new SubscriptionData();
 
-    private final ExecutorService threadPool =  Executors.newFixedThreadPool(1);
+    private final ExecutorService threadPool = Executors.newFixedThreadPool(1);
 
     public static PodCastSubscriptionService getInstance() {
         return INSTANCE;
     }
 
-    private final Gson GSON = new Gson();
+    private static final Gson GSON = new Gson();
 
     public void start(File accountConfFile) {
 
-        //FIXME
-            LOG.info("Starting PodCastSubscriptionService using account file= " + accountConfFile.getAbsolutePath());
-            PushMessageClient.getInstance().configure(accountConfFile);
+        LOG.info("Starting PodCastSubscriptionService using account file= " + accountConfFile.getAbsolutePath());
+        PushMessageClient.getInstance().configure(accountConfFile);
 
-        subscriptionData = ServiceDataStorage.useDefault().loadSubscriptionData();
+        try {
+            subscriptionData = loadSubscribers();
+        } catch (IOException e) {
+            LOG.warning("Failed to load Subscribers " + e.getMessage());
+        }
+    }
+
+    public boolean isSubscribersLoaded() {
+        return subscriptionData != null;
+    }
+
+    SubscriptionData loadSubscribers() throws IOException {
+
+        File downloadedFile = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), SUBSCRIPTIONS_JSON_FILE);
+
+        CloseableHttpClient client = HttpClients.createDefault();
+        try (CloseableHttpResponse response = client.execute(new HttpGet("http://pods.one/Subscriptions/Subscriptions.dat"))) {
+
+            if (response.getStatusLine().getStatusCode() == 404) {
+                LOG.info("No Subscriptions.dat file exist on server");
+                return new SubscriptionData();
+            }
+
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                try (FileOutputStream outstream = new FileOutputStream(downloadedFile)) {
+                    entity.writeTo(outstream);
+                }
+
+                EntityUtils.consume(entity);
+            }
+
+            ObjectInputStream in = null;
+            FileInputStream fileIn = null;
+            try {
+                try {
+                    fileIn = new FileInputStream(downloadedFile);
+                    in = new ObjectInputStream(fileIn);
+                    return ((SubscriptionData) in.readObject());
+                } catch (IOException | ClassNotFoundException e) {
+                    LOG.log(Level.INFO, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
+                }
+
+            } finally {
+                if (in != null) {
+                    IOUtils.closeQuietly(in);
+                }
+                if (fileIn != null) {
+                    IOUtils.closeQuietly(fileIn);
+                }
+            }
+        }
+
+        return null;
     }
 
     public void uploadToOneCom() {
 
         //1# Write to temp file... subscriptions.json
         File file = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), SUBSCRIPTIONS_JSON_FILE);
-        saveAsJSON(file);
-
-        FtpFileUploader.getInstance().uploadToOneCom(file);
+        try {
+            // saveAsJSON(file);
+            saveAsObject(subscriptionData, file);
+            FtpFileUploader.getInstance().uploadToOneCom(file);
+        } catch (IOException e) {
+            LOG.info("Failed push message" + e.getMessage());
+        }
     }
 
-    private void saveAsJSON(File target) {
+    private void saveAsObject(Object object, File targetFile) throws IOException {
+        FileOutputStream fileOut = null;
+        ObjectOutputStream out = null;
+        try {
+            fileOut =
+                    new FileOutputStream(targetFile);
+            out = new ObjectOutputStream(fileOut);
+            out.writeObject(object);
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            IOUtils.closeQuietly(out);
+            IOUtils.closeQuietly(fileOut);
+        }
+    }
+
+    private void saveAsJSON(File target) throws IOException {
 
         try {
-            try (Writer writer = new OutputStreamWriter(new FileOutputStream(target))) {
-                GSON.toJson(subscriptionData, writer);
-            }
+            Writer writer = new OutputStreamWriter(new FileOutputStream(target));
+            GSON.toJson(subscriptionData, writer);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw e;
+        } catch (Throwable e) {
+            throw new IOException(e);
         }
     }
 

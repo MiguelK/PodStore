@@ -24,6 +24,10 @@ public class SubscriptionNotifierJob implements Job {
 
     public void doWork() {
 
+        if(!PodCastSubscriptionService.getInstance().isSubscribersLoaded()) {
+            return;
+        }
+
         try {
             List<Subscription> subscriptions = PodCastSubscriptionService.getInstance().getSubscriptions();
 

@@ -3,6 +3,7 @@ package com.podcastcatalog.service.subscription;
 import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.subscription.Subscriber;
 import com.podcastcatalog.model.subscription.Subscription;
+import com.podcastcatalog.model.subscription.SubscriptionData;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.testng.Assert;
@@ -10,7 +11,12 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+
 public class PodCastSubscriptionServiceTest {
+    @Test
+    public void testLoadSubscribers() throws Exception {
+    }
 
     private static final String VALID_SUBSCRIBER = "123-valid-DeviceToken";
 
@@ -18,6 +24,17 @@ public class PodCastSubscriptionServiceTest {
     public void setUp() {
         //PodCastSubscriptionService.getInstance().start();
       //  PodCastSubscriptionService.getInstance().registerSubscriber(VALID_SUBSCRIBER);
+    }
+
+    @Test
+    public void loadSubscribers()  {
+
+        try {
+            SubscriptionData subscriptionData = PodCastSubscriptionService.getInstance().loadSubscribers();
+            Assert.assertNotNull(subscriptionData);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @AfterMethod

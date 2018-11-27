@@ -2,11 +2,12 @@ package com.podcastcatalog.model.subscription;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Subscription {
+public class Subscription implements Serializable {
 
     private String latestPodCastEpisodeId;
     private String podCastId;
