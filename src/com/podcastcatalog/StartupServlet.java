@@ -58,8 +58,6 @@ public class StartupServlet extends HttpServlet {
         System.setProperty("http.agent", "Chrome");
 
 
-
-
         LOG.info("Starting PodCastCatalog..., working dir= " + serviceDataStorageDisk.getPodDataHomeDir().getAbsolutePath());
 
 

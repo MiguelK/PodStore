@@ -37,7 +37,7 @@ public class SubscriberTest {
         Assert.assertEquals(subscriber.getDeviceToken(),"1234");
     }
 
-    @Test
+   /* @Test
     public void removeSubscription() {
         Subscriber subscriber = new Subscriber(" 1234 ");
         subscriber.addSubscription(new Subscription("3333"));
@@ -45,6 +45,6 @@ public class SubscriberTest {
         Assert.assertTrue(subscriber.getSubscriptions().size()==1);
         subscriber.removeSubscription(new Subscription("3333"));
         Assert.assertTrue(subscriber.getSubscriptions().isEmpty());
-    }
+    }*/
 
 }

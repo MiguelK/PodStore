@@ -11,7 +11,7 @@ public class Subscriber implements Serializable{
     private String deviceToken;
 
     //This user Subscriber's subscriptions
-    private final List<Subscription> subscriptions = new ArrayList<>();
+    //private final List<Subscription> subscriptions = new ArrayList<>();
 
     public Subscriber(String deviceToken) {
         String deviceTokenTrimmed = StringUtils.trimToNull(deviceToken);
@@ -25,7 +25,7 @@ public class Subscriber implements Serializable{
         return deviceToken;
     }
 
-    public List<Subscription> getSubscriptions() {
+   /* public List<Subscription> getSubscriptions() {
         return subscriptions;
     }
 
@@ -35,7 +35,7 @@ public class Subscriber implements Serializable{
 
     public void removeSubscription(Subscription subscription){
         subscriptions.remove(subscription);
-    }
+    }*/
 
     @Override
     public boolean equals(Object o) {

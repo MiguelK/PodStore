@@ -19,8 +19,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,8 +45,6 @@ public class PodCastSubscriptionService {
         return INSTANCE;
     }
 
-    private static final Gson GSON = new Gson();
-
     public void start(File accountConfFile) {
 
         LOG.info("Starting PodCastSubscriptionService using account file= " + accountConfFile.getAbsolutePath());
@@ -56,6 +52,9 @@ public class PodCastSubscriptionService {
 
         try {
             subscriptionData = loadSubscribers();
+            if(subscriptionData != null){
+                LOG.info("Loaded " + subscriptionData.getSubscriptions().size());
+            }
         } catch (IOException e) {
             LOG.warning("Failed to load Subscribers " + e.getMessage());
         }
@@ -66,6 +65,10 @@ public class PodCastSubscriptionService {
     }
 
     SubscriptionData loadSubscribers() throws IOException {
+
+        /*if(true) {
+            return new SubscriptionData();
+        }*/
 
         File downloadedFile = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), SUBSCRIPTIONS_JSON_FILE);
 
@@ -139,27 +142,15 @@ public class PodCastSubscriptionService {
         }
     }
 
-    private void saveAsJSON(File target) throws IOException {
-
-        try {
-            Writer writer = new OutputStreamWriter(new FileOutputStream(target));
-            GSON.toJson(subscriptionData, writer);
-        } catch (IOException e) {
-            throw e;
-        } catch (Throwable e) {
-            throw new IOException(e);
-        }
-    }
-
     public void subscribe(String deviceToken, String podCastId) {
 
         writeLock.lock();
 
-        Subscriber subscriber = subscriptionData.getSubscriber(deviceToken);
+      /*  Subscriber subscriber = subscriptionData.getSubscriber(deviceToken);
         if (subscriber == null) {
             subscriber = new Subscriber(deviceToken);
             subscriptionData.registerSubscriber(subscriber);
-        }
+        }*/
 
         Subscription subscription = subscriptionData.getSubscription(podCastId);
         //Ok forts subscriber for this content
@@ -169,8 +160,8 @@ public class PodCastSubscriptionService {
         }
 
         try {
-            subscriber.addSubscription(subscription);
-            subscription.addSubscriber(subscriber);
+           // subscriber.addSubscription(subscription);
+            subscription.addSubscriber(deviceToken);
 
             LOG.info("subscribe= " + subscriptionData);
         } finally {
@@ -191,7 +182,7 @@ public class PodCastSubscriptionService {
     public void deleteSubscriber(String deviceToken) {
         writeLock.lock();
         try {
-            subscriptionData.deleteSubscriber(deviceToken);
+          //FIXME needed?  subscriptionData.deleteSubscriber(deviceToken);
         } finally {
             writeLock.unlock();
         }

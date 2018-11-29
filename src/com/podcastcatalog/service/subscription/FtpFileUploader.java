@@ -28,7 +28,7 @@ public class FtpFileUploader {
         executorService = Executors.newSingleThreadExecutor();
     }
 
-    public void uploadToOneCom(File sourceFile) {
+    void uploadToOneCom(File sourceFile) {
         try {
             FileTask fileTask = new FileTask(sourceFile);
 
@@ -41,6 +41,7 @@ public class FtpFileUploader {
     private class FileTask implements  Runnable {
 
         private final File sourceFile;
+        static final String PATH_NAME_SERVER = "/Subscriptions/";
 
         FileTask(File sourceFile) {
             this.sourceFile = sourceFile;
@@ -69,21 +70,19 @@ public class FtpFileUploader {
 
                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
-                String pathName = "/Subscriptions/";
-                ftpClient.changeWorkingDirectory(pathName);
+                ftpClient.changeWorkingDirectory(PATH_NAME_SERVER);
 
                 String fileName = getSourceFile().getName();
                 inputStream =  new FileInputStream(getSourceFile());
 
-                LOG.info("Start uploading§ file " + fileName + " to server path=" + pathName);
+                LOG.info("Start uploading§ file " + fileName + " to server path=" + PATH_NAME_SERVER);
                 boolean done = ftpClient.storeFile(fileName, inputStream);
 
                 if (done) {
-                    LOG.info( fileName + " file uploaded successfully.");
+                    LOG.info( fileName + " file uploaded successfully. path=" + PATH_NAME_SERVER);
                 }
             } catch (Exception ex) {
-                System.out.println("Error: " + ex.getMessage());
-                ex.printStackTrace();
+                LOG.warning("Failed to upload file to server " + ex.getMessage());
             } finally {
                 try {
                     if(inputStream!=null){
@@ -94,7 +93,7 @@ public class FtpFileUploader {
                         ftpClient.disconnect();
                     }
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    LOG.info("Failed close stream " + ex.getMessage());
                 }
             }
         }

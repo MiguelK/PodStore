@@ -11,19 +11,22 @@ import java.util.Map;
 //Data only serializabe to disk
 public class SubscriptionData implements Serializable {
 
-    private final Map<String, Subscriber> subscriberByDeviceToken = new HashMap<>();
+   // private final Map<String, Subscriber> subscriberByDeviceToken = new HashMap<>();
     private final Map<String, Subscription> subscriptionByPodCastId = new HashMap<>();
+
+
+    //Subscriber ->* Subscription
 
     public SubscriptionData() {
     }
 
     public void unSubscribe(String deviceToken, String podCastId) {
 
-        Subscriber subscriber = subscriberByDeviceToken.get(deviceToken);
+        //Subscriber subscriber = new Subscriber(deviceToken); //subscriberByDeviceToken.get(deviceToken);
 
-        if (subscriber == null) {
+        /*if (subscriber == null) {
             return;
-        }
+        }*/
 
         Subscription subscription = subscriptionByPodCastId.get( podCastId);
 
@@ -31,29 +34,29 @@ public class SubscriptionData implements Serializable {
             return;
         }
 
-        subscription.removeSubscriber(subscriber);
-        subscriber.removeSubscription(subscription);
+        subscription.removeSubscriber(deviceToken);
+        //subscriber.removeSubscription(subscription);
 
         if (subscription.hasNoSubscribers()) {
             subscriptionByPodCastId.remove(podCastId);
         }
 
-        if (subscriber.getSubscriptions().isEmpty()) {
+        /*if (subscriber.getSubscriptions().isEmpty()) {
             subscriberByDeviceToken.remove(deviceToken);
-        }
+        }*/
     }
 
-    public void deleteSubscriber(String deviceToken) {
+   /* public void deleteSubscriber(String deviceToken) {
         subscriberByDeviceToken.remove(StringUtils.trimToEmpty(deviceToken));
-    }
+    }*/
 
-    public Subscriber getSubscriber(String deviceToken) {
+    /*public Subscriber getSubscriber(String deviceToken) {
         return subscriberByDeviceToken.get(StringUtils.trimToEmpty(deviceToken));
-    }
+    }*/
 
-    public void registerSubscriber(Subscriber subscriber) {
+  /*  public void registerSubscriber(Subscriber subscriber) {
         subscriberByDeviceToken.put(subscriber.getDeviceToken(), subscriber);
-    }
+    }*/
 
     public Subscription getSubscription(String podCastId) {
         return subscriptionByPodCastId.get(StringUtils.trimToEmpty(podCastId));
@@ -74,21 +77,17 @@ public class SubscriptionData implements Serializable {
 
         SubscriptionData that = (SubscriptionData) o;
 
-        if (!subscriberByDeviceToken.equals(that.subscriberByDeviceToken)) return false;
         return subscriptionByPodCastId.equals(that.subscriptionByPodCastId);
     }
 
     @Override
     public int hashCode() {
-        int result = subscriberByDeviceToken.hashCode();
-        result = 31 * result + subscriptionByPodCastId.hashCode();
-        return result;
+        return subscriptionByPodCastId.hashCode();
     }
 
     @Override
     public String toString() {
-        return "SubscriptionData{" +
-                "subscriberByDeviceToken=" + subscriberByDeviceToken +
+        return "SubscriptionData{ (" + subscriptionByPodCastId.size() + ") " +
                 ", subscriptionByPodCastId=" + subscriptionByPodCastId +
                 '}';
     }

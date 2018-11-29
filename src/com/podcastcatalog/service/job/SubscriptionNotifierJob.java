@@ -10,6 +10,7 @@ import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
 import com.podcastcatalog.model.subscription.Subscription;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
@@ -64,9 +65,10 @@ public class SubscriptionNotifierJob implements Job {
 
 
                 if (testMode) {
-                    LOG.info("PUSH message to ..." + subscription.getSubscribers().size() + " subscribers");
+                  //  LOG.info("PUSH message to ..." + subscription.getSubscribers().size() + " subscriber(s)");
                     isDirty = true;
                     sendPushMessage(subscription.getSubscribers(), podCast, latestRemote);
+                    Thread.sleep(5000);
                 } else {
                     if (!subscription.getLatestPodCastEpisodeId().equals(latestRemote.getId())) {
                         isDirty = true;
@@ -88,15 +90,28 @@ public class SubscriptionNotifierJob implements Job {
 
     }
 
-    private void sendPushMessage(List<Subscriber> subscribers, PodCast podCast, PodCastEpisode latestRemote) {
-        for (Subscriber subscriber : subscribers) {
+    private void sendPushMessage(List<String> subscribers, PodCast podCast, PodCastEpisode latestRemote) {
+
+
+        List<Subscriber> unregisteredSubscribers = new ArrayList<>();
+
+        for (String deviceToken : subscribers) {
               LOG.info("PUSH to this subscriber " + podCast.getTitle() + ", episode=" + latestRemote.getTitle());
               String title = latestRemote.getTitle();
               String description = latestRemote.getDescription();
-              PodCastSubscriptionService.getInstance().
-                      pushMessage(title, podCast.getTitle(),latestRemote.getPodCastCollectionId(), description,
-                              latestRemote.getId(),  subscriber.getDeviceToken());
+
+              try {
+                  PodCastSubscriptionService.getInstance().
+                          pushMessage(title, podCast.getTitle(),latestRemote.getPodCastCollectionId(), description,
+                                  latestRemote.getId(),  deviceToken);
+              }catch (Exception e) {
+                  e.printStackTrace();
+
+              }
+
         }
+
+
     }
 
 

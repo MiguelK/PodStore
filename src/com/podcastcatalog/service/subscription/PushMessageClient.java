@@ -12,13 +12,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by miguelkrantz on 2018-11-23.
- */
 public class PushMessageClient {
 
    private static final  PushMessageClient INSTANCE = new PushMessageClient();
@@ -26,14 +24,11 @@ public class PushMessageClient {
     private final static Logger LOG = Logger.getLogger(PushMessageClient.class.getName());
 
 
-    private File googleCredentialFile;
-
     public static PushMessageClient getInstance() {
         return INSTANCE;
     }
 
-    public void configure(File file) {
-        googleCredentialFile = file;
+    void configure(File googleCredentialFile) {
         Pushraven.setAccountFile(googleCredentialFile);
         Pushraven.setProjectId("pods-20bd0");
     }
@@ -63,7 +58,6 @@ public class PushMessageClient {
 
         apnsConfig.payload(aps);
 
-      //  String test = "fcHTPu8jdTo:APA91bFOt8RCA3MEBe9FvbobKvzcEmNSNlsHkb7akDxZkMEoXagi-vtjEbcqySiYBx88TqAtYFIhtmiQyiPUhvnI03qN3kFKmess5Ego_B7_D-4Wi3m1f4Zl59Xc15aBxFPWnpVNTsF3";
         Message raven = new Message()
                 .name("id")
                 .notification(notification)
@@ -71,10 +65,17 @@ public class PushMessageClient {
              .token(token);
 
         FcmResponse fcmResponse = Pushraven.push(raven);
-        System.out.println("Response=" + fcmResponse);
+            if(fcmResponse.getResponseCode() == 200) {
+                LOG.info("Success pushed to "+ token);
+            } else {
+                LOG.warning("Pushraven.push() return status=" + fcmResponse.getResponseCode()
+                        + ", errorMessage=" + fcmResponse.getErrorMessage() + ",token=" + token + ",title=" + title);
+
+            }
+
 
         }catch (Exception e) {
-            LOG.log(Level.SEVERE, "Failed send push message", e);
+            LOG.log(Level.SEVERE, "Failed send push message ", e);
         }
     }
 

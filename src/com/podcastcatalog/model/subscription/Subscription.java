@@ -5,7 +5,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Subscription implements Serializable {
 
@@ -13,7 +15,7 @@ public class Subscription implements Serializable {
     private String podCastId;
 
     //All user Subscribers for this content
-    private final List<Subscriber> subscribers = new ArrayList<>();
+    private final Set<String> subscribers = new HashSet<>();
 
     public Subscription(String podCastId) {
         if(StringUtils.isEmpty(podCastId)){
@@ -34,15 +36,15 @@ public class Subscription implements Serializable {
         return podCastId;
     }
 
-    public List<Subscriber> getSubscribers() {
-        return subscribers;
+    public List<String> getSubscribers() {
+        return  new ArrayList<>(subscribers);
     }
 
-    public void addSubscriber(Subscriber subscriber) {
+    public void addSubscriber(String subscriber) {
         subscribers.add(subscriber);
     }
 
-    public void removeSubscriber(Subscriber subscriber) {
+    public void removeSubscriber(String subscriber) {
         subscribers.remove(subscriber);
     }
 
