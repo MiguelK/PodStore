@@ -1,5 +1,6 @@
 package com.podcastcatalog.service.job;
 
+import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeDuration;
 import com.podcastcatalog.model.subscription.Subscriber;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
@@ -28,6 +29,8 @@ public class SubscriptionNotifierJob implements Job {
         if(!PodCastSubscriptionService.getInstance().isSubscribersLoaded()) {
             return;
         }
+
+        PodCastSubscriptionService.getInstance().recreateIfSubscriptionFileIsDeleted();
 
         try {
             List<Subscription> subscriptions = PodCastSubscriptionService.getInstance().getSubscriptions();
@@ -90,28 +93,29 @@ public class SubscriptionNotifierJob implements Job {
 
     }
 
-    private void sendPushMessage(List<String> subscribers, PodCast podCast, PodCastEpisode latestRemote) {
-
-
-        List<Subscriber> unregisteredSubscribers = new ArrayList<>();
+    private void sendPushMessage(List<String> subscribers, PodCast podCast, PodCastEpisode latestPodCastEpisode) {
 
         for (String deviceToken : subscribers) {
-              LOG.info("PUSH to this subscriber " + podCast.getTitle() + ", episode=" + latestRemote.getTitle());
-              String title = latestRemote.getTitle();
-              String description = latestRemote.getDescription();
+              LOG.info("PUSH to this subscriber " + podCast.getTitle() + ", episode=" + latestPodCastEpisode.getTitle());
+              String podCastEpisodeTitle = latestPodCastEpisode.getTitle();
+              String description = latestPodCastEpisode.getDescription();
+              String podCastEpisodeInfo = "";
 
-              try {
+            PodCastEpisodeDuration duration = latestPodCastEpisode.getDuration();
+            if(duration != null) {
+                podCastEpisodeInfo = duration.getDisplayValue();
+            }
+
+
+            try {
                   PodCastSubscriptionService.getInstance().
-                          pushMessage(title, podCast.getTitle(),latestRemote.getPodCastCollectionId(), description,
-                                  latestRemote.getId(),  deviceToken);
+                          pushMessage(podCast.getTitle(), podCastEpisodeTitle,
+                                  description, podCastEpisodeInfo, podCast.getCollectionId(),
+                                  latestPodCastEpisode.getId(),  deviceToken);
               }catch (Exception e) {
-                  e.printStackTrace();
-
+                  LOG.info("Failed sendPushMessage" + e.getMessage());
               }
-
         }
-
-
     }
 
 

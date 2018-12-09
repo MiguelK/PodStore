@@ -34,7 +34,7 @@ public class PushMessageClient {
     }
 
     void pushMessageWithToken(String title, String body,
-                              String description, String pid,
+                              String description, String podCastEpisodeInfo, String pid,
                               String eid, String token) {
 
         try {
@@ -53,7 +53,10 @@ public class PushMessageClient {
         Payload  alertPayload = new Payload();
         alertPayload.addAttribute("pid", pid);
         alertPayload.addAttribute("eid", eid);
-        alertPayload.addAttribute("episodeDescription", description);
+        alertPayload.addAttribute("category", "Episode1");
+        alertPayload.addAttribute("podCastEpisodeDescription", description);
+        alertPayload.addAttribute("podCastEpisodeInfo", podCastEpisodeInfo);
+        alertPayload.addAttribute("mutable-content", 1);
         aps.addAttributePayload("aps", alertPayload);
 
         apnsConfig.payload(aps);

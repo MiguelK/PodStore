@@ -7,6 +7,7 @@ import com.podcastcatalog.model.subscription.SubscriptionData;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -60,15 +61,29 @@ public class PodCastSubscriptionService {
         }
     }
 
+    //If subscriptionData is null == file exists but not able to load.
     public boolean isSubscribersLoaded() {
         return subscriptionData != null;
     }
 
-    SubscriptionData loadSubscribers() throws IOException {
+    public void recreateIfSubscriptionFileIsDeleted() {
 
-        /*if(true) {
-            return new SubscriptionData();
-        }*/
+        CloseableHttpClient client = HttpClients.createDefault();
+        try (CloseableHttpResponse response = client.execute(new HttpGet("http://pods.one/Subscriptions/Subscriptions.dat"))) {
+
+            if (response.getStatusLine().getStatusCode() == 404) {
+                LOG.info("No Subscriptions.dat file exist on server. Creating new subscriptionData");
+                this.subscriptionData = new SubscriptionData();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.info("Check subscription file failed " + e.getMessage());
+
+        }
+    }
+
+    SubscriptionData loadSubscribers() throws IOException {
 
         File downloadedFile = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), SUBSCRIPTIONS_JSON_FILE);
 
@@ -197,10 +212,10 @@ public class PodCastSubscriptionService {
         }
     }
 
-    public void pushMessage(String title, String body, String description, String pid, String eid, String deviceToken) {
+    public void pushMessage(String title, String body, String description, String podCastEpisodeInfo, String pid, String eid, String deviceToken) {
         threadPool.submit(() -> {
             PushMessageClient.getInstance().pushMessageWithToken(title,
-                    body, description, pid, eid, deviceToken);
+                    body, description, podCastEpisodeInfo, pid, eid, deviceToken);
         });
     }
 }

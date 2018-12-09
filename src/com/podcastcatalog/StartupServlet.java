@@ -62,7 +62,7 @@ public class StartupServlet extends HttpServlet {
 
 
         //OPENSHIFT_APP_DNS //FIXME SE or US
-        JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 30, TimeUnit.SECONDS); //FIXME
+        JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 45, TimeUnit.SECONDS); //FIXME
       //  JobManagerService.getInstance().registerJob(new CreateLinkPages(),20,20, TimeUnit.SECONDS);
            //FIXME Memory problem max maxFeedCount == 400? ALL
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 12, TimeUnit.HOURS); //FIXME
