@@ -74,6 +74,7 @@ public class PodCastSubscriptionService {
             if (response.getStatusLine().getStatusCode() == 404) {
                 LOG.info("No Subscriptions.dat file exist on server. Creating new subscriptionData");
                 this.subscriptionData = new SubscriptionData();
+                uploadToOneCom();
             }
 
         } catch (Exception e) {
