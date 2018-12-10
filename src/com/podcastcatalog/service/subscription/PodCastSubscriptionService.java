@@ -75,7 +75,6 @@ public class PodCastSubscriptionService {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
             LOG.info("Check subscription file failed " + e.getMessage());
 
         }
@@ -172,7 +171,7 @@ public class PodCastSubscriptionService {
            // subscriber.addSubscription(subscription);
             subscription.addSubscriber(deviceToken);
 
-            LOG.info("subscribe= " + subscriptionData);
+            LOG.info("subscribers= " + subscription.getSubscribers().size());
 
             uploadToOneCom();
         } finally {
@@ -184,7 +183,7 @@ public class PodCastSubscriptionService {
         writeLock.lock();
         try {
             subscriptionData.unSubscribe(deviceToken, podCastId);
-            LOG.info("unSubscribe= " + subscriptionData);
+            LOG.info("unSubscribe= " + podCastId);
 
             uploadToOneCom();
         } finally {
@@ -196,6 +195,18 @@ public class PodCastSubscriptionService {
         writeLock.lock();
         try {
           //FIXME needed?  subscriptionData.deleteSubscriber(deviceToken);
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    public void update(String podCastId, String latestPodCastEpisodeId) {
+        writeLock.lock();
+        try {
+            Subscription subscription = subscriptionData.getSubscription(podCastId);
+            if(subscription != null) {
+                subscription.setLatestPodCastEpisodeId(latestPodCastEpisodeId);
+            }
         } finally {
             writeLock.unlock();
         }

@@ -22,8 +22,6 @@ public class SubscriptionNotifierJob implements Job {
     private final static Logger LOG = Logger.getLogger(SubscriptionNotifierJob.class.getName());
     static final String PUSH_PAYLOAD_NEW_LINE = "\\r\\n";
 
-    private final boolean testMode = false;
-
     public void doWork() {
 
         if(!PodCastSubscriptionService.getInstance().isSubscribersLoaded()) {
@@ -41,7 +39,7 @@ public class SubscriptionNotifierJob implements Job {
             }
 
             //Loop all PodCasts that anyone subscribes to
-            boolean isDirty = false;
+         //   boolean isDirty = false;
             for (Subscription subscription : subscriptions) {
                 PodCast podCast = getPodCast(subscription.getPodCastId());
 
@@ -61,31 +59,22 @@ public class SubscriptionNotifierJob implements Job {
                 PodCastEpisode latestRemote = latestPodCastEpisode.get();
                 String latestPodCastEpisodeId = subscription.getLatestPodCastEpisodeId();
 
-                if (latestPodCastEpisodeId == null) {
-                    //After restart of server set to current as latest.
-                    subscription.setLatestPodCastEpisodeId(latestRemote.getId());
-                    isDirty = true;
-                }
+                if (latestPodCastEpisodeId != null
+                        && !latestPodCastEpisodeId.equals(latestRemote.getId())) {
 
-
-                if (testMode) {
-                  //  LOG.info("PUSH message to ..." + subscription.getSubscribers().size() + " subscriber(s)");
-                    isDirty = true;
-                    sendPushMessage(subscription.getSubscribers(), podCast, latestRemote);
-                    Thread.sleep(5000);
-                } else {
-                    if (!subscription.getLatestPodCastEpisodeId().equals(latestRemote.getId())) {
-                        isDirty = true;
-                        LOG.info("Prod PUSH message to ..." + subscription.getSubscribers().size() + " subscribers");
+                        LOG.info("PUSH message to ..." + subscription.getSubscribers().size() + " subscribers");
                         sendPushMessage(subscription.getSubscribers(), podCast, latestRemote);
-                    }
                 }
+
+                PodCastSubscriptionService.getInstance().update(podCast.getCollectionId(), latestRemote.getId());
+                PodCastSubscriptionService.getInstance().uploadToOneCom();
+
             }
 
-            if (isDirty) {
+           /* if (isDirty) {
                 LOG.info("Saving and uploading to one.com");
                 PodCastSubscriptionService.getInstance().uploadToOneCom();
-            }
+            }*/
 
         } catch (Exception e) {
             LOG.info("Failed push message" + e.getMessage());

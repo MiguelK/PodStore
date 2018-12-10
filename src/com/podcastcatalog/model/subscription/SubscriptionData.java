@@ -11,7 +11,6 @@ import java.util.Map;
 //Data only serializabe to disk
 public class SubscriptionData implements Serializable {
 
-   // private final Map<String, Subscriber> subscriberByDeviceToken = new HashMap<>();
     private final Map<String, Subscription> subscriptionByPodCastId = new HashMap<>();
 
 
@@ -22,12 +21,6 @@ public class SubscriptionData implements Serializable {
 
     public void unSubscribe(String deviceToken, String podCastId) {
 
-        //Subscriber subscriber = new Subscriber(deviceToken); //subscriberByDeviceToken.get(deviceToken);
-
-        /*if (subscriber == null) {
-            return;
-        }*/
-
         Subscription subscription = subscriptionByPodCastId.get( podCastId);
 
         if (subscription == null) {
@@ -35,15 +28,10 @@ public class SubscriptionData implements Serializable {
         }
 
         subscription.removeSubscriber(deviceToken);
-        //subscriber.removeSubscription(subscription);
 
         if (subscription.hasNoSubscribers()) {
             subscriptionByPodCastId.remove(podCastId);
         }
-
-        /*if (subscriber.getSubscriptions().isEmpty()) {
-            subscriberByDeviceToken.remove(deviceToken);
-        }*/
     }
 
    /* public void deleteSubscriber(String deviceToken) {
