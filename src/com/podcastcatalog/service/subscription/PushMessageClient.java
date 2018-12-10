@@ -74,9 +74,11 @@ public class PushMessageClient {
                 LOG.warning("Pushraven.push() return status=" + fcmResponse.getResponseCode()
                         + ", errorMessage=" + fcmResponse.getErrorMessage() + ",token=" + token + ",title=" + title);
 
+                if(fcmResponse.getResponseCode() ==  404) {
+                    LOG.info("Unsubscribe due to 404 from Firebase, token=" + token + ",pid=" +pid);
+                    PodCastSubscriptionService.getInstance().unSubscribe(token, pid);
+                }
             }
-
-
         }catch (Exception e) {
             LOG.log(Level.SEVERE, "Failed send push message ", e);
         }

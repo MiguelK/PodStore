@@ -1,13 +1,10 @@
 package com.podcastcatalog.service.subscription;
 
-import com.google.gson.Gson;
-import com.podcastcatalog.model.subscription.Subscriber;
 import com.podcastcatalog.model.subscription.Subscription;
 import com.podcastcatalog.model.subscription.SubscriptionData;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -40,7 +37,7 @@ public class PodCastSubscriptionService {
 
     private SubscriptionData subscriptionData = new SubscriptionData();
 
-    private final ExecutorService threadPool = Executors.newFixedThreadPool(1);
+    private final ExecutorService pushMessagesThreadPool = Executors.newFixedThreadPool(1);
 
     public static PodCastSubscriptionService getInstance() {
         return INSTANCE;
@@ -129,6 +126,7 @@ public class PodCastSubscriptionService {
         return null;
     }
 
+    //FIXME do in background?
     public void uploadToOneCom() {
 
         //1# Write to temp file... subscriptions.json
@@ -162,11 +160,6 @@ public class PodCastSubscriptionService {
 
         writeLock.lock();
 
-      /*  Subscriber subscriber = subscriptionData.getSubscriber(deviceToken);
-        if (subscriber == null) {
-            subscriber = new Subscriber(deviceToken);
-            subscriptionData.registerSubscriber(subscriber);
-        }*/
 
         Subscription subscription = subscriptionData.getSubscription(podCastId);
         //Ok forts subscriber for this content
@@ -180,6 +173,8 @@ public class PodCastSubscriptionService {
             subscription.addSubscriber(deviceToken);
 
             LOG.info("subscribe= " + subscriptionData);
+
+            uploadToOneCom();
         } finally {
             writeLock.unlock();
         }
@@ -190,6 +185,8 @@ public class PodCastSubscriptionService {
         try {
             subscriptionData.unSubscribe(deviceToken, podCastId);
             LOG.info("unSubscribe= " + subscriptionData);
+
+            uploadToOneCom();
         } finally {
             writeLock.unlock();
         }
@@ -214,7 +211,7 @@ public class PodCastSubscriptionService {
     }
 
     public void pushMessage(String title, String body, String description, String podCastEpisodeInfo, String pid, String eid, String deviceToken) {
-        threadPool.submit(() -> {
+        pushMessagesThreadPool.submit(() -> {
             PushMessageClient.getInstance().pushMessageWithToken(title,
                     body, description, podCastEpisodeInfo, pid, eid, deviceToken);
         });

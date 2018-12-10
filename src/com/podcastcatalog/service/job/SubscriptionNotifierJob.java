@@ -22,7 +22,7 @@ public class SubscriptionNotifierJob implements Job {
     private final static Logger LOG = Logger.getLogger(SubscriptionNotifierJob.class.getName());
     static final String PUSH_PAYLOAD_NEW_LINE = "\\r\\n";
 
-    private final boolean testMode = true;
+    private final boolean testMode = false;
 
     public void doWork() {
 
@@ -62,6 +62,7 @@ public class SubscriptionNotifierJob implements Job {
                 String latestPodCastEpisodeId = subscription.getLatestPodCastEpisodeId();
 
                 if (latestPodCastEpisodeId == null) {
+                    //After restart of server set to current as latest.
                     subscription.setLatestPodCastEpisodeId(latestRemote.getId());
                     isDirty = true;
                 }
