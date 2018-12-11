@@ -34,18 +34,6 @@ public class SubscriptionData implements Serializable {
         }
     }
 
-   /* public void deleteSubscriber(String deviceToken) {
-        subscriberByDeviceToken.remove(StringUtils.trimToEmpty(deviceToken));
-    }*/
-
-    /*public Subscriber getSubscriber(String deviceToken) {
-        return subscriberByDeviceToken.get(StringUtils.trimToEmpty(deviceToken));
-    }*/
-
-  /*  public void registerSubscriber(Subscriber subscriber) {
-        subscriberByDeviceToken.put(subscriber.getDeviceToken(), subscriber);
-    }*/
-
     public Subscription getSubscription(String podCastId) {
         return subscriptionByPodCastId.get(StringUtils.trimToEmpty(podCastId));
     }

@@ -171,7 +171,7 @@ public class PodCastSubscriptionService {
            // subscriber.addSubscription(subscription);
             subscription.addSubscriber(deviceToken);
 
-            LOG.info("subscribers= " + subscription.getSubscribers().size());
+            LOG.info("subscribe() subscribers= " + subscription.getSubscribers().size());
 
             uploadToOneCom();
         } finally {
@@ -183,7 +183,16 @@ public class PodCastSubscriptionService {
         writeLock.lock();
         try {
             subscriptionData.unSubscribe(deviceToken, podCastId);
-            LOG.info("unSubscribe= " + podCastId);
+
+            Subscription subscription = subscriptionData.getSubscription(podCastId);
+
+
+            String info = "no subscribers for podCastId=" + podCastId;
+            if(subscription!=null) {
+                info = subscription.getSubscribers().size() + " subscribers for podCastId=" + podCastId;
+            }
+
+            LOG.info("unSubscribe(), " + info);
 
             uploadToOneCom();
         } finally {

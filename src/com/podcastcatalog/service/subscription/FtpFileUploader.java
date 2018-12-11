@@ -75,11 +75,11 @@ public class FtpFileUploader {
                 String fileName = getSourceFile().getName();
                 inputStream =  new FileInputStream(getSourceFile());
 
-                LOG.info("Start uploading§ file " + fileName + " to server path=" + PATH_NAME_SERVER);
+               // LOG.info("Start uploading§ file " + fileName + " to server path=" + PATH_NAME_SERVER);
                 boolean done = ftpClient.storeFile(fileName, inputStream);
 
-                if (done) {
-                    LOG.info( fileName + " file uploaded successfully. path=" + PATH_NAME_SERVER);
+                if (!done) {
+                    LOG.info( fileName + " done=false failed upload to path=" + PATH_NAME_SERVER);
                 }
             } catch (Exception ex) {
                 LOG.warning("Failed to upload file to server " + ex.getMessage());

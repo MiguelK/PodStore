@@ -8,7 +8,9 @@ import org.testng.annotations.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class PodCastFeedParserTest {
 
@@ -16,12 +18,24 @@ public class PodCastFeedParserTest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void parse_p3_dokumentar() throws MalformedURLException {
-        String collectionId = "22233";
-        PodCast podCast = PodCastFeedParser.parse(new URL("http://api.sr.se/api/rss/pod/3966"), artworkUrl600, collectionId).get();
+        String collectionId = "22233"; //962159150 //22233
 
-        Assert.assertNotNull(podCast);
 
-        Assert.assertEquals(podCast.getCollectionId(),collectionId);
+        //-1f2c4e48+0c560102
+
+        Set<String> ids= new HashSet<>();
+
+        for(int i=0; i<10; i++) {
+
+            String x = "https://media.acast.com/breakit-daily/glomvantrummen-blidinegenlakare-kommerexplodera/media.mp3";
+            PodCast podCast = PodCastFeedParser.parse(new URL("http://api.sr.se/api/rss/pod/3966"), artworkUrl600, collectionId).get();
+
+            String id = podCast.getPodCastEpisodesInternal().get(0).getId();
+            System.out.println("ID===== " +id);
+            if(ids.contains(id)) {
+                Assert.fail("Duplicate " + id);
+            }
+        }
     }
 
     @Test(groups = TestUtil.SLOW_TEST)

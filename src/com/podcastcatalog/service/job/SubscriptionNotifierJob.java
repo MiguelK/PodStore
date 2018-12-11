@@ -35,7 +35,7 @@ public class SubscriptionNotifierJob implements Job {
 
             if (!subscriptions.isEmpty()) {
                 LOG.info(getClass().getSimpleName() +
-                        " looking for PodCastEpisode updates. subscriptions=" + subscriptions.size());
+                        " SubscriptionNotifierJob doWork(), subscriptions=" + subscriptions.size());
             }
 
             //Loop all PodCasts that anyone subscribes to
@@ -56,31 +56,21 @@ public class SubscriptionNotifierJob implements Job {
                 }
 
                 //Can subscribe to pods not in-memory Chines, German etc
-                PodCastEpisode latestRemote = latestPodCastEpisode.get();
+                PodCastEpisode latestRemoteEpisode = latestPodCastEpisode.get();
                 String latestPodCastEpisodeId = subscription.getLatestPodCastEpisodeId();
 
+                PodCastSubscriptionService.getInstance().update(podCast.getCollectionId(), latestRemoteEpisode.getId());
+                PodCastSubscriptionService.getInstance().uploadToOneCom();
+
                 if (latestPodCastEpisodeId != null
-                        && !latestPodCastEpisodeId.equals(latestRemote.getId())) {
-
-                        LOG.info("PUSH message to ..." + subscription.getSubscribers().size() + " subscribers");
-                        sendPushMessage(subscription.getSubscribers(), podCast, latestRemote);
+                        && !latestPodCastEpisodeId.equals(latestRemoteEpisode.getId())) {
+                    LOG.info("PUSH message to ..." + subscription.getSubscribers().size() + " subscribers");
+                    sendPushMessage(subscription.getSubscribers(), podCast, latestRemoteEpisode);
                 }
-
-                PodCastSubscriptionService.getInstance().update(podCast.getCollectionId(), latestRemote.getId());
-                PodCastSubscriptionService.getInstance().uploadToOneCom();
-
             }
-
-           /* if (isDirty) {
-                LOG.info("Saving and uploading to one.com");
-                PodCastSubscriptionService.getInstance().uploadToOneCom();
-            }*/
-
         } catch (Exception e) {
             LOG.info("Failed push message" + e.getMessage());
         }
-
-
     }
 
     private void sendPushMessage(List<String> subscribers, PodCast podCast, PodCastEpisode latestPodCastEpisode) {

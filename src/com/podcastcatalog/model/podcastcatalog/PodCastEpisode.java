@@ -1,6 +1,7 @@
 package com.podcastcatalog.model.podcastcatalog;
 
 
+import com.podcastcatalog.util.IdGenerator;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
@@ -18,11 +19,12 @@ public class PodCastEpisode extends BundleItem implements Serializable {
 
     private final String podCastCollectionId; //PodCast that contains this episode, used when subscribing after direct play
 
+    //FIXME Remove id,
     private PodCastEpisode(String id, String title, String description, String targetURL, PodCastEpisodeDuration duration,
                            PodCastEpisodeFileSize fileSize, PodCastEpisodeType podCastType, LocalDateTime createdDate,
                            String podCastCollectionId) {
         super(title, description, null/*Client is using image form parent PodCast */);
-        this.id = id;
+        this.id = IdGenerator.generate(title, podCastCollectionId);
         this.podCastCollectionId = podCastCollectionId;
         this.targetURL = targetURL;
         this.fileSize = fileSize;
@@ -44,7 +46,7 @@ public class PodCastEpisode extends BundleItem implements Serializable {
     }
 
     public String getId() {
-        return id;
+        return IdGenerator.generate(super.getTitle(), podCastCollectionId); //id; //FIXME remove
     }
 
 
