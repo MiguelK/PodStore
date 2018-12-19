@@ -43,10 +43,7 @@ public class UpdateSearchSuggestionsJob implements Job {
 
         LOG.info("Start building SearchSuggestions + trending pods for lang=" + language);
 
-
-
         for (PodCastIdCollector.Category categoryName : PodCastIdCollector.Category.values()) {
-
 
             List<Long> ids =  PodCastIdCollector.createPodCastIdCollector(language, categoryName).getPodCastIds();
 

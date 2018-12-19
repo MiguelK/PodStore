@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class StartupServlet extends HttpServlet {
@@ -45,14 +46,11 @@ public class StartupServlet extends HttpServlet {
 
             File temp = new File(serviceDataStorageDisk.getPodDataHomeDir(), "temp");
             temp.mkdirs();
-            LOG.info("Temp dir=" + temp.getAbsolutePath());
-
             String accountFile = servletConfig.getServletContext().getResource("/WEB-INF/pods-service.account.json").getFile();
             File file = new File(accountFile);
             PodCastSubscriptionService.getInstance().start(file);
-            LOG.info("PATH==== " + file);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, "Failed loading pods-service.account.json", e);
         }
         //Important for FeedParser, could cause 403 otherwise.
         System.setProperty("http.agent", "Chrome");
@@ -65,12 +63,12 @@ public class StartupServlet extends HttpServlet {
         JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 45, TimeUnit.MINUTES); //FIXME
       //  JobManagerService.getInstance().registerJob(new CreateLinkPages(),20,20, TimeUnit.SECONDS);
            //FIXME Memory problem max maxFeedCount == 400? ALL
-        JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 20, TimeUnit.HOURS); //FIXME
+        JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 28, TimeUnit.HOURS); //FIXME
         //JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 120, TimeUnit.MINUTES); //FIXME change time, remove
 
-        int period = 30 * 3600;
+        int periodSeconds = 30 * 3600;
 
-        int counter = 0;
+        int initialDelayOffsetSeconds = 0;
         for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
 
             if(ServerInfo.isLocalDevMode() || !language.isInMemorySearchSuggestions()) {
@@ -78,8 +76,9 @@ public class StartupServlet extends HttpServlet {
             }
 
             JobManagerService.getInstance().registerJob(new UpdateSearchSuggestionsJob(language),
-                    5 + counter, period, TimeUnit.SECONDS); //FIXME change time, remove
-            counter += 15;
+                    5 + initialDelayOffsetSeconds, periodSeconds, TimeUnit.SECONDS); //FIXME change time, remove
+            initialDelayOffsetSeconds += 15;
+            periodSeconds += 10 * 60;
         }
 
         //FIXME prod

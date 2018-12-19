@@ -64,7 +64,6 @@ public class SubscriptionNotifierJob implements Job {
 
                 if (latestPodCastEpisodeId != null
                         && !latestPodCastEpisodeId.equals(latestRemoteEpisode.getId())) {
-                    LOG.info("PUSH message to ..." + subscription.getSubscribers().size() + " subscribers");
                     sendPushMessage(subscription.getSubscribers(), podCast, latestRemoteEpisode);
                 }
             }
@@ -76,7 +75,6 @@ public class SubscriptionNotifierJob implements Job {
     private void sendPushMessage(List<String> subscribers, PodCast podCast, PodCastEpisode latestPodCastEpisode) {
 
         for (String deviceToken : subscribers) {
-              LOG.info("PUSH to this subscriber " + podCast.getTitle() + ", episode=" + latestPodCastEpisode.getTitle());
               String podCastEpisodeTitle = latestPodCastEpisode.getTitle();
               String description = latestPodCastEpisode.getDescription();
               String podCastEpisodeInfo = "";

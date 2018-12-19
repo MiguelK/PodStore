@@ -156,7 +156,7 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
             podCastIds = podCastIds.subList(0, resultSize);
         }
 
-        LOG.info("Start searchAPI of " + podCastIds.size() + " podcast(s)");
+        LOG.info("PodCastIdCollector " + podCastIds.size() + " podCast(s), lang=" + language.name() + ", categoryTitle=" + categoryTitle);
 
         return ItunesSearchAPI.lookupPodCasts(podCastIds);
 

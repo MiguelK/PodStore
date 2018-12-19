@@ -5,6 +5,7 @@ import com.podcastcatalog.model.podcastcatalog.*;
 import com.podcastcatalog.model.podcastsearch.ResultItem;
 import com.podcastcatalog.modelbuilder.*;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
+import com.podcastcatalog.modelbuilder.collector.itunes.PodCastIdCollector;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCategoryCollectorOkihika;
 import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCollectorOkihika;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSE;
@@ -128,7 +129,7 @@ public class PodCastCatalogServiceTest {
 
     private static void setUpStorage() {
         ServiceDataStorage storage =  TestUtil.createForTest();
-        storage.deleteAll();
+       // storage.deleteAll();
 
         PodCastCatalogService.getInstance().setStorage(storage);
     }
@@ -143,6 +144,8 @@ public class PodCastCatalogServiceTest {
 
         TestUtil.assertToJSONNotNull(podCastCatalog);
 
+        Assert.assertNotNull(podCastCatalog);
+
         System.out.println("LocalCatalog = " + podCastCatalog);
     }
 
@@ -152,14 +155,23 @@ public class PodCastCatalogServiceTest {
         PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilder() {
             @Override
             public Set<BundleBuilder> getBundleBuilders() {
-                PodCastBundleBuilder podCastBundleBuilder = BundleBuilder.newPodCastBundleBuilder("Toplistan", "10 bästa podcas i Sverige");
-                podCastBundleBuilder.addCollector(new PodCastCollectorOkihika(PodCastCatalogLanguage.SE, PodCastCollectorOkihika.TopList.TOPLIST_COUNTRY, 4));
+
+
+               PodCastBundleBuilder podCastBundleBuilder = BundleBuilder.newPodCastBundleBuilder("Toplistan", "10 bästa podcas i Sverige");
+
+                PodCastIdCollector podCastIdCollectorBusiness = PodCastIdCollector.createPodCastIdCollector(PodCastCatalogLanguage.SE,
+                        PodCastIdCollector.Category.TOPLIST_COUNTRY);
+                podCastBundleBuilder.addCollector(podCastIdCollectorBusiness);
 
                 PodCastCategoryBundleBuilder categoryBundleBuilder = BundleBuilder.newPodCastCategoryBundleBuilder("Alla Kategorier", "???..");
-                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 2, "Nyheter och politik", "???"));
+              /*  categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 2, "Nyheter och politik", "???"));
                 categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TECHNOLOGY, 2, "Teknologi", "???"));
                 categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TV_FILM, 1, "TV och film", "???"));
+*/
 
+                PodCastIdCollector podCastIdCollector = new PodCastIdCollector(PodCastCatalogLanguage.SE,
+                        PodCastIdCollector.Category.BUSINESS, PodCastIdCollector.Category.BUSINESS.name());
+                categoryBundleBuilder.addCollector(podCastIdCollector);
 
                 Set<BundleBuilder> bundleBuilders = new HashSet<>();
                 bundleBuilders.add(podCastBundleBuilder);

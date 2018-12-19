@@ -69,7 +69,7 @@ public class PushMessageClient {
 
         FcmResponse fcmResponse = Pushraven.push(raven);
             if(fcmResponse.getResponseCode() == 200) {
-                LOG.info("Success pushed to "+ token);
+                LOG.info("Successfully pushed" + title  + " to "+ token);
             } else {
                 LOG.warning("Pushraven.push() return status=" + fcmResponse.getResponseCode()
                         + ", errorMessage=" + fcmResponse.getErrorMessage() + ",token=" + token + ",title=" + title);
