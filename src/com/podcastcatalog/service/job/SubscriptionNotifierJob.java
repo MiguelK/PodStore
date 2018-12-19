@@ -66,6 +66,8 @@ public class SubscriptionNotifierJob implements Job {
                         && !latestPodCastEpisodeId.equals(latestRemoteEpisode.getId())) {
                     sendPushMessage(subscription.getSubscribers(), podCast, latestRemoteEpisode);
                 }
+
+                Thread.sleep(60000); //Test distribbute load, memmory issue
             }
         } catch (Exception e) {
             LOG.info("Failed push message" + e.getMessage());

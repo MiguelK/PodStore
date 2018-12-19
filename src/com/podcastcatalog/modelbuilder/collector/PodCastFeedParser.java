@@ -48,7 +48,7 @@ public class PodCastFeedParser {
 
         URL feedURL = toURL(url.getFeedURL());
 
-        Optional<PodCast> parse = PodCastFeedParser.parse(feedURL, url.getArtworkUrl600(), url.getCollectionId(), 1000);
+        Optional<PodCast> parse = PodCastFeedParser.parse(feedURL, url.getArtworkUrl600(), url.getCollectionId(), 400); //FIXME
         if (parse.isPresent()) {
             return Optional.ofNullable(parse.get().getLatestPodCastEpisode());
         }

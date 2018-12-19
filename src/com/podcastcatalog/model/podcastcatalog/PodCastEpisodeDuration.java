@@ -1,9 +1,11 @@
 package com.podcastcatalog.model.podcastcatalog;
 
 
+import com.podcastcatalog.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -61,6 +63,10 @@ public class PodCastEpisodeDuration implements Serializable{
             return Optional.empty();
         }
 
+        if(trimmedInput.endsWith(":60")){
+            trimmedInput = trimmedInput.replace(":60", ":59");
+        }
+
         String substring = trimmedInput.substring(0, 2);
 
         if(substring.contains(":")){
@@ -69,11 +75,16 @@ public class PodCastEpisodeDuration implements Serializable{
 
         LocalTime date;
         try {
+
             date = LocalTime.parse(trimmedInput, DateTimeFormatter.ISO_LOCAL_TIME);
         }
         catch (DateTimeParseException e) {
             LOG.info("Failed to convert " + input + " to int value. Returning -1");
-            return Optional.empty();
+
+            Optional<LocalDateTime> parse =
+                    DateUtil.parse(trimmedInput);
+
+            return parse.flatMap(localDateTime -> Optional.ofNullable(localDateTime.toLocalTime()));
         }
 
         return Optional.ofNullable(date);
@@ -103,6 +114,6 @@ public class PodCastEpisodeDuration implements Serializable{
         }
 
 
-        return displayValue;
+        return displayValue.trim();
     }
 }
