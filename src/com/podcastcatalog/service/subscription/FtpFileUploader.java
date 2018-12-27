@@ -14,6 +14,9 @@ import java.util.logging.Logger;
 
 public class FtpFileUploader {
 
+    public static final String PATH_SUBSCRIPTION = "/Subscriptions/";
+    public static final String PATH_LANGUAGE = "/language/";
+
     private static FtpFileUploader INSTANCE = new FtpFileUploader();
 
     private static final Logger LOG = Logger.getLogger(FtpFileUploader.class.getName());
@@ -28,9 +31,9 @@ public class FtpFileUploader {
         executorService = Executors.newSingleThreadExecutor();
     }
 
-    void uploadToOneCom(File sourceFile) {
+    public void uploadToOneCom(File sourceFile, String serverPath) {
         try {
-            FileTask fileTask = new FileTask(sourceFile);
+            FileTask fileTask = new FileTask(sourceFile, serverPath);
 
             executorService.submit(fileTask);
         } catch (Exception ex) {
@@ -41,10 +44,11 @@ public class FtpFileUploader {
     private class FileTask implements  Runnable {
 
         private final File sourceFile;
-        static final String PATH_NAME_SERVER = "/Subscriptions/";
+        private final String serverPath;
 
-        FileTask(File sourceFile) {
+        FileTask(File sourceFile, String serverPath) {
             this.sourceFile = sourceFile;
+            this.serverPath = serverPath;
         }
 
 
@@ -70,7 +74,7 @@ public class FtpFileUploader {
 
                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
-                ftpClient.changeWorkingDirectory(PATH_NAME_SERVER);
+                ftpClient.changeWorkingDirectory(serverPath);
 
                 String fileName = getSourceFile().getName();
                 inputStream =  new FileInputStream(getSourceFile());
@@ -79,7 +83,7 @@ public class FtpFileUploader {
                 boolean done = ftpClient.storeFile(fileName, inputStream);
 
                 if (!done) {
-                    LOG.info( fileName + " done=false failed upload to path=" + PATH_NAME_SERVER);
+                    LOG.info( fileName + " done=false failed upload to path=" + serverPath);
                 }
             } catch (Exception ex) {
                 LOG.warning("Failed to upload file to server " + ex.getMessage());

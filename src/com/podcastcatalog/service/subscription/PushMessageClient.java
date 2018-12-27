@@ -1,6 +1,7 @@
 package com.podcastcatalog.service.subscription;
 
 import com.google.common.collect.Maps;
+import com.podcastcatalog.util.ServerInfo;
 import us.raudi.pushraven.FcmResponse;
 import us.raudi.pushraven.Message;
 import us.raudi.pushraven.Notification;
@@ -38,6 +39,11 @@ public class PushMessageClient {
                               String eid, String token) {
 
         try {
+
+            if(ServerInfo.isLocalDevMode()) {
+                LOG.info("DevMode no push is sent: " + title);
+                return;
+            }
 
         Notification notification = new Notification()
                 .title(title)

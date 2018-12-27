@@ -107,7 +107,12 @@ public class ItunesSearchAPI implements PodCastCollector {
         //LOG.info("Start parsing " + podCastSearchResult.resultCount + " podcast(s)");
 
         for (PodCastSearchResult.Row podCastRow : podCastSearchResult.getResults()) {
-            URL feedURL = toURL(podCastRow.getFeedUrl());
+            String feedUrl = podCastRow.getFeedUrl();
+            if(feedUrl == null) {
+                LOG.info("feedUrl is null " + podCastRow);
+                continue;
+            }
+            URL feedURL = toURL(feedUrl);
 
             if (feedURL != null) {
                 PodCastProcessor podCastProcessor = new PodCastProcessor(feedURL, podCastRow.getArtworkUrl600(), podCastRow.getCollectionId());

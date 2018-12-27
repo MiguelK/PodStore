@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.subscription.SubscriptionData;
+import com.podcastcatalog.service.subscription.FtpFileUploader;
 import com.podcastcatalog.util.ServerInfo;
 import com.podcastcatalog.util.ZipFile;
 import org.apache.commons.io.FileUtils;
@@ -131,6 +132,8 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         }
 
         ZipFile.zip(json, versionDirectory.getLangJSONZipped());
+
+        FtpFileUploader.getInstance().uploadToOneCom(versionDirectory.getLangJSONZipped(), FtpFileUploader.PATH_LANGUAGE);
     }
 
     @Override

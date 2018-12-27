@@ -133,7 +133,7 @@ public class PodCastSubscriptionService {
         try {
             // saveAsJSON(file);
             saveAsObject(subscriptionData, file);
-            FtpFileUploader.getInstance().uploadToOneCom(file);
+            FtpFileUploader.getInstance().uploadToOneCom(file, FtpFileUploader.PATH_SUBSCRIPTION);
         } catch (IOException e) {
             LOG.info("Failed push message" + e.getMessage());
         }
