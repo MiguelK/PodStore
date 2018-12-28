@@ -70,7 +70,7 @@ public class PodCastCatalog {
         List<ResultItem> podCastEpisodes = PodCastCatalogService.getInstance().search(podCastCatalogLanguage, queryParam);
 
 
-        if(!podCastEpisodes.isEmpty()){
+        if(!podCastEpisodes.isEmpty() && query.length() > 5){
             LOG.info("Search=" + query + ", lang=" + lang + ", result=" + podCastEpisodes.size());
 
             SearchSuggestionService.getInstance().addPopularSearchTerm(podCastCatalogLanguage, query);

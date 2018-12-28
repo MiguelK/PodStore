@@ -161,7 +161,7 @@ public class PodCastCatalogService {
 
         //FIXME set lang in search?
         if(encodedQueryParam!=null){
-            List<PodCastResultItem> podCasts = ItunesSearchAPI.searchPodCasts("term=" + encodedQueryParam + "&entity=podcast&limit=7&country=" + itunesSearchLang);
+            List<PodCastResultItem> podCasts = ItunesSearchAPI.searchPodCasts("term=" + encodedQueryParam + "&entity=podcast&limit=12&country=" + itunesSearchLang);
             resultItems.addAll(podCasts);
         }
 
@@ -306,6 +306,8 @@ public class PodCastCatalogService {
                 //FIXME test
                 List<PodCastEpisode> podCastEpisodes = bundleItemVisitor.getPodCastEpisodes();
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
+                    //FIXME add Podcast titil + imageURL
+
                     PodCastEpisodeResultItem resultItem = new PodCastEpisodeResultItem(podCastEpisode);
                     String text = podCastEpisode.getTitle() ;// FIXME Need more JVM memory to index? + " " + podCastEpisode.getDescription();
                     newTextSearchIndex.addText(text, TextSearchIndex.Prio.HIGH, resultItem);
