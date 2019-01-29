@@ -24,7 +24,9 @@ public class PodCastCatalogUpdater implements Job {
 
         try {
             //Minimize memory only one building at a time
-            long sleepMillis =  TimeUnit.MINUTES.toMillis(20); // 20 minuts
+            long sleepMillis =  TimeUnit.HOURS.toMillis(2);
+            LOG.info("PodCastCatalogUpdater start building Catalog US, waited 2 hours");
+
             Thread.sleep(sleepMillis);
      //       future.get(20, TimeUnit.MINUTES);
         } catch (Exception e) {

@@ -40,7 +40,7 @@ public class StartupServlet extends HttpServlet {
         PodCastCatalogService.getInstance().setStorage(serviceDataStorageDisk);
 
         System.out.println("StartupServlet....isLocalDevMode = " + ServerInfo.isLocalDevMode());
-        LOG.info("About to start PodStore...");
+        LOG.info("About to start PodStore POD_HOME_DIR=" + serviceDataStorageDisk.getPodDataHomeDir().getAbsolutePath());
 
         try {
 
@@ -63,8 +63,8 @@ public class StartupServlet extends HttpServlet {
         JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 3, TimeUnit.HOURS); //FIXME
       //  JobManagerService.getInstance().registerJob(new CreateLinkPages(),20,20, TimeUnit.SECONDS);
            //FIXME Memory problem max maxFeedCount == 400? ALL
-        JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 28, TimeUnit.HOURS); //FIXME
-        JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 6, TimeUnit.HOURS); //FIXME change time, remove
+        JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 48, TimeUnit.HOURS); //FIXME
+       JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 18, TimeUnit.HOURS); //FIXME change time, remove
 
         int periodSeconds = 30 * 3600;
 

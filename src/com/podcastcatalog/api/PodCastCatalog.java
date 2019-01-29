@@ -60,17 +60,19 @@ public class PodCastCatalog {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid query parameter " + query).build();
         }
 
-//        com.podcastcatalog.api.response.PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(podCastCatalogLanguage);
-//
+
 //        if (podCastCatalog == null) {
 //            LOG.info("podCastCatalog for lang " + lang + " is not loaded yet?");
 //            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Not ready yet").build();
 //        }
 
         List<ResultItem> podCastEpisodes = PodCastCatalogService.getInstance().search(podCastCatalogLanguage, queryParam);
+     //   com.podcastcatalog.model.podcastcatalog.PodCastCatalog podCastCatalog =
+        //           PodCastCatalogService.getInstance().getPodCastCatalog(podCastCatalogLanguage);
 
 
-        if(!podCastEpisodes.isEmpty() && query.length() > 5){
+
+        if(podCastEpisodes.size() == 1 && query.length() > 5){
             LOG.info("Search=" + query + ", lang=" + lang + ", result=" + podCastEpisodes.size());
 
             SearchSuggestionService.getInstance().addPopularSearchTerm(podCastCatalogLanguage, query);

@@ -48,7 +48,7 @@ public class SearchSuggestionService {
             }
 
             Collections.sort(popular);
-            if(popular.size()>=1000) {
+            if(popular.size()>=100) {
                 List<SearchTerm> searchTerms = popular.subList(0, popular.size()-1);
                 popularSearchQueries.put(lang, searchTerms);
             }
