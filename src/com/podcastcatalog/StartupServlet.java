@@ -35,26 +35,16 @@ public class StartupServlet extends HttpServlet {
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
-
         ServiceDataStorage serviceDataStorageDisk = ServiceDataStorage.useDefault();
         PodCastCatalogService.getInstance().setStorage(serviceDataStorageDisk);
 
         System.out.println("StartupServlet....isLocalDevMode = " + ServerInfo.isLocalDevMode());
         LOG.info("About to start PodStore POD_HOME_DIR=" + serviceDataStorageDisk.getPodDataHomeDir().getAbsolutePath());
 
-        try {
+        setupPodCastSubscriptionService(servletConfig, serviceDataStorageDisk);
 
-            File temp = new File(serviceDataStorageDisk.getPodDataHomeDir(), "temp");
-            temp.mkdirs();
-            String accountFile = servletConfig.getServletContext().getResource("/WEB-INF/pods-service.account.json").getFile();
-            File file = new File(accountFile);
-            PodCastSubscriptionService.getInstance().start(file);
-        } catch (MalformedURLException e) {
-            LOG.log(Level.SEVERE, "Failed loading pods-service.account.json", e);
-        }
         //Important for FeedParser, could cause 403 otherwise.
         System.setProperty("http.agent", "Chrome");
-
 
         LOG.info("Starting PodCastCatalog..., working dir= " + serviceDataStorageDisk.getPodDataHomeDir().getAbsolutePath());
 
@@ -116,8 +106,19 @@ public class StartupServlet extends HttpServlet {
         }*/
 
         JobManagerService.getInstance().startAsync();
+    }
 
+    private void setupPodCastSubscriptionService(ServletConfig servletConfig, ServiceDataStorage serviceDataStorageDisk) {
+        try {
 
+            File temp = new File(serviceDataStorageDisk.getPodDataHomeDir(), "temp");
+            temp.mkdirs();
+            String accountFile = servletConfig.getServletContext().getResource("/WEB-INF/pods-service.account.json").getFile();
+            File file = new File(accountFile);
+            PodCastSubscriptionService.getInstance().start(file);
+        } catch (MalformedURLException e) {
+            LOG.log(Level.SEVERE, "Failed loading pods-service.account.json", e);
+        }
     }
 
     private void loadPodCastCatalog(PodCastCatalogLanguage language) {

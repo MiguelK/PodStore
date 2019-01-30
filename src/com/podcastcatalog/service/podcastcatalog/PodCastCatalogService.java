@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 
 public class PodCastCatalogService {
 
-    private static final int THREADS = 25;
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
     private final Lock readLock = reentrantReadWriteLock.readLock();
     private final Lock writeLock = reentrantReadWriteLock.writeLock();
@@ -37,18 +36,15 @@ public class PodCastCatalogService {
     private TextSearchIndex<ResultItem> podCastEpisodeIndexSWE; //FIXME One per language, podCastEpisodeIndexSWE
     private TextSearchIndex<ResultItem> podCastEpisodeIndexUS; //FIXME One per language, podCastEpisodeIndexSWE
     private final PodCastIndex podCastCatalogIndex;
-   // private final PodCastIndex podCastIndex;
+
     private ServiceDataStorage storage;
     private final ExecutorService executorService;
     private final ExecutorService asyncExecutor;
-    private volatile boolean buildingInProgress;
-    private volatile PodCastCatalogLanguage buildingInProgressLang;
 
     private static final PodCastCatalogService INSTANCE = new PodCastCatalogService();
 
     private PodCastCatalogService() {
         podCastCatalogIndex = PodCastIndex.create();
-     //   podCastIndex = PodCastIndex.create();
         podCastEpisodeIndexSWE = new TextSearchIndex<>();
         podCastEpisodeIndexUS = new TextSearchIndex<>();
         podCastCatalogBuilders = new ArrayList<>();
@@ -64,27 +60,12 @@ public class PodCastCatalogService {
     public Optional<PodCast> getPodCastById(String id) {
         readLock.lock();
         try {
-            //podCastIndex updated every 10th minute @see PodCastSubscriptionUpdater.java
-           /* Optional<PodCast> podCast = podCastIndex.lookup(id);
-            if (podCast.isPresent()) {
-                return podCast;
-            }*/
-
             return podCastCatalogIndex.lookup(id);//All podCast inMemory from the inMemory catalog(s)
         } finally {
             readLock.unlock();
         }
     }
 
-    /*public void updatePodCastIndex(PodCast podCast) {
-        writeLock.lock();
-
-        try {
-            podCastIndex.update(podCast);
-        } finally {
-            writeLock.unlock();
-        }
-    }*/
 
     public void registerPodCastCatalogBuilder(PodCastCatalogBuilder builder) {
         writeLock.lock();
@@ -105,15 +86,6 @@ public class PodCastCatalogService {
         try {
             return podCastCatalogByLang.get(podCastCatalogLanguage);
 
-        } finally {
-            readLock.unlock();
-        }
-    }
-
-    public String getTextSearchEngineStatus() {
-        readLock.lock();
-        try {
-            return podCastEpisodeIndexSWE.getStatus() + " US=" + podCastEpisodeIndexUS.getStatus();
         } finally {
             readLock.unlock();
         }
@@ -196,11 +168,6 @@ public class PodCastCatalogService {
         return asyncExecutor.submit(new BuildPodCastCatalogAction(podCastCatalogBuilder));
     }
 
-
-    public boolean isBuildingInProgress() {
-        return buildingInProgress;
-    }
-
     private void validateState() {
         if (storage == null) {
             throw new IllegalStateException("Configure storage, storage is null");
@@ -213,7 +180,6 @@ public class PodCastCatalogService {
     }
 
     private class BuildPodCastCatalogAction implements Runnable {
-
         private PodCastCatalogBuilder podCastCatalogBuilder;
 
         BuildPodCastCatalogAction(PodCastCatalogBuilder podCastCatalogBuilder) {
@@ -231,7 +197,7 @@ public class PodCastCatalogService {
             try {
                     LOG.info("Start building PodCastCatalog " + podCastCatalogLang + " ...");
 
-                    catalog = buildPodcastCatalog(podCastCatalogBuilder);
+                    catalog = buildPodCastCatalog(podCastCatalogBuilder);
 
                     LOG.info("Done building PodCastCatalog Lang=" + podCastCatalogLang + " Catalog=" + catalog);
 
@@ -257,8 +223,6 @@ public class PodCastCatalogService {
             if(podCastCatalogLang.isInMemoryIndex()) { //FIXME can work with memory?
                 buildIndexAsync(podCastCatalogLang);
             }
-
-            buildingInProgress = false; //FIXME
         }
     }
 
@@ -301,8 +265,6 @@ public class PodCastCatalogService {
 
             TextSearchIndex<ResultItem> newTextSearchIndex = new TextSearchIndex<>();
 
-            //boolean swedishCatalog = podCastCatalogLanguage == PodCastCatalogLanguage.SE;
-
                 //FIXME test
                 List<PodCastEpisode> podCastEpisodes = bundleItemVisitor.getPodCastEpisodes();
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
@@ -338,7 +300,7 @@ public class PodCastCatalogService {
         }
     }
 
-    private PodCastCatalog buildPodcastCatalog(PodCastCatalogBuilder podCastCatalogBuilder) {
+    private PodCastCatalog buildPodCastCatalog(PodCastCatalogBuilder podCastCatalogBuilder) {
 
         Set<BundleBuilder> bundleBuilders = podCastCatalogBuilder.getBundleBuilders();
         List<Bundle> bundles = new ArrayList<>();

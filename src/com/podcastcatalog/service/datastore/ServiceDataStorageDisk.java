@@ -27,8 +27,6 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
     //private static final Gson GSON = new Gson();
 
     private final File podDataHomeDir;
-   // private final File catalogVersionHomeDirSWE;
-   // private final File catalogVersionHomeDirUS;
     private static final String SUBSCRIPTION_DATA_FILE_NAME = "SubscriptionData.dat";
 
     private final File subscriptionDataFile;
@@ -54,18 +52,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
             }
         }
 
-
-        //this.catalogVersionHomeDirSWE = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + PodCastCatalogLanguage.SE.name());
-        // this.catalogVersionHomeDirUS = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + PodCastCatalogLanguage.US.name());
         File subscriptionService = new File(podDataHomeDir, "SubscriptionService");
-
-       /* if (!this.catalogVersionHomeDirSWE.exists()) {
-            this.catalogVersionHomeDirSWE.mkdirs();
-        }
-
-        if (!this.catalogVersionHomeDirUS.exists()) {
-            this.catalogVersionHomeDirUS.mkdirs();
-        }*/
 
         if (!subscriptionService.exists()) {
             subscriptionService.mkdirs();
@@ -146,15 +133,6 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
         }
 
         return catalogPath;
-
-       /* switch (language) {
-            case SE:
-                return catalogVersionHomeDirSWE;
-            case US:
-                return catalogVersionHomeDirUS;
-            default:
-                throw new IllegalStateException("Unknown lang " + language);
-        }*/
     }
 
 
@@ -173,18 +151,6 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
                 e.printStackTrace();//FIXME
             }
         }
-
-
-        /*if (!catalogVersionHomeDirSWE.exists() || !catalogVersionHomeDirSWE.isDirectory()) {
-            return;
-        }
-
-        try {
-            FileUtils.deleteDirectory(catalogVersionHomeDirSWE);
-            FileUtils.deleteDirectory(catalogVersionHomeDirUS);
-        } catch (IOException e) {
-            e.printStackTrace();//FIXME
-        }*/
     }
 
 

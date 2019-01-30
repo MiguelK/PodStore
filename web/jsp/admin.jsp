@@ -27,9 +27,6 @@
         //PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.fromString(language));
         out.println("Start building PodCastCatalog " + language + " ...<br><br>");
     }
-    if(PodCastCatalogService.getInstance().isBuildingInProgress()){
-        out.println("Building PodCastCatalog in progress... wait...<br><br>");
-    }
 %>
 
 PodCastCatalog SWE <br>
@@ -42,8 +39,6 @@ PodCastCatalog US <br>
 
 <tr>
     <td>SubscriptionService</td>
-    <td><%=PodCastSubscriptionService.getInstance().getStatusAsHTLM() %>
-    </td>
 </tr>
 
 <table>
@@ -53,11 +48,6 @@ PodCastCatalog US <br>
         </td>
     </tr>
 
-    <tr>
-        <td>TextSearchEngine</td>
-        <td><%= PodCastCatalogService.getInstance().getTextSearchEngineStatus() %>
-        </td>
-    </tr>
 
 </table>
 
