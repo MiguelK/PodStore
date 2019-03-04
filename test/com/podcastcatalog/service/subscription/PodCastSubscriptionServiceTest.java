@@ -26,16 +26,6 @@ public class PodCastSubscriptionServiceTest {
       //  PodCastSubscriptionService.getInstance().registerSubscriber(VALID_SUBSCRIBER);
     }
 
-    @Test
-    public void loadSubscribers()  {
-
-        try {
-            SubscriptionData subscriptionData = PodCastSubscriptionService.getInstance().loadSubscribers();
-            Assert.assertNotNull(subscriptionData);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @AfterMethod
     public void tearDown() throws Exception {

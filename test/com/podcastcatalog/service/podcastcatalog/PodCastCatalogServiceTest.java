@@ -25,6 +25,7 @@ public class PodCastCatalogServiceTest {
     //1:21 min
     //Old 4:08 bundles=[PodCastCategoryBundle{podCastCategories=15}, PodCastBundle{podCasts=15}, PodCastEpisodeBundle{podCastEpisodes=16}]}
     //@Test(groups = TestUtil.SLOW_TEST)
+    /*
     public void build_catalog_swe() throws InterruptedException, ExecutionException, TimeoutException {
 
         setUpStorage();
@@ -55,6 +56,7 @@ public class PodCastCatalogServiceTest {
         PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.US);
         System.out.println(podCastCatalog);
     }
+*/
 
     @Test
     public void search_empty() {
@@ -72,14 +74,6 @@ public class PodCastCatalogServiceTest {
 
     }
 
-    @Test
-    public void getPodCastCatalogIndexStatus() {
-
-        String status = PodCastCatalogService.getInstance().getPodCastCatalogIndexStatus();
-
-        Assert.assertNotNull(status);
-    }
-
     /*@Test(groups = TestUtil.SLOW_TEST)
     public void getPodCastById() {
         PodCast podCast = PodCastTest.createValid().build();
@@ -89,7 +83,7 @@ public class PodCastCatalogServiceTest {
         Assert.assertTrue(podCastById.isPresent());
     }*/
 
-    @Test(groups = TestUtil.SLOW_TEST)
+   /* @Test(groups = TestUtil.SLOW_TEST)
     public void buildPodCastCatalogs() throws InterruptedException, ExecutionException, TimeoutException {
 
         setUpStorage();
@@ -120,18 +114,18 @@ public class PodCastCatalogServiceTest {
         });
 
 
-        PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SE).get(5,TimeUnit.MINUTES);
+        //PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SE).get(5,TimeUnit.MINUTES);
         PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SE);
         Assert.assertNotNull(podCastCatalog);
         Assert.assertFalse(podCastCatalog.getBundles().isEmpty());
 
-    }
+    }*/
 
     private static void setUpStorage() {
         ServiceDataStorage storage =  TestUtil.createForTest();
        // storage.deleteAll();
 
-        PodCastCatalogService.getInstance().setStorage(storage);
+        //PodCastCatalogService.getInstance().setStorage(storage);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
@@ -152,7 +146,7 @@ public class PodCastCatalogServiceTest {
     public static void initPodCastCatalogs() throws InterruptedException, ExecutionException, TimeoutException {
         setUpStorage();
 
-        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilder() {
+   /*   PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(new PodCastCatalogBuilder() {
             @Override
             public Set<BundleBuilder> getBundleBuilders() {
 
@@ -164,10 +158,7 @@ public class PodCastCatalogServiceTest {
                 podCastBundleBuilder.addCollector(podCastIdCollectorBusiness);
 
                 PodCastCategoryBundleBuilder categoryBundleBuilder = BundleBuilder.newPodCastCategoryBundleBuilder("Alla Kategorier", "???..");
-              /*  categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.NEWS_POLITICS, 2, "Nyheter och politik", "???"));
-                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TECHNOLOGY, 2, "Teknologi", "???"));
-                categoryBundleBuilder.addCollector(new PodCastCategoryCollectorOkihika(PodCastCollectorOkihika.TopList.TV_FILM, 1, "TV och film", "???"));
-*/
+
 
                 PodCastIdCollector podCastIdCollector = new PodCastIdCollector(PodCastCatalogLanguage.SE,
                         PodCastIdCollector.Category.BUSINESS, PodCastIdCollector.Category.BUSINESS.name());
@@ -196,8 +187,9 @@ public class PodCastCatalogServiceTest {
             }
         });
 
-        PodCastCatalogService
-                .getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SE).get(3, TimeUnit.MINUTES);
+       // PodCastCatalogService
+         //       .getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SE).get(3, TimeUnit.MINUTES);
+         */
     }
 
 }

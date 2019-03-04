@@ -100,15 +100,8 @@ public class SubscriptionNotifierJob implements Job {
 
 
     private PodCast getPodCast(String podCastId) {
-
-        Optional<PodCast> castById = PodCastCatalogService.getInstance().getPodCastById(podCastId);
-        if (castById.isPresent()) {
-            return castById.get();
-        }
-
         Optional<PodCast> podCastOptional = ItunesSearchAPI.lookupPodCast(podCastId);
         return podCastOptional.orElse(null);
-
     }
 
     Optional<PodCastEpisode> getLatestPodCastEpisodeFromSourceServer(PodCast podCast) {

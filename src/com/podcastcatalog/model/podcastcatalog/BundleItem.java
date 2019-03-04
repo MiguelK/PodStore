@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 
-public abstract class BundleItem implements Serializable, Visitable {
+public abstract class BundleItem implements Serializable {
 
     private final String title;
     private final String description;

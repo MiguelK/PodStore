@@ -97,11 +97,6 @@ public class PodCast extends BundleItem {
         return new Builder();
     }
 
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
-    }
-
     public PodCastEpisode getLatestPodCastEpisode() {
         return podCastEpisodesInternal.get(0);
     }

@@ -3,10 +3,11 @@ package com.podcastcatalog.service.podcastcatalog;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.logging.Logger;
 
-public class TextSearchIndex<T> {
+public class TextSearchIndex<T> implements Serializable {
 
     private final static Logger LOG = Logger.getLogger(TextSearchIndex.class.getName());
 
@@ -58,7 +59,7 @@ public class TextSearchIndex<T> {
         inputDatas.add(new InputData(StringUtils.trimToEmpty(text).toLowerCase(), prio, targetObject));
     }
 
-    private static final int maxcharacterslengthtoindex = 7;
+    private static final int MAX_CHARACTERS_LENGTH_TO_INDEX = 7;
 
     public void buildIndex() {
 
@@ -68,7 +69,7 @@ public class TextSearchIndex<T> {
 
         for (InputData inputData : inputDatas) {
             String text = inputData.getText();
-            String inputTextPrefix = text.length() > maxcharacterslengthtoindex ? text.substring(0, maxcharacterslengthtoindex - 1) : text;
+            String inputTextPrefix = text.length() > MAX_CHARACTERS_LENGTH_TO_INDEX ? text.substring(0, MAX_CHARACTERS_LENGTH_TO_INDEX - 1) : text;
 
             List<String> allWordsInInputText = Arrays.asList(StringUtils.split(text));
 
@@ -177,7 +178,7 @@ public class TextSearchIndex<T> {
         return values;
     }
 
-    private static class Node<T> {
+    private static class Node<T> implements  Serializable {
         final boolean rootNode;
         final String term;
         private List<T> targets;
@@ -224,7 +225,7 @@ public class TextSearchIndex<T> {
         }
     }
 
-    private class InputData {
+    private class InputData implements  Serializable {
         private final String text;
         private final Prio prio;
         private final T targetObject;
@@ -248,7 +249,7 @@ public class TextSearchIndex<T> {
         }
     }
 
-    private static class TargetRelation<T> implements Comparable<TargetRelation<T>> {
+    private static class TargetRelation<T> implements Comparable<TargetRelation<T>>, Serializable {
         private final T targetObject;
         private  int rank;
 

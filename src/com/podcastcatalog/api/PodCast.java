@@ -31,17 +31,7 @@ public class PodCast {
         //BUGFIX olways fetch latest, only use cached pods if failing. Breakit pods
         Optional<com.podcastcatalog.model.podcastcatalog.PodCast>  podCastNotInMemory = ItunesSearchAPI.lookupPodCast(id);
         if (!podCastNotInMemory.isPresent()) {
-
-            Optional<com.podcastcatalog.model.podcastcatalog.PodCast> podCastInMemory = PodCastCatalogService.getInstance().getPodCastById(id);
-
-            if(podCastInMemory.isPresent()){
-                    com.podcastcatalog.model.podcastcatalog.PodCast withAllEpisodes =
-                    com.podcastcatalog.model.podcastcatalog.PodCast.createWithAllEpisodes(podCastInMemory.get());
-
-                    return Response.status(Response.Status.OK).entity(withAllEpisodes).build();
-            }
-
-            return Response.status(Response.Status.BAD_REQUEST).entity("No podcast with id= " + id + " exist in Itunes ").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("No podCast with id= " + id + " exist in Itunes ").build();
         }
 
        //FIXME Remove or clear after x minues? PodCastCatalogService.getInstance().updatePodCastIndex(podCastNotInMemory.get());
@@ -71,18 +61,12 @@ public class PodCast {
         List<String> podCastIds = Arrays.asList(StringUtils.split(StringUtils.trimToEmpty(ids), ","));
 
         for (String podCastId : podCastIds) {
-            Optional<com.podcastcatalog.model.podcastcatalog.PodCast> podCast = PodCastCatalogService.getInstance().getPodCastById(podCastId);
-
-            if (!podCast.isPresent()) {
-                podCast = ItunesSearchAPI.lookupPodCast(podCastId);
-            }
+            Optional<com.podcastcatalog.model.podcastcatalog.PodCast> podCast = ItunesSearchAPI.lookupPodCast(podCastId);
 
             if (!podCast.isPresent()) {
                 //FIXME lOG? invalid ids received?
                 continue;
             }
-
-            //PodCastCatalogService.getInstance().updatePodCastIndex(podCast.get());
 
             podCastById.put(podCast.get().getCollectionId(), podCast.get());
         }

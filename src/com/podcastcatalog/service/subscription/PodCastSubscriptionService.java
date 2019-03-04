@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 public class PodCastSubscriptionService {
 
     private static final PodCastSubscriptionService INSTANCE = new PodCastSubscriptionService();
-    private static final String SUBSCRIPTIONS_JSON_FILE = "Subscriptions.dat";
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
     private final Lock readLock = reentrantReadWriteLock.readLock();
     private final Lock writeLock = reentrantReadWriteLock.writeLock();
@@ -48,14 +47,8 @@ public class PodCastSubscriptionService {
         LOG.info("Starting PodCastSubscriptionService using account file= " + accountConfFile.getAbsolutePath());
         PushMessageClient.getInstance().configure(accountConfFile);
 
-        try {
-            subscriptionData = loadSubscribers();
-            if(subscriptionData != null){
-                LOG.info("Loaded " + subscriptionData.getSubscriptions().size());
-            }
-        } catch (IOException e) {
-            LOG.warning("Failed to load Subscribers " + e.getMessage());
-        }
+        subscriptionData = FtpOneClient.getInstance().loadSubscribers();
+        LOG.info("Loaded " + subscriptionData.getSubscriptions().size());
     }
 
     //If subscriptionData is null == file exists but not able to load.
@@ -71,88 +64,17 @@ public class PodCastSubscriptionService {
             if (response.getStatusLine().getStatusCode() == 404) {
                 LOG.info("No Subscriptions.dat file exist on server. Creating new subscriptionData");
                 this.subscriptionData = new SubscriptionData();
-                uploadToOneCom();
+                FtpOneClient.getInstance().upload(subscriptionData);
             }
 
         } catch (Exception e) {
             LOG.info("Check subscription file failed " + e.getMessage());
-
         }
-    }
-
-    SubscriptionData loadSubscribers() throws IOException {
-
-        File downloadedFile = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), SUBSCRIPTIONS_JSON_FILE);
-
-        CloseableHttpClient client = HttpClients.createDefault();
-        try (CloseableHttpResponse response = client.execute(new HttpGet("http://pods.one/Subscriptions/Subscriptions.dat"))) {
-
-            if (response.getStatusLine().getStatusCode() == 404) {
-                LOG.info("No Subscriptions.dat file exist on server");
-                return new SubscriptionData();
-            }
-
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                try (FileOutputStream outstream = new FileOutputStream(downloadedFile)) {
-                    entity.writeTo(outstream);
-                }
-
-                EntityUtils.consume(entity);
-            }
-
-            ObjectInputStream in = null;
-            FileInputStream fileIn = null;
-            try {
-                try {
-                    fileIn = new FileInputStream(downloadedFile);
-                    in = new ObjectInputStream(fileIn);
-                    return ((SubscriptionData) in.readObject());
-                } catch (IOException | ClassNotFoundException e) {
-                    LOG.log(Level.INFO, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
-                }
-
-            } finally {
-                if (in != null) {
-                    IOUtils.closeQuietly(in);
-                }
-                if (fileIn != null) {
-                    IOUtils.closeQuietly(fileIn);
-                }
-            }
-        }
-
-        return null;
     }
 
     //FIXME do in background?
     public void uploadToOneCom() {
-
-        //1# Write to temp file... subscriptions.json
-        File file = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), SUBSCRIPTIONS_JSON_FILE);
-        try {
-            // saveAsJSON(file);
-            saveAsObject(subscriptionData, file);
-            FtpFileUploader.getInstance().uploadToOneCom(file, FtpFileUploader.PATH_SUBSCRIPTION);
-        } catch (IOException e) {
-            LOG.info("Failed push message" + e.getMessage());
-        }
-    }
-
-    private void saveAsObject(Object object, File targetFile) throws IOException {
-        FileOutputStream fileOut = null;
-        ObjectOutputStream out = null;
-        try {
-            fileOut =
-                    new FileOutputStream(targetFile);
-            out = new ObjectOutputStream(fileOut);
-            out.writeObject(object);
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            IOUtils.closeQuietly(out);
-            IOUtils.closeQuietly(fileOut);
-        }
+        FtpOneClient.getInstance().upload(subscriptionData);
     }
 
     public void subscribe(String deviceToken, String podCastId) {
@@ -173,7 +95,7 @@ public class PodCastSubscriptionService {
 
             LOG.info("subscribe() subscribers= " + subscription.getSubscribers().size());
 
-            uploadToOneCom();
+            FtpOneClient.getInstance().upload(subscriptionData);
         } finally {
             writeLock.unlock();
         }
@@ -194,7 +116,7 @@ public class PodCastSubscriptionService {
 
             LOG.info("unSubscribe(), " + info);
 
-            uploadToOneCom();
+            FtpOneClient.getInstance().upload(subscriptionData);
         } finally {
             writeLock.unlock();
         }

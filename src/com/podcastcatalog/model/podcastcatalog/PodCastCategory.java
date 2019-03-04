@@ -22,9 +22,4 @@ public class PodCastCategory extends BundleItem {
     public List<PodCast> getPodCasts() {
         return podCasts;
     }
-
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
-    }
 }

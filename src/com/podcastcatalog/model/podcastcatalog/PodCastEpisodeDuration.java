@@ -79,8 +79,6 @@ public class PodCastEpisodeDuration implements Serializable{
             date = LocalTime.parse(trimmedInput, DateTimeFormatter.ISO_LOCAL_TIME);
         }
         catch (DateTimeParseException e) {
-            LOG.info("Failed to convert " + input + " to int value. Returning -1");
-
             Optional<LocalDateTime> parse =
                     DateUtil.parse(trimmedInput);
 

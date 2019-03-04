@@ -96,10 +96,6 @@ public class PodCastEpisode extends BundleItem implements Serializable {
                 '}';
     }
 
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
-    }
 
     public static Builder newBuilder() {
         return new Builder();

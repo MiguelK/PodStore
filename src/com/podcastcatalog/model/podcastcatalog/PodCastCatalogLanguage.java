@@ -10,13 +10,13 @@ import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSE;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderUS;
 
 public enum PodCastCatalogLanguage {
-    SE("SE", PodCastCatalogBuilderSE.class, true, true, true),
-    CN("CN", PodCastCatalogBuilderCN.class, false, false, true), //China
-    ES("ES", PodCastCatalogBuilderES.class, false, false, true),//Spain
-    NO("NO", PodCastCatalogBuilderNO.class, false, false, true),//Norway
-    FR("FR", PodCastCatalogBuilderFR.class, false, false, true),//France
-    DE("DE", PodCastCatalogBuilderDE.class, false, false, true),//Germany
-    US("US", PodCastCatalogBuilderUS.class, true, false, true);
+    SE("SE", PodCastCatalogBuilderSE.class, false, true, true),
+    CN("CN", PodCastCatalogBuilderCN.class, false, true, true), //China
+    ES("ES", PodCastCatalogBuilderES.class, false, true, true), //Spain
+    NO("NO", PodCastCatalogBuilderNO.class, false, true, true), //Norway
+    FR("FR", PodCastCatalogBuilderFR.class, false, true, true), //France
+    DE("DE", PodCastCatalogBuilderDE.class, false, true, true), //Germany
+    US("US", PodCastCatalogBuilderUS.class, false, true, true); //US
 
     private final String lang;
     private final Class catalogBuilder;

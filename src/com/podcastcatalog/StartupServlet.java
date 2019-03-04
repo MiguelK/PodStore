@@ -1,16 +1,14 @@
 package com.podcastcatalog;
 
+import com.podcastcatalog.model.PodCastCatalogMetaData;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
-import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
-import com.podcastcatalog.service.datastore.PodCastCatalogVersion;
 import com.podcastcatalog.service.datastore.ServiceDataStorage;
-import com.podcastcatalog.service.job.CreateLinkPages;
 import com.podcastcatalog.service.job.JobManagerService;
 import com.podcastcatalog.service.job.MemoryDumperJob;
 import com.podcastcatalog.service.job.PodCastCatalogUpdater;
 import com.podcastcatalog.service.job.SubscriptionNotifierJob;
-import com.podcastcatalog.service.job.UpdateSearchSuggestionsJob;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
+import com.podcastcatalog.service.subscription.FtpOneClient;
 import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
 import com.podcastcatalog.util.ServerInfo;
 
@@ -22,11 +20,29 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Features of PodStore-Server: (Same behavar in dev and prod except LinkPage creator)
+ * 1. Create new catalog for every lang each xxx hour
+ * 2. Upload lang zip files to one.com (fetched by App client)
+ * 3. Upload lang podcast/podcastEpisode text search index to one.com (fetched by PodStore-Server at startup)
+ * 4. Only search indexes is existing in-memory + Subscription/Subscribers
+ *
+ * Server at startup:
+ * Try load all lang search indexes into memory from one.com
+ * if index does not exists start (building process#1)
+ *
+ * Lang data stored on one.com:
+ * TextSearchIndex + podCastTitles + podCastTitlesTrending + popularSearchQueries
+ *
+ *
+ * #1 (building process)
+ * 1. Create PodCastcatalog, export to one.com
+ * 2 Index catalog, export PodCastServer to one.com
+ */
 public class StartupServlet extends HttpServlet {
 
     private final static Logger LOG = Logger.getLogger(StartupServlet.class.getName());
@@ -36,10 +52,8 @@ public class StartupServlet extends HttpServlet {
         super.init(servletConfig);
 
         ServiceDataStorage serviceDataStorageDisk = ServiceDataStorage.useDefault();
-        PodCastCatalogService.getInstance().setStorage(serviceDataStorageDisk);
 
-        System.out.println("StartupServlet....isLocalDevMode = " + ServerInfo.isLocalDevMode());
-        LOG.info("About to start PodStore POD_HOME_DIR=" + serviceDataStorageDisk.getPodDataHomeDir().getAbsolutePath());
+        LOG.info("Starting PodStore POD_HOME_DIR=" + serviceDataStorageDisk.getPodDataHomeDir().getAbsolutePath());
 
         setupPodCastSubscriptionService(servletConfig, serviceDataStorageDisk);
 
@@ -48,61 +62,37 @@ public class StartupServlet extends HttpServlet {
 
         LOG.info("Starting PodCastCatalog..., working dir= " + serviceDataStorageDisk.getPodDataHomeDir().getAbsolutePath());
 
-
-        //OPENSHIFT_APP_DNS //FIXME SE or US
         JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 3, TimeUnit.HOURS); //FIXME
       //  JobManagerService.getInstance().registerJob(new CreateLinkPages(),20,20, TimeUnit.SECONDS);
            //FIXME Memory problem max maxFeedCount == 400? ALL
-        JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 48, TimeUnit.HOURS); //FIXME
-       JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 18, TimeUnit.HOURS); //FIXME change time, remove
+      //  JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 48, TimeUnit.HOURS); //FIXME
+        JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 1, TimeUnit.MINUTES); //FIXME change time, remove
 
-        int periodSeconds = 30 * 3600;
+        JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(),0,48,TimeUnit.MINUTES);
 
-        int initialDelayOffsetSeconds = 0;
+       /* PodCastCatalogMetaData podCastCatalogMetaData = null;
         for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
 
-            if(ServerInfo.isLocalDevMode() || !language.isInMemorySearchSuggestions()) {
+            //TEST only 1
+            if(language != PodCastCatalogLanguage.ES) {
                 continue;
             }
 
-            JobManagerService.getInstance().registerJob(new UpdateSearchSuggestionsJob(language),
-                    5 + initialDelayOffsetSeconds, periodSeconds, TimeUnit.SECONDS); //FIXME change time, remove
-            initialDelayOffsetSeconds += 15;
-            periodSeconds += 10 * 60;
-        }
-
-        //FIXME prod
-        loadPodCastCatalog(PodCastCatalogLanguage.US);
-        loadPodCastCatalog(PodCastCatalogLanguage.SE);
-
-        /*if (ServerInfo.isLocalDevMode()) {
-            //Only executed locally, memory issue to have all catalogs in JVM
-
-            for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
-        //        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(language.create());
+            try {
+                podCastCatalogMetaData = FtpOneClient.getInstance().load(language);
+                LOG.info("Loaded metadata from one.com for lang=" + language);
+            } catch (IOException e) {
+                LOG.log(Level.SEVERE, "Failed loading " + language, e);
             }
 
-            PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(PodCastCatalogLanguage.SE.create());
+            if (podCastCatalogMetaData == null) {
+                LOG.info("No podCastCatalogMetaData exist on one.com. Start building PodCastCatalog language=" + language);
+                PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language.create());
 
-            PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(PodCastCatalogLanguage.SE); //.get(10,TimeUnit.SECONDS);
-
-
-            for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
-
-                if(serviceDataStorageDisk.exists(language)) {
-                    LOG.info("Zip file already exist for " + language);
-                    continue;
-                }
-
-                try {
-                    PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language); //.get(10,TimeUnit.SECONDS);
-                } catch (Exception e) {
-                    LOG.info(e.getMessage());
-                }
+            } else {
+                LOG.info("Loaded podCastCatalogMetaData from one.com.");
+                PodCastCatalogService.getInstance().register(language, podCastCatalogMetaData);
             }
-        } else {
-          loadPodCastCatalog(PodCastCatalogLanguage.US.create());
-          loadPodCastCatalog(PodCastCatalogLanguage.SE.create());
         }*/
 
         JobManagerService.getInstance().startAsync();
@@ -118,35 +108,6 @@ public class StartupServlet extends HttpServlet {
             PodCastSubscriptionService.getInstance().start(file);
         } catch (MalformedURLException e) {
             LOG.log(Level.SEVERE, "Failed loading pods-service.account.json", e);
-        }
-    }
-
-    private void loadPodCastCatalog(PodCastCatalogLanguage language) {
-
-        PodCastCatalogService.getInstance().registerPodCastCatalogBuilder(language.create());
-
-        Optional<PodCastCatalogVersion> currentVersion = ServiceDataStorage.useDefault().getCurrentVersion(language);
-
-        if (!currentVersion.isPresent()) {
-            LOG.info("No catalog exists. in homeDir=" + ServiceDataStorage.useDefault().getPodDataHomeDir().getAbsolutePath() + " for language=" + language);
-            PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language);
-            return;
-        }
-
-        LOG.info("PodCastCatalog " + currentVersion.get()
-                + " exists, loadInMemory=" + language.isInMemory()
-                + ", buildInMemoryIndex=" + language.isInMemoryIndex());
-
-        if(language.isInMemory()) {
-            LOG.info("Loading existing PodCastCatalog " + currentVersion.get() + " inMemory");
-
-            currentVersion.get().loadPodCastCatalogFromDisc(); //Load .dat file used as PodCastCatalog
-            PodCastCatalogService.getInstance().loadPodCastCatalog(currentVersion.get().getPodCastCatalog());
-        }
-
-        if(language.isInMemoryIndex()){
-            LOG.info("Building search index for existing PodCastCatalog " + currentVersion.get());
-            PodCastCatalogService.getInstance().buildIndexAsync(language);
         }
     }
 

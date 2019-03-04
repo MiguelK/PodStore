@@ -30,7 +30,7 @@
 
     if(podCastId!= null){
 
-        Optional<PodCast> podCastInMemory = PodCastCatalogService.getInstance().getPodCastById(podCastId);
+        Optional<PodCast> podCastInMemory = ItunesSearchAPI.lookupPodCast(podCastId);
 
         PodCast podCast = null;
         if(podCastInMemory.isPresent()){

@@ -4,7 +4,6 @@ package com.podcastcatalog.service.job;
 import com.google.gson.Gson;
 import com.podcastcatalog.model.podcastcatalog.Bundle;
 import com.podcastcatalog.model.podcastcatalog.BundleItem;
-import com.podcastcatalog.model.podcastcatalog.BundleItemVisitor;
 import com.podcastcatalog.model.podcastcatalog.BundleType;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
@@ -201,17 +200,17 @@ public class CreateLinkPages implements Job {
     }
 
     private List<PodCast> getPodCasts(PodCastCatalog podCastCatalog) {
-        BundleItemVisitor bundleItemVisitor = new BundleItemVisitor();
+        //BundleItemVisitor bundleItemVisitor = new BundleItemVisitor();
 
         for (Bundle bundle : podCastCatalog.getBundles()) {
             if(bundle.getBundleType() == BundleType.Category) {
                 for (BundleItem bundleItem : bundle.getBundleItems()) {
-                    bundleItem.accept(bundleItemVisitor);
+                 //   bundleItem.accept(bundleItemVisitor);
                 }
             }
         }
 
-        List<PodCast> podCasts = bundleItemVisitor.getPodCasts();
+        List<PodCast> podCasts = new ArrayList<>(); //;bundleItemVisitor.getPodCasts();
         LOG.info("podCasts=" + podCasts.size());
 
        podCasts = podCasts.size() > MAX_PODCAST ? podCasts.subList(0, MAX_PODCAST) : podCasts; //FIXME

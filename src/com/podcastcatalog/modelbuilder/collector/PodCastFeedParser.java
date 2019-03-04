@@ -102,7 +102,8 @@ public class PodCastFeedParser {
             return Optional.of(podCastBuilder.build());
 
         } catch (Exception e) {
-           //FIXME LOG.info("PodCast parse fail: Level 2 feed=" + feedURL + ", message=" + e.getMessage());
+
+            LOG.info("PodCast parse fail: Level 2 feed=" + feedURL + " message=" + e.getMessage());
         }
 
         return Optional.empty();
@@ -164,8 +165,8 @@ public class PodCastFeedParser {
 
 
         }  catch (Exception e) {
-        //    LOG.info("PodCast parse fail: Level 1, from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount + " message=" + e.getMessage());
-            return tryParseFailOver(feedURL, artworkUrl600, collectionId, maxFeedCount);
+         LOG.info("PodCast parse fail: Level 1, from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount + " message=" + e.getMessage());
+           // return tryParseFailOver(feedURL, artworkUrl600, collectionId, maxFeedCount);
         }
 
 

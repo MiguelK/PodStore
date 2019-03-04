@@ -31,28 +31,7 @@ public class PodCastCatalogTest {
         Assert.assertTrue(json.contains("\"bundleType\":\"Episode\""));
     }
 
-    @Test
-    public void visit_episodes_no_duplicates() {
-        BundleItemVisitor visitor = new BundleItemVisitor();
 
-        for (Bundle bundle : createValidPodCastCatalogSWE().getBundles()) {
-            for (BundleItem bundleItem : bundle.getBundleItems()) {
-                bundleItem.accept(visitor);
-            }
-        }
-
-
-        for (Bundle bundle : createValidPodCastCatalogSWE().getBundles()) {
-            for (BundleItem bundleItem : bundle.getBundleItems()) {
-                bundleItem.accept(visitor);
-            }
-        }
-
-        System.out.println("Visit: " + visitor.getPodCastEpisodes().size());
-        Assert.assertTrue(visitor.getPodCastEpisodes().size()==1);
-
-
-    }
 
     @Test
     public void createValid_to_JSON() {

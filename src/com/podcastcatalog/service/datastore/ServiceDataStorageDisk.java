@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.subscription.SubscriptionData;
-import com.podcastcatalog.service.subscription.FtpFileUploader;
+import com.podcastcatalog.service.subscription.FtpOneClient;
 import com.podcastcatalog.util.ServerInfo;
 import com.podcastcatalog.util.ZipFile;
 import org.apache.commons.io.FileUtils;
@@ -99,13 +99,20 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
 
         PodCastCatalogVersion versionDirectory = createNewVersionDirectory(podCastCatalog.getPodCastCatalogLanguage());
 
-        LOG.info("Saving PodCastCatalog to " + versionDirectory.getLangDat().getAbsolutePath());
+        File dataFile = versionDirectory.getLangDat();
+        LOG.info("Saving PodCastCatalog to " + dataFile.getAbsolutePath());
 
-        saveAsObject(podCastCatalog, versionDirectory.getLangDat());
+        saveAsObject(podCastCatalog, dataFile);
+
+        File dataFileZipped = new File(dataFile.getAbsolutePath() + ".zip");
+        ZipFile.zip(dataFile, dataFileZipped);
+        LOG.info("Uploading zipped data file to one.com " + dataFileZipped.getAbsolutePath());
+
+        FtpOneClient.getInstance().uploadToOneCom(dataFileZipped, FtpOneClient.PATH_LANGUAGE);
 
         File json = saveAsJSON(podCastCatalog, versionDirectory);
 
-        if(ServerInfo.isLocalDevMode()) { //FXME config
+        if(ServerInfo.isLocalDevMode()) { //FXME config, places all in root folder.
             File devFile = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + versionDirectory.getLangJSONZipped().getName());
 
             try {
@@ -120,7 +127,7 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
 
         ZipFile.zip(json, versionDirectory.getLangJSONZipped());
 
-        FtpFileUploader.getInstance().uploadToOneCom(versionDirectory.getLangJSONZipped(), FtpFileUploader.PATH_LANGUAGE);
+        FtpOneClient.getInstance().uploadToOneCom(versionDirectory.getLangJSONZipped(), FtpOneClient.PATH_LANGUAGE);
     }
 
     @Override

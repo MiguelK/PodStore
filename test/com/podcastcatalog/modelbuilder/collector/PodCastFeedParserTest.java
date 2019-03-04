@@ -1,5 +1,8 @@
 package com.podcastcatalog.modelbuilder.collector;
 
+import com.icosillion.podengine.exceptions.InvalidFeedException;
+import com.icosillion.podengine.exceptions.MalformedFeedException;
+import com.icosillion.podengine.models.Podcast;
 import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
@@ -37,6 +40,30 @@ public class PodCastFeedParserTest {
             }
         }
     }
+
+
+    @Test(groups = TestUtil.SLOW_TEST)
+    public void validURL() throws MalformedURLException, InvalidFeedException, MalformedFeedException {
+
+        String rss = "http://scriptnotes.net/rss";
+        rss = "http://audioboom.com/channels/4829841.rss";
+        rss = "http://rss.art19.com/the-daily";
+
+        Optional<PodCast> podCast1 = PodCastFeedParser.tryParseFailOver(new URL(rss), artworkUrl600, "4444", 400);
+
+        Podcast podcast = new Podcast(new URL(rss));
+
+        System.out.println("GGGG "  + podCast1.get() + ", podcast=" + podcast);
+        //http://scriptnotes.net/rss
+        PodCast podCast = PodCastFeedParser.parse(new URL(rss), artworkUrl600, "22233").get();
+
+        for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodesInternal()) {
+            Assert.assertNotNull(podCastEpisode.getTitle());
+        }
+
+        System.out.println("Episodes " + podCast.getPodCastEpisodesInternal().size());
+    }
+
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void parse_episode_duration() throws MalformedURLException {

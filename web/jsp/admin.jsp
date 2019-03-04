@@ -1,7 +1,6 @@
 <%@ page import="com.podcastcatalog.service.podcastcatalog.PodCastCatalogService" %>
 <%@ page import="com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage" %>
 <%@ page import="javax.ws.rs.core.Response" %>
-<%@ page import="com.podcastcatalog.util.StringFormatter" %>
 <%@ page import="com.podcastcatalog.model.subscription.Subscription" %>
 <%@ page import="com.podcastcatalog.service.subscription.PodCastSubscriptionService" %>
 <%@ page import="com.podcastcatalog.model.podcastcatalog.PodCastCatalog" %><%--
@@ -29,27 +28,9 @@
     }
 %>
 
-PodCastCatalog SWE <br>
-<%=StringFormatter.format(PodCastCatalogLanguage.SE)%>
-<br>
-
-PodCastCatalog US <br>
-<%=StringFormatter.format(PodCastCatalogLanguage.US)%>
-<br>
-
 <tr>
     <td>SubscriptionService</td>
 </tr>
-
-<table>
-    <tr>
-        <td>PodCastCatalogIndex</td>
-        <td><%= PodCastCatalogService.getInstance().getPodCastCatalogIndexStatus() %>
-        </td>
-    </tr>
-
-
-</table>
 
 <br>
 
