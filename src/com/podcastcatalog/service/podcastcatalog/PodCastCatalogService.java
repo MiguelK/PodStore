@@ -55,6 +55,44 @@ public class PodCastCatalogService {
         }
     }
 
+    private PodCastCatalogMetaData getPodCastCatalogMetaData(PodCastCatalogLanguage podCastCatalogLanguage) {
+        readLock.lock();
+        try {
+            return podCastCatalogMetaDataLang.get(podCastCatalogLanguage);
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    public List<PodCastTitle> getPodCastTitles(PodCastCatalogLanguage podCastCatalogLanguage) {
+
+        PodCastCatalogMetaData podCastCatalogMetaData = getPodCastCatalogMetaData(podCastCatalogLanguage);
+        if(podCastCatalogMetaData == null) {
+            return Collections.emptyList();
+        }
+        return podCastCatalogMetaData.podCastTitles;
+    }
+
+    public List<PodCastTitle> getPodCastTitlesTrending(PodCastCatalogLanguage podCastCatalogLanguage) {
+
+        PodCastCatalogMetaData podCastCatalogMetaData = getPodCastCatalogMetaData(podCastCatalogLanguage);
+        if(podCastCatalogMetaData == null) {
+            return Collections.emptyList();
+        }
+        return podCastCatalogMetaData.podCastTitlesTrending;
+    }
+
+    public List<SearchTerm> getPopularSearchTerms(PodCastCatalogLanguage podCastCatalogLanguage) {
+
+        PodCastCatalogMetaData podCastCatalogMetaData = getPodCastCatalogMetaData(podCastCatalogLanguage);
+        if(podCastCatalogMetaData == null) {
+            return Collections.emptyList();
+        }
+        return podCastCatalogMetaData.popularSearchQueries;
+    }
+
+
+
     public PodCastCatalog getPodCastCatalog(PodCastCatalogLanguage podCastCatalogLanguage) {
         readLock.lock();
         try {

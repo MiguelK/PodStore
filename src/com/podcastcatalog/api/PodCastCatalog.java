@@ -60,18 +60,12 @@ public class PodCastCatalog {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid query parameter " + query).build();
         }
 
-
         List<ResultItem> podCastEpisodes = PodCastCatalogService.getInstance().search(podCastCatalogLanguage, queryParam);
-
 
         if(podCastEpisodes.size() == 1 && query.length() > 5){
             LOG.info("Search=" + query + ", lang=" + lang + ", result=" + podCastEpisodes.size());
-
-            //SearchSuggestionService.getInstance().addPopularSearchTerm(podCastCatalogLanguage, query);
-
             PodCastCatalogService.getInstance().addPopularSearchTerm(podCastCatalogLanguage, query);
         }
-
 
         SearchResult searchResult = new SearchResult(podCastEpisodes);
 
@@ -88,7 +82,7 @@ public class PodCastCatalog {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid lang parameter " + lang).build();
         }
 
-        List<PodCastTitle> podCastTitles = SearchSuggestionService.getInstance().getPodCastTitles(podCastCatalogLanguage);
+        List<PodCastTitle> podCastTitles = PodCastCatalogService.getInstance().getPodCastTitles(podCastCatalogLanguage);
 
         return Response.status(Response.Status.OK).entity(podCastTitles).build();
     }
@@ -103,7 +97,7 @@ public class PodCastCatalog {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid lang parameter " + lang).build();
         }
 
-        List<PodCastTitle> podCastTitlesTrending = SearchSuggestionService.getInstance().getPodCastTitlesTrending(podCastCatalogLanguage);
+        List<PodCastTitle> podCastTitlesTrending =  PodCastCatalogService.getInstance().getPodCastTitlesTrending(podCastCatalogLanguage);
 
         return Response.status(Response.Status.OK).entity(podCastTitlesTrending).build();
     }
@@ -118,7 +112,8 @@ public class PodCastCatalog {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid lang parameter " + lang).build();
         }
 
-        List<SearchTerm> popularSearchTerms = SearchSuggestionService.getInstance().getPopularSearchTerm(podCastCatalogLanguage);
+
+        List<SearchTerm> popularSearchTerms = PodCastCatalogService.getInstance().getPopularSearchTerms(podCastCatalogLanguage);
 
         return Response.status(Response.Status.OK).entity(popularSearchTerms).build();
     }

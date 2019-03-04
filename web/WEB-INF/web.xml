@@ -39,8 +39,6 @@
     <welcome-file-list>
         <welcome-file>/jsp/play.jsp</welcome-file>
 
-
-
     </welcome-file-list>
 
 </web-app>
