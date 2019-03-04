@@ -48,6 +48,9 @@ public class PodCastFeedParserTest {
         String rss = "http://scriptnotes.net/rss";
         rss = "http://audioboom.com/channels/4829841.rss";
         rss = "http://rss.art19.com/the-daily";
+        rss = "http://howtofupanairport.libsyn.com/rss,expectedEpisodeCount=-1";
+        rss = "http://rss.acast.com/forklart";
+        //http://rss.acast.com/ulost
 
         Optional<PodCast> podCast1 = PodCastFeedParser.tryParseFailOver(new URL(rss), artworkUrl600, "4444", 400);
 

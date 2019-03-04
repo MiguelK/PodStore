@@ -39,12 +39,12 @@ import java.util.logging.Logger;
 
 public class FtpOneClient {
 
-    public static final String PATH_SUBSCRIPTION = "/Subscriptions/";
+    private static final String PATH_SUBSCRIPTION = "/Subscriptions/";
     public static final String PATH_LANGUAGE = "/language/";
 
     private static final String SUBSCRIPTIONS_JSON_FILE = "Subscriptions.dat";
-    private static final String POD_CAST_CATALOG_META_DATA_FILE = "-MetaData.dat";
-    public static final String PODS_ONE_HOST_NAME = "http://pods.one";
+    private static final String POD_CAST_CATALOG_META_DATA_FILE = "_MetaData.dat";
+    private static final String PODS_ONE_HOST_NAME = "http://pods.one";
 
     private static FtpOneClient INSTANCE = new FtpOneClient();
 
