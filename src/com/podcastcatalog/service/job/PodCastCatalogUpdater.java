@@ -18,19 +18,19 @@ public class PodCastCatalogUpdater implements Job {
 
         try {
 
-            LOG.info("PodCastCatalogUpdater running...");
+            LOG.info("PodCastCatalogUpdater running..." + Thread.currentThread().getName());
 
             PodCastCatalogMetaData podCastCatalogMetaData = null;
             for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
 
                 //TEST only 1
-                if (language != PodCastCatalogLanguage.NO) {
+                if (language == PodCastCatalogLanguage.CN) {
                     continue;
                 }
 
                 try {
                     podCastCatalogMetaData = FtpOneClient.getInstance().load(language);
-                    LOG.info("Loaded metadata from one.com for lang=" + language);
+                    LOG.info("Loaded metadata from one.com for lang=" + language + ",podCastCatalogMetaData=" +podCastCatalogMetaData);
                 } catch (IOException e) {
                     LOG.log(Level.SEVERE, "Failed loading " + language, e);
                 }
@@ -39,7 +39,6 @@ public class PodCastCatalogUpdater implements Job {
                     PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language.create());
 
                 } else {
-                    LOG.info("Loaded podCastCatalogMetaData from one.com.");
                     PodCastCatalogService.getInstance().register(language, podCastCatalogMetaData);
                 }
             }

@@ -35,11 +35,9 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="feed4j-1" level="project" />
     <orderEntry type="library" name="jsoup-1.9" level="project" />
     <orderEntry type="library" name="commons-io-2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Jersey-2.2" level="project" />
-    <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Java EE 6-Java EE 6" level="project" />
     <orderEntry type="library" name="commons-lang3-3.4" level="project" />
     <orderEntry type="library" name="podengine-2.2" level="project" />
     <orderEntry type="library" name="httpclient" level="project" />
@@ -52,5 +50,6 @@
     <orderEntry type="library" name="google-api-client-appengine-1.23.0" level="project" />
     <orderEntry type="library" name="google-api-client-1.23.0 (2)" level="project" />
     <orderEntry type="library" name="commons-net-3.6" level="project" />
+    <orderEntry type="library" name="dom4j-2.1.1" level="project" />
   </component>
 </module>

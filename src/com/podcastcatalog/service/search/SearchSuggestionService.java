@@ -2,7 +2,6 @@ package com.podcastcatalog.service.search;
 
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastsearch.PodCastTitle;
-import it.sauronsoftware.feed4j.bean.RawElement;
 
 import java.util.ArrayList;
 import java.util.Collections;

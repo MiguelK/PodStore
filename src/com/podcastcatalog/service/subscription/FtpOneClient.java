@@ -62,7 +62,7 @@ public class FtpOneClient {
 
 
     //Upload SubscriptionData dat file used by this server
-    void upload(SubscriptionData subscriptionData)  {
+    synchronized void  upload(SubscriptionData subscriptionData)  {
         LOG.info("upload SubscriptionData to server ");
 
         File file = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), SUBSCRIPTIONS_JSON_FILE);
@@ -75,7 +75,7 @@ public class FtpOneClient {
     }
 
     //Upload JSON zip file used by App Client
-    public void upload(PodCastCatalog podCastCatalog, PodCastCatalogLanguage lang)  {
+    synchronized public void upload(PodCastCatalog podCastCatalog, PodCastCatalogLanguage lang)  {
         LOG.info("upload PodCastCatalog to server " + lang);
 
         File langJSON = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), lang.name() + ".json");
@@ -92,7 +92,7 @@ public class FtpOneClient {
     }
 
     //Upload metaData dat zip file used by this server when start/restart
-    public void upload(PodCastCatalogMetaData podCastCatalogMetaData, PodCastCatalogLanguage lang)  {
+    synchronized public void upload(PodCastCatalogMetaData podCastCatalogMetaData, PodCastCatalogLanguage lang)  {
 
         String fileName = lang.name() + POD_CAST_CATALOG_META_DATA_FILE;
 
@@ -108,7 +108,7 @@ public class FtpOneClient {
         }
     }
 
-    SubscriptionData loadSubscribers()  {
+    synchronized SubscriptionData loadSubscribers()  {
         File downloadedFile = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), SUBSCRIPTIONS_JSON_FILE);
 
         try {
@@ -122,10 +122,10 @@ public class FtpOneClient {
     }
 
 
-    public PodCastCatalogMetaData load(PodCastCatalogLanguage lang) throws IOException {
+    synchronized public PodCastCatalogMetaData load(PodCastCatalogLanguage lang) throws IOException {
 
         String fileName = lang.name() + POD_CAST_CATALOG_META_DATA_FILE;
-        File downloadedFile = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), lang.name());
+        File downloadedFile = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), fileName);
         try {
             return (PodCastCatalogMetaData)loadFromServer(downloadedFile, PODS_ONE_HOST_NAME + PATH_LANGUAGE + fileName);
         } catch (Exception e) {
@@ -135,7 +135,7 @@ public class FtpOneClient {
     }
 
 
-    public void uploadToOneCom(File sourceFile, String serverPath) {
+    synchronized public void uploadToOneCom(File sourceFile, String serverPath) {
         try {
             LOG.info("Uploading " + sourceFile.getName() + "to " + serverPath);
             FileTask fileTask = new FileTask(sourceFile, serverPath);
@@ -147,6 +147,10 @@ public class FtpOneClient {
     }
 
     private Object loadFromServer(File downloadedFile, String requestURL) throws IOException {
+
+
+        downloadedFile.delete();
+
         CloseableHttpClient client = HttpClients.createDefault();
         try (CloseableHttpResponse response = client.execute(new HttpGet(requestURL))) {
 
@@ -171,7 +175,7 @@ public class FtpOneClient {
                     fileIn = new FileInputStream(downloadedFile);
                     in = new ObjectInputStream(fileIn);
                     return  in.readObject();
-                } catch (IOException | ClassNotFoundException e) {
+                } catch (Exception e) {
                     LOG.log(Level.INFO, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
                 }
 

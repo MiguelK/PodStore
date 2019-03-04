@@ -7,10 +7,7 @@ import com.icosillion.podengine.models.Podcast;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeDuration;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeType;
-import com.podcastcatalog.modelbuilder.collector.PodCastFeedParser;
 import com.podcastcatalog.util.DateUtil;
-import it.sauronsoftware.feed4j.bean.FeedItem;
-import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
 import java.time.LocalDateTime;

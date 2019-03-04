@@ -16,6 +16,7 @@
           <element id="library" level="project" name="google-api-client-appengine-1.23.0" />
           <element id="library" level="project" name="google-api-client-1.23.0 (2)" />
           <element id="library" level="project" name="commons-net-3.6" />
+          <element id="library" level="project" name="dom4j-2.1.1" />
         </element>
       </element>
     </root>
