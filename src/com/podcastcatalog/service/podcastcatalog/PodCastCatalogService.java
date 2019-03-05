@@ -161,7 +161,7 @@ public class PodCastCatalogService {
         //FIXME Sort algoritm? limit 5 etc...
         List<ResultItem> resultItems = new ArrayList<>();
 
-        String encodedQueryParam = null;
+        String encodedQueryParam;
         try {
             encodedQueryParam = URLEncoder.encode(queryParam, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -182,6 +182,9 @@ public class PodCastCatalogService {
                 List<ResultItem> result = podCastCatalogMetaData.textSearchIndex.lookup(queryParam);
                 resultItems.addAll(result);
             }
+
+            Collections.sort(resultItems, ResultItem.SORT_BY_POD_CAST_NAME);
+
             return resultItems;
         } finally {
             readLock.unlock();
