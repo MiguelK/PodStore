@@ -1,6 +1,7 @@
 package com.podcastcatalog;
 
-import com.podcastcatalog.service.datastore.ServiceDataStorage;
+import com.podcastcatalog.service.datastore.LocatorProduction;
+import com.podcastcatalog.service.datastore.ServiceDataStorageDisk;
 import com.podcastcatalog.service.job.JobManagerService;
 import com.podcastcatalog.service.job.MemoryDumperJob;
 import com.podcastcatalog.service.job.PodCastCatalogUpdater;
@@ -46,16 +47,15 @@ public class StartupServlet extends HttpServlet {
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
-        ServiceDataStorage serviceDataStorageDisk = ServiceDataStorage.useDefault();
 
-        LOG.info("Starting PodStore POD_HOME_DIR=" + serviceDataStorageDisk.getPodDataHomeDir().getAbsolutePath());
+        LOG.info("Starting PodStore POD_HOME_DIR=" + LocatorProduction.getInstance().getPodDataHomeDirectory().getAbsolutePath());
 
-        setupPodCastSubscriptionService(servletConfig, serviceDataStorageDisk);
+        setupPodCastSubscriptionService(servletConfig);
 
         //Important for FeedParser, could cause 403 otherwise.
         System.setProperty("http.agent", "Chrome");
 
-        LOG.info("Starting PodCastCatalog..., working dir= " + serviceDataStorageDisk.getPodDataHomeDir().getAbsolutePath());
+        LOG.info("Starting PodCastCatalog..., working dir= " + LocatorProduction.getInstance().getPodDataHomeDirectory().getAbsolutePath());
 
         JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 3, TimeUnit.HOURS); //FIXME
         //  JobManagerService.getInstance().registerJob(new CreateLinkPages(),20,20, TimeUnit.SECONDS);
@@ -66,10 +66,10 @@ public class StartupServlet extends HttpServlet {
         JobManagerService.getInstance().startAsync();
     }
 
-    private void setupPodCastSubscriptionService(ServletConfig servletConfig, ServiceDataStorage serviceDataStorageDisk) {
+    private void setupPodCastSubscriptionService(ServletConfig servletConfig) {
         try {
 
-            File temp = new File(serviceDataStorageDisk.getPodDataHomeDir(), "temp");
+            File temp = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), "temp");
             temp.mkdirs();
             String accountFile = servletConfig.getServletContext().getResource("/WEB-INF/pods-service.account.json").getFile();
             File file = new File(accountFile);

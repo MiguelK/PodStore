@@ -63,7 +63,13 @@ public class ItunesSearchAPITest {
 
         Set<String> ids = new HashSet<>();
         for (PodCastEpisode episode : episodes) {
-            Assert.assertFalse(ids.contains(episode.getId()));
+            boolean contains = ids.contains(episode.getId());
+            if(contains) {
+                System.out.println("Duplicate=" + episode.getId());
+            }
+            Assert.assertFalse(contains);
+
+            ids.forEach(s -> System.out.println(s));
             ids.add(episode.getId());
         }
 

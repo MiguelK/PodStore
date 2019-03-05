@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
-public class ServiceDataStorageDisk implements ServiceDataStorage {
+public class ServiceDataStorageDisk  {
     private final static Logger LOG = Logger.getLogger(ServiceDataStorageDisk.class.getName());
 
     //private static final Gson GSON = new Gson();
@@ -29,7 +29,6 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
     private final File podDataHomeDir;
     private static final String SUBSCRIPTION_DATA_FILE_NAME = "SubscriptionData.dat";
 
-    private final File subscriptionDataFile;
 
     ServiceDataStorageDisk() {
         this(new LocatorProduction().getPodDataHomeDirectory());
@@ -52,13 +51,13 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
             }
         }
 
-        File subscriptionService = new File(podDataHomeDir, "SubscriptionService");
+     /*   File subscriptionService = new File(podDataHomeDir, "SubscriptionService");
 
         if (!subscriptionService.exists()) {
             subscriptionService.mkdirs();
         }
 
-        subscriptionDataFile = new File(subscriptionService, SUBSCRIPTION_DATA_FILE_NAME);
+        subscriptionDataFile = new File(subscriptionService, SUBSCRIPTION_DATA_FILE_NAME);*/
     }
 
 
@@ -70,221 +69,12 @@ public class ServiceDataStorageDisk implements ServiceDataStorage {
 
     }
 
-    @Override
-    public SubscriptionData loadSubscriptionData() {
-        SubscriptionData load = load(subscriptionDataFile, SubscriptionData.class);
 
-        if (load == null) {
-            return new SubscriptionData();
-        }
-        return load;
-    }
-
-    @Override
-    public void save(SubscriptionData subscriptionData) {
-        saveAsObject(subscriptionData, subscriptionDataFile);
-    }
 
     public File getPodDataHomeDir() {
         return podDataHomeDir;
     }
 
-    @Override
-    public File getSubscriptionDataFile() {
-        return subscriptionDataFile;
-    }
-
-    @Override
-    public void save(PodCastCatalog podCastCatalog) {
-
-        PodCastCatalogVersion versionDirectory = createNewVersionDirectory(podCastCatalog.getPodCastCatalogLanguage());
-
-        File dataFile = versionDirectory.getLangDat();
-        LOG.info("Saving PodCastCatalog to " + dataFile.getAbsolutePath());
-
-        saveAsObject(podCastCatalog, dataFile);
-
-        File dataFileZipped = new File(dataFile.getAbsolutePath() + ".zip");
-        ZipFile.zip(dataFile, dataFileZipped);
-        LOG.info("Uploading zipped data file to one.com " + dataFileZipped.getAbsolutePath());
-
-        FtpOneClient.getInstance().uploadToOneCom(dataFileZipped, FtpOneClient.PATH_LANGUAGE);
-
-        File json = saveAsJSON(podCastCatalog, versionDirectory);
-
-        if(ServerInfo.isLocalDevMode()) { //FXME config, places all in root folder.
-            File devFile = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + versionDirectory.getLangJSONZipped().getName());
-
-            try {
-                devFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            LOG.info("Save for local " + devFile.getAbsolutePath());
-            ZipFile.zip(json, devFile);
-        }
-
-        ZipFile.zip(json, versionDirectory.getLangJSONZipped());
-
-        FtpOneClient.getInstance().uploadToOneCom(versionDirectory.getLangJSONZipped(), FtpOneClient.PATH_LANGUAGE);
-    }
-
-    @Override
-    public File getCatalogVersionHomeDirectory(PodCastCatalogLanguage language) {
-
-        File catalogPath = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + language.name());
-
-        if(!catalogPath.exists()) {
-            throw new IllegalStateException("Unknown lang " + language + " dir does not exist " + catalogPath);
-        }
-
-        return catalogPath;
-    }
-
-
-    @Override
-    public void deleteAll() {
-
-        for (PodCastCatalogLanguage lang : PodCastCatalogLanguage.values()) {
-            File catalogPath = new File(podDataHomeDir, "PodCastCatalogVersions" + File.separator + lang.name());
-
-            if (!catalogPath.exists()) {
-                continue;
-            }
-            try {
-                FileUtils.deleteDirectory(catalogPath);
-             } catch (IOException e) {
-                e.printStackTrace();//FIXME
-            }
-        }
-    }
-
-
-    public Optional<PodCastCatalogVersion> getCurrentVersion(PodCastCatalogLanguage language) {
-        List<PodCastCatalogVersion> allVersions = getAllVersions(language);
-
-        if (allVersions.isEmpty()) {
-            return Optional.empty();
-        }
-
-        PodCastCatalogVersion podCastCatalogVersion = allVersions.get(0);
-
-        if(podCastCatalogVersion.getLangDat().length() <= 0) {
-            return Optional.empty();
-        }
-
-        return Optional.of(podCastCatalogVersion);
-    }
-
-
-    public List<PodCastCatalogVersion> getAllVersions(PodCastCatalogLanguage castCatalogLanguage) {
-
-        List<PodCastCatalogVersion> allVersions = new ArrayList<>();
-        List<File> latestVersionDirectories = getVersionDirectories(castCatalogLanguage);
-
-        for (File latestVersionDirectory : latestVersionDirectories) {
-            allVersions.add(PodCastCatalogVersion.load(latestVersionDirectory, castCatalogLanguage));
-        }
-        return allVersions;
-    }
-
-
-    private List<File> getVersionDirectories(PodCastCatalogLanguage language) {
-
-        File catalogVersionHomeDir = getCatalogVersionHomeDirectory(language);
-
-        List<File> files = new ArrayList<>();
-
-        File[] subdirs = catalogVersionHomeDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
-        if (subdirs == null) {
-            return Collections.emptyList();
-        }
-
-        IntStream intStream = Arrays.stream(subdirs).filter(this::isVersionDirectory).mapToInt(m ->
-                NumberUtils.toInt(m.getName()));//.sorted().toArray();
-
-        List<Integer> v = intStream
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-
-        Collections.reverse(v);
-
-        for (Integer version : v) {
-            File file = new File(catalogVersionHomeDir, String.valueOf(version));
-            files.add(file);
-        }
-
-
-        return files;
-    }
-
-    private PodCastCatalogVersion createNewVersionDirectory(PodCastCatalogLanguage podCastCatalogLanguage) {
-        File catalogVersionHomeDir = getCatalogVersionHomeDirectory(podCastCatalogLanguage);
-
-        File[] subdirs = catalogVersionHomeDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
-
-        int nextVersionNumber = 1;
-        if (subdirs != null) {
-
-            OptionalInt max = Arrays.stream(subdirs).filter(this::isVersionDirectory).mapToInt(m ->
-                    NumberUtils.toInt(m.getName())).max();
-
-            if (max.isPresent()) {
-                nextVersionNumber = max.getAsInt() + 1;
-            }
-        }
-
-        File file = new File(catalogVersionHomeDir, String.valueOf(nextVersionNumber));
-        file.mkdirs();//FIXME
-
-        return PodCastCatalogVersion.create(file, podCastCatalogLanguage);
-    }
-
-    private boolean isVersionDirectory(File e) {
-        int i = NumberUtils.toInt(e.getName(), -1);
-        return i != -1;
-    }
-
-    private <T> T load(File sourceFile, Class<T> sourceType) {
-
-        ObjectInputStream in = null;
-        FileInputStream fileIn = null;
-        try {
-            try {
-                fileIn = new FileInputStream(sourceFile);
-                in = new ObjectInputStream(fileIn);
-                return ((T) in.readObject());
-            } catch (IOException | ClassNotFoundException e) {
-                LOG.log(Level.INFO, "Unable to load object=" + sourceType + " from=" + sourceFile.getAbsolutePath(), e.getMessage());
-            }
-
-        } finally {
-            if (in != null) {
-                IOUtils.closeQuietly(in);
-            }
-            if (fileIn != null) {
-                IOUtils.closeQuietly(fileIn);
-            }
-        }
-        return null;
-    }
-
-    private void saveAsObject(Object object, File targetFile) {
-        FileOutputStream fileOut = null;
-        ObjectOutputStream out = null;
-        try {
-            fileOut =
-                    new FileOutputStream(targetFile);
-            out = new ObjectOutputStream(fileOut);
-            out.writeObject(object);
-        } catch (IOException e) {
-            e.printStackTrace();
-            LOG.log(Level.SEVERE, "Unable to save object " + object + " to = " + targetFile.getAbsolutePath(), e);
-        } finally {
-            IOUtils.closeQuietly(out);
-            IOUtils.closeQuietly(fileOut);
-        }
-    }
 
     private static final Gson GSON;// = new Gson();
 

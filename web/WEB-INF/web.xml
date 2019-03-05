@@ -16,21 +16,12 @@
         <load-on-startup>1</load-on-startup>
 </servlet>
 -->
-    <servlet-mapping>
-        <servlet-name>PodCastCatalogServlet</servlet-name>
-        <url-pattern>/api/jsonfile</url-pattern>
-    </servlet-mapping>
-
 
     <servlet>
         <servlet-name>StartupServlet</servlet-name>
         <servlet-class>com.podcastcatalog.StartupServlet</servlet-class>
 
         <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet>
-        <servlet-name>PodCastCatalogServlet</servlet-name>
-        <servlet-class>com.podcastcatalog.api.PodCastCatalogServlet</servlet-class>
     </servlet>
 
 

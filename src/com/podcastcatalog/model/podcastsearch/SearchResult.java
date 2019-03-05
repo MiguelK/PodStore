@@ -1,5 +1,7 @@
 package com.podcastcatalog.model.podcastsearch;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class SearchResult {
@@ -8,7 +10,10 @@ public class SearchResult {
 
 
     public SearchResult(List<ResultItem> resultItems) {
-        this.resultItems = resultItems;
+
+        //Remove duplicates
+        HashSet<ResultItem> resultItems1 = new HashSet<>(resultItems);
+        this.resultItems = new ArrayList<>(resultItems1);
     }
 
     public List<ResultItem> getResultItems() {

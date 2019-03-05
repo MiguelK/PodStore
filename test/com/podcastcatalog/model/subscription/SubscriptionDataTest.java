@@ -1,7 +1,6 @@
 package com.podcastcatalog.model.subscription;
 
 import com.podcastcatalog.TestUtil;
-import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -12,7 +11,7 @@ public class SubscriptionDataTest {
         TestUtil.assertSerializable(new SubscriptionData());
     }
 
-    @Test
+   /* @Test
     public void save_load_equal() {
         ServiceDataStorage storageDisk = TestUtil.createForTest();
 
@@ -40,7 +39,7 @@ public class SubscriptionDataTest {
         Assert.assertEquals(a,b);
     }
 
-   /* @Test
+    @Test
     public void equal_SubscriptionData_same_subscriber() {
         SubscriptionData a = new SubscriptionData();
         a.addSubscription(new Subscription("123"));

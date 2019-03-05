@@ -8,7 +8,7 @@ import com.podcastcatalog.model.PodCastCatalogMetaData;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.subscription.SubscriptionData;
-import com.podcastcatalog.service.datastore.ServiceDataStorage;
+import com.podcastcatalog.service.datastore.LocatorProduction;
 import com.podcastcatalog.service.datastore.ServiceDataStorageDisk;
 import com.podcastcatalog.util.ZipFile;
 import org.apache.commons.io.IOUtils;
@@ -28,7 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +67,7 @@ public class FtpOneClient {
     synchronized void  upload(SubscriptionData subscriptionData)  {
         LOG.info("upload SubscriptionData to server ");
 
-        File file = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), SUBSCRIPTIONS_JSON_FILE);
+        File file = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), SUBSCRIPTIONS_JSON_FILE);
         try {
             saveAsObject(subscriptionData, file);
             FtpOneClient.getInstance().uploadToOneCom(file, PATH_SUBSCRIPTION);
@@ -78,8 +80,8 @@ public class FtpOneClient {
     synchronized public void upload(PodCastCatalog podCastCatalog, PodCastCatalogLanguage lang)  {
         LOG.info("upload PodCastCatalog to server " + lang);
 
-        File langJSON = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), lang.name() + ".json");
-        File jsonZipped = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), lang.name() + "_json.zip");
+        File langJSON = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), lang.name() + ".json");
+        File jsonZipped = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), lang.name() + "_json.zip");
 
         try {
             saveAsJSON(podCastCatalog, langJSON);
@@ -96,7 +98,7 @@ public class FtpOneClient {
 
         String fileName = lang.name() + POD_CAST_CATALOG_META_DATA_FILE;
 
-        File file = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), fileName);
+        File file = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), fileName);
         LOG.info("Start uploading PodCastCatalogMetaData to server " + fileName
                 + " " + podCastCatalogMetaData);
 
@@ -109,7 +111,7 @@ public class FtpOneClient {
     }
 
     synchronized SubscriptionData loadSubscribers()  {
-        File downloadedFile = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), SUBSCRIPTIONS_JSON_FILE);
+        File downloadedFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), SUBSCRIPTIONS_JSON_FILE);
 
         try {
             return (SubscriptionData)loadFromServer(downloadedFile, PODS_ONE_HOST_NAME + PATH_SUBSCRIPTION +
@@ -125,7 +127,7 @@ public class FtpOneClient {
     synchronized public PodCastCatalogMetaData load(PodCastCatalogLanguage lang) throws IOException {
 
         String fileName = lang.name() + POD_CAST_CATALOG_META_DATA_FILE;
-        File downloadedFile = new File(ServiceDataStorage.useDefault().getPodDataHomeDir(), fileName);
+        File downloadedFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), fileName);
         try {
             return (PodCastCatalogMetaData)loadFromServer(downloadedFile, PODS_ONE_HOST_NAME + PATH_LANGUAGE + fileName);
         } catch (Exception e) {

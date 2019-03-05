@@ -9,7 +9,7 @@ import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
-import com.podcastcatalog.service.datastore.ServiceDataStorage;
+import com.podcastcatalog.service.datastore.LocatorProduction;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.util.DynamicLinkIndex;
 import com.podcastcatalog.util.ServerInfo;
@@ -227,7 +227,7 @@ public class CreateLinkPages implements Job {
     }
 
     private File targetLinkPageRootDir() {
-        File podDataHomeDir = ServiceDataStorage.useDefault().getPodDataHomeDir();
+        File podDataHomeDir = LocatorProduction.getInstance().getPodDataHomeDirectory();
         File linkPagesDir = new File(podDataHomeDir, "LinkPages");
         if(!linkPagesDir.exists()) {
             linkPagesDir.mkdirs();

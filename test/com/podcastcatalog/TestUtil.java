@@ -1,9 +1,6 @@
 package com.podcastcatalog;
 
 import com.google.gson.Gson;
-import com.podcastcatalog.service.datastore.LocatorProduction;
-import com.podcastcatalog.service.datastore.ServiceDataStorage;
-import com.podcastcatalog.service.datastore.ServiceDataStorageDisk;
 import org.apache.commons.lang3.ClassUtils;
 import org.testng.Assert;
 
@@ -33,7 +30,7 @@ public class TestUtil {
         Assert.assertTrue(GSON.toJson(obj).contains(json));
     }
 
-    public static ServiceDataStorage createForTest() {
+    /*public static ServiceDataStorage createForTest() {
         LocatorProduction production = new LocatorProduction();
         File f = new File(production.getPodDataHomeDirectory().getParentFile(), "POD_DATA_HOME_TEST");
         if (!f.exists()) {
@@ -42,5 +39,5 @@ public class TestUtil {
 
 
         return new ServiceDataStorageDisk(f);
-    }
+    }*/
 }

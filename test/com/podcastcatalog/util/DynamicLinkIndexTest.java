@@ -36,7 +36,7 @@ public class DynamicLinkIndexTest {
         linkIndex.loadFrom(file);
 
         Path path = file.toPath();
-        Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
+//        Stream<String> lines = Files.lines(path, Charset.forName("UTF-8")); //ISO-8859-1
 
        /* List<String> replaced = lines.map(line ->
 

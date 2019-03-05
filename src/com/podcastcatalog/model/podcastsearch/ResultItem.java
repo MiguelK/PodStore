@@ -32,6 +32,21 @@ public abstract class ResultItem implements Serializable {
         return artworkUrl100;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ResultItem that = (ResultItem) o;
+
+        return podCastCollectionId.equals(that.podCastCollectionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return podCastCollectionId.hashCode();
+    }
+
     public static Comparator<ResultItem> SORT_BY_POD_CAST_NAME = new Comparator<ResultItem>() {
         @Override
         public int compare(ResultItem o1, ResultItem o2) {

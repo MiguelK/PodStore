@@ -2,29 +2,20 @@ package com.podcastcatalog.service.datastore;
 
 import java.io.File;
 
-public class LocatorProduction implements PodHomeDirectoryLocator {
+public class LocatorProduction  {
 
     private static final String OPENSHIFT_DATA_DIR = "OPENSHIFT_DATA_DIR";
 
     private static final String PODDA_HOME_DIR = "POD_DATA_HOME";//Must exist before starting app! //FIXME
 
-    @Override
+    private static final LocatorProduction INSTANCE = new LocatorProduction();
+
+    public static LocatorProduction getInstance() {
+        return INSTANCE;
+    }
+
     public File getPodDataHomeDirectory() {
-        /*File podDataHomeDir = new File("/home/krantmig/tools/temp" + File.separator + PODDA_HOME_DIR);
-        if (isReadAndWriteDirectory(podDataHomeDir)) {
-            return podDataHomeDir;
-        }
-
-        podDataHomeDir = new File("/Users/miguelkrantz/Documents/temp/" + File.separator + PODDA_HOME_DIR);
-        if (isReadAndWriteDirectory(podDataHomeDir)) {
-            return podDataHomeDir;
-        }*/
-
-        //String openShiftDataDir = System.getenv(OPENSHIFT_DATA_DIR);
-
-        //if (openShiftDataDir != null) {/wildfly/standalone/ /var/run/docker.sock
-         File   podDataHomeDir = new File("/tmp/", PODDA_HOME_DIR);
-        //}
+         File  podDataHomeDir = new File("/tmp/", PODDA_HOME_DIR);
 
         if (!podDataHomeDir.exists()) {
             if (!podDataHomeDir.mkdirs()) {

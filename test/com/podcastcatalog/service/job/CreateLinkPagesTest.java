@@ -15,9 +15,9 @@ public class CreateLinkPagesTest {
 
 
         CreateLinkPages s = new CreateLinkPages();
-        String shortLink = s.createShortLink("trtr", "ytyt", "gggg", "ghhg", "ghghg");
+      //  String shortLink = s.createShortLink("trtr", "ytyt", "gggg", "ghhg", "ghghg");
 
-        System.out.println("shortLink=" + shortLink);
+        //  System.out.println("shortLink=" + shortLink);
 
 
     }

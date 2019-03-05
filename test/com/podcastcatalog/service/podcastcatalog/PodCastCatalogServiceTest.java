@@ -1,22 +1,14 @@
 package com.podcastcatalog.service.podcastcatalog;
 
 import com.podcastcatalog.TestUtil;
-import com.podcastcatalog.model.podcastcatalog.*;
+import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
+import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastsearch.ResultItem;
-import com.podcastcatalog.modelbuilder.*;
-import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
-import com.podcastcatalog.modelbuilder.collector.itunes.PodCastIdCollector;
-import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCategoryCollectorOkihika;
-import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCollectorOkihika;
-import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSE;
-import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderUS;
-import com.podcastcatalog.service.datastore.ServiceDataStorage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class PodCastCatalogServiceTest {
@@ -122,7 +114,7 @@ public class PodCastCatalogServiceTest {
     }*/
 
     private static void setUpStorage() {
-        ServiceDataStorage storage =  TestUtil.createForTest();
+       // ServiceDataStorage storage =  TestUtil.createForTest();
        // storage.deleteAll();
 
         //PodCastCatalogService.getInstance().setStorage(storage);

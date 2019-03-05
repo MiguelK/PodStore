@@ -1,6 +1,7 @@
 package com.podcastcatalog.util;
 
 import com.podcastcatalog.TestUtil;
+import com.podcastcatalog.service.datastore.LocatorProduction;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -27,7 +28,7 @@ public class ZipFileTest {
 
         someFile = new File("/Users/miguelkrantz/Documents/temp/words.json");
 
-        File targetFile = new File(TestUtil.createForTest().getPodDataHomeDir(), "ZipFileTest.zip");
+        File targetFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), "ZipFileTest.zip");
         ZipFile.zip(someFile, targetFile);
 
         Assert.assertTrue(targetFile.canRead());
