@@ -1,7 +1,6 @@
 package com.podcastcatalog;
 
 import com.podcastcatalog.service.datastore.LocatorProduction;
-import com.podcastcatalog.service.datastore.ServiceDataStorageDisk;
 import com.podcastcatalog.service.job.JobManagerService;
 import com.podcastcatalog.service.job.MemoryDumperJob;
 import com.podcastcatalog.service.job.PodCastCatalogUpdater;
@@ -57,9 +56,8 @@ public class StartupServlet extends HttpServlet {
 
         LOG.info("Starting PodCastCatalog..., working dir= " + LocatorProduction.getInstance().getPodDataHomeDirectory().getAbsolutePath());
 
-        JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 3, TimeUnit.HOURS); //FIXME
+        JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 3, TimeUnit.HOURS);
         //  JobManagerService.getInstance().registerJob(new CreateLinkPages(),20,20, TimeUnit.SECONDS);
-        //FIXME Memory problem max maxFeedCount == 400? ALL
         JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 1, TimeUnit.MINUTES); //FIXME change time, remove
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 0, 20, TimeUnit.MINUTES); //FIXME
 

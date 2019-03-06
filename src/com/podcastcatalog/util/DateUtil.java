@@ -1,6 +1,5 @@
 package com.podcastcatalog.util;
 
-import com.podcastcatalog.modelbuilder.collector.itunes.PodCastEpisodeProcessor2;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;

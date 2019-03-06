@@ -29,15 +29,4 @@ public class TestUtil {
     public static void assertToJSONContains(Object obj, String json) {
         Assert.assertTrue(GSON.toJson(obj).contains(json));
     }
-
-    /*public static ServiceDataStorage createForTest() {
-        LocatorProduction production = new LocatorProduction();
-        File f = new File(production.getPodDataHomeDirectory().getParentFile(), "POD_DATA_HOME_TEST");
-        if (!f.exists()) {
-            f.mkdirs();
-        }
-
-
-        return new ServiceDataStorageDisk(f);
-    }*/
 }

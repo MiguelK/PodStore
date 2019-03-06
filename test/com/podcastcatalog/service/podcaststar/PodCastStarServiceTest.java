@@ -10,7 +10,7 @@ public class PodCastStarServiceTest {
 
     @BeforeMethod
     public void setUp() {
-        PodCastStarService.getInstance().load(null);
+        PodCastStarService.getInstance().load();
         episodeId = "23h--s3";
     }
 

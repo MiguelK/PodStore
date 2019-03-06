@@ -104,7 +104,7 @@ public class SubscriptionNotifierJob implements Job {
         return podCastOptional.orElse(null);
     }
 
-    Optional<PodCastEpisode> getLatestPodCastEpisodeFromSourceServer(PodCast podCast) {
+    private Optional<PodCastEpisode> getLatestPodCastEpisodeFromSourceServer(PodCast podCast) {
         return PodCastFeedParser.parseLatestPodCastEpisode(podCast);
     }
 }

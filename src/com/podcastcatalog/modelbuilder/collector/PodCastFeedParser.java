@@ -1,23 +1,16 @@
 package com.podcastcatalog.modelbuilder.collector;
 
-import com.icosillion.podengine.exceptions.InvalidFeedException;
-import com.icosillion.podengine.exceptions.MalformedFeedException;
 import com.icosillion.podengine.models.Episode;
-import com.icosillion.podengine.models.ITunesItemInfo;
 import com.icosillion.podengine.models.Podcast;
 import com.podcastcatalog.model.podcastcatalog.*;
-import com.podcastcatalog.modelbuilder.collector.itunes.PodCastEpisodeProcessor2;
+import com.podcastcatalog.modelbuilder.collector.itunes.PodCastEpisodeProcessor;
 import com.podcastcatalog.util.DateUtil;
-import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * Parsing a source feed URL, all episodes + PodCasts are parsed
@@ -76,18 +69,18 @@ public class PodCastFeedParser {
             podCastBuilder.description(podcast.getDescription()).setPodCastCategories(categoryTypes)
                     .title(podcast.getTitle()).publisher(webMaster).createdDate(createdDate).feedURL(feedURL.toString());
 
-            List<PodCastEpisodeProcessor2> tasks = new ArrayList<>();
+            List<PodCastEpisodeProcessor> tasks = new ArrayList<>();
 
             int size = podcast.getEpisodes().size();
             List<Episode> episodesMax = size > maxFeedCount ? podcast.getEpisodes().subList(0, maxFeedCount) : podcast.getEpisodes();
 
             for (Episode episode : episodesMax) {
-                    PodCastEpisodeProcessor2 podCastEpisodeProcessor = new PodCastEpisodeProcessor2(podcast, episode, collectionId);
+                    PodCastEpisodeProcessor podCastEpisodeProcessor = new PodCastEpisodeProcessor(podcast, episode, collectionId);
                     podCastEpisodeProcessor.fork();//FIXME
                     tasks.add(podCastEpisodeProcessor);
                 }
 
-            for (PodCastEpisodeProcessor2 task : tasks) {
+            for (PodCastEpisodeProcessor task : tasks) {
                 PodCastEpisode podCastEpisode = task.join();//FIXME
                 if(podCastEpisode!=null){
                     podCastBuilder.addPodCastEpisode(podCastEpisode);

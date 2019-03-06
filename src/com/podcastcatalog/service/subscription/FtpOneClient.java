@@ -9,7 +9,6 @@ import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.subscription.SubscriptionData;
 import com.podcastcatalog.service.datastore.LocatorProduction;
-import com.podcastcatalog.service.datastore.ServiceDataStorageDisk;
 import com.podcastcatalog.util.ZipFile;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTP;
@@ -28,9 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +37,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class FtpOneClient {
+
+    private static final Gson GSON;
+
+    static {
+        List<String> fieldExclusions = new ArrayList<String>();
+        fieldExclusions.add("podCastEpisodesInternal"); //FIXME Maybe ok to send all episodes to client to big?
+
+        List<Class<?>> classExclusions = new ArrayList<Class<?>>();
+        // classExclusions.add(PodCast.class);
+        GSON = GsonFactory.build(fieldExclusions, classExclusions);
+    }
 
     private static final String PATH_SUBSCRIPTION = "/Subscriptions/";
     public static final String PATH_LANGUAGE = "/language/";
@@ -210,16 +218,7 @@ public class FtpOneClient {
         }
     }
 
-    private static final Gson GSON;// = new Gson();
 
-    static {
-        List<String> fieldExclusions = new ArrayList<String>();
-        fieldExclusions.add("podCastEpisodesInternal");
-
-        List<Class<?>> classExclusions = new ArrayList<Class<?>>();
-        // classExclusions.add(PodCast.class);
-        GSON = ServiceDataStorageDisk.GsonFactory.build(fieldExclusions, classExclusions);
-    }
 
     public static class GsonFactory {
 

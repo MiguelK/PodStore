@@ -12,19 +12,18 @@ import com.podcastcatalog.util.DateUtil;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.concurrent.RecursiveTask;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PodCastEpisodeProcessor2 extends RecursiveTask<PodCastEpisode> {
+public class PodCastEpisodeProcessor extends RecursiveTask<PodCastEpisode> {
     private static final long serialVersionUID = 1L;
     private final Podcast podCast;
     private final Episode episode;
     private final String collectionId;
 
-    private final static Logger LOG = Logger.getLogger(PodCastEpisodeProcessor2.class.getName());
+    private final static Logger LOG = Logger.getLogger(PodCastEpisodeProcessor.class.getName());
 
     //Implement the constructor of the class to initialize its attributes
-    public PodCastEpisodeProcessor2(Podcast podCast, Episode episode, String collectionId) {
+    public PodCastEpisodeProcessor(Podcast podCast, Episode episode, String collectionId) {
         this.podCast = podCast;
         this.episode = episode;
         this.collectionId = collectionId;
@@ -35,11 +34,8 @@ public class PodCastEpisodeProcessor2 extends RecursiveTask<PodCastEpisode> {
     @Override
     protected PodCastEpisode compute() {
 
-
         PodCastEpisode.Builder episodeBuilder = PodCastEpisode.newBuilder();
-
-        String description = null;
-
+        String description;
         try {
              description = episode.getDescription();
         } catch (MalformedFeedException e) {
@@ -75,7 +71,7 @@ public class PodCastEpisodeProcessor2 extends RecursiveTask<PodCastEpisode> {
             return episodeBuilder.build();
 
         } catch (Exception e) {
-             //LOG.info("Failed  parse Episode podCast=" + podCast.getFeedURL() + e.getMessage());
+             LOG.info("Failed  parse Episode podCast=" + podCast.getFeedURL() + e.getMessage());
         }
 
 
