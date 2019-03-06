@@ -28,11 +28,11 @@ public class ItunesSearchAPITest {
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
-    public void parse_25_podcasts() {
+    public void parse_10_podcasts() {
         ItunesSearchAPI query = ItunesSearchAPI.createCollector("term=Java&entity=podcast&limit=25");
         int podCasts = query.collectPodCasts().size();
 
-        Assert.assertTrue(podCasts>=13);
+        Assert.assertTrue(podCasts>=10);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
@@ -61,16 +61,14 @@ public class ItunesSearchAPITest {
 
         podCasts.forEach(p -> episodes.addAll(p.getPodCastEpisodesInternal()));
 
-        Set<String> ids = new HashSet<>();
+        Set<PodCastEpisode> ids = new HashSet<>();
         for (PodCastEpisode episode : episodes) {
-            boolean contains = ids.contains(episode.getId());
+            boolean contains = ids.contains(episode);
             if(contains) {
                 System.out.println("Duplicate=" + episode.getId());
             }
             Assert.assertFalse(contains);
-
-            ids.forEach(s -> System.out.println(s));
-            ids.add(episode.getId());
+            ids.add(episode);
         }
 
         Assert.assertFalse(episodes.isEmpty());

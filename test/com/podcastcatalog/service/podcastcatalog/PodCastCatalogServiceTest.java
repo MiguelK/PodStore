@@ -120,7 +120,7 @@ public class PodCastCatalogServiceTest {
         //PodCastCatalogService.getInstance().setStorage(storage);
     }
 
-    @Test(groups = TestUtil.SLOW_TEST)
+    //@Test(groups = TestUtil.SLOW_TEST)
     public void build_hallo_world_catalog() throws InterruptedException, ExecutionException, TimeoutException {
 
         initPodCastCatalogs();

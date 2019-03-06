@@ -18,15 +18,13 @@ public class ZipFileTest {
     @Test(groups = TestUtil.SLOW_TEST)
     public void zip() throws IOException {
 
-        File someFile = new File("some.json");
+        File someFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(),"some.json");
 
         System.out.println(someFile.getAbsolutePath());
 
         List<String> lines = Arrays.asList("The first line", "The second line");
         Path sourceFile =  someFile.toPath();   //Paths.get("the-sourceFile-name.txt");
         Files.write(sourceFile, lines, Charset.forName("UTF-8"));
-
-        someFile = new File("/Users/miguelkrantz/Documents/temp/words.json");
 
         File targetFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), "ZipFileTest.zip");
         ZipFile.zip(someFile, targetFile);

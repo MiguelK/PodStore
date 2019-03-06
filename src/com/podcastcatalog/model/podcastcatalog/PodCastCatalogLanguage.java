@@ -62,7 +62,7 @@ public enum PodCastCatalogLanguage {
             return null;
         }
 
-        if(lang.equalsIgnoreCase("SWE")) {
+        if(lang.trim().equalsIgnoreCase("SWE")) {
             return SE; //REMOVE After next iOS version
         }
 

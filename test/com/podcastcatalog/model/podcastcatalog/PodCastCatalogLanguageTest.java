@@ -15,7 +15,6 @@ public class PodCastCatalogLanguageTest {
     @Test
     public void fromString_not_found() {
         Assert.assertNull(PodCastCatalogLanguage.fromString(" sse "));
-        Assert.assertNull(PodCastCatalogLanguage.fromString(" se "));
         Assert.assertNull(PodCastCatalogLanguage.fromString("  "));
         Assert.assertNull(PodCastCatalogLanguage.fromString(null));
     }

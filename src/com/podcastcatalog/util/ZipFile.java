@@ -1,8 +1,10 @@
 package com.podcastcatalog.util;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
@@ -10,7 +12,7 @@ import java.util.zip.ZipOutputStream;
 
 public class ZipFile {
 
-    static final int BUFFER = 2048;
+    private static final int BUFFER = 2048;
 
     public static void zip(File sourceFile, File targetFile) {
         try {
