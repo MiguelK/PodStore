@@ -25,12 +25,11 @@ public class PodCastCatalogUpdater implements Job {
 
                 //TEST only 1
                 if (language == PodCastCatalogLanguage.CN) {
-                    continue;
+                   continue;
                 }
 
                 try {
                     podCastCatalogMetaData = FtpOneClient.getInstance().load(language);
-                    LOG.info("Loaded metadata from one.com for lang=" + language + ",podCastCatalogMetaData=" +podCastCatalogMetaData);
                 } catch (IOException e) {
                     LOG.log(Level.SEVERE, "Failed loading " + language, e);
                 }

@@ -102,7 +102,6 @@ public class PodCastEpisode extends BundleItem implements Serializable {
     }
 
     public static class Builder {
-        private String id;
         private String podCastCollectionId;
         private String title;
         private String description;
@@ -119,11 +118,6 @@ public class PodCastEpisode extends BundleItem implements Serializable {
 
         public Builder description(String description) {
             this.description = StringUtils.trimToNull(description);
-            return this;
-        }
-
-        public Builder id(String id) {
-            this.id = StringUtils.trimToNull(id);
             return this;
         }
 
@@ -184,15 +178,12 @@ public class PodCastEpisode extends BundleItem implements Serializable {
             if (createdDate == null) {
                 throw new IllegalArgumentException("createdDate is mandatory");
             }
-            if (StringUtils.isEmpty(id)) {
-                throw new IllegalArgumentException("Invalid id " + id + " mus be > 0");
-            }
 
             if (podCastCollectionId == null) {
                 throw new IllegalArgumentException("podCastCollectionId is null");
             }
 
-            return new PodCastEpisode(id, title, description, targetURL, duration, fileSize, podCastType, createdDate, podCastCollectionId);
+            return new PodCastEpisode(null, title, description, targetURL, duration, fileSize, podCastType, createdDate, podCastCollectionId);
         }
     }
 }

@@ -25,7 +25,7 @@ public class PodCastCatalogMetaData implements Serializable {
     @Override
     public String toString() {
         return "PodCastCatalogMetaData{" +
-                "textSearchIndex=" + textSearchIndex.getStatus() +
+                 textSearchIndex.getStatus() +
                 ", podCastTitles=" + podCastTitles.size() +
                 ", podCastTitlesTrending=" + podCastTitlesTrending.size() +
                 ", popularSearchQueries=" + popularSearchQueries.size() +

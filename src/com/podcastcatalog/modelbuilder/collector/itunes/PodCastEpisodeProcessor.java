@@ -8,7 +8,9 @@ import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeDuration;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeType;
 import com.podcastcatalog.util.DateUtil;
+import org.apache.commons.lang3.StringUtils;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.concurrent.RecursiveTask;
@@ -43,13 +45,22 @@ public class PodCastEpisodeProcessor extends RecursiveTask<PodCastEpisode> {
             description = "Missing field";
         }
 
+        if(StringUtils.isEmpty(description)) {
+            description = "Missing field";
+        }
+
         //FIX for Radioplay Nemo missing description.
         try {
             episodeBuilder.description(description);
 
         LocalDateTime pubDate = DateUtil.parse(episode.getPubDate()).orElse(LocalDateTime.now());
         String guid = episode.getGUID();
-        URL targetUrl = episode.getLink();
+
+        URL targetUrl = null;
+        try {
+            targetUrl = episode.getLink();
+        } catch (MalformedURLException ignored) {
+        }
 
         if (targetUrl== null && episode.getEnclosure() != null) {
             targetUrl =  episode.getEnclosure().getURL();
@@ -64,14 +75,14 @@ public class PodCastEpisodeProcessor extends RecursiveTask<PodCastEpisode> {
         PodCastEpisodeDuration parsedDuration = PodCastEpisodeDuration.parse(duration);
         //FXIEM fileSizeInMegaByte(podCastFeedItem.getFileSizeInMegaByte()) //FIXME no size
         episodeBuilder.title(episode.getTitle()).podCastCollectionId(collectionId).
-                createdDate(pubDate).id(guid).podCastType(PodCastEpisodeType.Audio).
+                createdDate(pubDate).podCastType(PodCastEpisodeType.Audio).
                 duration(parsedDuration).
                 targetURL(targetUrlString); //.podCastType(podCastFeedItem.getPodCastType()); //FIXME type?
         //if (episodeBuilder.isValid()){ // && podCastFeedItem.getPodCastType() == PodCastEpisodeType.Audio) { //FIXME anly audio?
             return episodeBuilder.build();
 
         } catch (Exception e) {
-             LOG.info("Failed  parse Episode podCast=" + podCast.getFeedURL() + e.getMessage());
+             LOG.info("Failed  parse Episode podCast=" + podCast.getFeedURL() + " ,message="+ e.getMessage());
         }
 
 

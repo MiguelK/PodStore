@@ -19,7 +19,7 @@ public class TextSearchIndex<T> implements Serializable {
     // private int maxWordsToIndex  = MAX_WORDS_TO_INDEX;
 
     public String getStatus() {
-        return "TextSearchIndex: indexSize=" + index.size();
+        return "textSearchIndex=" + index.size();
     }
 
     void printIndex() {

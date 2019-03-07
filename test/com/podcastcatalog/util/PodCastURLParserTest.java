@@ -157,7 +157,7 @@ public class PodCastURLParserTest {
                 //FXIEM fileSizeInMegaByte(podCastFeedItem.getFileSizeInMegaByte())
 
                 episodeBuilder.title(episode.getTitle()).podCastCollectionId(collectionId).
-                        createdDate(pubDate).id(guid).podCastType(PodCastEpisodeType.Audio).
+                        createdDate(pubDate).podCastType(PodCastEpisodeType.Audio).
                         duration(parsedDuration).
                         targetURL(targetUrlString); //.podCastType(podCastFeedItem.getPodCastType()); //FIXME type?
 

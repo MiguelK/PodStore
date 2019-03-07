@@ -73,8 +73,6 @@ public class FtpOneClient {
 
     //Upload SubscriptionData dat file used by this server
     synchronized void  upload(SubscriptionData subscriptionData)  {
-        LOG.info("upload SubscriptionData to server ");
-
         File file = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), SUBSCRIPTIONS_JSON_FILE);
         try {
             saveAsObject(subscriptionData, file);
@@ -86,7 +84,6 @@ public class FtpOneClient {
 
     //Upload JSON zip file used by App Client
     synchronized public void upload(PodCastCatalog podCastCatalog, PodCastCatalogLanguage lang)  {
-        LOG.info("upload PodCastCatalog to server " + lang);
 
         File langJSON = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), lang.name() + ".json");
         File jsonZipped = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), lang.name() + "_json.zip");
@@ -147,7 +144,8 @@ public class FtpOneClient {
 
     synchronized public void uploadToOneCom(File sourceFile, String serverPath) {
         try {
-            LOG.info("Uploading " + sourceFile.getName() + "to " + serverPath);
+            LOG.info("Uploading " + sourceFile.getName() + ", to serverPath=" + serverPath);
+
             FileTask fileTask = new FileTask(sourceFile, serverPath);
 
             executorService.submit(fileTask);

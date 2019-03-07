@@ -171,7 +171,7 @@ public class PodCastTest {
         PodCastEpisode firstEpisodeAdded = PodCastEpisodeTest.createValid().description("A").build();
 
         builder.addPodCastEpisode(firstEpisodeAdded);
-        builder.addPodCastEpisode(PodCastEpisodeTest.createValid().id("3434").description("A").build());
+        builder.addPodCastEpisode(PodCastEpisodeTest.createValid().description("A").build());
 
         PodCast podCast = builder.build();
 

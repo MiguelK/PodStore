@@ -100,8 +100,6 @@ public class PodCastFeedParser {
 
     private static Optional<PodCast> parse(URL feedURL, String artworkUrl600, String collectionId, int maxFeedCount) {
 
-
-
         return tryParseFailOver(feedURL, artworkUrl600, collectionId, maxFeedCount);
 
     /*    PodCast.Builder podCastBuilder = PodCast.newBuilder();
