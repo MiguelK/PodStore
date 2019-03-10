@@ -53,11 +53,13 @@ public class PodCastFeedParserTest {
         rss = "http://www.ximalaya.com/album/13535262.xml"; //is mandatory
         rss = "http://feeds.adknit.com/app-search/cnn/cnn/all/5/1/";
         rss = "http://www.npr.org/rss/podcast.php?id=510298";
-        rss = "http://api.audioteca.rac1.cat/rss/no-ho-se";
+        rss =  "http://api.sr.se/api/rss/pod/itunes/3966";
+        //rss = "http://api.audioteca.rac1.cat/rss/no-ho-se";
         //http://www.ximalaya.com/album/3882669.xmldescription is mandatory
         //http://www.netrevo.net/assets/media/itune/promotion.rssInvalid id null mus be > 0
         //http://rss.acast.com/ulost
 
+        //podcast.getEpisodes().get(0).getEnclosure().getURL()
         Optional<PodCast> podCast1 = PodCastFeedParser.tryParseFailOver(new URL(rss), artworkUrl600, "4444", 400);
 
         Podcast podcast = new Podcast(new URL(rss));

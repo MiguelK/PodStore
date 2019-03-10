@@ -60,19 +60,28 @@ public class PodCastEpisodeProcessor extends RecursiveTask<PodCastEpisode> {
         LocalDateTime pubDate = DateUtil.parse(episode.getPubDate()).orElse(LocalDateTime.now());
 
         URL targetUrl = null;
-        try {
-            targetUrl = episode.getLink();
-        } catch (MalformedURLException ignored) {
-        }
-
-        if (targetUrl== null && episode.getEnclosure() != null) {
+        if (episode.getEnclosure() != null) {
             targetUrl =  episode.getEnclosure().getURL();
         }
+
+        if(targetUrl == null) {
+            try {
+                targetUrl = episode.getLink();
+            } catch (MalformedURLException ignored) {
+            }
+        }
+
+       /* if (targetUrl== null && episode.getEnclosure() != null) {
+            targetUrl =  episode.getEnclosure().getURL();
+        }*/
         if(targetUrl==null){
+            LOG.info("No targetUrl found for Episode=" + episode.getITunesInfo());
             return null;
         }
 
-        String targetUrlString = targetUrl.toString();
+            //podcast.getEpisodes().get(0).getEnclosure().getURL()
+
+         String targetUrlString = targetUrl.toString();
         String duration = episode.getITunesInfo().getDuration();
 
         PodCastEpisodeDuration parsedDuration = PodCastEpisodeDuration.parse(duration);
