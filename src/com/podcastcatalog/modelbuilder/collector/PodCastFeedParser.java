@@ -5,6 +5,7 @@ import com.icosillion.podengine.models.Podcast;
 import com.podcastcatalog.model.podcastcatalog.*;
 import com.podcastcatalog.modelbuilder.collector.itunes.PodCastEpisodeProcessor;
 import com.podcastcatalog.util.DateUtil;
+import com.podcastcatalog.util.ServerInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -106,7 +107,9 @@ public class PodCastFeedParser {
 
         } catch (Exception e) {
 
-            LOG.info("PodCast parse fail: Level 2 feed=" + feedURL + " message=" + e.getMessage());
+           if(ServerInfo.isLocalDevMode()) {
+               LOG.info("PodCast parse fail: Level 2 feed=" + feedURL + " message=" + e.getMessage());
+           }
         }
 
         return Optional.empty();
