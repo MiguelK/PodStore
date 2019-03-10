@@ -75,6 +75,7 @@ public class FtpOneClient {
     synchronized void  upload(SubscriptionData subscriptionData)  {
         File file = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), SUBSCRIPTIONS_JSON_FILE);
         try {
+            LOG.info("upload subscriptions=" + subscriptionData.getSubscriptions().size());
             saveAsObject(subscriptionData, file);
             FtpOneClient.getInstance().uploadToOneCom(file, PATH_SUBSCRIPTION);
         } catch (IOException e) {
@@ -83,8 +84,9 @@ public class FtpOneClient {
     }
 
     //Upload JSON zip file used by App Client
-    synchronized public void upload(PodCastCatalog podCastCatalog, PodCastCatalogLanguage lang)  {
+    synchronized public void upload(PodCastCatalog podCastCatalog)  {
 
+        PodCastCatalogLanguage lang = podCastCatalog.getPodCastCatalogLanguage();
         File langJSON = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), lang.name() + ".json");
         File jsonZipped = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), lang.name() + "_json.zip");
 

@@ -33,10 +33,9 @@ public class PodCastCatalogService {
     private final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
     private final Lock readLock = reentrantReadWriteLock.readLock();
     private final Lock writeLock = reentrantReadWriteLock.writeLock();
-    private final Map<PodCastCatalogLanguage, PodCastCatalog> podCastCatalogByLang = new HashMap<>();
     private final Map<PodCastCatalogLanguage, PodCastCatalogMetaData> podCastCatalogMetaDataLang = new HashMap<>();
 
-    private final ExecutorService bundleBuilderExecutor = Executors.newFixedThreadPool(2);
+    private final ExecutorService bundleBuilderExecutor = Executors.newFixedThreadPool(10);
     private final ExecutorService podCastCatalogUpdateExecutor = Executors.newFixedThreadPool(1);
 
     private static final PodCastCatalogService INSTANCE = new PodCastCatalogService();
@@ -91,52 +90,29 @@ public class PodCastCatalogService {
         return podCastCatalogMetaData.popularSearchQueries;
     }
 
-
-
-    public PodCastCatalog getPodCastCatalog(PodCastCatalogLanguage podCastCatalogLanguage) {
-        readLock.lock();
-        try {
-            return podCastCatalogByLang.get(podCastCatalogLanguage);
-        } finally {
-            readLock.unlock();
-        }
-    }
-
     public void addPopularSearchTerm(PodCastCatalogLanguage lang, String searchTerm) {
-
-
         List<SearchTerm> updatedList = null;
-        PodCastCatalogMetaData podCastCatalogMetaData = null;
+        PodCastCatalogMetaData podCastCatalogMetaData = getPodCastCatalogMetaData(lang);
 
-        readLock.lock();
-        try {
-
-            podCastCatalogMetaData = podCastCatalogMetaDataLang.get(lang);
-
-            if (podCastCatalogMetaData == null) {
-                return;
-            }
-
-            List<SearchTerm> popular = new ArrayList<>(podCastCatalogMetaData.popularSearchQueries);
-
-            Optional<SearchTerm> first =
-                    popular.stream().filter(r -> searchTerm.equalsIgnoreCase(r.getTerm())).findFirst();
-
-            if (first.isPresent()) {
-                first.get().increaseCounter();
-            } else {
-                popular.add(new SearchTerm(0, searchTerm));
-            }
-
-            Collections.sort(popular);
-            if (popular.size() >= 100) {
-                updatedList = popular.subList(0, popular.size() - 1);
-            }
-
-        } finally {
-            readLock.unlock();
+        if (podCastCatalogMetaData == null) {
+            return;
         }
 
+        List<SearchTerm> popular = new ArrayList<>(podCastCatalogMetaData.popularSearchQueries);
+
+        Optional<SearchTerm> first =
+                popular.stream().filter(r -> searchTerm.equalsIgnoreCase(r.getTerm())).findFirst();
+
+        if (first.isPresent()) {
+            first.get().increaseCounter();
+        } else {
+            popular.add(new SearchTerm(0, searchTerm));
+        }
+
+        Collections.sort(popular);
+        if (popular.size() >= 100) {
+            updatedList = popular.subList(0, popular.size() - 1);
+        }
         if (updatedList == null) {
             return;
         }
@@ -148,7 +124,6 @@ public class PodCastCatalogService {
         } finally {
             writeLock.unlock();
         }
-
     }
 
     public List<ResultItem> search(PodCastCatalogLanguage podCastCatalogLanguage, String queryParam) {
@@ -158,8 +133,6 @@ public class PodCastCatalogService {
             return Collections.emptyList();
         }
 
-        //FIXME Sort algoritm? limit 5 etc...
-        List<ResultItem> resultItems = new ArrayList<>();
 
         String encodedQueryParam;
         try {
@@ -169,9 +142,10 @@ public class PodCastCatalogService {
             return Collections.emptyList();
         }
 
-        String itunesSearchLang = podCastCatalogLanguage.name();
+        List<ResultItem> resultItems = new ArrayList<>();
 
-        List<PodCastResultItem> podCasts = ItunesSearchAPI.searchPodCasts("term=" + encodedQueryParam + "&entity=podcast&limit=12&country=" + itunesSearchLang);
+        List<PodCastResultItem> podCasts = ItunesSearchAPI.searchPodCasts("term="
+                + encodedQueryParam + "&entity=podcast&limit=12&country=" + podCastCatalogLanguage.name());
         resultItems.addAll(podCasts);
 
         readLock.lock();
@@ -183,7 +157,7 @@ public class PodCastCatalogService {
                 resultItems.addAll(result);
             }
 
-            Collections.sort(resultItems, ResultItem.SORT_BY_POD_CAST_NAME);
+            resultItems.sort(ResultItem.SORT_BY_POD_CAST_NAME);
 
             return resultItems;
         } finally {
@@ -193,6 +167,10 @@ public class PodCastCatalogService {
 
     public void buildPodCastCatalogsAsync(PodCastCatalogBuilder podCastCatalogBuilder) {
         podCastCatalogUpdateExecutor.submit(new BuildPodCastCatalogAction(podCastCatalogBuilder));
+    }
+
+    public boolean isMetaDataRegistered(PodCastCatalogLanguage language) {
+        return getPodCastCatalogMetaData(language) != null;
     }
 
     //1. Build InMemoryCatalog for the lang
@@ -208,23 +186,22 @@ public class PodCastCatalogService {
 
         @Override
         public void run() {
-            readLock.lock();
+           // readLock.lock();
 
             try {
-                PodCastCatalog podCastCatalog;
                 PodCastCatalogLanguage podCastCatalogLang = podCastCatalogBuilder.getPodCastCatalogLang();
-                try {
+            //    try {
                     LOG.info("Start building PodCastCatalog " + podCastCatalogLang + " ...");
-                    podCastCatalog = buildPodCastCatalog(podCastCatalogBuilder);
+                    PodCastCatalog podCastCatalog = buildPodCastCatalog(podCastCatalogBuilder);
                     LOG.info("Done building PodCastCatalog Lang=" + podCastCatalogLang + " Catalog=" + podCastCatalog);
                     if (podCastCatalog == null) {
                         LOG.warning("Failed building PodCastCatalog Lang=" + podCastCatalogLang);
                         return;
                     }
-                    FtpOneClient.getInstance().upload(podCastCatalog, podCastCatalogLang);
-                } finally {
-                    readLock.unlock();
-                }
+                    FtpOneClient.getInstance().upload(podCastCatalog);
+             //   } finally {
+                    //       readLock.unlock();
+                    //}
 
                 List<PodCastEpisode> podCastEpisodes = new ArrayList<>();
                 TextSearchIndex<ResultItem> newTextSearchIndex = new TextSearchIndex<>();
@@ -234,7 +211,8 @@ public class PodCastCatalogService {
                         PodCastBundle podCastBundle = (PodCastBundle) bundle;
                         for (PodCast podCast : podCastBundle.getBundleItems()) {
 
-                            PodCastResultItem podCastResultItem = new PodCastResultItem(podCast.getCollectionId(), podCast.getTitle(), podCast.getArtworkUrl600());
+                            PodCastResultItem podCastResultItem = new PodCastResultItem(podCast.getCollectionId(),
+                                    podCast.getTitle(), podCast.getArtworkUrl600());
                             String text = podCast.getTitle() + " " + podCast.getDescription();
                             newTextSearchIndex.addText(text, TextSearchIndex.Prio.HIGHEST, podCastResultItem);
 
@@ -256,53 +234,54 @@ public class PodCastCatalogService {
                 newTextSearchIndex.buildIndex();
 
                 //Export + update MetaData...
-                writeLock.lock();
-                try {
-                    PodCastCatalogMetaData podCastCatalogMetaData =
-                            podCastCatalogMetaDataLang.computeIfAbsent(podCastCatalogLang, podCastCatalogLanguage -> new PodCastCatalogMetaData());
+                List<PodCastTitle> podCastTitles = new ArrayList<>();
+                List<PodCastTitle> podCastTitlesTrending = new ArrayList<>();
 
-                    podCastCatalogMetaData.textSearchIndex = newTextSearchIndex;
+                LOG.info("Start building SearchSuggestions + trending pods for lang=" + podCastCatalogLang);
 
-                    List<PodCastTitle> podCastTitles = new ArrayList<>();
-                    List<PodCastTitle> podCastTitlesTrending = new ArrayList<>();
+                for (PodCastIdCollector.Category categoryName : PodCastIdCollector.Category.values()) {
+                    List<Long> ids = PodCastIdCollector.createPodCastIdCollector(podCastCatalogLang, categoryName).getPodCastIds();
+                    List<ItunesSearchAPI.PodCastSearchResult.Row> podCastTitlesRows = ItunesSearchAPI.lookupPodCastsByIds(ids);
 
-                    LOG.info("Start building SearchSuggestions + trending pods for lang=" + podCastCatalogLang);
+                    PodCastTitle podCastTitleTrending = null; //Register 1 per category toplist
+                    for (ItunesSearchAPI.PodCastSearchResult.Row row : podCastTitlesRows) {
+                        String trimmedTitle = StringUtils.trimToNull(row.getCollectionName());
+                        if (trimmedTitle == null) {
+                            continue;
+                        }
 
-                    for (PodCastIdCollector.Category categoryName : PodCastIdCollector.Category.values()) {
-                        List<Long> ids = PodCastIdCollector.createPodCastIdCollector(podCastCatalogLang, categoryName).getPodCastIds();
-                        List<ItunesSearchAPI.PodCastSearchResult.Row> podCastTitlesRows = ItunesSearchAPI.lookupPodCastsByIds(ids);
+                        PodCastTitle podCastTitle = new PodCastTitle(trimmedTitle);
 
-                        PodCastTitle podCastTitleTrending = null; //Register 1 per category toplist
-                        for (ItunesSearchAPI.PodCastSearchResult.Row row : podCastTitlesRows) {
-                            String trimmedTitle = StringUtils.trimToNull(row.getCollectionName());
-                            if (trimmedTitle == null) {
-                                continue;
-                            }
+                        if (podCastTitles.contains(podCastTitle)) {
+                            continue;
+                        }
 
-                            PodCastTitle podCastTitle = new PodCastTitle(trimmedTitle);
+                        podCastTitles.add(podCastTitle);
 
-                            if (podCastTitles.contains(podCastTitle)) {
-                                continue;
-                            }
-
-                            podCastTitles.add(podCastTitle);
-
-                            if (podCastTitleTrending == null) {
-                                podCastTitlesTrending.add(podCastTitle);
-                                podCastTitleTrending = podCastTitle;
-                            }
+                        if (podCastTitleTrending == null) {
+                            podCastTitlesTrending.add(podCastTitle);
+                            podCastTitleTrending = podCastTitle;
                         }
                     }
+                }
+
+                PodCastCatalogMetaData podCastCatalogMetaData;
+                writeLock.lock();
+                try {
+                    podCastCatalogMetaData =
+                            podCastCatalogMetaDataLang.computeIfAbsent(podCastCatalogLang, podCastCatalogLanguage -> new PodCastCatalogMetaData());
+                    podCastCatalogMetaData.textSearchIndex = newTextSearchIndex;
                     podCastCatalogMetaData.podCastTitles = podCastTitles;
                     podCastCatalogMetaData.podCastTitlesTrending = podCastTitlesTrending;
-
-                    FtpOneClient.getInstance().upload(podCastCatalogMetaData, podCastCatalogLang);
-                    PodCastCatalogService.getInstance().register(podCastCatalogLang, podCastCatalogMetaData);
                 } finally {
                     writeLock.unlock();
                 }
+
+                FtpOneClient.getInstance().upload(podCastCatalogMetaData, podCastCatalogLang);
+                register(podCastCatalogLang, podCastCatalogMetaData);
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, "BuildPodCastCatalogAction: Failed building catalog ", e);
+                LOG.log(Level.SEVERE, "BuildPodCastCatalogAction: Failed building catalog lang= "
+                        + podCastCatalogBuilder.getPodCastCatalogLang(), e);
             }
         }
     }
@@ -314,7 +293,7 @@ public class PodCastCatalogService {
         try {
             List<Future<Bundle>> futureBundles = bundleBuilderExecutor.invokeAll(bundleBuilders);
             for (Future<Bundle> futureBundle : futureBundles) {
-                Bundle bundle = futureBundle.get(10, TimeUnit.MINUTES);//FIXME Max timeout??
+                Bundle bundle = futureBundle.get(30, TimeUnit.MINUTES);//FIXME Max timeout??
                 bundles.add(bundle);
             }
 

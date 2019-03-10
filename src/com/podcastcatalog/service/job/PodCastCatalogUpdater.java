@@ -28,6 +28,12 @@ public class PodCastCatalogUpdater implements Job {
                    continue;
                 }
 
+                if(PodCastCatalogService.getInstance().isMetaDataRegistered(language)) {
+                    PodCastCatalogService.getInstance().register(language, podCastCatalogMetaData);
+                    LOG.info("PodCastCatalogMetaData is updated for lang=" + language);
+                    continue;
+                }
+
                 try {
                     podCastCatalogMetaData = FtpOneClient.getInstance().load(language);
                 } catch (IOException e) {
@@ -36,7 +42,6 @@ public class PodCastCatalogUpdater implements Job {
 
                 if (podCastCatalogMetaData == null) {
                     PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language.create());
-
                 } else {
                     PodCastCatalogService.getInstance().register(language, podCastCatalogMetaData);
                 }

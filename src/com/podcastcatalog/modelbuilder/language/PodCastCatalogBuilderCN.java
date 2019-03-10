@@ -9,7 +9,6 @@ public class PodCastCatalogBuilderCN  extends PodCastCatalogBuilderBase {
     @Override
     void addCategoryNames(CategoryContext categoryContext) {
         categoryContext.add(PodCastIdCollector.Category.VIDEO_GAMES, "視頻");
-       categoryContext.add(PodCastIdCollector.Category.VIDEO_GAMES, "視頻");
        categoryContext.add(PodCastIdCollector.Category.NEWS_POLITICS, "新聞與政治");
        categoryContext.add(PodCastIdCollector.Category.MUSIC, "音樂");
        categoryContext.add(PodCastIdCollector.Category.DESIGN, "藝術"); //DESIGN better then ARTS

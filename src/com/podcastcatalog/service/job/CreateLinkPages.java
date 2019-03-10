@@ -123,7 +123,9 @@ public class CreateLinkPages implements Job {
         }
 
         for (PodCastCatalogLanguage podCastCatalogLanguage : PodCastCatalogLanguage.values()) {
-            PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(podCastCatalogLanguage);
+            //FIXME
+            /*PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(podCastCatalogLanguage);
+            PodCastCatalogService.getInstance().getPodCastCatalogMeataData(podCastCatalogLanguage);
 
             if(podCastCatalog==null) {
                 LOG.info("CreateLinkPages catalog not loaded yet? for lang=" + podCastCatalogLanguage);
@@ -140,7 +142,7 @@ public class CreateLinkPages implements Job {
                         != null).collect(Collectors.toList());
             }
 
-            createLanguageRootDirectory(podCasts, podCastCatalogLanguage);
+            createLanguageRootDirectory(podCasts, podCastCatalogLanguage);*/
         }
 
         linkIndex.saveTo(dynamicLinksIndex);

@@ -9,6 +9,7 @@ import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeDuration;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeType;
 import com.podcastcatalog.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,6 +37,9 @@ public class PodCastEpisodeProcessor extends RecursiveTask<PodCastEpisode> {
     @Override
     protected PodCastEpisode compute() {
 
+        //    StopWatch stopWatch = new StopWatch();
+        //    stopWatch.start();
+
         PodCastEpisode.Builder episodeBuilder = PodCastEpisode.newBuilder();
         String description;
         try {
@@ -54,7 +58,6 @@ public class PodCastEpisodeProcessor extends RecursiveTask<PodCastEpisode> {
             episodeBuilder.description(description);
 
         LocalDateTime pubDate = DateUtil.parse(episode.getPubDate()).orElse(LocalDateTime.now());
-        String guid = episode.getGUID();
 
         URL targetUrl = null;
         try {
@@ -79,6 +82,10 @@ public class PodCastEpisodeProcessor extends RecursiveTask<PodCastEpisode> {
                 duration(parsedDuration).
                 targetURL(targetUrlString); //.podCastType(podCastFeedItem.getPodCastType()); //FIXME type?
         //if (episodeBuilder.isValid()){ // && podCastFeedItem.getPodCastType() == PodCastEpisodeType.Audio) { //FIXME anly audio?
+
+            // stopWatch.stop();
+            //   LOG.info("Episode Time=" + stopWatch.getTime());
+
             return episodeBuilder.build();
 
         } catch (Exception e) {

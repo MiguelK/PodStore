@@ -120,20 +120,6 @@ public class PodCastCatalogServiceTest {
         //PodCastCatalogService.getInstance().setStorage(storage);
     }
 
-    //@Test(groups = TestUtil.SLOW_TEST)
-    public void build_hallo_world_catalog() throws InterruptedException, ExecutionException, TimeoutException {
-
-        initPodCastCatalogs();
-
-        //1# App start get current built catalog
-        PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(PodCastCatalogLanguage.SE);
-
-        TestUtil.assertToJSONNotNull(podCastCatalog);
-
-        Assert.assertNotNull(podCastCatalog);
-
-        System.out.println("LocalCatalog = " + podCastCatalog);
-    }
 
     public static void initPodCastCatalogs() throws InterruptedException, ExecutionException, TimeoutException {
         setUpStorage();

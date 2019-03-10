@@ -5,6 +5,8 @@ import com.icosillion.podengine.models.Podcast;
 import com.podcastcatalog.model.podcastcatalog.*;
 import com.podcastcatalog.modelbuilder.collector.itunes.PodCastEpisodeProcessor;
 import com.podcastcatalog.util.DateUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -49,6 +51,10 @@ public class PodCastFeedParser {
                                                       String collectionId, int maxFeedCount) {
 
 
+        // StopWatch stopWatch = new StopWatch();
+        //  stopWatch.start();
+
+
         PodCast.Builder podCastBuilder = PodCast.newBuilder()
                 .collectionId(collectionId).setArtworkUrl600(artworkUrl600);
 
@@ -66,7 +72,11 @@ public class PodCastFeedParser {
                 categoryTypes = Collections.singletonList(PodCastCategoryType.NEWS_POLITICS);
             }
 
-            podCastBuilder.description(podcast.getDescription()).setPodCastCategories(categoryTypes)
+            String description = podcast.getDescription();
+            if(StringUtils.isEmpty(description)) {
+                description = "Unknown";
+            }
+            podCastBuilder.description(description).setPodCastCategories(categoryTypes)
                     .title(podcast.getTitle()).publisher(webMaster).createdDate(createdDate).feedURL(feedURL.toString());
 
             List<PodCastEpisodeProcessor> tasks = new ArrayList<>();
@@ -77,6 +87,8 @@ public class PodCastFeedParser {
             for (Episode episode : episodesMax) {
                     PodCastEpisodeProcessor podCastEpisodeProcessor = new PodCastEpisodeProcessor(podcast, episode, collectionId);
                     podCastEpisodeProcessor.fork();//FIXME
+                //LOG.info("Fork episode " + episode.getTitle());
+
                     tasks.add(podCastEpisodeProcessor);
                 }
 
@@ -88,6 +100,8 @@ public class PodCastFeedParser {
             }
 
 
+            // stopWatch.stop();
+           // LOG.info("PodCast Time=" + stopWatch.getTime());
             return Optional.of(podCastBuilder.build());
 
         } catch (Exception e) {

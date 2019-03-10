@@ -77,14 +77,9 @@ public abstract class PodCastCatalogBuilderBase implements PodCastCatalogBuilder
         addCategoryNames(categoryContext);
 
         for (CategoryName categoryName : categoryContext.getCategoryNames()) {
-
-
-            PodCastIdCollector podCastIdCollector = new PodCastIdCollector(podCastCatalogLang, categoryName.getCategory(), categoryName.getCategoryTitle());
+            PodCastIdCollector podCastIdCollector = new PodCastIdCollector(podCastCatalogLang,
+                    categoryName.getCategory(), categoryName.getCategoryTitle());
             categoryBundle.addCollector(podCastIdCollector);
-
-            //PodCastCategoryCollector(podsCollector, title)
-            //categoryBundle.addCollector(PodCastCategoryCollectorOkihika.create(podCastCatalogLang,
-              //      categoryName.getCategory(), categoryName.getCategoryTitle()));
         }
 
         bundleBuilders.add(categoryBundle);

@@ -24,25 +24,6 @@ public class PodCastCatalog {
 
     private final static Logger LOG = Logger.getLogger(PodCastCatalog.class.getName());
 
-    //FIXME Not used?
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getPodCastCatalog(@QueryParam("lang") String lang) {
-
-        PodCastCatalogLanguage podCastCatalogLanguage = PodCastCatalogLanguage.fromString(lang);
-        if (podCastCatalogLanguage == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid lang parameter " + lang).build();
-        }
-
-        com.podcastcatalog.model.podcastcatalog.PodCastCatalog podCastCatalog = PodCastCatalogService.getInstance().getPodCastCatalog(podCastCatalogLanguage);
-
-        if (podCastCatalog == null) {
-            LOG.info("podCastCatalog for lang " + lang + " is not loaded yet?");
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Not ready yet").build();
-        }
-
-        return Response.status(Response.Status.OK).entity(podCastCatalog).build();
-    }
 
     @GET
     @Path("/search")
