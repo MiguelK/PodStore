@@ -29,8 +29,8 @@ public class PodCastCatalogUpdater implements Job {
                 }
 
                 if(PodCastCatalogService.getInstance().isMetaDataRegistered(language)) {
-                    PodCastCatalogService.getInstance().register(language, podCastCatalogMetaData);
-                    LOG.info("PodCastCatalogMetaData is updated for lang=" + language);
+                    LOG.info("PodCastCatalogMetaData already exist, will update for lang=" + language);
+                    PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language.create());
                     continue;
                 }
 
@@ -48,7 +48,7 @@ public class PodCastCatalogUpdater implements Job {
             }
 
         } catch (Exception e) {
-            LOG.info("Building  Catalog took more than 10 minutes");
+            LOG.info("PodCastCatalogUpdater: failed, " + e.getMessage());
         }
     }
 }

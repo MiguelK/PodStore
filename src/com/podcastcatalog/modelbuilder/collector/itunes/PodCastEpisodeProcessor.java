@@ -8,6 +8,7 @@ import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeDuration;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeType;
 import com.podcastcatalog.util.DateUtil;
+import com.podcastcatalog.util.ServerInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -98,7 +99,9 @@ public class PodCastEpisodeProcessor extends RecursiveTask<PodCastEpisode> {
             return episodeBuilder.build();
 
         } catch (Exception e) {
-             LOG.info("Failed  parse Episode podCast=" + podCast.getFeedURL() + " ,message="+ e.getMessage());
+            if(ServerInfo.isLocalDevMode()) {
+                LOG.info("Failed  parse Episode podCast=" + podCast.getFeedURL() + " ,message=" + e.getMessage());
+            }
         }
 
 
