@@ -4,6 +4,7 @@ import com.podcastcatalog.model.PodCastCatalogMetaData;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.service.subscription.FtpOneClient;
+import com.podcastcatalog.util.ServerInfo;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -38,6 +39,10 @@ public class PodCastCatalogUpdater implements Job {
                     podCastCatalogMetaData = FtpOneClient.getInstance().load(language);
                 } catch (IOException e) {
                     LOG.log(Level.SEVERE, "Failed loading " + language, e);
+                }
+
+                if(ServerInfo.isLocalDevMode()) {
+                    podCastCatalogMetaData = null; //Always build at startup time
                 }
 
                 if (podCastCatalogMetaData == null) {

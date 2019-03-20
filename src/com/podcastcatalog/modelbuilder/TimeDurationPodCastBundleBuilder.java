@@ -1,17 +1,20 @@
 package com.podcastcatalog.modelbuilder;
 
+import com.google.common.collect.Lists;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastBundle;
 import com.podcastcatalog.model.podcastcatalog.PodCastCategory;
 import com.podcastcatalog.model.podcastcatalog.PodCastCategoryType;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeDuration;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class TimeDurationPodCastBundleBuilder {
@@ -85,7 +88,7 @@ public class TimeDurationPodCastBundleBuilder {
 
         for (PodCastCategory podCastCategory : podCastCategories) {
             for (PodCast podCast : podCastCategory.getPodCasts()) {
-                for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodes()) {
+                for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodesInternal()) {
 
                     PodCastEpisodeDuration duration = podCastEpisode.getDuration();
                     if(duration == null){
@@ -106,10 +109,9 @@ public class TimeDurationPodCastBundleBuilder {
 
        for (PodCast podCast : podCasts) {
 
-            List<PodCastEpisode> episodesInternal = podCast.getPodCastEpisodes();
+            List<PodCastEpisode> episodesInternal = podCast.getPodCastEpisodesInternal();
 
             for (PodCastEpisode podCastEpisode : episodesInternal) {
-
                 PodCastEpisodeDuration duration = podCastEpisode.getDuration();
 
                 if(duration == null){
@@ -133,24 +135,32 @@ public class TimeDurationPodCastBundleBuilder {
 
         PodCast.Builder builder3 = podCastsByDuration.get(DurationInterval.half_hour);
         if(builder3!=null) {
-            podCasts.add(builder3.build());
+            podCasts.add(builder3.build(200));
         }
         PodCast.Builder builder2 = podCastsByDuration.get(DurationInterval.hour);
         if(builder2!=null) {
-            podCasts.add(builder2.build());
+            podCasts.add(builder2.build(200));
         }
         PodCast.Builder builder1 = podCastsByDuration.get(DurationInterval.one_half_hour);
 
         if(builder1!=null) {
-            podCasts.add(builder1.build());
+            podCasts.add(builder1.build(200));
         }
 
         PodCast.Builder builder = podCastsByDuration.get(DurationInterval.two_hour);
         if(builder!=null) {
-            podCasts.add(builder.build());
+            podCasts.add(builder.build(200));
         }
 
-        return new PodCastBundle(bundleName, "not used", podCasts);
+        List<PodCast> podCasts1 = podCasts.stream().filter(podCast -> {
+                    String trimToEmpty = StringUtils.trimToEmpty(podCast.getTitle());
+                    return !(trimToEmpty.contains("Del") && trimToEmpty.contains("Episode"));
+                }
+        ).collect(Collectors.toList());
+
+        Collections.shuffle(podCasts1);
+
+        return new PodCastBundle(bundleName, "not used", podCasts1);
     }
 
     private void updatePodCastByDuration(PodCast podCast, PodCastEpisode podCastEpisode, DurationInterval durationInterval) {

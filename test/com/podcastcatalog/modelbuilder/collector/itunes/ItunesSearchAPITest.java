@@ -12,7 +12,7 @@ public class ItunesSearchAPITest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void lookup_2() {
-        List<PodCast> podCasts =  ItunesSearchAPI.lookupPodCasts(Arrays.asList(895602289L, 1032687266L));
+        List<PodCast> podCasts =  ItunesSearchAPI.lookupPodCasts(Arrays.asList(1213330824L, 1032687266L));
         Assert.assertTrue(podCasts.size() == 2);
     }
 
@@ -28,11 +28,11 @@ public class ItunesSearchAPITest {
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
-    public void parse_10_podcasts() {
-        ItunesSearchAPI query = ItunesSearchAPI.createCollector("term=Java&entity=podcast&limit=25");
+    public void parse_1_podcasts() {
+        ItunesSearchAPI query = ItunesSearchAPI.createCollector("term=Spår&entity=podcast&limit=1&country=SE");
         int podCasts = query.collectPodCasts().size();
 
-        Assert.assertTrue(podCasts>=10);
+        Assert.assertTrue(podCasts==1);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)

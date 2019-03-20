@@ -26,7 +26,7 @@ public class PodCast extends BundleItem {
 
     private final List<PodCastCategoryType> podCastCategories;
 
-    private PodCast(String collectionId, String title, String publisher, String description, LocalDateTime createdDate,
+    private PodCast(int maxEpisodes, String collectionId, String title, String publisher, String description, LocalDateTime createdDate,
                     String feedURL, List<PodCastEpisode> podCastEpisodes, List<PodCastCategoryType> podCastCategories,
                     String artworkUrl600) {
         super(title, description, artworkUrl600);
@@ -36,13 +36,14 @@ public class PodCast extends BundleItem {
         this.feedURL = feedURL;
 
         this.podCastEpisodesInternal = Collections.unmodifiableList(podCastEpisodes);
-        this.podCastEpisodes = podCastEpisodes.size()>=10 ? new ArrayList<>(podCastEpisodes.subList(0,9)) : podCastEpisodes;
+        int upperMax = maxEpisodes -1;
+        this.podCastEpisodes = podCastEpisodes.size()>=maxEpisodes ? new ArrayList<>(podCastEpisodes.subList(0,upperMax)) : podCastEpisodes;
         this.podCastCategories = Collections.unmodifiableList(podCastCategories);
     }
 
     public static PodCast createWithAllEpisodes(PodCast podCast){
 
-        PodCast p = new  PodCast(podCast.getCollectionId(),podCast.getTitle(),podCast.getPublisher(),podCast.getDescription(),podCast.createdDate,
+        PodCast p = new  PodCast(1000, podCast.getCollectionId(),podCast.getTitle(),podCast.getPublisher(),podCast.getDescription(),podCast.createdDate,
                 podCast.getFeedURL(),podCast.getPodCastEpisodes(),podCast.getPodCastCategories(),podCast.getArtworkUrl600());
         p.podCastEpisodes = podCast.getPodCastEpisodesInternal(); //Transfer all episodes to client
 
@@ -162,6 +163,10 @@ public class PodCast extends BundleItem {
         }
 
         public PodCast build() {
+                return build(20);
+        }
+
+            public PodCast build(int maxEpisodes) {
             if (publisher == null) {
                 throw new IllegalArgumentException("publisher is mandatory");
             }
@@ -187,7 +192,9 @@ public class PodCast extends BundleItem {
                 throw new IllegalArgumentException("Invalid podCastCategories");
             }
 
-            return new PodCast(collectionId, title, publisher, description, createdDate, feedURL, podCastEpisodes, podCastCategories, artworkUrl600);
+            return new PodCast(maxEpisodes, collectionId, title, publisher,
+                    description, createdDate, feedURL,
+                    podCastEpisodes, podCastCategories, artworkUrl600);
         }
 
         public boolean isValid() {
