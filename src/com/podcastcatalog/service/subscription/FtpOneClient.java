@@ -56,6 +56,9 @@ public class FtpOneClient {
     private static final String POD_CAST_CATALOG_META_DATA_FILE = "_MetaData.dat";
     private static final String PODS_ONE_HOST_NAME = "http://pods.one";
 
+    public static final String SUBSCRIPTIONS_FILE_URL = PODS_ONE_HOST_NAME + PATH_SUBSCRIPTION +
+            SUBSCRIPTIONS_JSON_FILE;
+
     private static FtpOneClient INSTANCE = new FtpOneClient();
 
     private static final Logger LOG = Logger.getLogger(FtpOneClient.class.getName());
@@ -121,8 +124,7 @@ public class FtpOneClient {
         File downloadedFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), SUBSCRIPTIONS_JSON_FILE);
 
         try {
-            return (SubscriptionData)loadFromServer(downloadedFile, PODS_ONE_HOST_NAME + PATH_SUBSCRIPTION +
-                     SUBSCRIPTIONS_JSON_FILE);
+            return (SubscriptionData)loadFromServer(downloadedFile, SUBSCRIPTIONS_FILE_URL);
         } catch (Exception e) {
             LOG.log(Level.INFO, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
         }

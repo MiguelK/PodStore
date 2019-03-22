@@ -41,7 +41,7 @@ public class PushMessageClient {
         try {
 
             if(ServerInfo.isLocalDevMode()) {
-                LOG.info("DevMode no push is sent: " + title);
+                LOG.info("DevMode no push is sent: " + title + " deviceToken=" + token);
                 return;
             }
 

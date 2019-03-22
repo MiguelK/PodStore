@@ -12,15 +12,16 @@ import com.podcastcatalog.model.subscription.Subscription;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 public class SubscriptionNotifierJob implements Job {
 
     private final static Logger LOG = Logger.getLogger(SubscriptionNotifierJob.class.getName());
-    static final String PUSH_PAYLOAD_NEW_LINE = "\\r\\n";
 
     public void doWork() {
 
@@ -33,6 +34,8 @@ public class SubscriptionNotifierJob implements Job {
         try {
             List<Subscription> subscriptions = PodCastSubscriptionService.getInstance().getSubscriptions();
 
+           // debug(subscriptions);
+
             if (!subscriptions.isEmpty()) {
                 LOG.info(getClass().getSimpleName() +
                         " SubscriptionNotifierJob doWork(), subscriptions=" + subscriptions.size());
@@ -40,6 +43,7 @@ public class SubscriptionNotifierJob implements Job {
 
             //Loop all PodCasts that anyone subscribes to
          //   boolean isDirty = false;
+            int pushSent = 0;
             for (Subscription subscription : subscriptions) {
                 PodCast podCast = getPodCast(subscription.getPodCastId());
 
@@ -58,19 +62,41 @@ public class SubscriptionNotifierJob implements Job {
                 //Can subscribe to pods not in-memory Chines, German etc
                 PodCastEpisode latestRemoteEpisode = latestPodCastEpisode.get();
                 String latestPodCastEpisodeId = subscription.getLatestPodCastEpisodeId();
+                //LOG.info("latestRemoteEpisode=" + latestRemoteEpisode.getTitle() + " podCast=" + podCast.getTitle());
 
                 PodCastSubscriptionService.getInstance().update(podCast.getCollectionId(), latestRemoteEpisode.getId());
                 PodCastSubscriptionService.getInstance().uploadToOneCom();
 
                 if (latestPodCastEpisodeId != null
                         && !latestPodCastEpisodeId.equals(latestRemoteEpisode.getId())) {
+                    LOG.info("PUSH: latest=" + latestPodCastEpisodeId + ",remote=" + latestRemoteEpisode.getId() + ", title=" + latestRemoteEpisode.getTitle() +
+                    ",pid=" + latestRemoteEpisode.getPodCastCollectionId());
+                   // LOG.info("PUSH: latest=" + latestPodCastEpisodeId + ",remote=" + latestRemoteEpisode.getId());
+
                     sendPushMessage(subscription.getSubscribers(), podCast, latestRemoteEpisode);
+                    pushSent++;
                 }
 
-                Thread.sleep(60000); //Test distribbute load, memmory issue
+              //  Thread.sleep(1000); //Test distribbute load, memmory issue
             }
+            LOG.info("SubscriptionNotifierJob done, Subscription " + subscriptions.size() + " " + pushSent + " push messages sent");
         } catch (Exception e) {
             LOG.info("Failed push message" + e.getMessage());
+        }
+    }
+
+    private void debug( List<Subscription> subscriptions) {
+
+
+        Set<String> pods = new HashSet<>();
+        for (Subscription subscription : subscriptions) {
+            if(pods.contains(subscription.getPodCastId())){
+                LOG.info("Duplicate " + subscription.getPodCastId() + " subs=" + subscription.getSubscribers().size());
+            }
+            pods.add(subscription.getPodCastId());
+            if(subscription.getSubscribers().size() > 1) {
+                LOG.info("Subscribers " + subscription.getSubscribers().size());
+            }
         }
     }
 
@@ -85,7 +111,6 @@ public class SubscriptionNotifierJob implements Job {
             if(duration != null) {
                 podCastEpisodeInfo = duration.getDisplayValue();
             }
-
 
             try {
                   PodCastSubscriptionService.getInstance().

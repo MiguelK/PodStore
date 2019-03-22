@@ -49,10 +49,10 @@ public class PodCastSubscriptionService {
     public void recreateIfSubscriptionFileIsDeleted() {
 
         CloseableHttpClient client = HttpClients.createDefault();
-        try (CloseableHttpResponse response = client.execute(new HttpGet("http://pods.one/Subscriptions/Subscriptions.dat"))) {
+        try (CloseableHttpResponse response = client.execute(new HttpGet(FtpOneClient.SUBSCRIPTIONS_FILE_URL))) {
 
             if (response.getStatusLine().getStatusCode() == 404) {
-                LOG.info("No Subscriptions.dat file exist on server. Creating new subscriptionData");
+                LOG.info("No Subscriptions.dat file exist on server" + FtpOneClient.SUBSCRIPTIONS_FILE_URL + " ,Creating new subscriptionData");
                 this.subscriptionData = new SubscriptionData();
                 FtpOneClient.getInstance().upload(subscriptionData);
             }

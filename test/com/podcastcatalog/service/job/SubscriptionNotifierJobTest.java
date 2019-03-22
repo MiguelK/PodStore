@@ -14,8 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.podcastcatalog.service.job.SubscriptionNotifierJob.PUSH_PAYLOAD_NEW_LINE;
-
 public class SubscriptionNotifierJobTest {
 
 
