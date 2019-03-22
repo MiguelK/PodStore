@@ -9,6 +9,7 @@ import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.subscription.SubscriptionData;
 import com.podcastcatalog.service.datastore.LocatorProduction;
+import com.podcastcatalog.util.ServerInfo;
 import com.podcastcatalog.util.ZipFile;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTP;
@@ -76,6 +77,11 @@ public class FtpOneClient {
 
     //Upload SubscriptionData dat file used by this server
     synchronized void  upload(SubscriptionData subscriptionData)  {
+        if(ServerInfo.isLocalDevMode()) {
+            LOG.info("DevMode no subscriptionData upload to one.com");
+            return;
+        }
+
         File file = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), SUBSCRIPTIONS_JSON_FILE);
         try {
             LOG.info("upload subscriptions=" + subscriptionData.getSubscriptions().size());

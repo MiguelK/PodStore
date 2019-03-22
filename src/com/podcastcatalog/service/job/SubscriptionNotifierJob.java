@@ -52,27 +52,19 @@ public class SubscriptionNotifierJob implements Job {
                     continue;
                 }
 
-                Optional<PodCastEpisode> latestPodCastEpisode = getLatestPodCastEpisodeFromSourceServer(podCast);
+                PodCastEpisode latestRemoteEpisode = podCast.getLatestPodCastEpisode();
 
-                if (!latestPodCastEpisode.isPresent()) {
-                    LOG.warning("latestRemotePodCast is null for contentId=" + subscription.getPodCastId());
-                    continue;
+                boolean isLatestEpisodeUpdated = !latestRemoteEpisode.getId().equals(subscription.getLatestPodCastEpisodeId());
+                if(isLatestEpisodeUpdated) {
+                    PodCastSubscriptionService.getInstance().update(podCast.getCollectionId(), latestRemoteEpisode.getId());
+                    PodCastSubscriptionService.getInstance().uploadToOneCom();
                 }
 
-                //Can subscribe to pods not in-memory Chines, German etc
-                PodCastEpisode latestRemoteEpisode = latestPodCastEpisode.get();
-                String latestPodCastEpisodeId = subscription.getLatestPodCastEpisodeId();
-                //LOG.info("latestRemoteEpisode=" + latestRemoteEpisode.getTitle() + " podCast=" + podCast.getTitle());
-
-                PodCastSubscriptionService.getInstance().update(podCast.getCollectionId(), latestRemoteEpisode.getId());
-                PodCastSubscriptionService.getInstance().uploadToOneCom();
-
-                if (latestPodCastEpisodeId != null
-                        && !latestPodCastEpisodeId.equals(latestRemoteEpisode.getId())) {
-                    LOG.info("PUSH: latest=" + latestPodCastEpisodeId + ",remote=" + latestRemoteEpisode.getId() + ", title=" + latestRemoteEpisode.getTitle() +
+                if(!(subscription.getLatestPodCastEpisodeId() == null) && isLatestEpisodeUpdated) {
+                    LOG.info("PUSH: latest=" + subscription.getLatestPodCastEpisodeId()
+                            + ",remote=" + latestRemoteEpisode.getId() + ", podCast=" + podCast.getTitle()
+                            + ", title=" + latestRemoteEpisode.getTitle() +
                     ",pid=" + latestRemoteEpisode.getPodCastCollectionId());
-                   // LOG.info("PUSH: latest=" + latestPodCastEpisodeId + ",remote=" + latestRemoteEpisode.getId());
-
                     sendPushMessage(subscription.getSubscribers(), podCast, latestRemoteEpisode);
                     pushSent++;
                 }
@@ -129,7 +121,7 @@ public class SubscriptionNotifierJob implements Job {
         return podCastOptional.orElse(null);
     }
 
-    private Optional<PodCastEpisode> getLatestPodCastEpisodeFromSourceServer(PodCast podCast) {
+   /* private Optional<PodCastEpisode> getLatestPodCastEpisodeFromSourceServer(PodCast podCast) {
         return PodCastFeedParser.parseLatestPodCastEpisode(podCast);
-    }
+    }*/
 }
