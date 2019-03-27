@@ -25,7 +25,7 @@ public class Subscription implements Serializable {
     }
 
     public String getLatestPodCastEpisodeId() {
-        return latestPodCastEpisodeId;
+        return StringUtils.trimToNull(latestPodCastEpisodeId);
     }
 
     public void setLatestPodCastEpisodeId(String latestPodCastEpisodeId) {

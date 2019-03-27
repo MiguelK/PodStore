@@ -60,7 +60,10 @@ public class SubscriptionNotifierJob implements Job {
                     PodCastSubscriptionService.getInstance().uploadToOneCom();
                 }
 
-                if(!(subscription.getLatestPodCastEpisodeId() == null) && isLatestEpisodeUpdated) {
+                //Do not push first time added
+                boolean isNotNewlyAdded = !(subscription.getLatestPodCastEpisodeId() == null);
+
+                if(isNotNewlyAdded && isLatestEpisodeUpdated) {
                     LOG.info("PUSH: latest=" + subscription.getLatestPodCastEpisodeId()
                             + ",remote=" + latestRemoteEpisode.getId() + ", podCast=" + podCast.getTitle()
                             + ", title=" + latestRemoteEpisode.getTitle() +
