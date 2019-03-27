@@ -27,6 +27,6 @@ public class IdGenerator {
                 .toString();
 
 
-        return podCastCollectionId + "-" + s1;
+        return (podCastCollectionId + "-" + s1).trim();
     }
 }

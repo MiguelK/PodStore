@@ -50,14 +50,15 @@ public class FtpOneClient {
         GSON = GsonFactory.build(fieldExclusions, classExclusions);
     }
 
-    private static final String PATH_SUBSCRIPTION = "/Subscriptions/";
+    public static final String PATH_SUBSCRIPTION = "/Subscriptions/";
     public static final String PATH_LANGUAGE = "/language/";
 
     private static final String SUBSCRIPTIONS_JSON_FILE = "Subscriptions.dat";
     private static final String POD_CAST_CATALOG_META_DATA_FILE = "_MetaData.dat";
     private static final String PODS_ONE_HOST_NAME = "http://pods.one";
 
-    public static final String SUBSCRIPTIONS_FILE_URL = PODS_ONE_HOST_NAME + PATH_SUBSCRIPTION +
+    public static final String SUBSCRIPTIONS_PATH = PODS_ONE_HOST_NAME + PATH_SUBSCRIPTION;
+    public static final String SUBSCRIPTIONS_FILE_URL = SUBSCRIPTIONS_PATH +
             SUBSCRIPTIONS_JSON_FILE;
 
     private static FtpOneClient INSTANCE = new FtpOneClient();
@@ -146,7 +147,10 @@ public class FtpOneClient {
         try {
             return (PodCastCatalogMetaData)loadFromServer(downloadedFile, PODS_ONE_HOST_NAME + PATH_LANGUAGE + fileName);
         } catch (Exception e) {
-          //  LOG.log(Level.INFO, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
+            if(ServerInfo.isLocalDevMode()) {
+                LOG.log(Level.INFO, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
+            }
+
             return null;
         }
     }
@@ -164,7 +168,7 @@ public class FtpOneClient {
         }
     }
 
-    private Object loadFromServer(File downloadedFile, String requestURL) throws IOException {
+    public Object loadFromServer(File downloadedFile, String requestURL) throws IOException {
 
 
         downloadedFile.delete();
@@ -186,31 +190,37 @@ public class FtpOneClient {
                 EntityUtils.consume(entity);
             }
 
-            ObjectInputStream in = null;
-            FileInputStream fileIn = null;
-            try {
-                try {
-                    fileIn = new FileInputStream(downloadedFile);
-                    in = new ObjectInputStream(fileIn);
-                    return  in.readObject();
-                } catch (Exception e) {
-                    LOG.log(Level.INFO, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
-                }
-
-            } finally {
-                if (in != null) {
-                    IOUtils.closeQuietly(in);
-                }
-                if (fileIn != null) {
-                    IOUtils.closeQuietly(fileIn);
-                }
-            }
+            Object in = getObject(downloadedFile);
+            if (in != null) return in;
         }
 
         throw new IOException();
     }
 
-    private void saveAsObject(Object object, File targetFile) throws IOException {
+    public Object getObject(File downloadedFile) {
+        ObjectInputStream in = null;
+        FileInputStream fileIn = null;
+        try {
+            try {
+                fileIn = new FileInputStream(downloadedFile);
+                in = new ObjectInputStream(fileIn);
+                return  in.readObject();
+            } catch (Exception e) {
+                LOG.log(Level.INFO, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
+            }
+
+        } finally {
+            if (in != null) {
+                IOUtils.closeQuietly(in);
+            }
+            if (fileIn != null) {
+                IOUtils.closeQuietly(fileIn);
+            }
+        }
+        return null;
+    }
+
+    public void saveAsObject(Object object, File targetFile) throws IOException {
         FileOutputStream fileOut = null;
         ObjectOutputStream out = null;
         try {
@@ -218,6 +228,7 @@ public class FtpOneClient {
                     new FileOutputStream(targetFile);
             out = new ObjectOutputStream(fileOut);
             out.writeObject(object);
+            out.flush();
         } catch (IOException e) {
             throw e;
         } finally {

@@ -28,6 +28,28 @@ public class ItunesSearchAPITest {
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
+    public void lookup_check_episodes() {
+        PodCast podCast = ItunesSearchAPI.lookupPodCast("308339623").get();
+
+        //308339623-shakenbabyskandalen
+        PodCastEpisode latestPodCastEpisode = podCast.getLatestPodCastEpisode();
+        System.out.println(podCast.getTitle() + " episodes=" + podCast.getPodCastEpisodesInternal().size());
+        System.out.println("latestPodCastEpisode=" + latestPodCastEpisode.getTitle() + ", id=" + latestPodCastEpisode.getId());
+    }
+
+    @Test
+    public void isLatestEpisodeUpdated_false() throws Exception {
+
+        String latest=   "308339623-shakenbabyskandalen";
+        String  remote=  "308339623-shakenbabyskandalen";
+
+        boolean isLatestEpisodeUpdated = !remote.equals(latest);
+        System.out.println("isLatestEpisodeUpdated= " + isLatestEpisodeUpdated);
+
+        Assert.assertFalse(isLatestEpisodeUpdated);
+    }
+
+    @Test(groups = TestUtil.SLOW_TEST)
     public void parse_1_podcasts() {
         ItunesSearchAPI query = ItunesSearchAPI.createCollector("term=Spår&entity=podcast&limit=1&country=SE");
         int podCasts = query.collectPodCasts().size();
