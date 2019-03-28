@@ -7,7 +7,6 @@ import com.podcastcatalog.modelbuilder.collector.itunes.PodCastEpisodeProcessor;
 import com.podcastcatalog.util.DateUtil;
 import com.podcastcatalog.util.ServerInfo;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.StopWatch;
 
 import java.net.MalformedURLException;
 import java.net.URL;

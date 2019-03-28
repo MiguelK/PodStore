@@ -27,7 +27,13 @@ public class ItunesSearchAPITest {
         Assert.assertTrue(ItunesSearchAPI.lookupPodCast("895602289").isPresent());
     }
 
+
     @Test(groups = TestUtil.SLOW_TEST)
+    public void serial() {
+        PodCast podCast = ItunesSearchAPI.lookupPodCast("946101591").get();
+        System.out.println(podCast.getTitle());
+    }
+        @Test(groups = TestUtil.SLOW_TEST)
     public void lookup_check_episodes() {
         PodCast podCast = ItunesSearchAPI.lookupPodCast("308339623").get();
 

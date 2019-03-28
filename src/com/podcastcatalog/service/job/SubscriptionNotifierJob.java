@@ -29,20 +29,16 @@ public class SubscriptionNotifierJob implements Job {
             return;
         }
 
-        PodCastSubscriptionService.getInstance().recreateIfSubscriptionFileIsDeleted();
+       // PodCastSubscriptionService.getInstance().recreateIfSubscriptionFileIsDeleted();
 
         try {
             List<Subscription> subscriptions = PodCastSubscriptionService.getInstance().getSubscriptions();
-
-           // debug(subscriptions);
 
             if (!subscriptions.isEmpty()) {
                 LOG.info(getClass().getSimpleName() +
                         " SubscriptionNotifierJob doWork(), subscriptions=" + subscriptions.size());
             }
 
-            //Loop all PodCasts that anyone subscribes to
-         //   boolean isDirty = false;
             int pushSent = 0;
             for (Subscription subscription : subscriptions) {
                 PodCast podCast = getPodCast(subscription.getPodCastId());
@@ -55,25 +51,29 @@ public class SubscriptionNotifierJob implements Job {
                 PodCastEpisode latestRemoteEpisode = podCast.getLatestPodCastEpisode();
 
                 //Do not push first time added
-                boolean isNotNewlyAdded = !(subscription.getLatestPodCastEpisodeId() == null);
-
-                boolean isLatestEpisodeUpdated = !latestRemoteEpisode.getId().equals(subscription.getLatestPodCastEpisodeId());
-                if(isLatestEpisodeUpdated) {
+                if(subscription.getLatestPodCastEpisodeId() == null) {
+                    LOG.info("Updating Subscription for first time " + podCast.getTitle() + ", episode=" + latestRemoteEpisode.getId());
                     PodCastSubscriptionService.getInstance().update(podCast.getCollectionId(), latestRemoteEpisode.getId());
-                    PodCastSubscriptionService.getInstance().uploadToOneCom();
+                    continue;
                 }
 
-                if(isNotNewlyAdded && isLatestEpisodeUpdated) {
+                boolean isEpisodeUpdated = !latestRemoteEpisode.getId().equals(subscription.getLatestPodCastEpisodeId());
+                if(isEpisodeUpdated) {
                     LOG.info("PUSH: latest=" + subscription.getLatestPodCastEpisodeId()
                             + ",remote=" + latestRemoteEpisode.getId() + ", podCast=" + podCast.getTitle()
                             + ", title=" + latestRemoteEpisode.getTitle() +
-                    ",pid=" + latestRemoteEpisode.getPodCastCollectionId());
+                    ",pid=" + latestRemoteEpisode.getPodCastCollectionId() + ", subscribers=" + subscription.getSubscribers().size());
+
                     sendPushMessage(subscription.getSubscribers(), podCast, latestRemoteEpisode);
+
+                    PodCastSubscriptionService.getInstance().update(podCast.getCollectionId(), latestRemoteEpisode.getId());
+
                     pushSent++;
                 }
-
-              //  Thread.sleep(1000); //Test distribbute load, memmory issue
             }
+
+            PodCastSubscriptionService.getInstance().uploadToOneCom();
+
             LOG.info("SubscriptionNotifierJob done, Subscription " + subscriptions.size() + " " + pushSent + " push messages sent");
         } catch (Exception e) {
             LOG.info("Failed push message" + e.getMessage());

@@ -4,18 +4,13 @@ import com.google.gson.Gson;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastsearch.PodCastResultItem;
 import com.podcastcatalog.modelbuilder.collector.PodCastCollector;
+import com.podcastcatalog.util.IOUtil;
 import com.podcastcatalog.util.ServerInfo;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +33,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         this.request = buildURL(url);
     }
 
-    public static ItunesSearchAPI createCollector(String parameters) {
+    static ItunesSearchAPI createCollector(String parameters) {
         return new ItunesSearchAPI(BASE_URL_SEARCH + parameters);
     }
 
@@ -138,7 +133,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         HttpsURLConnection connection;
         try {
             connection = (HttpsURLConnection) request.openConnection();
-            String content = getResultContent(connection);
+            String content = IOUtil.getResultContent(connection);
             return GSON.fromJson(content, PodCastSearchResult.class);
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Unable to get Itunes Search API result using query=" + request, e);
@@ -147,33 +142,6 @@ public class ItunesSearchAPI implements PodCastCollector {
         return null;
     }
 
-    private String getResultContent(HttpsURLConnection connection) {
-        if (connection == null) {
-            throw new IllegalArgumentException("connection is null");
-        }
-
-        StringBuilder stringBuilder = new StringBuilder();
-        BufferedReader bufferedReader = null;
-
-        try {
-            bufferedReader =
-                    new BufferedReader(
-                            new InputStreamReader(connection.getInputStream()));
-
-            String input;
-
-            while ((input = bufferedReader.readLine()) != null) {
-                stringBuilder.append(input);
-            }
-
-        } catch (IOException e) {
-            LOG.warning("Unable to read content from search API " + e.getMessage());
-        } finally {
-            IOUtils.closeQuietly(bufferedReader);
-        }
-
-        return stringBuilder.toString();
-    }
 
      public static class PodCastSearchResult {
         int resultCount;
