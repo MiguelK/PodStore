@@ -67,12 +67,12 @@ public class SubscriptionNotifierJob implements Job {
                     sendPushMessage(subscription.getSubscribers(), podCast, latestRemoteEpisode);
 
                     PodCastSubscriptionService.getInstance().update(podCast.getCollectionId(), latestRemoteEpisode.getId());
+                    PodCastSubscriptionService.getInstance().uploadToOneCom();
 
                     pushSent++;
                 }
             }
 
-            PodCastSubscriptionService.getInstance().uploadToOneCom();
 
             LOG.info("SubscriptionNotifierJob done, Subscription " + subscriptions.size() + " " + pushSent + " push messages sent");
         } catch (Exception e) {
