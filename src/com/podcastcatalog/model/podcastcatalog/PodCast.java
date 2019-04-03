@@ -118,6 +118,10 @@ public class PodCast extends BundleItem {
             return this;
         }
 
+        public void shufflePodCastEpisodes() {
+            Collections.shuffle(podCastEpisodes);
+        }
+
         public Builder setArtworkUrl600(String artworkUrl600) {
             this.artworkUrl600 = StringUtils.trimToNull(artworkUrl600);
             return this;

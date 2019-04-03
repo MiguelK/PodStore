@@ -135,32 +135,28 @@ public class TimeDurationPodCastBundleBuilder {
 
         PodCast.Builder builder3 = podCastsByDuration.get(DurationInterval.half_hour);
         if(builder3!=null) {
+            builder3.shufflePodCastEpisodes();
             podCasts.add(builder3.build(200));
         }
         PodCast.Builder builder2 = podCastsByDuration.get(DurationInterval.hour);
         if(builder2!=null) {
+            builder2.shufflePodCastEpisodes();
             podCasts.add(builder2.build(200));
         }
         PodCast.Builder builder1 = podCastsByDuration.get(DurationInterval.one_half_hour);
 
         if(builder1!=null) {
+            builder1.shufflePodCastEpisodes();
             podCasts.add(builder1.build(200));
         }
 
         PodCast.Builder builder = podCastsByDuration.get(DurationInterval.two_hour);
         if(builder!=null) {
+            builder.shufflePodCastEpisodes();
             podCasts.add(builder.build(200));
         }
 
-        List<PodCast> podCasts1 = podCasts.stream().filter(podCast -> {
-                    String trimToEmpty = StringUtils.trimToEmpty(podCast.getTitle());
-                    return !(trimToEmpty.contains("Del") && trimToEmpty.contains("Episode"));
-                }
-        ).collect(Collectors.toList());
-
-        Collections.shuffle(podCasts1);
-
-        return new PodCastBundle(bundleName, "not used", podCasts1);
+        return new PodCastBundle(bundleName, "not used", podCasts);
     }
 
     private void updatePodCastByDuration(PodCast podCast, PodCastEpisode podCastEpisode, DurationInterval durationInterval) {
@@ -178,6 +174,14 @@ public class TimeDurationPodCastBundleBuilder {
         podCastBuilder
                 .collectionId(podCast.getCollectionId()).createdDate(podCast.getCreatedDate())
                 .feedURL(podCast.getFeedURL());
+
+        String podCastEpisodeTitle = podCastEpisode.getTitle();
+
+        if(podCastEpisodeTitle.contains("Del") || podCastEpisodeTitle.contains("Episode")) {
+            //Skip episoe delar e.g Del 1/3
+            return;
+        }
+
         podCastBuilder.addPodCastEpisode(podCastEpisode);
     }
 }
