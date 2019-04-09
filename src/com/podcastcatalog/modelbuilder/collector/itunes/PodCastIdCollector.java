@@ -283,7 +283,7 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
         //="https://itunes.apple.com/se/podcast/ze-shows-anime-pulse/id95185416?mt=2">
 
         int start = value.indexOf("/id") + 3;
-        int end = value.lastIndexOf("?mt");
+        int end = value.indexOf(">") - 1;
 
         String substring = value.substring(start, end);
 
@@ -299,7 +299,8 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
         //https://itunes.apple.com/se/genre/podcaster-konst/id1301?mt=2"
         //https://itunes.apple.com/se/podcast/m%C3%A5sskit-med-spoilers/id1390385030?mt=2">Måsskit med spoilers</a> </li>
         //="https://itunes.apple.com/se/podcast/ze-shows-anime-pulse/id95185416?mt=2">
-        String itunesPath = "itunes.apple.com/" + language.name().toLowerCase() + "/podcast";
+        //https://podcasts.apple.com/us/podcast/were-alive/id313300476
+        String itunesPath = "podcasts.apple.com/" + language.name().toLowerCase() + "/podcast";
         return e -> {
             String toString = e.toString();
                boolean containsPath = toString.contains(itunesPath);

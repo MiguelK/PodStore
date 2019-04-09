@@ -9,6 +9,7 @@ import com.podcastcatalog.modelbuilder.collector.PodCastFeedParser;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
 import com.podcastcatalog.model.subscription.Subscription;
+import com.podcastcatalog.util.ServerInfo;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.ArrayList;
@@ -26,6 +27,11 @@ public class SubscriptionNotifierJob implements Job {
     public void doWork() {
 
         if(!PodCastSubscriptionService.getInstance().isSubscribersLoaded()) {
+            return;
+        }
+
+        if(ServerInfo.isLocalDevMode()) {
+            LOG.info("No PUSH Local dev mode...");
             return;
         }
 

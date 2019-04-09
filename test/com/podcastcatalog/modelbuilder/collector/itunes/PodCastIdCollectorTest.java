@@ -1,6 +1,7 @@
 package com.podcastcatalog.modelbuilder.collector.itunes;
 
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -14,11 +15,12 @@ public class PodCastIdCollectorTest {
     @Test
     public void testParseId() throws Exception {
 
-        PodCastIdCollector podCastIdCollector = new PodCastIdCollector(PodCastCatalogLanguage.US, PodCastIdCollector.Category.ARTS, "");
+        for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
+            Assert.assertFalse(new PodCastIdCollector(language, PodCastIdCollector.Category.NEWS_POLITICS, "").getPodCastIds().isEmpty());
+        }
 
-        List<Long> podCastIds = podCastIdCollector.getPodCastIds();
 
-        System.out.println(podCastIds.size() + " IDS==" + podCastIds);
+  //      System.out.println(podCastIds.size() + " IDS==" + podCastIds);
     }
 
     @Test
