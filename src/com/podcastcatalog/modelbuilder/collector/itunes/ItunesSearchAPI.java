@@ -33,7 +33,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         this.request = buildURL(url);
     }
 
-    static ItunesSearchAPI createCollector(String parameters) {
+    public static ItunesSearchAPI createCollector(String parameters) {
         return new ItunesSearchAPI(BASE_URL_SEARCH + parameters);
     }
 

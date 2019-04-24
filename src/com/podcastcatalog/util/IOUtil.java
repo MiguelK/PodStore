@@ -4,7 +4,10 @@ import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Level;
@@ -26,6 +29,29 @@ public class IOUtil {
             LOG.log(Level.SEVERE, "Unable to get Itunes Search API result using query=" + request, e);
         }
 
+    }
+
+    public static Object getObject(File downloadedFile) {
+        ObjectInputStream in = null;
+        FileInputStream fileIn = null;
+        try {
+            try {
+                fileIn = new FileInputStream(downloadedFile);
+                in = new ObjectInputStream(fileIn);
+                return  in.readObject();
+            } catch (Exception e) {
+                LOG.log(Level.INFO, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
+            }
+
+        } finally {
+            if (in != null) {
+                IOUtils.closeQuietly(in);
+            }
+            if (fileIn != null) {
+                IOUtils.closeQuietly(fileIn);
+            }
+        }
+        return null;
     }
 
     public static String getResultContent(HttpURLConnection connection) {

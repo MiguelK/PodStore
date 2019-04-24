@@ -11,6 +11,9 @@ public class PodCastCategory extends BundleItem {
     public PodCastCategory(String title, String description,
                            String artworkUrl600, List<PodCast> podCasts, PodCastCategoryType podCastCategoryType) {
         super(title, description, artworkUrl600);
+        if (podCasts.isEmpty()) {
+            throw new IllegalArgumentException("Missing podCasts for PodCastCategory " + title + ",podCastCategoryType=" + podCastCategoryType);
+        }
         this.podCasts = podCasts;
         this.podCastCategoryType = podCastCategoryType;
     }
