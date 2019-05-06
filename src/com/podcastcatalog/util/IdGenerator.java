@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  */
 public class IdGenerator {
 
-    private static final String VALID_CHARACTERS = "abcdefghijklmnopqrstuvzyx";
+    private static final String VALID_CHARACTERS = "0123456789abcdefghijklmnopqrstuvzyx";
 
     private static final List<Character> VALID_CHARACTER_LIST = new ArrayList<>();
 

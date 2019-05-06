@@ -15,12 +15,11 @@ public class IdGeneratorTest {
     @Test
     public void testGenerate()  {
 
-
-        String id1 = IdGenerator.generate("S07E03 Dödsskjutningen", "676767");
-        String id2 = IdGenerator.generate("S07E03 Dödsskjutningen", "676767");
+        String id1 = IdGenerator.generate("Del 2/2: Mikael Ljungberg – Från Sydney till självmord", "676767");
+        String id2 = IdGenerator.generate("Del 1/2: Mikael Ljungberg – Från Sydney till självmord", "676767");
 
         System.out.println(id1);
-        Assert.assertEquals(id1, id2);
+        Assert.assertNotEquals(id1, id2);
         Assert.assertNotNull(id1);
         Assert.assertNotNull(id2);
         Assert.assertFalse(StringUtils.isEmpty(id1));
