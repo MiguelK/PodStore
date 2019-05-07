@@ -25,7 +25,7 @@ public class PodCastCatalogUpdater implements Job {
             for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
 
                 //TEST only 1
-                if (language == PodCastCatalogLanguage.CN) {
+                if (ServerInfo.isLocalDevMode() && language != PodCastCatalogLanguage.CN) {
                    continue;
                 }
 

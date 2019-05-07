@@ -20,7 +20,7 @@ public class PodCastCatalogBuilderSETest {
     @Test
     public void fetchBuildCatalog() throws Exception {
 
-        Set<BundleBuilder> bundleBuilders = PodCastCatalogLanguage.IE.create().getBundleBuilders();
+        Set<BundleBuilder> bundleBuilders = PodCastCatalogLanguage.CN.create().getBundleBuilders();
 
         Assert.assertNotNull(bundleBuilders);
 
@@ -28,7 +28,7 @@ public class PodCastCatalogBuilderSETest {
 
         for (Future<Bundle> future : futures) {
 
-            Bundle bundle = future.get(20, TimeUnit.SECONDS);
+            Bundle bundle = future.get(5, TimeUnit.SECONDS);
             System.out.println("Bundle " + bundle.getTitle() + bundle.getBundleType() + " bundleItems=" + bundle.getBundleItems().size());
 
         }
