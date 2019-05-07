@@ -282,7 +282,7 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
 
         //="https://itunes.apple.com/se/podcast/ze-shows-anime-pulse/id95185416?mt=2">
 
-        int start = value.indexOf("/id") + 3;
+        int start = value.lastIndexOf("/id") + 3;
         int end = value.indexOf(">") - 1;
 
         String substring = value.substring(start, end);

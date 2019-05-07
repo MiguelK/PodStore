@@ -53,11 +53,12 @@ China XXXX BUG
     IT("IT",PodCastCatalogBuilderIT.class, false, true, true), //Italy
     VN("VN",PodCastCatalogBuilderVN.class, false, true, true), //Vietnamn
     NL("NL",PodCastCatalogBuilderNL.class, false, true, true), //Netherlands
+
     JP("JP",PodCastCatalogBuilderJP.class, false, true, true), //Japan
     RU("RU",PodCastCatalogBuilderRU.class, false, true, true), //Russia
     CH("CH",PodCastCatalogBuilderCH.class, false, true, true), //Switzerland
-    KR("KR",PodCastCatalogBuilderKR.class, false, true, true), //Switzerland
-    GB("GB",PodCastCatalogBuilderGB.class, false, true, true); //South Korea
+    KR("KR",PodCastCatalogBuilderKR.class, false, true, true), //South Korea
+    GB("GB",PodCastCatalogBuilderGB.class, false, true, true); //United Kingdom
 
     private final String lang;
     private final Class catalogBuilder;
