@@ -17,7 +17,7 @@ public class PodCastCatalogBuilderSETest {
 
     private final ExecutorService bundleBuilderExecutor = Executors.newFixedThreadPool(10);
 
-    @Test
+   // @Test
     public void fetchBuildCatalog() throws Exception {
 
         Set<BundleBuilder> bundleBuilders = PodCastCatalogLanguage.CN.create().getBundleBuilders();
