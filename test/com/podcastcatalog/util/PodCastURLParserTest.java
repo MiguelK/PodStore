@@ -56,7 +56,8 @@ public class PodCastURLParserTest {
         feedUrlString = "http://feeds.megaphone.fm/MRM9077223370";//, collectionId=1264843400
         feedUrlString = "http://feeds.megaphone.fm/watergate";//, collectionId=1315040130
         feedUrlString = "https://www.npr.org/rss/podcast.php?id=510313";
-        feedUrlString = "https://www.npr.org/rss/podcast.php?id=510253";
+        feedUrlString = "http://feeds.soundcloud.com/stream/367904543-pratapengar-episod-102-bostadsspecial-del-2.mp3";
+
         //feedUrlString = "https://www.npr.org/rss/podcast.php?id=510313";//, collectionId=1150510297
         //feedUrlString = "https://rss.art19.com/the-daily-show-with-trevor-noah";//, collectionId=1334878780
         //feedUrlString = "https://www.npr.org/rss/podcast.php?id=344098539";//, collectionId=121493804
