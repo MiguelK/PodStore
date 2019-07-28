@@ -24,16 +24,11 @@ public class PodCastCatalogUpdater implements Job {
             PodCastCatalogMetaData podCastCatalogMetaData = null;
             for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
 
-                //TEST only 1
-                if (ServerInfo.isLocalDevMode() && language != PodCastCatalogLanguage.CN) {
-                   continue;
-                }
-
-                if(PodCastCatalogService.getInstance().isMetaDataRegistered(language)) {
+                /*if(PodCastCatalogService.getInstance().isMetaDataRegistered(language)) {
                     LOG.info("PodCastCatalogMetaData already exist, will update for lang=" + language);
                     PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language.create());
                     continue;
-                }
+                }*/ //No updates i OpenShift MemoryFix
 
                 try {
                     podCastCatalogMetaData = FtpOneClient.getInstance().load(language);
@@ -41,11 +36,16 @@ public class PodCastCatalogUpdater implements Job {
                     LOG.log(Level.SEVERE, "Failed loading " + language, e);
                 }
 
+                //TEST only 1
+                /*if (language == PodCastCatalogLanguage.SE || language == PodCastCatalogLanguage.CN) {
+                    continue;
+                }*/
+
                 if(ServerInfo.isLocalDevMode()) {
-                    podCastCatalogMetaData = null; //Always build at startup time
+                   podCastCatalogMetaData = null; //Always build at startup time
                 }
 
-                if (podCastCatalogMetaData == null) {
+                if (podCastCatalogMetaData == null && ServerInfo.isLocalDevMode()) { //Oly update from local memory fix
                     PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language.create());
                 } else {
                     PodCastCatalogService.getInstance().register(language, podCastCatalogMetaData);

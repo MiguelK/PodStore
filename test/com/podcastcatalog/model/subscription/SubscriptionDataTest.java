@@ -1,6 +1,7 @@
 package com.podcastcatalog.model.subscription;
 
 import com.podcastcatalog.TestUtil;
+import com.podcastcatalog.model.PodCastCatalogMetaData;
 import com.podcastcatalog.service.subscription.FtpOneClient;
 import org.apache.commons.net.ftp.FTP;
 import org.testng.Assert;
@@ -25,8 +26,23 @@ public class SubscriptionDataTest {
         Assert.assertEquals(subscriptionData.getSubscriptions().size(), 1);
     }
 
-
     @Test
+    public void save_load_MetaData() throws Exception {
+
+        String fileName = "SE_MetaData.dat";
+        File testFile = new File(TestUtil.IO_TEMP_DATA_DIRECTORY, fileName);
+
+        PodCastCatalogMetaData m = new PodCastCatalogMetaData();
+
+        FtpOneClient.getInstance().saveAsObject(m, testFile);
+
+        Thread.sleep(2000);
+        System.out.println("Try loadig...");
+        Object object = FtpOneClient.getInstance().getObject(testFile);
+        System.out.println(object);
+    }
+
+        @Test
     public void save_load_SubscriptionData() throws Exception {
 
         String fileName = "test1.dat";

@@ -85,7 +85,7 @@ public class FtpOneClient {
 
         File file = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), SUBSCRIPTIONS_JSON_FILE);
         try {
-            LOG.info("upload subscriptions=" + subscriptionData.getSubscriptions().size());
+           // LOG.info("upload subscriptions=" + subscriptionData.getSubscriptions().size());
             saveAsObject(subscriptionData, file);
             FtpOneClient.getInstance().uploadToOneCom(file, PATH_SUBSCRIPTION);
         } catch (IOException e) {
@@ -116,8 +116,8 @@ public class FtpOneClient {
         String fileName = lang.name() + POD_CAST_CATALOG_META_DATA_FILE;
 
         File file = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), fileName);
-        LOG.info("Start uploading PodCastCatalogMetaData to server " + fileName
-                + " " + podCastCatalogMetaData);
+        //LOG.info("Start uploading PodCastCatalogMetaData to server " + fileName
+        //        + " " + podCastCatalogMetaData);
 
         try {
             saveAsObject(podCastCatalogMetaData, file);
