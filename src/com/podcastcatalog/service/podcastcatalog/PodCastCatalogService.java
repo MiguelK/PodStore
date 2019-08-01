@@ -145,7 +145,7 @@ public class PodCastCatalogService {
         List<ResultItem> resultItems = new ArrayList<>();
 
         List<PodCastResultItem> podCasts = ItunesSearchAPI.searchPodCasts("term="
-                + encodedQueryParam + "&entity=podcast&limit=12&country=" + podCastCatalogLanguage.name());
+                + encodedQueryParam + "&entity=podcast&limit=25&attribute=titleTerm&country=" + podCastCatalogLanguage.name());
         resultItems.addAll(podCasts);
 
         readLock.lock();

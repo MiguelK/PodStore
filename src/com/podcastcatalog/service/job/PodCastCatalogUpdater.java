@@ -24,6 +24,11 @@ public class PodCastCatalogUpdater implements Job {
             PodCastCatalogMetaData podCastCatalogMetaData = null;
             for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
 
+                //TEST only 1
+               /* if (language != PodCastCatalogLanguage.SE) {
+                    continue;
+                }*/
+
                 /*if(PodCastCatalogService.getInstance().isMetaDataRegistered(language)) {
                     LOG.info("PodCastCatalogMetaData already exist, will update for lang=" + language);
                     PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language.create());
@@ -36,13 +41,8 @@ public class PodCastCatalogUpdater implements Job {
                     LOG.log(Level.SEVERE, "Failed loading " + language, e);
                 }
 
-                //TEST only 1
-                /*if (language == PodCastCatalogLanguage.SE || language == PodCastCatalogLanguage.CN) {
-                    continue;
-                }*/
-
                 if(ServerInfo.isLocalDevMode()) {
-                   podCastCatalogMetaData = null; //Always build at startup time
+                 //  podCastCatalogMetaData = null; //Always build at startup time
                 }
 
                 if (podCastCatalogMetaData == null && ServerInfo.isLocalDevMode()) { //Oly update from local memory fix
