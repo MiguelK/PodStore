@@ -27,6 +27,7 @@ public class SubscriptionNotifierJob implements Job {
     public void doWork() {
 
         if(!PodCastSubscriptionService.getInstance().isSubscribersLoaded()) {
+            LOG.info("SubscriptionNotifierJob isSubscribersLoaded=false.");
             return;
         }
 
@@ -34,8 +35,6 @@ public class SubscriptionNotifierJob implements Job {
             LOG.info("No PUSH Local dev mode...");
             return;
         }
-
-       // PodCastSubscriptionService.getInstance().recreateIfSubscriptionFileIsDeleted();
 
         try {
             List<Subscription> subscriptions = PodCastSubscriptionService.getInstance().getSubscriptions();
@@ -47,33 +46,31 @@ public class SubscriptionNotifierJob implements Job {
 
             int pushSent = 0;
             for (Subscription subscription : subscriptions) {
-                PodCast podCast = getPodCast(subscription.getPodCastId());
 
-                if (podCast == null) {
+                String podCastId = subscription.getPodCastId();
+                ItunesSearchAPI.PodCastSmall podCastSmall = ItunesSearchAPI.getLatestEpisodeIdForPodCast(podCastId);
+
+                if (podCastSmall == null) {
                     LOG.warning("podCast is null for contentId=" + subscription.getPodCastId());
                     continue;
                 }
 
-                PodCastEpisode latestRemoteEpisode = podCast.getLatestPodCastEpisode();
-
                 //Do not push first time added
                 if(subscription.getLatestPodCastEpisodeId() == null) {
-                    LOG.info("Updating Subscription for first time " + podCast.getTitle() + ", episode=" + latestRemoteEpisode.getId());
-                    PodCastSubscriptionService.getInstance().update(podCast.getCollectionId(), latestRemoteEpisode.getId());
+                    LOG.info("Updating Subscription for first time " + podCastId + ", episode=" + podCastSmall.getLatestPodCastEpisodeId());
+                    PodCastSubscriptionService.getInstance().update(podCastId, podCastSmall.getLatestPodCastEpisodeId());
                     continue;
                 }
 
-                boolean isEpisodeUpdated = !latestRemoteEpisode.getId().equals(subscription.getLatestPodCastEpisodeId());
+                boolean isEpisodeUpdated = !podCastSmall.getLatestPodCastEpisodeId().equals(subscription.getLatestPodCastEpisodeId());
                 if(isEpisodeUpdated) {
-                    LOG.info("PUSH: latest=" + subscription.getLatestPodCastEpisodeId()
-                            + ",remote=" + latestRemoteEpisode.getId() + ", podCast=" + podCast.getTitle()
-                            + ", title=" + latestRemoteEpisode.getTitle() +
-                    ",pid=" + latestRemoteEpisode.getPodCastCollectionId() + ", subscribers=" + subscription.getSubscribers().size());
+                    LOG.info("PUSH:  podCast=" + podCastSmall.getPodCastTitle()
+                        + ",subscribers=" + subscription.getSubscribers().size());
 
-                    sendPushMessage(subscription.getSubscribers(), podCast, latestRemoteEpisode);
-
-                    PodCastSubscriptionService.getInstance().update(podCast.getCollectionId(), latestRemoteEpisode.getId());
+                    PodCastSubscriptionService.getInstance().update(podCastId, podCastSmall.getLatestPodCastEpisodeId());
                     PodCastSubscriptionService.getInstance().uploadToOneCom();
+
+                    sendPushMessage(subscription.getSubscribers(), podCastSmall);
 
                     pushSent++;
                 }
@@ -101,36 +98,26 @@ public class SubscriptionNotifierJob implements Job {
         }
     }
 
-    private void sendPushMessage(List<String> subscribers, PodCast podCast, PodCastEpisode latestPodCastEpisode) {
+    private void sendPushMessage(List<String> subscribers, ItunesSearchAPI.PodCastSmall podCastSmall) {
 
         for (String deviceToken : subscribers) {
-              String podCastEpisodeTitle = latestPodCastEpisode.getTitle();
-              String description = latestPodCastEpisode.getDescription();
+              String podCastEpisodeTitle = podCastSmall.getPodCastEpisodeTitle();
+              String description = podCastSmall.getPodCastEpisodeDescription();
               String podCastEpisodeInfo = "";
 
-            PodCastEpisodeDuration duration = latestPodCastEpisode.getDuration();
+            PodCastEpisodeDuration duration = podCastSmall.getPodCastEpisodeDuration();
             if(duration != null) {
                 podCastEpisodeInfo = duration.getDisplayValue();
             }
 
             try {
                   PodCastSubscriptionService.getInstance().
-                          pushMessage(podCast.getTitle(), podCastEpisodeTitle,
-                                  description, podCastEpisodeInfo, podCast.getCollectionId(),
-                                  latestPodCastEpisode.getId(),  deviceToken);
+                          pushMessage(podCastSmall.getPodCastTitle(), podCastEpisodeTitle,
+                                  description, podCastEpisodeInfo, podCastSmall.getPodCastPid(),
+                                  podCastSmall.getLatestPodCastEpisodeId(),  deviceToken);
               }catch (Exception e) {
                   LOG.info("Failed sendPushMessage" + e.getMessage());
               }
         }
     }
-
-
-    private PodCast getPodCast(String podCastId) {
-        Optional<PodCast> podCastOptional = ItunesSearchAPI.lookupPodCast(podCastId);
-        return podCastOptional.orElse(null);
-    }
-
-   /* private Optional<PodCastEpisode> getLatestPodCastEpisodeFromSourceServer(PodCast podCast) {
-        return PodCastFeedParser.parseLatestPodCastEpisode(podCast);
-    }*/
 }

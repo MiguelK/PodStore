@@ -9,6 +9,8 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.podcastcatalog.service.subscription.FtpOneClient.SUBSCRIPTIONS_PATH;
 
@@ -26,7 +28,7 @@ public class SubscriptionDataTest {
         Assert.assertEquals(subscriptionData.getSubscriptions().size(), 1);
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void save_load_MetaData() throws Exception {
 
         String fileName = "SE_MetaData.dat";
@@ -42,7 +44,7 @@ public class SubscriptionDataTest {
         System.out.println(object);
     }
 
-        @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void save_load_SubscriptionData() throws Exception {
 
         String fileName = "test1.dat";
@@ -73,6 +75,39 @@ public class SubscriptionDataTest {
         Assert.assertEquals(subscriptionData1.getSubscriptions().get(0).getLatestPodCastEpisodeId(), "2222");
         Assert.assertEquals(subscriptionData1.getSubscriptions().get(0).getPodCastId(), "1111");
         Assert.assertEquals(subscriptionData1.getSubscriptions().size(), 2);
+    }
+
+    @Test(groups = TestUtil.SLOW_TEST)
+    public void loadFromServer() throws IOException {
+        String fileName = "Subscriptions.dat";
+        File testFile = new File(TestUtil.IO_TEMP_DATA_DIRECTORY, fileName);
+        testFile.createNewFile();
+
+        String pathOnServer = SUBSCRIPTIONS_PATH + fileName;
+        SubscriptionData subscriptionData = (SubscriptionData) FtpOneClient.getInstance().loadFromServer(testFile, pathOnServer);
+
+
+        Set<String> subscribers = new HashSet<>();
+        for (Subscription subscription : subscriptionData.getSubscriptions()) {
+
+            String row = subscription.getPodCastId() + ", " + subscription.getLatestPodCastEpisodeId() + ", " + subscription.getSubscribers().size();
+
+            row+= System.lineSeparator() + "{";
+            //System.out.println(subscription.getPodCastId() + ", " + subscription.getLatestPodCastEpisodeId() + ", " + subscription.getSubscribers().size());
+
+            for (String subscriber  : subscription.getSubscribers()) {
+                row+=  subscriber + System.lineSeparator();
+                subscribers.add(subscriber);
+            }
+            row+= "}";
+
+            System.out.println(row);
+        }
+
+        System.out.println("Subscriptions=" + subscriptionData.getSubscriptions().size());
+        System.out.println("Unique Subscribers=" + subscribers.size());
+
+
     }
 
     /*

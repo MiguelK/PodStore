@@ -133,10 +133,10 @@ public class FtpOneClient {
         try {
             return (SubscriptionData)loadFromServer(downloadedFile, SUBSCRIPTIONS_FILE_URL);
         } catch (Exception e) {
-            LOG.log(Level.INFO, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
+            LOG.log(Level.SEVERE, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
         }
 
-        return new SubscriptionData();
+        return null;
     }
 
 

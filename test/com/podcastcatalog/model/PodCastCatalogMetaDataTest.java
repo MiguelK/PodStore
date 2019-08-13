@@ -1,5 +1,6 @@
 package com.podcastcatalog.model;
 
+import com.podcastcatalog.TestUtil;
 import org.apache.commons.io.IOUtils;
 import org.testng.annotations.Test;
 
@@ -12,7 +13,7 @@ import static org.testng.Assert.*;
 
 public class PodCastCatalogMetaDataTest {
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void testToString() throws Exception {
 
 

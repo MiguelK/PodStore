@@ -27,6 +27,12 @@ public class ItunesSearchAPITest {
         Assert.assertTrue(ItunesSearchAPI.lookupPodCast("895602289").isPresent());
     }
 
+    @Test(groups = TestUtil.SLOW_TEST)
+    public void fetchLatestEpisode() {
+        ItunesSearchAPI.PodCastSmall pod = ItunesSearchAPI.getLatestEpisodeIdForPodCast("989645925");
+        System.out.println(pod);
+    }
+
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void serial() {
@@ -35,7 +41,7 @@ public class ItunesSearchAPITest {
     }
         @Test(groups = TestUtil.SLOW_TEST)
     public void lookup_check_episodes() {
-        PodCast podCast = ItunesSearchAPI.lookupPodCast("308339623").get();
+        PodCast podCast = ItunesSearchAPI.lookupPodCast("1435150323").get();
 
         //308339623-shakenbabyskandalen
         PodCastEpisode latestPodCastEpisode = podCast.getLatestPodCastEpisode();

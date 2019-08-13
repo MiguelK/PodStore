@@ -1,5 +1,6 @@
 package com.podcastcatalog.modelbuilder.collector.itunes;
 
+import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -12,7 +13,7 @@ import java.util.List;
 public class PodCastIdCollectorTest {
 
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void testParseId() throws Exception {
 
         for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
@@ -23,7 +24,7 @@ public class PodCastIdCollectorTest {
   //      System.out.println(podCastIds.size() + " IDS==" + podCastIds);
     }
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void topList() throws Exception {
 
         PodCastIdCollector podCastIdCollector = PodCastIdCollector.createPodCastIdCollector(PodCastCatalogLanguage.SE,

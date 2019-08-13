@@ -8,6 +8,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,12 +39,18 @@ public class PodCastSubscriptionService {
         PushMessageClient.getInstance().configure(accountConfFile);
 
         subscriptionData = FtpOneClient.getInstance().loadSubscribers();
-        LOG.info("Loaded " + subscriptionData.getSubscriptions().size());
+        if(subscriptionData != null) {
+            LOG.info("Loaded " + subscriptionData.getSubscriptions().size());
+        }
     }
 
     //If subscriptionData is null == file exists but not able to load.
     public boolean isSubscribersLoaded() {
         return subscriptionData != null;
+    }
+
+    private boolean isNotLoaded() {
+        return !isSubscribersLoaded();
     }
 
     public void recreateIfSubscriptionFileIsDeleted() {
@@ -68,6 +75,9 @@ public class PodCastSubscriptionService {
     }
 
     public void subscribe(String deviceToken, String podCastId) {
+        if(isNotLoaded()) {
+            return;
+        }
 
         writeLock.lock();
 
@@ -92,6 +102,9 @@ public class PodCastSubscriptionService {
     }
 
     public void unSubscribe(String deviceToken, String podCastId) {
+        if(isNotLoaded()) {
+            return;
+        }
         writeLock.lock();
         try {
             subscriptionData.unSubscribe(deviceToken, podCastId);
@@ -122,6 +135,9 @@ public class PodCastSubscriptionService {
     }
 
     public void update(String podCastId, String latestPodCastEpisodeId) {
+        if(isNotLoaded()) {
+            return;
+        }
         writeLock.lock();
         try {
             Subscription subscription = subscriptionData.getSubscription(podCastId);
@@ -134,6 +150,9 @@ public class PodCastSubscriptionService {
     }
 
     public List<Subscription> getSubscriptions() {
+        if(isNotLoaded()) {
+            return Collections.emptyList();
+        }
         readLock.lock();
         try {
             return subscriptionData.getSubscriptions();
