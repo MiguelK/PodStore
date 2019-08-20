@@ -4,7 +4,7 @@ import com.podcastcatalog.model.PodCastCatalogMetaData;
 import com.podcastcatalog.model.podcastcatalog.*;
 import com.podcastcatalog.model.podcastsearch.PodCastEpisodeResultItem;
 import com.podcastcatalog.model.podcastsearch.PodCastResultItem;
-import com.podcastcatalog.model.podcastsearch.PodCastTitle;
+import com.podcastcatalog.model.podcastsearch.PodCastInfo;
 import com.podcastcatalog.model.podcastsearch.ResultItem;
 import com.podcastcatalog.modelbuilder.BundleBuilder;
 import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
@@ -63,7 +63,7 @@ public class PodCastCatalogService {
         }
     }
 
-    public List<PodCastTitle> getPodCastTitles(PodCastCatalogLanguage podCastCatalogLanguage) {
+    public List<PodCastInfo> getPodCastTitles(PodCastCatalogLanguage podCastCatalogLanguage) {
 
         PodCastCatalogMetaData podCastCatalogMetaData = getPodCastCatalogMetaData(podCastCatalogLanguage);
         if(podCastCatalogMetaData == null) {
@@ -72,7 +72,7 @@ public class PodCastCatalogService {
         return podCastCatalogMetaData.podCastTitles;
     }
 
-    public List<PodCastTitle> getPodCastTitlesTrending(PodCastCatalogLanguage podCastCatalogLanguage) {
+    public List<PodCastInfo> getPodCastTitlesTrending(PodCastCatalogLanguage podCastCatalogLanguage) {
 
         PodCastCatalogMetaData podCastCatalogMetaData = getPodCastCatalogMetaData(podCastCatalogLanguage);
         if(podCastCatalogMetaData == null) {
@@ -90,41 +90,6 @@ public class PodCastCatalogService {
         return podCastCatalogMetaData.popularSearchQueries;
     }
 
-    public void addPopularSearchTerm(PodCastCatalogLanguage lang, String searchTerm) {
-        List<SearchTerm> updatedList = null;
-        PodCastCatalogMetaData podCastCatalogMetaData = getPodCastCatalogMetaData(lang);
-
-        if (podCastCatalogMetaData == null) {
-            return;
-        }
-
-        List<SearchTerm> popular = new ArrayList<>(podCastCatalogMetaData.popularSearchQueries);
-
-        Optional<SearchTerm> first =
-                popular.stream().filter(r -> searchTerm.equalsIgnoreCase(r.getTerm())).findFirst();
-
-        if (first.isPresent()) {
-            first.get().increaseCounter();
-        } else {
-            popular.add(new SearchTerm(0, searchTerm));
-        }
-
-        Collections.sort(popular);
-        if (popular.size() >= 100) {
-            updatedList = popular.subList(0, popular.size() - 1);
-        }
-        if (updatedList == null) {
-            return;
-        }
-
-        writeLock.lock();
-
-        try {
-            podCastCatalogMetaData.popularSearchQueries = updatedList;
-        } finally {
-            writeLock.unlock();
-        }
-    }
 
     public List<ResultItem> search(PodCastCatalogLanguage podCastCatalogLanguage, String queryParam) {
 
@@ -234,8 +199,8 @@ public class PodCastCatalogService {
                 newTextSearchIndex.buildIndex();
 
                 //Export + update MetaData...
-                List<PodCastTitle> podCastTitles = new ArrayList<>();
-                List<PodCastTitle> podCastTitlesTrending = new ArrayList<>();
+                List<PodCastInfo> podCastTitles = new ArrayList<>();
+                List<PodCastInfo> podCastTitlesTrending = new ArrayList<>();
 
                 LOG.info("Start building SearchSuggestions + trending pods for lang=" + podCastCatalogLang);
 
@@ -243,14 +208,14 @@ public class PodCastCatalogService {
                     List<Long> ids = PodCastIdCollector.createPodCastIdCollector(podCastCatalogLang, categoryName).getPodCastIds();
                     List<ItunesSearchAPI.PodCastSearchResult.Row> podCastTitlesRows = ItunesSearchAPI.lookupPodCastsByIds(ids);
 
-                    PodCastTitle podCastTitleTrending = null; //Register 1 per category toplist
+                    PodCastInfo podCastTitleTrending = null; //Register 1 per category toplist
                     for (ItunesSearchAPI.PodCastSearchResult.Row row : podCastTitlesRows) {
-                        String trimmedTitle = StringUtils.trimToNull(row.getCollectionName());
-                        if (trimmedTitle == null) {
+                        String collectionId = row.getCollectionId();
+                        if (collectionId == null) {
                             continue;
                         }
 
-                        PodCastTitle podCastTitle = new PodCastTitle(trimmedTitle);
+                        PodCastInfo podCastTitle = new PodCastInfo(row.getCollectionId());
 
                         if (podCastTitles.contains(podCastTitle)) {
                             continue;

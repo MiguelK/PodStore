@@ -1,7 +1,7 @@
 package com.podcastcatalog.service.search;
 
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
-import com.podcastcatalog.model.podcastsearch.PodCastTitle;
+import com.podcastcatalog.model.podcastsearch.PodCastInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,39 +22,13 @@ public class SearchSuggestionService {
 
     private final static Logger LOG = Logger.getLogger(SearchSuggestionService.class.getName());
 
-    private Map<PodCastCatalogLanguage,  List<PodCastTitle>> podCastTitles = new HashMap<>();
-    private Map<PodCastCatalogLanguage,  List<PodCastTitle>> podCastTitlesTrending = new HashMap<>();
+    private Map<PodCastCatalogLanguage,  List<PodCastInfo>> podCastTitles = new HashMap<>();
+    private Map<PodCastCatalogLanguage,  List<PodCastInfo>> podCastTitlesTrending = new HashMap<>();
 
     private Map<PodCastCatalogLanguage,  List<SearchTerm>> popularSearchQueries = new HashMap<>();
 
     public static SearchSuggestionService getInstance() {
         return INSTANCE;
-    }
-
-    public void addPopularSearchTerm(PodCastCatalogLanguage lang, String searchTerm) {
-
-        writeLock.lock();
-        try {
-            List<SearchTerm> popular = popularSearchQueries.computeIfAbsent(lang, k -> new ArrayList<>());
-
-            Optional<SearchTerm> first =
-                    popular.stream().filter(r -> searchTerm.equalsIgnoreCase(r.getTerm())).findFirst();
-
-            if(first.isPresent()){
-                first.get().increaseCounter();
-            } else {
-                popular.add(new SearchTerm(0, searchTerm));
-            }
-
-            Collections.sort(popular);
-            if(popular.size()>=100) {
-                List<SearchTerm> searchTerms = popular.subList(0, popular.size()-1);
-                popularSearchQueries.put(lang, searchTerms);
-            }
-
-        } finally {
-            writeLock.unlock();
-        }
     }
 
     public List<SearchTerm> getPopularSearchTerm(PodCastCatalogLanguage lang) {
@@ -68,7 +42,7 @@ public class SearchSuggestionService {
         }
     }
 
-    public void setPodCastTitles(PodCastCatalogLanguage lang, List<PodCastTitle> podCastTitles) {
+    public void setPodCastTitles(PodCastCatalogLanguage lang, List<PodCastInfo> podCastTitles) {
         writeLock.lock();
         try {
             this.podCastTitles.put(lang,Collections.unmodifiableList(podCastTitles));
@@ -77,7 +51,7 @@ public class SearchSuggestionService {
         }
     }
 
-    public void setPodCastTitlesTrending(PodCastCatalogLanguage lang, List<PodCastTitle> podCastTitlesTrending) {
+    public void setPodCastTitlesTrending(PodCastCatalogLanguage lang, List<PodCastInfo> podCastTitlesTrending) {
         writeLock.lock();
         try {
             this.podCastTitlesTrending.put(lang, Collections.unmodifiableList(podCastTitlesTrending));
@@ -86,7 +60,7 @@ public class SearchSuggestionService {
         }
     }
 
-    public List<PodCastTitle> getPodCastTitles(PodCastCatalogLanguage lang) {
+    public List<PodCastInfo> getPodCastTitles(PodCastCatalogLanguage lang) {
         readLock.lock();
         try {
             return podCastTitles.get(lang)== null ?
@@ -96,7 +70,7 @@ public class SearchSuggestionService {
         }
     }
 
-    public List<PodCastTitle> getPodCastTitlesTrending(PodCastCatalogLanguage lang) {
+    public List<PodCastInfo> getPodCastTitlesTrending(PodCastCatalogLanguage lang) {
         readLock.lock();
         try {
             return podCastTitlesTrending.get(lang) == null ?

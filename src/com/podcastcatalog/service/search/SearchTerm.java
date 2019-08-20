@@ -7,10 +7,20 @@ public class SearchTerm implements Comparable<SearchTerm>  {
 
     private int counter;
     private String term;
+    private String pid;
 
-    public SearchTerm(int counter, String term) {
+    public SearchTerm(int counter, String term, String pid) {
         this.counter = counter;
         this.term = term;
+        this.pid = pid;
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+
+    public String getPid() {
+        return pid;
     }
 
     public String getTerm() {

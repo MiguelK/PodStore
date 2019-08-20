@@ -19,9 +19,9 @@ public class SearchTermTest {
     @Test
     public void sortList()  {
 
-        SearchTerm s1 = new SearchTerm(12,"Mord");
-        SearchTerm s2 = new SearchTerm(1,"Politik");
-        SearchTerm s3 = new SearchTerm(88,"Trest ");
+        SearchTerm s1 = new SearchTerm(12,"Mord", "1233");
+        SearchTerm s2 = new SearchTerm(1,"Politik", "23232");
+        SearchTerm s3 = new SearchTerm(88,"Trest ", "89897");
 
         List<SearchTerm> test = new ArrayList<>();
         test.add(s1);

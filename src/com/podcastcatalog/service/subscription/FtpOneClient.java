@@ -8,6 +8,8 @@ import com.podcastcatalog.model.PodCastCatalogMetaData;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.subscription.SubscriptionData;
+import com.podcastcatalog.service.appstatistic.AppStatisticData;
+import com.podcastcatalog.service.appstatistic.AppStatisticDataContainer;
 import com.podcastcatalog.service.datastore.LocatorProduction;
 import com.podcastcatalog.util.ServerInfo;
 import com.podcastcatalog.util.ZipFile;
@@ -60,6 +62,10 @@ public class FtpOneClient {
     public static final String SUBSCRIPTIONS_PATH = PODS_ONE_HOST_NAME + PATH_SUBSCRIPTION;
     public static final String SUBSCRIPTIONS_FILE_URL = SUBSCRIPTIONS_PATH +
             SUBSCRIPTIONS_JSON_FILE;
+
+    public static final String APP_STATISTICS_FILE_NAME = "AppStatistics.dat";
+    public static final String APP_STATISTICS_PATH = "/AppStatistics/";
+    public static final String APP_STATISTIC_FILE_URL = PODS_ONE_HOST_NAME + APP_STATISTICS_PATH + APP_STATISTICS_FILE_NAME;
 
     private static FtpOneClient INSTANCE = new FtpOneClient();
 
@@ -127,6 +133,33 @@ public class FtpOneClient {
         }
     }
 
+
+    public synchronized void  upload(AppStatisticDataContainer appStatisticData)  {
+        if(ServerInfo.isLocalDevMode()) {
+            LOG.info("DevMode no subscriptionData upload to one.com");
+            return;
+        }
+        LOG.info("Uploading AppStatisticDataContainer to one.com " + appStatisticData.appStatisticDataLang.size());
+
+        File file = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), APP_STATISTICS_FILE_NAME);
+        try {
+            saveAsObject(appStatisticData, file);
+            FtpOneClient.getInstance().uploadToOneCom(file, APP_STATISTICS_PATH);
+        } catch (IOException e) {
+            LOG.info("Failed push message" + e.getMessage());
+        }
+    }
+    public synchronized AppStatisticDataContainer loadAppStatistics()  {
+        File downloadedFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), APP_STATISTIC_FILE_URL);
+
+        try {
+            return (AppStatisticDataContainer)loadFromServer(downloadedFile, APP_STATISTIC_FILE_URL);
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
+        }
+
+        return null;
+    }
     synchronized SubscriptionData loadSubscribers()  {
         File downloadedFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), SUBSCRIPTIONS_JSON_FILE);
 

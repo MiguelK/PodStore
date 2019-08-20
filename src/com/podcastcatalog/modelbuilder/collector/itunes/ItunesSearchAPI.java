@@ -126,7 +126,6 @@ public class ItunesSearchAPI implements PodCastCollector {
         ItunesSearchAPI itunesSearchAPI = new ItunesSearchAPI(BASE_URL_LOOKUP + pid);//FIXME
 
         PodCastSearchResult podCastSearchResult = itunesSearchAPI.performSearch();
-        System.out.println(podCastSearchResult);
         if (podCastSearchResult.getResults().size() != 1) {
             return null;
         }

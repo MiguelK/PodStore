@@ -1,6 +1,6 @@
 package com.podcastcatalog.model;
 
-import com.podcastcatalog.model.podcastsearch.PodCastTitle;
+import com.podcastcatalog.model.podcastsearch.PodCastInfo;
 import com.podcastcatalog.model.podcastsearch.ResultItem;
 import com.podcastcatalog.service.podcastcatalog.TextSearchIndex;
 import com.podcastcatalog.service.search.SearchTerm;
@@ -18,8 +18,8 @@ public class PodCastCatalogMetaData implements Serializable {
     private static final Logger LOG = Logger.getLogger(PodCastCatalogMetaData.class.getName());
 
     public TextSearchIndex<ResultItem> textSearchIndex = new TextSearchIndex<>();
-    public List<PodCastTitle> podCastTitles = new ArrayList<>();
-    public List<PodCastTitle> podCastTitlesTrending = new ArrayList<>();
+    public List<PodCastInfo> podCastTitles = new ArrayList<>();
+    public List<PodCastInfo> podCastTitlesTrending = new ArrayList<>();
     public List<SearchTerm> popularSearchQueries = new ArrayList<>();
 
     @Override

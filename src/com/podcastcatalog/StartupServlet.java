@@ -1,5 +1,6 @@
 package com.podcastcatalog;
 
+import com.podcastcatalog.service.appstatistic.AppStatisticService;
 import com.podcastcatalog.service.datastore.LocatorProduction;
 import com.podcastcatalog.service.job.JobManagerService;
 import com.podcastcatalog.service.job.MemoryDumperJob;
@@ -56,10 +57,12 @@ public class StartupServlet extends HttpServlet {
 
         LOG.info("Starting PodCastCatalog..., working dir= " + LocatorProduction.getInstance().getPodDataHomeDirectory().getAbsolutePath());
 
+        AppStatisticService.getInstance().load();
+
         JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 0,12, TimeUnit.HOURS);
         //  JobManagerService.getInstance().registerJob(new CreateLinkPages(),20,20, TimeUnit.SECONDS);
         JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 0,24, TimeUnit.HOURS); //FIXME change time, remove
-        JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 0, 26, TimeUnit.HOURS); //FIXME
+        JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 0, 12, TimeUnit.HOURS); //FIXME
 
         JobManagerService.getInstance().startAsync();
     }

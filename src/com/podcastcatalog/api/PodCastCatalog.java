@@ -1,12 +1,11 @@
 package com.podcastcatalog.api;
 
 
-import com.podcastcatalog.model.podcastsearch.PodCastTitle;
+import com.podcastcatalog.model.podcastsearch.PodCastInfo;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.podcastsearch.ResultItem;
 import com.podcastcatalog.model.podcastsearch.SearchResult;
-import com.podcastcatalog.service.search.SearchSuggestionService;
 import com.podcastcatalog.service.search.SearchTerm;
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,7 +22,6 @@ import java.util.logging.Logger;
 public class PodCastCatalog {
 
     private final static Logger LOG = Logger.getLogger(PodCastCatalog.class.getName());
-
 
     @GET
     @Path("/search")
@@ -43,11 +41,6 @@ public class PodCastCatalog {
 
         List<ResultItem> podCastEpisodes = PodCastCatalogService.getInstance().search(podCastCatalogLanguage, queryParam);
 
-        if(podCastEpisodes.size() == 1 && query.length() > 5){
-            LOG.info("Search=" + query + ", lang=" + lang + ", result=" + podCastEpisodes.size());
-            PodCastCatalogService.getInstance().addPopularSearchTerm(podCastCatalogLanguage, query);
-        }
-
         SearchResult searchResult = new SearchResult(podCastEpisodes);
 
         return Response.status(Response.Status.OK).entity(searchResult).build();
@@ -63,7 +56,7 @@ public class PodCastCatalog {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid lang parameter " + lang).build();
         }
 
-        List<PodCastTitle> podCastTitles = PodCastCatalogService.getInstance().getPodCastTitles(podCastCatalogLanguage);
+        List<PodCastInfo> podCastTitles = PodCastCatalogService.getInstance().getPodCastTitles(podCastCatalogLanguage);
 
         return Response.status(Response.Status.OK).entity(podCastTitles).build();
     }
@@ -78,11 +71,12 @@ public class PodCastCatalog {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid lang parameter " + lang).build();
         }
 
-        List<PodCastTitle> podCastTitlesTrending =  PodCastCatalogService.getInstance().getPodCastTitlesTrending(podCastCatalogLanguage);
+        List<PodCastInfo> podCastTitlesTrending =  PodCastCatalogService.getInstance().getPodCastTitlesTrending(podCastCatalogLanguage);
 
         return Response.status(Response.Status.OK).entity(podCastTitlesTrending).build();
     }
 
+    //Deprecated NOT USED REMOVE FIXME
     @GET
     @Path("/popularSearchTerms")
     @Produces(MediaType.APPLICATION_JSON)
