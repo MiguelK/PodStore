@@ -215,17 +215,17 @@ public class PodCastCatalogService {
                             continue;
                         }
 
-                        PodCastInfo podCastTitle = new PodCastInfo(row.getCollectionId());
+                        PodCastInfo podCastInfo = new PodCastInfo(row.getCollectionId(), row.getCollectionName() );
 
-                        if (podCastTitles.contains(podCastTitle)) {
+                        if (podCastTitles.contains(podCastInfo)) {
                             continue;
                         }
 
-                        podCastTitles.add(podCastTitle);
+                        podCastTitles.add(podCastInfo);
 
                         if (podCastTitleTrending == null) {
-                            podCastTitlesTrending.add(podCastTitle);
-                            podCastTitleTrending = podCastTitle;
+                            podCastTitlesTrending.add(podCastInfo);
+                            podCastTitleTrending = podCastInfo;
                         }
                     }
                 }

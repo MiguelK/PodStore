@@ -5,9 +5,15 @@ import java.io.Serializable;
 public class PodCastInfo implements Serializable {
 
     private final String pid;
+    private final String title;
 
-    public PodCastInfo(String pid) {
+    public PodCastInfo(String pid, String title) {
         this.pid = pid;
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public String getPid() {

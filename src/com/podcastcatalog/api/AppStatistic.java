@@ -3,6 +3,7 @@ package com.podcastcatalog.api;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.service.appstatistic.AppStatisticData;
 import com.podcastcatalog.service.appstatistic.AppStatisticService;
+import com.podcastcatalog.util.ServerInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.GET;
@@ -50,6 +51,11 @@ public class AppStatistic {
             } else if (StringUtils.isNotEmpty(pid)) {
                 AppStatisticService.getInstance().addUserEngaged(pid, podCastCatalogLanguage);
             }
+
+                if(ServerInfo.isLocalDevMode()) {
+                    AppStatisticService.getInstance().uploadToOne();
+                }
+
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Failed to star podCastEpisode " + e.getMessage()).build();

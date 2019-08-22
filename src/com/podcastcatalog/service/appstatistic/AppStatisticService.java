@@ -40,6 +40,10 @@ public class AppStatisticService {
     }
 
     public void uploadToOne() {
+        if(appStatisticDataContainer.appStatisticDataLang.isEmpty()) {
+            return;
+        }
+
         FtpOneClient.getInstance().upload(appStatisticDataContainer);
     }
 

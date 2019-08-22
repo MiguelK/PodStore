@@ -81,24 +81,6 @@ public class FtpOneClient {
         executorService = Executors.newSingleThreadExecutor();
     }
 
-
-    //Upload SubscriptionData dat file used by this server
-    synchronized void  upload(SubscriptionData subscriptionData)  {
-        if(ServerInfo.isLocalDevMode()) {
-            LOG.info("DevMode no subscriptionData upload to one.com");
-            return;
-        }
-
-        File file = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), SUBSCRIPTIONS_JSON_FILE);
-        try {
-           // LOG.info("upload subscriptions=" + subscriptionData.getSubscriptions().size());
-            saveAsObject(subscriptionData, file);
-            FtpOneClient.getInstance().uploadToOneCom(file, PATH_SUBSCRIPTION);
-        } catch (IOException e) {
-            LOG.info("Failed push message" + e.getMessage());
-        }
-    }
-
     //Upload JSON zip file used by App Client
     synchronized public void upload(PodCastCatalog podCastCatalog)  {
 
@@ -150,7 +132,7 @@ public class FtpOneClient {
         }
     }
     public synchronized AppStatisticDataContainer loadAppStatistics()  {
-        File downloadedFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), APP_STATISTIC_FILE_URL);
+        File downloadedFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), APP_STATISTICS_FILE_NAME);
 
         try {
             return (AppStatisticDataContainer)loadFromServer(downloadedFile, APP_STATISTIC_FILE_URL);
@@ -160,6 +142,24 @@ public class FtpOneClient {
 
         return null;
     }
+
+    //Upload SubscriptionData dat file used by this server
+    synchronized void  upload(SubscriptionData subscriptionData)  {
+        if(ServerInfo.isLocalDevMode()) {
+            LOG.info("DevMode no subscriptionData upload to one.com");
+            return;
+        }
+
+        File file = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), SUBSCRIPTIONS_JSON_FILE);
+        try {
+            // LOG.info("upload subscriptions=" + subscriptionData.getSubscriptions().size());
+            saveAsObject(subscriptionData, file);
+            FtpOneClient.getInstance().uploadToOneCom(file, PATH_SUBSCRIPTION);
+        } catch (IOException e) {
+            LOG.info("Failed push message" + e.getMessage());
+        }
+    }
+
     synchronized SubscriptionData loadSubscribers()  {
         File downloadedFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), SUBSCRIPTIONS_JSON_FILE);
 
