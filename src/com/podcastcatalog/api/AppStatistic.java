@@ -40,22 +40,17 @@ public class AppStatistic {
                                   @PathParam("lang") String lang) {
 
         PodCastCatalogLanguage podCastCatalogLanguage = PodCastCatalogLanguage.fromString(lang);
-        if (podCastCatalogLanguage == null) {
+        if (podCastCatalogLanguage == null || StringUtils.isEmpty(pid) || StringUtils.isEmpty(eid) ) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid lang parameter " + lang).build();
         }
 
         try {
-            if (StringUtils.isNotEmpty(pid) && StringUtils.isNotEmpty(eid)) {
-                AppStatisticService.getInstance().addUserEngaged(pid, eid,
-                        podCastCatalogLanguage);
-            } else if (StringUtils.isNotEmpty(pid)) {
-                AppStatisticService.getInstance().addUserEngaged(pid, podCastCatalogLanguage);
-            }
+            AppStatisticService.getInstance().addUserEngaged(pid, eid,
+                    podCastCatalogLanguage);
 
-                if(ServerInfo.isLocalDevMode()) {
+               if(ServerInfo.isLocalDevMode()) {
                     AppStatisticService.getInstance().uploadToOne();
                 }
-
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Failed to star podCastEpisode " + e.getMessage()).build();

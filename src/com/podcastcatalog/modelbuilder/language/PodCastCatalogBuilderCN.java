@@ -22,9 +22,9 @@ public class PodCastCatalogBuilderCN  extends PodCastCatalogBuilderBase {
        categoryContext.add(PodCastIdCollector.Category.RELIGION_SPIRITUALITY, "宗教與靈性");
        categoryContext.add(PodCastIdCollector.Category.SCIENCE_MEDICINE, "科學和醫學");
        categoryContext.add(PodCastIdCollector.Category.SOCIETY_CULTURE, "社會與文化");
-       categoryContext.add(PodCastIdCollector.Category.SPORTS_RECREATION, "運動與休閒");
-       categoryContext.add(PodCastIdCollector.Category.TECHNOLOGY, "技術");
-       categoryContext.add(PodCastIdCollector.Category.TV_FILM, "電視和電影");
+      // categoryContext.add(PodCastIdCollector.Category.SPORTS_RECREATION, "運動與休閒");
+        // categoryContext.add(PodCastIdCollector.Category.TECHNOLOGY, "技術");
+        //  categoryContext.add(PodCastIdCollector.Category.TV_FILM, "電視和電影");
     }
 
     @Override
