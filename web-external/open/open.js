@@ -36,14 +36,14 @@ function fetch(){
             $.each(data.results,function(i,result){
                 if ( i > 23 ) { return false; }
 
-                var hires = result.artworkUrl100.replace('100x100','580x580');
+                var hires = result.artworkUrl600; //.replace('100x100','580x580');
                 var pid = result.collectionId;
                 var podCastName = result.collectionName;
 
                 var link = 'https://qw7xh.app.goo.gl?link=http://www.podsapp.se?pid%3D' + pid + '&isi=1209200428&ibi=com.app.Pods&st=S%C3%A5%20funkar%20det&sd=@Pods&si=https://is3-ssl.mzstatic.com/image/thumb/Podcasts123/v4/1b/9f/21/1b9f2156-e11c-c341-3ba7-fac9fa3ec328/mza_1327199418451956232.jpg/600x600bb.jpg';
-                $results[0].insertAdjacentHTML('beforeend','<a class="result" href="'+link+'" target="_blank"><img src="'+hires+'" onerror="src='+result.artworkUrl100+'" /> ' +
+                $results[0].insertAdjacentHTML('beforeend','<br><br><a class="result" href="'+link+'" target="_blank"><br><br><img height="580px" width="580px" src="'+hires+'" onerror="src='+result.artworkUrl600+'" /> ' +
                     '<div class="result__text"> <span class="artist-name">'+result.collectionName+'</span> <span class="track-name">'+result.collectionName+'</span></div>' +
-                    '<h1 style="color: black"><br>' + podCastName + '</h1><p><button onclick="window.location.href = link" class="w3-button w3-red w3-round-xxlarge">Open in Pods</button></p>');
+                    '<p style="color: black;font-size:75px;font-weight: 800"><br>' + podCastName + '</p><p><button onclick="window.location.href = link" class="w3-button w3-red w3-round-xxlarge" style="font-size: 77px;font-weight: 700">Open in Pods</button></p>');
             });
         },
         error: function(e){

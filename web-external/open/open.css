@@ -12,7 +12,7 @@ input { width: 100%; display: block; padding: 1em; }
 .result {
     display: block;
     text-decoration: none;
-    flex: 0 1 25%;
+    flex: 0 1 75%;
     text-align: center;
     font-size: 0.8em;
     position: relative;
