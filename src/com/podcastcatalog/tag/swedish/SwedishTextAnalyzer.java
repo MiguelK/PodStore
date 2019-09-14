@@ -64,13 +64,9 @@ public class SwedishTextAnalyzer extends TextAnayzier {
         }
     }
 
-    public SwedishTextAnalyzer(String text) {
-        super(text);
-    }
-
-    public static SwedishTextAnalyzer create(String text) {
+    /*public static SwedishTextAnalyzer create(String text) {
         return new SwedishTextAnalyzer(text);
-    }
+    }*/
 
     protected Map<String, Integer> getLowerCaseSynonymWords() {
         return LOWER_CASE_SYNONYM_WORDS;

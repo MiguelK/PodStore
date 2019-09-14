@@ -1,17 +1,18 @@
 package com.podcastcatalog.tag;
 
-import com.podcastcatalog.tag.human_name_parser.HumanNameParserParser;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 public abstract class TextAnayzier {
 
-    private final List<Word> words;
+    //private  List<Word> words;
 
-    protected TextAnayzier(String text) {
-        this.words = parseWords(text);
-    }
+
 
     /*public int getSimilarTextCount(TextAnayzier textAnayzier) {
         List<Word> parts1 = textAnayzier.getParts();
@@ -39,11 +40,11 @@ public abstract class TextAnayzier {
 
     public boolean isSimilarText(TextAnayzier textAnayzier) {
         return  getSimilarTextCount(textAnayzier) > 0;     //FIXME
-    }*/
+    }
 
     public List<Word> getWords() {
         return words;
-    }
+    }*/
 
     private static final int NOT_FOUND = -1;
 
@@ -104,11 +105,11 @@ public abstract class TextAnayzier {
         }
     }
 
-    private List<Word> getParts() {
+    /*private List<Word> getParts() {
         return words;
-    }
+    }*/
 
-    private List<Word> parseWords(String text) {
+    public List<Word> parseWords(String text) {
         String trimmedLowerCaseText = StringUtils.trimToEmpty(text).toLowerCase();
         if (StringUtils.isEmpty(trimmedLowerCaseText)) {
             return Collections.emptyList();
@@ -124,8 +125,6 @@ public abstract class TextAnayzier {
         while (scanner.hasNext()) {
             String next = scanner.next();
 
-
-
             if(isValidWord(next)) {
                 words.add(new Word(next));
             }
@@ -134,6 +133,7 @@ public abstract class TextAnayzier {
         return words;
     }
 
+   // public abstract List<Word> parseWords(String text);
     protected abstract Map<String, Integer> getLowerCaseSynonymWords();
     protected abstract boolean isValidWord(String word);
 

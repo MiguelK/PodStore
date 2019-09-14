@@ -2,49 +2,40 @@ package com.podcastcatalog.tag;
 
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
+import com.podcastcatalog.tag.model.Tag;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
 
 public class TagIndexTest {
 
+
     @Test
-    public void parseName() throws Exception {
-        TagManager.getInstance().createTagIndex("SWE");
-        TagManager.getInstance().indexContent("zlatan ibrahimovic");
-    }
+    public void basicAPI_Test_trueCrime() throws Exception {
 
-        @Test
-    public void testName() throws Exception {
-
-        TagManager.getInstance().createTagIndex("SWE");
+        TagManager.getInstance().configure(TagManager.Lang.SWE);
 
         ItunesSearchAPI query = ItunesSearchAPI.createCollector("term=Spår&entity=podcast&limit=1&country=SE");
         List<PodCast> podCasts = query.collectPodCasts();
-        PodCast podCast1 = podCasts.get(0);
+        PodCast podCast = podCasts.get(0);
 
-        String title = podCast1.getTitle();
-        String description = podCast1.getLatestPodCastEpisode().getDescription();
+        TagManager.getInstance().index(podCast, TagManager.Lang.SWE);
 
-      //  TagManager.getInstance().indexContent(title);
-        TagManager.getInstance().indexContent(description + "zlatan ibrahimovic" + " Jan Banan");
+        TagSearchResult searchResult = TagManager.getInstance().search("Kala"); //kalamarksmordet
 
-        /*for (PodCast podCast : podCasts) {
-            System.out.println(podCast.getTitle());
-            System.out.println(podCast.getDescription());
-            for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodesInternal()) {
-                System.out.println(podCastEpisode.getTitle());
-                System.out.println(podCastEpisode.getDescription());
-            }
+        System.out.println(searchResult.getPodCasts().size());
 
-        }*/
+        Tag tagForPodCast = TagManager.getInstance().getTagForPodCast(podCast.getCollectionId());
+
+        Tag tagForPodCastEpisode = TagManager.getInstance().getTagForPodCastEpisode(podCast.getPodCastEpisodes().get(0).getId());
+
+        Assert.assertTrue(searchResult.getPodCasts().size() == 1);
 
 
-        //  File file = new File(TestUtil.IO_TEMP_DATA_DIRECTORY, "SE_MetaData.dat");
-
+        //Verify  created index file(s)
+            //  File file = new File(TestUtil.IO_TEMP_DATA_DIRECTORY, "SE_MetaData.dat");
         //  PodCastCatalogMetaData metaData = (PodCastCatalogMetaData)IOUtil.getObject(file);
-        System.out.println("metaData==" + podCast1);
-
       //  metaData.textSearchIndex.printIndex();
 
     }
