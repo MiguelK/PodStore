@@ -118,7 +118,7 @@ public class FtpOneClient {
 
     public synchronized void  upload(AppStatisticDataContainer appStatisticData)  {
         if(ServerInfo.isLocalDevMode()) {
-            LOG.info("DevMode no subscriptionData upload to one.com");
+            LOG.info("DevMode no appStatisticData upload to one.com");
             return;
         }
         LOG.info("Uploading AppStatisticDataContainer to one.com " + appStatisticData.appStatisticDataLang.size());

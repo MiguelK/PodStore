@@ -109,8 +109,19 @@ public class PodCastCatalogService {
 
         List<ResultItem> resultItems = new ArrayList<>();
 
-        List<PodCastResultItem> podCasts = ItunesSearchAPI.searchPodCasts("term="
-                + encodedQueryParam + "&entity=podcast&limit=25&attribute=titleTerm&country=" + podCastCatalogLanguage.name());
+        String parameters = "term="
+                + encodedQueryParam + "&entity=podcast&limit=15&attribute=titleTerm&country=" + podCastCatalogLanguage.name();
+
+        if(encodedQueryParam.length() >= 6) {
+            //No attribute=titleTerm
+            parameters = "term="
+                    + encodedQueryParam + "&entity=podcast&limit=10&country=" + podCastCatalogLanguage.name();
+        }else if(encodedQueryParam.length() >= 12) {
+            parameters = "term="
+                    + encodedQueryParam + "&entity=podcast&limit=10";
+        }
+
+        List<PodCastResultItem> podCasts = ItunesSearchAPI.searchPodCasts(parameters);
         resultItems.addAll(podCasts);
 
         readLock.lock();

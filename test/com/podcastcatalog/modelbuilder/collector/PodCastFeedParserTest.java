@@ -56,6 +56,7 @@ public class PodCastFeedParserTest {
         rss =  "http://api.sr.se/api/rss/pod/itunes/3966";
         rss = "http://rss.acast.com/sparpodcast";
         rss = "http://rss.acast.com/enmorkhistoria";
+        rss = "https://songwriterstories.com/rss.xml";
         //rss = "http://api.audioteca.rac1.cat/rss/no-ho-se";
         //http://www.ximalaya.com/album/3882669.xmldescription is mandatory
         //http://www.netrevo.net/assets/media/itune/promotion.rssInvalid id null mus be > 0

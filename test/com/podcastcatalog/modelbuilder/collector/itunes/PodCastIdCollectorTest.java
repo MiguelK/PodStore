@@ -17,11 +17,13 @@ public class PodCastIdCollectorTest {
     public void testParseId() throws Exception {
 
         for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
-            Assert.assertFalse(new PodCastIdCollector(language, PodCastIdCollector.Category.NEWS_POLITICS, "").getPodCastIds().isEmpty());
+        //    Assert.assertFalse(new PodCastIdCollector(language, PodCastIdCollector.Category.VIDEO_GAMES, "").getPodCastIds().isEmpty());
         }
 
+        Assert.assertFalse(new PodCastIdCollector(PodCastCatalogLanguage.SE, PodCastIdCollector.Category.VIDEO_GAMES, "").getPodCastIds().isEmpty());
 
-  //      System.out.println(podCastIds.size() + " IDS==" + podCastIds);
+
+        //      System.out.println(podCastIds.size() + " IDS==" + podCastIds);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
