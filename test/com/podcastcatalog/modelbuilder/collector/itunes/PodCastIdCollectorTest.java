@@ -1,26 +1,66 @@
 package com.podcastcatalog.modelbuilder.collector.itunes;
 
 import com.podcastcatalog.TestUtil;
+import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
+import com.podcastcatalog.model.podcastcatalog.PodCastCategoryType;
+import com.podcastcatalog.modelbuilder.collector.PodCastFeedParser;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by miguelkrantz on 2018-07-05.
  */
 public class PodCastIdCollectorTest {
 
+    private static final String artworkUrl600 = "http://is4.mzstatic.com/image/thumb/Music62/v4/50/78/30/507830d2-568c-86e2-ecd8-ce61b6444770/source/100x100bb.jpg";
 
     @Test(groups = TestUtil.SLOW_TEST)
+    public void testCategories() throws Exception {
+
+        List<Long> podCastIds = new PodCastIdCollector(PodCastCatalogLanguage.SE, PodCastIdCollector.Category.ANIMATION_MANGA,
+                "").getPodCastIds();
+        System.out.println("Start fetch ids from ids=" + podCastIds.size());
+
+        PodCast podCast = ItunesSearchAPI.lookupPodCast(String.valueOf(podCastIds.get(0))).get();
+        Optional<PodCast> podCast1 = PodCastFeedParser.tryParseFailOver(new URL(podCast.getFeedURL()),
+                artworkUrl600, "4444", 400);
+
+        PodCast podCast2 = podCast1.get();
+        List<PodCastCategoryType> podCastCategories = podCast2.getPodCastCategories();
+        System.out.println(podCastCategories);
+
+    }
+        @Test(groups = TestUtil.SLOW_TEST)
     public void testParseId() throws Exception {
 
         for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
-        //    Assert.assertFalse(new PodCastIdCollector(language, PodCastIdCollector.Category.VIDEO_GAMES, "").getPodCastIds().isEmpty());
+
+
+            for (PodCastIdCollector.Category category : PodCastIdCollector.Category.values()) {
+                List<Long> podCastIds = new PodCastIdCollector(language, category, "").getPodCastIds();
+                System.out.println("Start fetch ids from " + category.name() + ",lang=" + language.name() + ", ids=" + podCastIds.size());
+
+                PodCast podCast = ItunesSearchAPI.lookupPodCast(String.valueOf(podCastIds.get(0))).get();
+                Optional<PodCast> podCast1 = PodCastFeedParser.tryParseFailOver(new URL(podCast.getFeedURL()),
+                        artworkUrl600, "4444", 400);
+                List<PodCastCategoryType> podCastCategories = podCast1.get().getPodCastCategories();
+
+                System.out.println("podCastCategories=" + podCastCategories);
+
+                Assert.assertFalse(podCastIds.isEmpty());
+                Thread.sleep(3000);
+            }
+
+
+          //  Assert.assertFalse(new PodCastIdCollector(language, PodCastIdCollector.Category.HIGHER_EDUCATION, "").getPodCastIds().isEmpty());
         }
 
-        Assert.assertFalse(new PodCastIdCollector(PodCastCatalogLanguage.SE, PodCastIdCollector.Category.VIDEO_GAMES, "").getPodCastIds().isEmpty());
+      //  Assert.assertFalse(new PodCastIdCollector(PodCastCatalogLanguage.SE, PodCastIdCollector.Category.VIDEO_GAMES, "").getPodCastIds().isEmpty());
 
 
         //      System.out.println(podCastIds.size() + " IDS==" + podCastIds);

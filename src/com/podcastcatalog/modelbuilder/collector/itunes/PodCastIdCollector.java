@@ -27,9 +27,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-/**
- * Created by miguelkrantz on 2018-07-05.
- */
 public class PodCastIdCollector implements PodCastCollector, PodCastCategoryCollector  {
 
     private final static Logger LOG = Logger.getLogger(PodCastIdCollector.class.getName());
@@ -46,75 +43,158 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
     private static final String DEFAULT_EMPTY_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Color_icon_red.svg/220px-Color_icon_red.svg.png";
 
 
+    //https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-arts/id1301
     public enum Category {
+
         TOPLIST_COUNTRY("https://rss.itunes.apple.com/api/v1/{LANGUAGE}/podcasts/top-podcasts/all/{RESULT_SIZE}/explicit.json"),
-        ARTS("https://itunes.apple.com/{LANGUAGE}/genre/podcaster-konst/id1301?mt=2"),
-        DESIGN("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-arts-design/id1402?mt=2"),
-        FASHION_BEAUTY("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-arts-fashion-beauty/id1459?mt=2"),
-        FOOD("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-arts-food/id1306?mt=2"),
-        LITERATURE("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-arts-literature/id1401?mt=2"),
-        PERFORMING_ARTS("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-arts-performing-arts/id1405?mt=2"),
-        VISUAL_ARTS("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-arts-visual-arts/id1406?mt=2"),
-        COMEDY("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-comedy/id1303?mt=2"),
-        EDUCATION("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-education/id1304?mt=2"),
-        EDUCATIONAL_TECHNOLOGY("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-education-educational-technology/id1468?mt=2"),
-        HIGHER_EDUCATION("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-education-higher-education/id1416?mt=2"),
-        K_12("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-education-k-12/id1415?mt=2"),//K_12
-        LANGUAGE_COURSES("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-education-language-courses/id1469?mt=2"),
-        TRAINING("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-education-training/id1470?mt=2"),
-        KIDS_FAMILY("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-kids-family/id1305?mt=2"),
-        HEALTH("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-health-fitness/id1512"),
-        ALTERNATIVE_HEALTH("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-health-alternative-health/id1481?mt=2"),
-        FITNESS_NUTRITION("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-health-fitness-nutrition/id1417?mt=2"),
-        SELF_HELP("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-health-self-help/id1420?mt=2"),
-        SEXUALITY("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-health-sexuality/id1421?mt=2"),
-        TV_FILM("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-tv-film/id1309?mt=2"),
-        MUSIC("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-music/id1310?mt=2"),
-        NEWS_POLITICS("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-news-politics/id1311?mt=2"),
-        RELIGION_SPIRITUALITY("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-religion-spirituality/id1314?mt=2"),
-        BUDDHISM("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-religion-spirituality-buddhism/id1438?mt=2"),
-        CHRISTIANITY("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-religion-spirituality-christianity/id1439?mt=2"),
-        HINDUISM("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-religion-spirituality-hinduism/id1463?mt=2"),
-        ISLAM("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-religion-spirituality-islam/id1440?mt=2"),
-        JUDAISM("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-religion-spirituality-judaism/id1441?mt=2"),
-        OTHER("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-religion-spirituality-other/id1464?mt=2"),
-        SPIRITUALITY("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-religion-spirituality-spirituality/id1444?mt=2"),
-        SCIENCE_MEDICINE("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-science-medicine/id1315?mt=2"),
-        MEDICINE("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-science-medicine-medicine/id1478?mt=2"),
-        NATURAL_SCIENCES("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-science-medicine-natural-sciences/id1477?mt=2"),
-        SOCIAL_SCIENCES("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-science-medicine-social-sciences/id1479?mt=2"),
-        SPORTS_RECREATION("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-sports-recreation/id1316?mt=2"),
-        AMATEUR("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-sports-recreation-amateur/id1467?mt=2"),
-        COLLEGE_HIGH_SCHOOL("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-sports-recreation-college-high-school/id1466?mt=2"),
-        OUTDOOR("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-sports-recreation-outdoor/id1456?mt=2"),
-        PROFESSIONAL("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-sports-recreation-professional/id1465?mt=2"),
-        TECHNOLOGY("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-technology/id1318?mt=2"),
-        GADGETS("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-technology-gadgets/id1446?mt=2"),
-        PODCASTING("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-technology-podcasting/id1450?mt=2"),
-        SOFTWARE_HOW_TO("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-technology-software-how-to/id1480?mt=2"),
-        TECH_NEWS("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-technology-tech-news/id1448?mt=2"),
-        BUSINESS("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-business/id1321?mt=2"),
-        BUSINESS_NEWS("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-business-business-news/id1471?mt=2"),
-        CAREERS("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-business-careers/id1410?mt=2"),
-        INVESTING("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-business-investing/id1412?mt=2"),
-        MANAGEMENT_MARKETING("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-business-management-marketing/id1413?mt=2"),
-        SHOPPING("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-business-shopping/id1472?mt=2"),
-        GAMES_HOBBIES("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-games-hobbies/id1323?mt=2"),
-        AUTOMOTIVE("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-games-hobbies-automotive/id1454?mt=2"),
-        AVIATION("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-games-hobbies-aviation/id1455?mt=2"),
-        HOBBIES("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-games-hobbies-hobbies/id1460?mt=2"),
-        OTHER_GAMES("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-games-hobbies-other-games/id1461?mt=2"),
-        VIDEO_GAMES("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-games-hobbies-video-games/id1404?mt=2"),
-        SOCIETY_CULTURE("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-society-culture/id1324?mt=2"),
-        HISTORY("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-society-culture-history/id1462?mt=2"),
-        PERSONAL_JOURNALS("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-society-culture-personal-journals/id1302?mt=2"),
-        PHILOSOPHY("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-society-culture-philosophy/id1443?mt=2"),
-        PLACES_TRAVEL("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-society-culture-places-travel/id1320?mt=2"),
-        GOVERNMENT_ORGANIZATIONS("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-government-organizations/id1325?mt=2"),
-        LOCAL("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-local/id1475?mt=2"),
-        NATIONAL("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-national/id1473?mt=2"),
-        NON_PROFIT("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-non-profit/id1476?mt=2"),
-        REGIONAL("https://itunes.apple.com/{LANGUAGE}/genre/podcasts-regional/id1474?mt=2");
+
+        //ARTS
+        ARTS("https://podcasts.apple.com/{LANGUAGE}/genre/podcaster-konst/id1301"),
+        BOOKS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-arts-books/id1482"),
+        DESIGN("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-arts-design/id1402"),
+        FASHION_BEAUTY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-arts-fashion-beauty/id1459"),
+        FOOD("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-arts-food/id1306"),
+        PERFORMING_ARTS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-arts-performing-arts/id1405"),
+        VISUAL_ARTS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-arts-visual-arts/id1406"),
+
+        //Business
+        BUSINESS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-business/id1321"),
+        CAREERS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-business-careers/id1410"),
+        ENTREPRENEURSHIP("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-business-entrepreneurship/id1493"),
+        INVESTING("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-business-investing/id1412"),
+        MANAGEMENT("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-business-management/id1491"),
+        MARKETING("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-business-marketing/id1492"),
+        NON_PROFIT("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-business-non-profit/id1494"),
+
+        //Comedy
+        COMEDY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-comedy/id1303"),
+        COMEDY_INTERVIEWS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-comedy-comedy-interviews/id1496"),
+        IMPROV("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-comedy-improv/id1495"),
+        STAND_UP("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-comedy-stand-up/id1497"),
+
+        //Education
+        EDUCATION("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-education/id1304"),
+        COURSES("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-education-courses/id1501"),
+        HOW_TO("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-education-how-to/id1499"),
+        LANGUAGE_LEARNING("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-education-language-learning/id1498"),
+        SELF_IMPROVEMENT("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-education-self-improvement/id1500"),
+
+        //Fiction
+        FICTION("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-fiction/id1483"),
+        COMEDY_FICTION("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-fiction-comedy-fiction/id1486"),
+        DRAMA("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-fiction-drama/id1484"),
+        SCIENCE_FICTION("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-fiction-science-fiction/id1485"),
+
+        //Government
+        GOVERNMENT("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-government/id1511"),
+
+        //Health-Fitness
+        HEALTH_FITNESS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-health-fitness/id1512"),
+        ALTERNATIVE_HEALTH_FITNESS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-health-fitness-alternative-health/id1513"),
+        FITNESS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-health-fitness-fitness/id1514"),
+        MEDICINE("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-health-fitness-medicine/id1518"),
+        MENTAL_HEALTH_FITNESS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-health-fitness-mental-health/id1517"),
+        NUTRITION("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-health-fitness-nutrition/id1515"),
+        SEXUALITY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-health-fitness-sexuality/id1516"),
+
+        //History
+        HISTORY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-history/id1487"),
+
+        //Kids & Family
+        KIDS_FAMILY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-kids-family/id1305"),
+        EDUCATION_FOR_KIDS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-kids-family-education-for-kids/id1519"),
+        PARENTING("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-kids-family-parenting/id1521"),
+        PETS_ANIMALS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-kids-family-pets-animals/id1522"),
+        STORIES_FOR_KIDS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-kids-family-stories-for-kids/id1520"),
+
+        //Leisure
+        LEISURE("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-leisure/id1502"),
+        ANIMATION_MANGA("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-leisure-animation-manga/id1510"),
+        AUTOMOTIVE("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-leisure-automotive/id1503"),
+        AVIATION("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-leisure-aviation/id1504"),
+        CRAFTS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-leisure-crafts/id1506"),
+        GAMES("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-leisure-games/id1507"),
+        HOBBIES("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-leisure-hobbies/id1505"),
+        HOME_GARDEN("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-leisure-home-garden/id1508"),
+        VIDEO_GAMES("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-leisure-video-games/id1509"),
+
+        //Music
+        MUSIC("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-music/id1310"),
+        MUSIC_COMMENTARY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-music-music-commentary/id1523"),
+        MUSIC_HISTORY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-music-music-history/id1524"),
+        MUSIC_INTERVIEWS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-music-music-interviews/id1525"),
+
+        //News
+        NEWS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-news/id1489"),
+        BUSINESS_NEWS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-news-business-news/id1490"),
+        DAILY_NEWS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-news-daily-news/id1526"),
+        ENTERTAINMENT_NEWS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-news-entertainment-news/id1531"),
+        NEWS_COMMENTARY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-news-news-commentary/id1530"),
+        POLITICS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-news-politics/id1527"),
+        SPORTS_NEWS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-news-sports-news/id1529"),
+        TECH_NEWS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-news-tech-news/id1528"),
+
+        //Religion & Spirituality
+        RELIGION_SPIRITUALITY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-religion-spirituality/id1314"),
+        BUDDHISM("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-buddhism/id1438"),
+        CHRISTIANITY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-christianity/id1439"),
+        HINDUISM("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-hinduism/id1463"),
+        ISLAM("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-islam/id1440"),
+        JUDAISM("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-judaism/id1441"),
+        RELIGION("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-religion/id1532"),
+        SPIRITUALITY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-spirituality/id1444"),
+
+        //Science
+        SCIENCE("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-science/id1533"),
+        ASTRONOMY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-science-astronomy/id1538"),
+        CHEMISTRY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-science-chemistry/id1539"),
+        EARTH_SCIENCES("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-science-earth-sciences/id1540"),
+        LIFE_SCIENCES("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-science-life-sciences/id1541"),
+        MATHEMATICS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-science-mathematics/id1536"),
+        NATURAL_SCIENCES("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-science-natural-sciences/id1534"),
+        NATURE("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-science-nature/id1537"),
+        PHYSICS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-science-physics/id1542"),
+        SOCIAL_SCIENCES("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-science-social-sciences/id1535"),
+
+
+        //Society & Culture
+        SOCIETY_CULTURE("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-society-culture/id1324"),
+        DOCUMENTARY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-society-culture-documentary/id1543"),
+        PERSONAL_JOURNALS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-society-culture-personal-journals/id1302"),
+        PHILOSOPHY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-society-culture-philosophy/id1443"),
+        PLACES_TRAVEL("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-society-culture-places-travel/id1320"),
+        RELATIONSHIPS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-society-culture-relationships/id1544"),
+
+        //Sports
+        SPORTS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports/id1545"),
+        BASEBALL("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-baseball/id1549"),
+        BASKETBALL("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-basketball/id1548"),
+        CRICKET("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-cricket/id1554"),
+        FANTASY_SPORTS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-fantasy-sports/id1560"),
+        FOOTBALL("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-football/id1547"),
+        GOLF("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-golf/id1553"),
+        HOCKEY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-hockey/id1550"),
+        RUGBY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-rugby/id1552"),
+        RUNNING("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-running/id1551"),
+        SOCCER("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-soccer/id1546"),
+        SWIMMING("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-swimming/id1558"),
+        TENNIS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-tennis/id1556"),
+        VOLLEYBALL("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-volleyball/id1557"),
+        WILDERNESS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-wilderness/id1559"),
+        WRESTLING("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-sports-wrestling/id1555"),
+
+        //TV & Film
+        TV_FILM("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-tv-film/id1309"),
+        AFTER_SHOWS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-tv-film-after-shows/id1562"),
+        FILM_HISTORY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-tv-film-film-history/id1564"),
+        FILM_INTERVIEWS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-tv-film-film-interviews/id1565"),
+        FILM_REVIEWS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-tv-film-film-reviews/id1563"),
+        TV_REVIEWS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-tv-film-tv-reviews/id1561"),
+
+        //Technology
+        TECHNOLOGY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-technology/id1318"),
+        TRUE_CRIME("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-true-crime/id1488");
+
         private final String categoryUrl;
 
         Category(String categoryUrl) {
@@ -209,22 +289,12 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
         if(category == Category.TOPLIST_COUNTRY) {
 
             PodCastToplist podCastToplist = parseJSON(url);
-            System.out.println("podCastToplist=" + podCastToplist);
-
-            /*List<Long> longList = elements.stream().filter(isValidItunesPodCastURL()).mapToLong((e) -> {
-                        String toString = e.toString();
-                        return parseID(toString);
-                    }
-            ).boxed().collect(Collectors.toList());*/
-
 
             if(podCastToplist != null) {
 
                 List<Long> collect = podCastToplist.getResults().stream().filter(row -> {
 
                     if(row.id != null) {
-                   //     System.out.println(row.name +" 1-ROW=== " + row.artistId + " " + row.id);
-
                         return true;
                     } else {
                         System.out.println(row.name + " ROW=== " + row.artistName + " " + row.id);
@@ -233,23 +303,12 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
 
                 })
                         .mapToLong(value -> {
-
                                     return Long.parseLong(value.id);
-
-                                    // NumberUtils.toLong()
-                           /* try {
-                                Long.parseLong(value.artistId);
-                        }catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                                }*/
                                 }
 
                             ).boxed().collect(Collectors.toList());
-
                 return  collect;
             }
-
             return Collections.emptyList();
         }
 
@@ -299,7 +358,7 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
         //https://itunes.apple.com/se/genre/podcaster-konst/id1301?mt=2"
         //https://itunes.apple.com/se/podcast/m%C3%A5sskit-med-spoilers/id1390385030?mt=2">Måsskit med spoilers</a> </li>
         //="https://itunes.apple.com/se/podcast/ze-shows-anime-pulse/id95185416?mt=2">
-        //https://podcasts.apple.com/us/podcast/were-alive/id313300476
+        //https://podcasts.apple.com/{LANGUAGE}/podcast/were-alive/id313300476
         String itunesPath = "podcasts.apple.com/" + language.name().toLowerCase() + "/podcast";
         return e -> {
             String toString = e.toString();

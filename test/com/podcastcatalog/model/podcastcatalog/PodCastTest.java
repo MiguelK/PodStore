@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -79,7 +80,7 @@ public class PodCastTest {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalid_podCastEpisodes_empty() {
          PodCast.newBuilder().title("P3 Dokumentär").description("dsdsdsd").createdDate(LocalDateTime.now()).
-                feedURL("sdsdsd").collectionId("3434").publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("ARTS")).
+                feedURL("sdsdsd").collectionId("3434").publisher("sdsdsd").setPodCastCategories(Arrays.asList(PodCastCategoryType.valueOf("ARTS"))  ).
                 addPodCastEpisodes(Collections.emptyList()).build();
     }
 
@@ -97,12 +98,6 @@ public class PodCastTest {
         createValid().setPodCastCategories(Collections.emptyList()).build();
     }
 
-    @Test
-    public void podCastCategories() {
-        List<PodCastCategoryType> podCastCategories = PodCastCategoryType.fromString("College & High School");
-        Assert.assertEquals(createValid().setPodCastCategories(podCastCategories).build().getPodCastCategories(),
-                podCastCategories);
-    }
 
     @Test
     public void testToString() {
@@ -121,7 +116,7 @@ public class PodCastTest {
 
     @Test(expectedExceptions = UnsupportedOperationException.class)
     public void podCastCategories_unmodifiable() {
-        createValid().build().getPodCastCategories().add(PodCastCategoryType.AMATEUR);
+        createValid().build().getPodCastCategories().add(PodCastCategoryType.AFTER_SHOWS);
     }
 
     @Test(expectedExceptions = UnsupportedOperationException.class)
@@ -167,7 +162,7 @@ public class PodCastTest {
 
         PodCast.Builder builder = PodCast.newBuilder().title("P3 Dokumentär").description("dsdsdsd").
                 createdDate(LocalDateTime.now()).setArtworkUrl600("http://www.dn.se/someimage.png").
-                feedURL("sdsdsd").collectionId("4444").publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("ARTS"));
+                feedURL("sdsdsd").collectionId("4444").publisher("sdsdsd").setPodCastCategories(Arrays.asList(PodCastCategoryType.valueOf("ARTS")));
         PodCastEpisode firstEpisodeAdded = PodCastEpisodeTest.createValid().description("A").build();
 
         builder.addPodCastEpisode(firstEpisodeAdded);
@@ -200,7 +195,7 @@ public class PodCastTest {
         podCastEpisode.add(PodCastEpisodeTest.createValid().build());
 
         return PodCast.newBuilder().title("P3 Dokumentär").description("dsdsdsd").createdDate(LocalDateTime.now()).setArtworkUrl600("http://www.dn.se/someimage.png").
-                feedURL("sdsdsd").collectionId("4444").publisher("sdsdsd").setPodCastCategories(PodCastCategoryType.fromString("ARTS")).
+                feedURL("sdsdsd").collectionId("4444").publisher("sdsdsd").setPodCastCategories(Arrays.asList(PodCastCategoryType.valueOf("ARTS"))).
                 addPodCastEpisodes(podCastEpisode);
 
     }

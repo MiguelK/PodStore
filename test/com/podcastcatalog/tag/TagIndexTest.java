@@ -1,5 +1,6 @@
 package com.podcastcatalog.tag;
 
+import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.tag.model.Tag;
@@ -11,7 +12,7 @@ import java.util.List;
 public class TagIndexTest {
 
 
-    @Test
+    @Test(groups = TestUtil.SLOW_TEST)
     public void basicAPI_Test_trueCrime() throws Exception {
 
         TagManager.getInstance().configure(TagManager.Lang.SWE);
@@ -30,7 +31,7 @@ public class TagIndexTest {
 
         Tag tagForPodCastEpisode = TagManager.getInstance().getTagForPodCastEpisode(podCast.getPodCastEpisodes().get(0).getId());
 
-        Assert.assertTrue(searchResult.getPodCasts().size() == 1);
+       Assert.assertTrue(searchResult.getPodCasts().size() == 1);
 
 
         //Verify  created index file(s)

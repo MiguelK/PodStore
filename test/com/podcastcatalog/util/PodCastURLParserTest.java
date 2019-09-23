@@ -91,7 +91,7 @@ public class PodCastURLParserTest {
 
             List<PodCastCategoryType> categoryTypes = PodCastCategoryType.fromString(podcast.getCategories());
             if(categoryTypes.isEmpty()){
-                categoryTypes = Collections.singletonList(PodCastCategoryType.NEWS_POLITICS);
+                categoryTypes = Collections.singletonList(PodCastCategoryType.NEWS);
             }
 
             podCastBuilder.description(podcast.getDescription()).setPodCastCategories(categoryTypes)

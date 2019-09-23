@@ -1,146 +1,216 @@
 package com.podcastcatalog.model.podcastcatalog;
 
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 //https://www.podcastmotor.com/itunes-podcast-category-list/
+//Map categories from Podcast [String] used by App client.
 public enum PodCastCategoryType {
 
+    TOPLIST_COUNTRY("Not Used In App"),
+
+    //Arts
     ARTS("ARTS"),
+    BOOKS("BOOKS"),
+    DESIGN("DESIGN"),
+    FASHION_BEAUTY("Fashion & Beauty"),
+    FOOD("FOOD"),
+    PERFORMING_ARTS("Performing ARTS"),
+    VISUAL_ARTS("Visual ARTS"),
+
+
+    //Business
     BUSINESS("BUSINESS"),
+    CAREERS("CAREERS"),
+    ENTREPRENEURSHIP("ENTREPRENEURSHIP"),
+    INVESTING("INVESTING"),
+    MANAGEMENT("MANAGEMENT"),
+    MARKETING("MARKETING"),
+    NON_PROFIT("Non-Profit"),
+
+    //Comedy
     COMEDY("COMEDY"),
+    COMEDY_INTERVIEWS("COMEDY INTERVIEWS"),
+    IMPROV("IMPROV"),
+    STAND_UP("Stand-Up"),
+
+    //Education
     EDUCATION("EDUCATION"),
-    GAMES_HOBBIES("Games & HOBBIES"),
-    GOVERNMENT_ORGANIZATIONS("Government & Organizations"),
-    HEALTH("HEALTH"),
+    COURSES("COURSES"),
+    HOW_TO("HOW TO"),
+    LANGUAGE_LEARNING("LANGUAGE LEARNING"),
+    SELF_IMPROVEMENT("SELF IMPROVEMENT"),
+
+
+    //Fiction
+    FICTION("FICTION"),
+    COMEDY_FICTION("COMEDY FICTION"),
+    DRAMA("DRAMA"),
+    SCIENCE_FICTION("SCIENCE FICTION"),
+
+    //Government
+    GOVERNMENT("Government & Organizations"),
+
+
+    //Health-Fitness
+    HEALTH_FITNESS("HEALTH FITNESS"),
+    ALTERNATIVE_HEALTH_FITNESS("Alternative HEALTH_FITNESS"),
+    FITNESS("FITNESS"),
+    MEDICINE("MEDICINE"),
+    MENTAL_HEALTH_FITNESS("MENTAL HEALTH FITNESS"),
+    NUTRITION("NUTRITION"),
+    SEXUALITY("SEXUALITY"),
+
+    //History
+    HISTORY("HISTORY"),
+
+    //Kids & Family
+    KIDS_FAMILY("Kids & Family"),
+    EDUCATION_FOR_KIDS("EDUCATION FOR KIDS"),
+    PARENTING("PARENTING"),
+    PETS_ANIMALS("PETS_ANIMALS"),
+    STORIES_FOR_KIDS("STORIES FOR KIDS"),
+
+    //Leisure
+    LEISURE("LEISURE"),
+    ANIMATION_MANGA("Animation & Manga"),
+    AUTOMOTIVE("AUTOMOTIVE"),
+    AVIATION("AVIATION"),
+    CRAFTS("CRAFTS"),
+    GAMES("Games & HOBBIES"),
+    HOBBIES("HOBBIES"),
+    HOME_GARDEN("HOME_GARDEN"),
+    VIDEO_GAMES("Video Games"),
+
+    //Music
     MUSIC("MUSIC"),
-    NEWS_POLITICS("News & Politics"),
-    SCIENCE_MEDICINE("Science & MEDICINE"),
+    MUSIC_COMMENTARY("MUSIC COMMENTARY"),
+    MUSIC_HISTORY("MUSIC HISTORY"),
+    MUSIC_INTERVIEWS("MUSIC INTERVIEWS"),
+
+    //News
+    NEWS("NEWS"),
+    BUSINESS_NEWS("BUSINESS_NEWS"),
+    DAILY_NEWS("DAILY NEWS"),
+    ENTERTAINMENT_NEWS("ENTERTAINMENT NEWS"),
+    NEWS_COMMENTARY("NEWS COMMENTARY"),
+    POLITICS("POLITICS"),
+    SPORTS_NEWS("SPORTS_NEWS"),
+    TECH_NEWS("TECH_NEWS"),
+
+    //Religion & Spirituality
+    RELIGION_SPIRITUALITY("RELIGION SPIRITUALITY"),
+    BUDDHISM("BUDDHISM"),
+    CHRISTIANITY("CHRISTIANITY"),
+    HINDUISM("HINDUISM"),
+    ISLAM("ISLAM"),
+    JUDAISM("JUDAISM"),
+    RELIGION("RELIGION"),
+    SPIRITUALITY("SPIRITUALITY"),
+
+    //Science
+    SCIENCE("SCIENCE"),
+    ASTRONOMY("ASTRONOMY"),
+    CHEMISTRY("CHEMISTRY"),
+    EARTH_SCIENCES("EARTH SCIENCES"),
+    LIFE_SCIENCES("LIFE SCIENCES"),
+    MATHEMATICS("MATHEMATICS"),
+    NATURAL_SCIENCES("NATURAL SCIENCES"),
+    NATURE("NATURE"),
+    PHYSICS("PHYSICS"),
+    SOCIAL_SCIENCES("SOCIAL & SCIENCES"),
+
+
+    //Society & Culture
     SOCIETY_CULTURE("Society & Culture"),
-    SPORTS_RECREATION("Sports & Recreation"),
-    TECHNOLOGY("TECHNOLOGY"), //Subcategories
-    DESIGN("DESIGN", Collections.singletonList(PodCastCategoryType.ARTS)),
-    FASHION_BEAUTY("Fashion & Beauty", Collections.singletonList(PodCastCategoryType.ARTS)),
-    FOOD("FOOD", Collections.singletonList(PodCastCategoryType.ARTS)),
-    LITERATURE("LITERATURE", Collections.singletonList(PodCastCategoryType.ARTS)),
-    PERFORMING_ARTS("Performing ARTS", Collections.singletonList(PodCastCategoryType.ARTS)),
-    VISUAL_ARTS("Visual ARTS", Collections.singletonList(PodCastCategoryType.ARTS)),
-    BUSINESS_NEWS("BUSINESS News", Collections.singletonList(PodCastCategoryType.BUSINESS)),
-    CAREERS("CAREERS", Collections.singletonList(PodCastCategoryType.BUSINESS)),
-    INVESTING("INVESTING", Collections.singletonList(PodCastCategoryType.BUSINESS)),
-    MANAGEMENT_MARKETING("Management & Marketing", Collections.singletonList(PodCastCategoryType.BUSINESS)),
-    SHOPPING("SHOPPING", Collections.singletonList(PodCastCategoryType.BUSINESS)),
-    EDUCATIONAL_TECHNOLOGY("Educational TECHNOLOGY", Collections.singletonList(PodCastCategoryType.EDUCATION)),
-    HIGHER_EDUCATION("Higher EDUCATION", Collections.singletonList(PodCastCategoryType.EDUCATION)),
-    K_12("K-12", Collections.singletonList(PodCastCategoryType.EDUCATION)),
-    LANGUAGE_COURSES("Language Courses", Collections.singletonList(PodCastCategoryType.EDUCATION)),
-    TRAINING("TRAINING", Collections.singletonList(PodCastCategoryType.EDUCATION)),
-    AUTOMOTIVE("AUTOMOTIVE", Collections.singletonList(PodCastCategoryType.GAMES_HOBBIES)),
-    AVIATION("AVIATION", Collections.singletonList(PodCastCategoryType.GAMES_HOBBIES)),
-    HOBBIES("HOBBIES", Collections.singletonList(PodCastCategoryType.GAMES_HOBBIES)),
-    OTHER_GAMES("OTHER Games", Collections.singletonList(PodCastCategoryType.GAMES_HOBBIES)),
-    VIDEO_GAMES("Video Games", Collections.singletonList(PodCastCategoryType.GAMES_HOBBIES)),
-    LOCAL("LOCAL", Collections.singletonList(PodCastCategoryType.GOVERNMENT_ORGANIZATIONS)),
-    NATIONAL("NATIONAL", Collections.singletonList(PodCastCategoryType.GOVERNMENT_ORGANIZATIONS)),
-    NON_PROFIT("Non-Profit", Collections.singletonList(PodCastCategoryType.GOVERNMENT_ORGANIZATIONS)),
-    REGIONAL("REGIONAL", Collections.singletonList(PodCastCategoryType.GOVERNMENT_ORGANIZATIONS)),
-    ALTERNATIVE_HEALTH("Alternative HEALTH", Collections.singletonList(PodCastCategoryType.HEALTH)),
-    FITNESS_NUTRITION("Fitness & Nutrition", Collections.singletonList(PodCastCategoryType.HEALTH)),
-    SELF_HELP("Self-Help", Collections.singletonList(PodCastCategoryType.HEALTH)),
-    SEXUALITY("SEXUALITY", Collections.singletonList(PodCastCategoryType.HEALTH)),
-    KIDS_FAMILY("Kids & Family", Collections.singletonList(PodCastCategoryType.HEALTH)),
+    DOCUMENTARY("DOCUMENTARY"),
+    PERSONAL_JOURNALS("PERSONAL JOURNALS"),
+    PHILOSOPHY("PHILOSOPHY"),
+    PLACES_TRAVEL("PLACES TRAVEL"),
+    RELATIONSHIPS("RELATIONSHIPS"),
 
-    RELIGION_SPIRITUALITY("Religion & SPIRITUALITY", Collections.singletonList(PodCastCategoryType.NEWS_POLITICS)),
-    BUDDHISM("BUDDHISM", Arrays.asList(PodCastCategoryType.NEWS_POLITICS, PodCastCategoryType.RELIGION_SPIRITUALITY)),
-    CHRISTIANITY("CHRISTIANITY", Arrays.asList(PodCastCategoryType.NEWS_POLITICS, PodCastCategoryType.RELIGION_SPIRITUALITY)),
-    HINDUISM("HINDUISM", Arrays.asList(PodCastCategoryType.NEWS_POLITICS, PodCastCategoryType.RELIGION_SPIRITUALITY)),
-    ISLAM("ISLAM", Arrays.asList(PodCastCategoryType.NEWS_POLITICS, PodCastCategoryType.RELIGION_SPIRITUALITY)),
-    JUDAISM("JUDAISM", Arrays.asList(PodCastCategoryType.NEWS_POLITICS, PodCastCategoryType.RELIGION_SPIRITUALITY)),
-    OTHER("OTHER", Arrays.asList(PodCastCategoryType.NEWS_POLITICS, PodCastCategoryType.RELIGION_SPIRITUALITY)),
-    SPIRITUALITY("SPIRITUALITY", Arrays.asList(PodCastCategoryType.NEWS_POLITICS, PodCastCategoryType.RELIGION_SPIRITUALITY)),
-    MEDICINE("MEDICINE", Collections.singletonList(PodCastCategoryType.SCIENCE_MEDICINE)),
-    NATURAL_SCIENCES("Natural Sciences", Collections.singletonList(PodCastCategoryType.SCIENCE_MEDICINE)),
-    SOCIAL_SCIENCES("Social Sciences", Collections.singletonList(PodCastCategoryType.SCIENCE_MEDICINE)),
-    HISTORY("HISTORY", Collections.singletonList(PodCastCategoryType.SOCIAL_SCIENCES)),
-    PERSONAL_JOURNALS("Personal Journals", Collections.singletonList(PodCastCategoryType.SOCIAL_SCIENCES)),
-    PHILOSOPHY("PHILOSOPHY", Collections.singletonList(PodCastCategoryType.SOCIAL_SCIENCES)),
-    PLACES_TRAVEL("Places & Travel", Collections.singletonList(PodCastCategoryType.SOCIAL_SCIENCES)),
-    AMATEUR("AMATEUR", Collections.singletonList(PodCastCategoryType.SPORTS_RECREATION)),
-    COLLEGE_HIGH_SCHOOL("College & High School", Collections.singletonList(PodCastCategoryType.SPORTS_RECREATION)),
-    OUTDOOR("OUTDOOR", Collections.singletonList(PodCastCategoryType.SPORTS_RECREATION)),
-    PROFESSIONAL("PROFESSIONAL", Collections.singletonList(PodCastCategoryType.SPORTS_RECREATION)),
-    TV_FILM("TV & Film", Collections.singletonList(PodCastCategoryType.SPORTS_RECREATION)),
-    GADGETS("GADGETS", Collections.singletonList(PodCastCategoryType.TECHNOLOGY)),
-    PODCASTING("PODCASTING", Collections.singletonList(PodCastCategoryType.TECHNOLOGY)),
-    SOFTWARE_HOW_TO("Software How-To", Collections.singletonList(PodCastCategoryType.TECHNOLOGY)),
-    TECH_NEWS("Tech News", Collections.singletonList(PodCastCategoryType.TECHNOLOGY));
+    //Sports
+    SPORTS("SPORTS"),
+    BASEBALL("BASEBALL"),
+    BASKETBALL("BASKETBALL"),
+    CRICKET("CRICKET"),
+    FANTASY_SPORTS("FANTASY SPORTS"),
+    FOOTBALL("FOOTBALL"),
+    GOLF("GOLF"),
+    HOCKEY("HOCKEY"),
+    RUGBY("RUGBY"),
+    RUNNING("RUNNING"),
+    SOCCER("SOCCER"),
+    SWIMMING("SWIMMING"),
+    TENNIS("TENNIS"),
+    VOLLEYBALL("VOLLEYBALL"),
+    WILDERNESS("WILDERNESS"),
+    WRESTLING("WRESTLING"),
 
+    //TV & Film
+    TV_FILM("TV & Film"),
+    AFTER_SHOWS("After Shows"),
+    FILM_HISTORY("Film & History"),
+    FILM_INTERVIEWS("FILM INTERVIEWS"),
+    FILM_REVIEWS("Film Reviews"),
+    TV_REVIEWS("TV Reviews"),
 
+    //Technology
+    TECHNOLOGY("TECHNOLOGY"),
+    TRUE_CRIME("True Crime");
 
-    //Acast Kid_Family
-    private final int level;
     private final String displayName;
 
-    final List<PodCastCategoryType> cat = new ArrayList<>();
-    PodCastCategoryType(String displayName, List<PodCastCategoryType> parents) {
-        this.level = parents.size() + 1;
-        this.displayName = displayName;
-        cat.addAll(parents);
-        cat.add(this);
-    }
     PodCastCategoryType(String displayName) {
-        this.level = 1;
-        this.displayName = displayName;
-        cat.add(this);
+        this.displayName = StringUtils.trimToNull(displayName.toUpperCase());
     }
 
     public String getDisplayName() {
         return displayName;
     }
 
-    public int getLevel() {
-        return level;
+    public static List<PodCastCategoryType> fromString(String[] categories) {
+
+        List<PodCastCategoryType> values = new ArrayList<>();
+        for (String category : categories) {
+
+            List<PodCastCategoryType> podCastCategoryTypes = getPodCastCategoryType(category);
+            values.addAll(podCastCategoryTypes);
+            }
+
+        return values.stream().distinct().collect(Collectors.toList());
     }
 
-    public List<PodCastCategoryType> getCategories() {
-        return cat;
-    }
+    private static List<PodCastCategoryType> getPodCastCategoryType(String category) {
 
-    public static List<PodCastCategoryType> fromString(String category) {
-        if(category==null){
-            return Collections.emptyList();
-        }
+        System.out.println(Arrays.asList(category));
+        List<PodCastCategoryType> values = new ArrayList<>();
 
-        String trimmedCategoryName = category.trim();
+        String[] parts = category.split(">");
+        for (String part : parts) {
 
-        for (PodCastCategoryType podCastCategoryTypeX : PodCastCategoryType.values()) {
-            if(podCastCategoryTypeX.getDisplayName().equalsIgnoreCase(trimmedCategoryName)){
-                return podCastCategoryTypeX.getCategories();
+            String s = StringUtils.trimToNull(part);
+            if(s==null) {
+                continue;
+            }
+
+
+            for (PodCastCategoryType categoryType : PodCastCategoryType.values()) {
+            if(s.toUpperCase().equalsIgnoreCase(categoryType.getDisplayName())) {
+                values.add(categoryType);
             }
         }
 
-        return Collections.emptyList();
-    }
-
-    public static List<PodCastCategoryType> fromString(String[] category) {
-        if(category==null){
-            return Collections.emptyList();
         }
-
-        //FXIME Only support for 1 category?
-        for (String c : category) {
-            for (PodCastCategoryType podCastCategoryTypeX : PodCastCategoryType.values()) {
-                if(podCastCategoryTypeX.getDisplayName().equalsIgnoreCase(c)){
-                    return podCastCategoryTypeX.getCategories();
-                }
-            }
-        }
-
-
-        return Collections.emptyList();
+        return values;
     }
 
 }
