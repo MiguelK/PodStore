@@ -22,6 +22,7 @@ import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderNO;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderPT;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderRU;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSE;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderTH;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderUS;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderVN;
 
@@ -58,7 +59,8 @@ China XXXX BUG
     RU("RU",PodCastCatalogBuilderRU.class, false, true, true), //Russia
     CH("CH",PodCastCatalogBuilderCH.class, false, true, true), //Switzerland
     KR("KR",PodCastCatalogBuilderKR.class, false, true, true), //South Korea
-    GB("GB",PodCastCatalogBuilderGB.class, false, true, true); //United Kingdom
+    GB("GB",PodCastCatalogBuilderGB.class, false, true, true), //United Kingdom
+    TH("TH",PodCastCatalogBuilderTH.class, false, true, true); //Thailand
 
     private final String lang;
     private final Class catalogBuilder;

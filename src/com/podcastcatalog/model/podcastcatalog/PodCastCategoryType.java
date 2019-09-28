@@ -3,6 +3,7 @@ package com.podcastcatalog.model.podcastcatalog;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -57,11 +58,11 @@ public enum PodCastCategoryType {
     SCIENCE_FICTION("SCIENCE FICTION"),
 
     //Government
-    GOVERNMENT("Government & Organizations"),
+    GOVERNMENT(Arrays.asList("Government & Organizations", "Government")),
 
 
     //Health-Fitness
-    HEALTH_FITNESS("HEALTH FITNESS"),
+    HEALTH_FITNESS(Arrays.asList("HEALTH & FITNESS", "HEALTH")),
     ALTERNATIVE_HEALTH_FITNESS("Alternative HEALTH_FITNESS"),
     FITNESS("FITNESS"),
     MEDICINE("MEDICINE"),
@@ -98,16 +99,16 @@ public enum PodCastCategoryType {
 
     //News
     NEWS("NEWS"),
-    BUSINESS_NEWS("BUSINESS_NEWS"),
+    BUSINESS_NEWS("BUSINESS & NEWS"),
     DAILY_NEWS("DAILY NEWS"),
     ENTERTAINMENT_NEWS("ENTERTAINMENT NEWS"),
     NEWS_COMMENTARY("NEWS COMMENTARY"),
-    POLITICS("POLITICS"),
+    POLITICS(Arrays.asList("POLITICS", "News & Politics")),
     SPORTS_NEWS("SPORTS_NEWS"),
     TECH_NEWS("TECH_NEWS"),
 
     //Religion & Spirituality
-    RELIGION_SPIRITUALITY("RELIGION SPIRITUALITY"),
+    RELIGION_SPIRITUALITY("RELIGION & SPIRITUALITY"),
     BUDDHISM("BUDDHISM"),
     CHRISTIANITY("CHRISTIANITY"),
     HINDUISM("HINDUISM"),
@@ -117,7 +118,7 @@ public enum PodCastCategoryType {
     SPIRITUALITY("SPIRITUALITY"),
 
     //Science
-    SCIENCE("SCIENCE"),
+    SCIENCE(Arrays.asList("SCIENCE", "Science & Medicine")),
     ASTRONOMY("ASTRONOMY"),
     CHEMISTRY("CHEMISTRY"),
     EARTH_SCIENCES("EARTH SCIENCES"),
@@ -138,7 +139,7 @@ public enum PodCastCategoryType {
     RELATIONSHIPS("RELATIONSHIPS"),
 
     //Sports
-    SPORTS("SPORTS"),
+    SPORTS(Arrays.asList("SPORTS", "Sports & Recreation")),
     BASEBALL("BASEBALL"),
     BASKETBALL("BASKETBALL"),
     CRICKET("CRICKET"),
@@ -167,14 +168,31 @@ public enum PodCastCategoryType {
     TECHNOLOGY("TECHNOLOGY"),
     TRUE_CRIME("True Crime");
 
-    private final String displayName;
+   // private final String displayName;
+    private final List<String> displayNames;
+
 
     PodCastCategoryType(String displayName) {
-        this.displayName = StringUtils.trimToNull(displayName.toUpperCase());
+        String displayNameTrimmed = StringUtils.trimToNull(displayName.toUpperCase());
+        this.displayNames = new ArrayList<>();
+        this.displayNames.add(displayNameTrimmed);
     }
 
-    public String getDisplayName() {
-        return displayName;
+    PodCastCategoryType(List<String> displayNames) {
+        this.displayNames = new ArrayList<>();
+        for (String displayName : displayNames) {
+            String displayNameTrimmed = StringUtils.trimToNull(displayName.toUpperCase());
+            this.displayNames.add(displayNameTrimmed);
+        }
+    }
+
+    public boolean isSameCategoryType(String s) {
+        for (String displayName : displayNames) {
+            if(s.toUpperCase().equalsIgnoreCase(displayName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static List<PodCastCategoryType> fromString(String[] categories) {
@@ -191,7 +209,7 @@ public enum PodCastCategoryType {
 
     private static List<PodCastCategoryType> getPodCastCategoryType(String category) {
 
-        System.out.println(Arrays.asList(category));
+
         List<PodCastCategoryType> values = new ArrayList<>();
 
         String[] parts = category.split(">");
@@ -202,14 +220,17 @@ public enum PodCastCategoryType {
                 continue;
             }
 
-
             for (PodCastCategoryType categoryType : PodCastCategoryType.values()) {
-            if(s.toUpperCase().equalsIgnoreCase(categoryType.getDisplayName())) {
-                values.add(categoryType);
+                if(categoryType.isSameCategoryType(s)) {
+                    values.add(categoryType);
+                }
             }
         }
 
+        if(values.isEmpty()) {
+            System.out.println(category + ",parsed PodCastCategoryType=" + values);
         }
+
         return values;
     }
 
