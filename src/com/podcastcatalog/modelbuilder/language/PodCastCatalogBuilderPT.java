@@ -25,6 +25,7 @@ public class PodCastCatalogBuilderPT extends PodCastCatalogBuilderBase {
         categoryContext.add(PodCastIdCollector.Category.SPORTS, "Esportes");
         categoryContext.add(PodCastIdCollector.Category.TECHNOLOGY, "Tecnologia");
         categoryContext.add(PodCastIdCollector.Category.TV_FILM, "TV & Film");
+        categoryContext.add(PodCastIdCollector.Category.TRUE_CRIME, "True Crime");
     }
 
     @Override
