@@ -55,6 +55,8 @@ public class PodCastCatalogUpdater implements Job {
                 }
             }
 
+            LOG.info("PodCastCatalogUpdater: Done updating");
+
         } catch (Exception e) {
             LOG.info("PodCastCatalogUpdater: failed, " + e.getMessage());
         }

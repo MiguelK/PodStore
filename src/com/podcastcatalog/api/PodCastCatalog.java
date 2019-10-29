@@ -24,6 +24,12 @@ public class PodCastCatalog {
     private final static Logger LOG = Logger.getLogger(PodCastCatalog.class.getName());
 
     @GET
+    @Path("/heartBeat")
+    public Response heartBeat() {
+        return Response.status(Response.Status.OK).build();
+    }
+
+        @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     public Response search(@QueryParam("query") String query,
