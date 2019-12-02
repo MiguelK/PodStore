@@ -2,7 +2,6 @@ package com.podcastcatalog.modelbuilder.language;
 
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.modelbuilder.collector.itunes.PodCastIdCollector;
-import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCollectorOkihika;
 
 //France
 public class PodCastCatalogBuilderFR extends PodCastCatalogBuilderBase {

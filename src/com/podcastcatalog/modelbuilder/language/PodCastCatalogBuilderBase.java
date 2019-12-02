@@ -13,8 +13,6 @@ import com.podcastcatalog.modelbuilder.PodCastCategoryBundleBuilder;
 import com.podcastcatalog.modelbuilder.RandomPodCastEpisodeBundleBuilder;
 import com.podcastcatalog.modelbuilder.TimeDurationPodCastBundleBuilder;
 import com.podcastcatalog.modelbuilder.collector.itunes.PodCastIdCollector;
-import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCategoryCollectorOkihika;
-import com.podcastcatalog.modelbuilder.collector.okihika.PodCastCollectorOkihika;
 
 import java.util.ArrayList;
 import java.util.HashSet;

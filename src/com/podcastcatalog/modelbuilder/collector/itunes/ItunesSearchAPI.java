@@ -7,6 +7,7 @@ import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeDuration;
 import com.podcastcatalog.model.podcastsearch.PodCastResultItem;
 import com.podcastcatalog.modelbuilder.collector.PodCastCollector;
+import com.podcastcatalog.modelbuilder.collector.PodCastFeedParser;
 import com.podcastcatalog.util.IOUtil;
 import com.podcastcatalog.util.IdGenerator;
 import com.podcastcatalog.util.ServerInfo;
@@ -97,6 +98,16 @@ public class ItunesSearchAPI implements PodCastCollector {
 
     public static ItunesSearchAPI createCollector(String parameters) {
         return new ItunesSearchAPI(BASE_URL_SEARCH + parameters);
+    }
+
+    public static Optional<PodCast> lookupPodCast(String id, int maxEpisodes) {
+
+        List<PodCast> podCasts = new ItunesSearchAPI(BASE_URL_LOOKUP + id).collectPodCasts(maxEpisodes);
+        if (podCasts.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(podCasts.get(0));
     }
 
     public static Optional<PodCast> lookupPodCast(String id) {
@@ -191,7 +202,10 @@ public class ItunesSearchAPI implements PodCastCollector {
 
     @Override
     public List<PodCast> collectPodCasts() {
+        return fetchPodCasts(PodCastFeedParser.MAX_FEED_COUNT);
+    }
 
+    private List<PodCast> fetchPodCasts(int maxEpisodes) {
         PodCastSearchResult podCastSearchResult = performSearch();
 
         if (podCastSearchResult == null) {
@@ -213,7 +227,8 @@ public class ItunesSearchAPI implements PodCastCollector {
             URL feedURL = toURL(feedUrl);
 
             if (feedURL != null) {
-                PodCastProcessor podCastProcessor = new PodCastProcessor(feedURL, podCastRow.getArtworkUrl600(), podCastRow.getCollectionId());
+                PodCastProcessor podCastProcessor = new PodCastProcessor(feedURL, podCastRow.getArtworkUrl600(),
+                        podCastRow.getCollectionId(),maxEpisodes);
                 podCastProcessor.fork();//Joins current ForkJoinPool :)
                 tasks.add(podCastProcessor);
             }
@@ -231,7 +246,12 @@ public class ItunesSearchAPI implements PodCastCollector {
         return podCasts;
     }
 
-    PodCastSearchResult performSearch() {
+    @Override
+    public List<PodCast> collectPodCasts(int maxEpisodes) {
+        return fetchPodCasts(maxEpisodes);
+    }
+
+    private PodCastSearchResult performSearch() {
 
         HttpsURLConnection connection;
         try {

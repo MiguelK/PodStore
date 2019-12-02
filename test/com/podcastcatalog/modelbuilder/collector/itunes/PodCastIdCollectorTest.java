@@ -27,7 +27,7 @@ public class PodCastIdCollectorTest {
         System.out.println("Start fetch ids from ids=" + podCastIds.size());
 
         PodCast podCast = ItunesSearchAPI.lookupPodCast(String.valueOf(podCastIds.get(0))).get();
-        Optional<PodCast> podCast1 = PodCastFeedParser.tryParseFailOver(new URL(podCast.getFeedURL()),
+        Optional<PodCast> podCast1 = PodCastFeedParser.parse(new URL(podCast.getFeedURL()),
                 artworkUrl600, "4444", 400);
 
         PodCast podCast2 = podCast1.get();
@@ -46,7 +46,7 @@ public class PodCastIdCollectorTest {
                 System.out.println("Start fetch ids from " + category.name() + ",lang=" + language.name() + ", ids=" + podCastIds.size());
 
                 PodCast podCast = ItunesSearchAPI.lookupPodCast(String.valueOf(podCastIds.get(0))).get();
-                Optional<PodCast> podCast1 = PodCastFeedParser.tryParseFailOver(new URL(podCast.getFeedURL()),
+                Optional<PodCast> podCast1 = PodCastFeedParser.parse(new URL(podCast.getFeedURL()),
                         artworkUrl600, "4444", 400);
                 List<PodCastCategoryType> podCastCategories = podCast1.get().getPodCastCategories();
 

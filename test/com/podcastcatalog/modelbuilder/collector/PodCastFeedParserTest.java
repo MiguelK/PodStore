@@ -29,7 +29,7 @@ public class PodCastFeedParserTest {
         String pid = "1474622223";//275699983";//120315179";//394775318"; //1479187519"; //578603433";//985517492 985517492";1462023708
         //1462023708
         PodCast podCast = ItunesSearchAPI.lookupPodCast(pid).get();
-        Optional<PodCast> podCast1 = PodCastFeedParser.tryParseFailOver(new URL(podCast.getFeedURL()), artworkUrl600, "4444", 400);
+        Optional<PodCast> podCast1 = PodCastFeedParser.parse(new URL(podCast.getFeedURL()), artworkUrl600, "4444", 400);
         List<PodCastCategoryType> podCastCategories = podCast1.get().getPodCastCategories();
 
         System.out.println("podCastCategories=" + podCastCategories);
@@ -53,7 +53,7 @@ public class PodCastFeedParserTest {
         for(int i=0; i<10; i++) {
 
             String x = "https://media.acast.com/breakit-daily/glomvantrummen-blidinegenlakare-kommerexplodera/media.mp3";
-            PodCast podCast = PodCastFeedParser.parse(new URL("http://api.sr.se/api/rss/pod/3966"), artworkUrl600, collectionId).get();
+            PodCast podCast = PodCastFeedParser.parse(new URL("http://api.sr.se/api/rss/pod/3966"), artworkUrl600, collectionId, 10).get();
 
             String id = podCast.getPodCastEpisodesInternal().get(0).getId();
             System.out.println("ID===== " +id);
@@ -85,13 +85,13 @@ public class PodCastFeedParserTest {
         //http://rss.acast.com/ulost
 
         //podcast.getEpisodes().get(0).getEnclosure().getURL()
-        Optional<PodCast> podCast1 = PodCastFeedParser.tryParseFailOver(new URL(rss), artworkUrl600, "4444", 400);
+        Optional<PodCast> podCast1 = PodCastFeedParser.parse(new URL(rss), artworkUrl600, "4444", 400);
 
         Podcast podcast = new Podcast(new URL(rss));
 
         System.out.println("GGGG "  + podCast1.get() + ", podcast=" + podcast);
         //http://scriptnotes.net/rss
-        PodCast podCast = PodCastFeedParser.parse(new URL(rss), artworkUrl600, "22233").get();
+        PodCast podCast = PodCastFeedParser.parse(new URL(rss), artworkUrl600, "22233", 10).get();
 
         for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodesInternal()) {
             Assert.assertNotNull(podCastEpisode.getTitle());
@@ -103,7 +103,7 @@ public class PodCastFeedParserTest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void parse_episode_duration() throws MalformedURLException {
-        PodCast podCast = PodCastFeedParser.parse(new URL("http://api.sr.se/api/rss/pod/3966"), artworkUrl600, "22233").get();
+        PodCast podCast = PodCastFeedParser.parse(new URL("http://api.sr.se/api/rss/pod/3966"), artworkUrl600, "22233",10).get();
 
         for (PodCastEpisode podCastEpisode : podCast.getPodCastEpisodesInternal()) {
             Assert.assertNotNull(podCastEpisode.getDuration().getDisplayValue());
@@ -114,14 +114,15 @@ public class PodCastFeedParserTest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void parse_invalid_url() throws MalformedURLException {
-        Assert.assertFalse(PodCastFeedParser.parse(new URL("http://api.sr.se/api/rssx/pod/396676"), artworkUrl600, "erere").isPresent());
+        Assert.assertFalse(PodCastFeedParser.parse(new URL("http://api.sr.se/api/rssx/pod/396676"),
+                artworkUrl600, "erere", 20).isPresent());
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void missingAuthor() throws MalformedURLException {
         String missingAuthor = "http://juliafrej.libsyn.com/rss";
 
-        Optional<PodCast> podCast = PodCastFeedParser.parse(new URL(missingAuthor), artworkUrl600, "333");
+        Optional<PodCast> podCast = PodCastFeedParser.parse(new URL(missingAuthor), artworkUrl600, "333", 10);
 
         Assert.assertFalse(podCast.isPresent());
     }

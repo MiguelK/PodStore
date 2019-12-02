@@ -19,41 +19,15 @@ import java.util.logging.Logger;
  */
 public class PodCastFeedParser {
 
-    private static final int MAX_FEED_COUNT = 400; //ALL?
+    public static final int MAX_FEED_COUNT = 400; //ALL?
     private final static Logger LOG = Logger.getLogger(PodCastFeedParser.class.getName());
 
-    public static Optional<PodCast> parse(URL feedURL, String artworkUrl600, String collectionId) {
-        return PodCastFeedParser.parse(feedURL, artworkUrl600, collectionId, MAX_FEED_COUNT);
-    }
-
-    private static URL toURL(String url) {
-        try {
-            return new URL(url);
-        } catch (MalformedURLException e) {
-            LOG.warning("Unable to create URL " + url + " message=" + e.getMessage());
-        }
-        return null;
-    }
-
-    public static Optional<PodCastEpisode> parseLatestPodCastEpisode(PodCast url) {
-
-        URL feedURL = toURL(url.getFeedURL());
-
-        Optional<PodCast> parse = PodCastFeedParser.parse(feedURL, url.getArtworkUrl600(), url.getCollectionId(), 1000); //FIXME
-        if (parse.isPresent()) {
-            return Optional.ofNullable(parse.get().getLatestPodCastEpisode());
-        }
-
-        return Optional.empty();
-    }
-
-    public static Optional<PodCast> tryParseFailOver(URL feedURL, String artworkUrl600,
+    public static Optional<PodCast> parse(URL feedURL, String artworkUrl600,
                                                       String collectionId, int maxFeedCount) {
 
-
-        // StopWatch stopWatch = new StopWatch();
-        //  stopWatch.start();
-
+        if(maxFeedCount <= 0) {
+            maxFeedCount = MAX_FEED_COUNT;
+        }
 
         PodCast.Builder podCastBuilder = PodCast.newBuilder()
                 .collectionId(collectionId).setArtworkUrl600(artworkUrl600);
@@ -99,9 +73,6 @@ public class PodCastFeedParser {
                 }
             }
 
-
-            // stopWatch.stop();
-           // LOG.info("PodCast Time=" + stopWatch.getTime());
             return Optional.of(podCastBuilder.build());
 
         } catch (Exception e) {
@@ -113,60 +84,4 @@ public class PodCastFeedParser {
 
         return Optional.empty();
     }
-
-    private static Optional<PodCast> parse(URL feedURL, String artworkUrl600, String collectionId, int maxFeedCount) {
-
-        return tryParseFailOver(feedURL, artworkUrl600, collectionId, maxFeedCount);
-
-    /*    PodCast.Builder podCastBuilder = PodCast.newBuilder();
-
-        int expectedEpisodeCount = -1;
-        try {
-            Feed feed = FeedParser.parse(feedURL);
-
-            PodCastFeedHeader feedHeader = new PodCastFeedHeader(feed.getHeader());
-
-            podCastBuilder.title(feedHeader.getTitle()).setArtworkUrl600(artworkUrl600).
-                    description(feedHeader.getDescription()).collectionId(collectionId).
-                    setPodCastCategories(feedHeader.getCategories())
-                    .createdDate(feedHeader.getCreatedDate())
-                    .publisher(feedHeader.getPublisher())
-                    .feedURL(feedHeader.getFeedURL());
-
-            boolean max = feed.getItemCount() > maxFeedCount; //1400
-            expectedEpisodeCount = max ?  maxFeedCount : feed.getItemCount();
-            //expectedEpisodeCount = offset; //feed.getItemCount(); // > maxFeedCount ? maxFeedCount : feed.getItemCount(); //FIXME
-
-            List<PodCastEpisodeProcessor> tasks = new ArrayList<>();
-            for (int i = 0; i < expectedEpisodeCount; i++) {
-                FeedItem item = feed.getItem(i);
-                PodCastEpisodeProcessor podCastEpisodeProcessor = new PodCastEpisodeProcessor(item, collectionId);
-                podCastEpisodeProcessor.fork();//FIXME
-                tasks.add(podCastEpisodeProcessor);
-                if (i % 10 == 0) {
-               //     LOG.info("Parsing Episode=" + i + " of expectedEpisodeCount=" + expectedEpisodeCount);
-                }
-            }
-
-            for (PodCastEpisodeProcessor task : tasks) {
-                PodCastEpisode podCastEpisode = task.join();//FIXME
-                if(podCastEpisode!=null){
-                    podCastBuilder.addPodCastEpisode(podCastEpisode);
-                }
-            }
-
-
-        }  catch (Exception e) {
-         LOG.info("PodCast parse fail: Level 1, from feed=" + feedURL + ",expectedEpisodeCount=" + expectedEpisodeCount + " message=" + e.getMessage());
-           // return tryParseFailOver(feedURL, artworkUrl600, collectionId, maxFeedCount);
-        }
-
-
-        if (!podCastBuilder.isValid()) {
-            return tryParseFailOver(feedURL, artworkUrl600, collectionId, maxFeedCount);
-        }
-
-        return Optional.of(podCastBuilder.build());*/
-    }
-
 }

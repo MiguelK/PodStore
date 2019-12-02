@@ -1,6 +1,7 @@
 package com.podcastcatalog.api;
 
 import com.podcastcatalog.model.podcaststatus.PodCastStatus;
+import com.podcastcatalog.modelbuilder.collector.PodCastFeedParser;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.service.podcastcatalog.PodCastCatalogService;
 import com.podcastcatalog.service.podcaststar.PodCastStarService;
@@ -25,19 +26,20 @@ public class PodCast {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPodCastById(@PathParam("id") String id) {
+    public Response getPodCastById(@PathParam("id") String id,
+                                   @QueryParam("maxEpisodes") int maxEpisodes) {
 
 
         //BUGFIX olways fetch latest, only use cached pods if failing. Breakit pods
-        Optional<com.podcastcatalog.model.podcastcatalog.PodCast>  podCastNotInMemory = ItunesSearchAPI.lookupPodCast(id);
+        Optional<com.podcastcatalog.model.podcastcatalog.PodCast>  podCastNotInMemory = ItunesSearchAPI.lookupPodCast(id, maxEpisodes);
         if (!podCastNotInMemory.isPresent()) {
             return Response.status(Response.Status.BAD_REQUEST).entity("No podCast with id= " + id + " exist in Itunes ").build();
         }
 
        //FIXME Remove or clear after x minues? PodCastCatalogService.getInstance().updatePodCastIndex(podCastNotInMemory.get());
 
-        com.podcastcatalog.model.podcastcatalog.PodCast withAllEpisodes =
-                com.podcastcatalog.model.podcastcatalog.PodCast.createWithAllEpisodes(podCastNotInMemory.get());
+            com.podcastcatalog.model.podcastcatalog.PodCast withAllEpisodes =
+                    com.podcastcatalog.model.podcastcatalog.PodCast.createWithAllEpisodes(podCastNotInMemory.get());
 
         return Response.status(Response.Status.OK).entity(withAllEpisodes).build();
     }

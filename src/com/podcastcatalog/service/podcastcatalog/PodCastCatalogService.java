@@ -47,7 +47,11 @@ public class PodCastCatalogService {
     public void register(PodCastCatalogLanguage podCastCatalogLanguage, PodCastCatalogMetaData podCastCatalogMetaData) {
         writeLock.lock();
         try {
-            LOG.info("Register MetaData (" + podCastCatalogLanguage.name() + ") " + podCastCatalogMetaData);
+
+            LOG.info("Register MetaData (" + podCastCatalogLanguage.name() + ") " + podCastCatalogMetaData
+                    + ",loaded (" + podCastCatalogMetaDataLang.size() +
+                    " of " + PodCastCatalogLanguage.values().length + ")");
+
             podCastCatalogMetaDataLang.put(podCastCatalogLanguage, podCastCatalogMetaData);
         } finally {
             writeLock.unlock();

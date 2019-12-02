@@ -241,6 +241,12 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
         return ItunesSearchAPI.lookupPodCasts(podCastIds);
 
     }
+
+    @Override
+    public List<PodCast> collectPodCasts(int maxEpisodes) {
+        return collectPodCasts();
+    }
+
     private PodCastToplist parseJSON(String url) {
 
         HttpsURLConnection connection;
