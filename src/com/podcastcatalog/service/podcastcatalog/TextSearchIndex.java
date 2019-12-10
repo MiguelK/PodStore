@@ -11,7 +11,7 @@ public class TextSearchIndex<T> implements Serializable {
 
     private final static Logger LOG = Logger.getLogger(TextSearchIndex.class.getName());
 
-    private static final int MAX_RESULT_SIZE = 50;
+    private static final int MAX_RESULT_SIZE = 100;
     private final Map<String, Node<T>> index;
 
     private final List<InputData> inputDatas;

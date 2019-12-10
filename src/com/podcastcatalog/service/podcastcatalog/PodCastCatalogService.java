@@ -25,6 +25,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class PodCastCatalogService {
 
@@ -70,7 +71,7 @@ public class PodCastCatalogService {
     public List<PodCastInfo> getPodCastTitles(PodCastCatalogLanguage podCastCatalogLanguage) {
 
         PodCastCatalogMetaData podCastCatalogMetaData = getPodCastCatalogMetaData(podCastCatalogLanguage);
-        if(podCastCatalogMetaData == null) {
+        if (podCastCatalogMetaData == null) {
             return Collections.emptyList();
         }
         return podCastCatalogMetaData.podCastTitles;
@@ -79,7 +80,7 @@ public class PodCastCatalogService {
     public List<PodCastInfo> getPodCastTitlesTrending(PodCastCatalogLanguage podCastCatalogLanguage) {
 
         PodCastCatalogMetaData podCastCatalogMetaData = getPodCastCatalogMetaData(podCastCatalogLanguage);
-        if(podCastCatalogMetaData == null) {
+        if (podCastCatalogMetaData == null) {
             return Collections.emptyList();
         }
         return podCastCatalogMetaData.podCastTitlesTrending;
@@ -88,7 +89,7 @@ public class PodCastCatalogService {
     public List<SearchTerm> getPopularSearchTerms(PodCastCatalogLanguage podCastCatalogLanguage) {
 
         PodCastCatalogMetaData podCastCatalogMetaData = getPodCastCatalogMetaData(podCastCatalogLanguage);
-        if(podCastCatalogMetaData == null) {
+        if (podCastCatalogMetaData == null) {
             return Collections.emptyList();
         }
         return podCastCatalogMetaData.popularSearchQueries;
@@ -116,11 +117,11 @@ public class PodCastCatalogService {
         String parameters = "term="
                 + encodedQueryParam + "&entity=podcast&limit=15&attribute=titleTerm&country=" + podCastCatalogLanguage.name();
 
-        if(encodedQueryParam.length() >= 6) {
+        if (encodedQueryParam.length() >= 6) {
             //No attribute=titleTerm
             parameters = "term="
                     + encodedQueryParam + "&entity=podcast&limit=10&country=" + podCastCatalogLanguage.name();
-        }else if(encodedQueryParam.length() >= 12) {
+        } else if (encodedQueryParam.length() >= 12) {
             parameters = "term="
                     + encodedQueryParam + "&entity=podcast&limit=10";
         }
@@ -137,7 +138,7 @@ public class PodCastCatalogService {
                 resultItems.addAll(result);
             }
 
-            resultItems.sort(ResultItem.SORT_BY_POD_CAST_NAME);
+           // resultItems.sort(ResultItem.SORT_BY_POD_CAST_NAME); //Sorted in App
 
             return resultItems;
         } finally {
@@ -166,44 +167,55 @@ public class PodCastCatalogService {
 
         @Override
         public void run() {
-           // readLock.lock();
+            // readLock.lock();
 
             try {
                 PodCastCatalogLanguage podCastCatalogLang = podCastCatalogBuilder.getPodCastCatalogLang();
-            //    try {
-                    LOG.info("Start building PodCastCatalog " + podCastCatalogLang + " ...");
-                    PodCastCatalog podCastCatalog = buildPodCastCatalog(podCastCatalogBuilder);
-                    LOG.info("Done building PodCastCatalog Lang=" + podCastCatalogLang + " Catalog=" + podCastCatalog);
-                    if (podCastCatalog == null) {
-                        LOG.warning("Failed building PodCastCatalog Lang=" + podCastCatalogLang);
-                        return;
-                    }
-                    FtpOneClient.getInstance().upload(podCastCatalog);
-             //   } finally {
-                    //       readLock.unlock();
-                    //}
+                //    try {
+                LOG.info("Start building PodCastCatalog " + podCastCatalogLang + " ...");
+                PodCastCatalog podCastCatalog = buildPodCastCatalog(podCastCatalogBuilder);
+                LOG.info("Done building PodCastCatalog Lang=" + podCastCatalogLang + " Catalog=" + podCastCatalog);
+                if (podCastCatalog == null) {
+                    LOG.warning("Failed building PodCastCatalog Lang=" + podCastCatalogLang);
+                    return;
+                }
+                FtpOneClient.getInstance().upload(podCastCatalog);
+                //   } finally {
+                //       readLock.unlock();
+                //}
 
                 List<PodCastEpisode> podCastEpisodes = new ArrayList<>();
                 TextSearchIndex<ResultItem> newTextSearchIndex = new TextSearchIndex<>();
 
                 for (Bundle bundle : podCastCatalog.getBundles()) {
-                    if (bundle instanceof PodCastBundle) {
-                        PodCastBundle podCastBundle = (PodCastBundle) bundle;
-                        for (PodCast podCast : podCastBundle.getBundleItems()) {
 
-                            PodCastResultItem podCastResultItem = new PodCastResultItem(podCast.getCollectionId(),
-                                    podCast.getTitle(), podCast.getArtworkUrl600());
-                            String text = podCast.getTitle() + " " + podCast.getDescription();
-                            newTextSearchIndex.addText(text, TextSearchIndex.Prio.HIGHEST, podCastResultItem);
+                    List<PodCast> podCasts = new ArrayList<>();
+                    if (bundle instanceof PodCastCategoryBundle) {
+                        podCasts = ((PodCastCategoryBundle) bundle).getBundleItems().stream()
+                                .map(PodCastCategory::getPodCasts).flatMap(Collection::stream)
+                                .collect(Collectors.toList());
+                    } else if (bundle instanceof PodCastBundle) {
+                        podCasts = ((PodCastBundle) bundle).getBundleItems();
+                    }
 
-                            List<PodCastEpisode> podCastEpisodesInternal = podCast.getPodCastEpisodesInternal();
-                            podCastEpisodesInternal.forEach(podCastEpisode -> podCastEpisode.setArtworkUrl600(podCast.getArtworkUrl600()));
-                            podCastEpisodes.addAll(podCastEpisodesInternal);
+                    for (PodCast podCast : podCasts) {
+                        if (podCast.isVirtualPodCast()) {
+                            continue; //If used wrong podCast image is used
                         }
+
+                        PodCastResultItem podCastResultItem = new PodCastResultItem(podCast.getCollectionId(),
+                                podCast.getTitle(), podCast.getArtworkUrl600());
+                        String text = podCast.getTitle() + " " + podCast.getDescription();
+                        newTextSearchIndex.addText(text, TextSearchIndex.Prio.HIGHEST, podCastResultItem);
+
+                        List<PodCastEpisode> podCastEpisodesInternal = podCast.getPodCastEpisodesInternal();
+                        podCastEpisodesInternal.forEach(podCastEpisode -> podCastEpisode.setArtworkUrl600(podCast.getArtworkUrl600()));
+
+                        podCastEpisodes.addAll(podCastEpisodesInternal);
                     }
                 }
 
-                LOG.info("Start TextSearchIndex " + podCastEpisodes.size() + " podCastEpisodes");
+                LOG.info("Start TextSearchIndex podCastEpisodes=" + podCastEpisodes.size());
 
                 for (PodCastEpisode podCastEpisode : podCastEpisodes) {
                     PodCastEpisodeResultItem resultItem = new PodCastEpisodeResultItem(podCastEpisode);
@@ -230,7 +242,7 @@ public class PodCastCatalogService {
                             continue;
                         }
 
-                        PodCastInfo podCastInfo = new PodCastInfo(row.getCollectionId(), row.getCollectionName() );
+                        PodCastInfo podCastInfo = new PodCastInfo(row.getCollectionId(), row.getCollectionName());
 
                         if (podCastTitles.contains(podCastInfo)) {
                             continue;
