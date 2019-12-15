@@ -4,6 +4,10 @@ class MyItem {
 
     private final String name;
 
+    public String getName() {
+        return name;
+    }
+
     public MyItem(String name) {
         this.name = name;
     }

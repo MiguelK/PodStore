@@ -6,8 +6,11 @@ import org.apache.commons.io.IOUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Level;
@@ -29,6 +32,23 @@ public class IOUtil {
             LOG.log(Level.SEVERE, "Unable to get Itunes Search API result using query=" + request, e);
         }
 
+    }
+
+    public static void saveAsObject(Object object, File targetFile) throws IOException {
+        FileOutputStream fileOut = null;
+        ObjectOutputStream out = null;
+        try {
+            fileOut =
+                    new FileOutputStream(targetFile);
+            out = new ObjectOutputStream(fileOut);
+            out.writeObject(object);
+            out.flush();
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            IOUtils.closeQuietly(out);
+            IOUtils.closeQuietly(fileOut);
+        }
     }
 
     public static Object getObject(File downloadedFile) {

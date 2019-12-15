@@ -1,13 +1,10 @@
 package com.podcastcatalog.model.podcastsearch;
 
-import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class PodCastResultItemTest {
@@ -31,8 +28,6 @@ public class PodCastResultItemTest {
         result.add(new PodCastResultItem("2","Gha","image.jpg"));
 
         result.forEach(resultItem -> System.out.println(resultItem.getTitle()));
-
-        Collections.sort(result, ResultItem.SORT_BY_POD_CAST_NAME);
 
         System.out.println("AFTER...");
         result.forEach(resultItem -> System.out.println(resultItem.getTitle()));

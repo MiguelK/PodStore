@@ -17,7 +17,7 @@ public class PodCastCatalogMetaData implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(PodCastCatalogMetaData.class.getName());
 
-    public TextSearchIndex<ResultItem> textSearchIndex = new TextSearchIndex<>();
+    public TextSearchIndex textSearchIndex = new TextSearchIndex();
     public List<PodCastInfo> podCastTitles = new ArrayList<>();
     public List<PodCastInfo> podCastTitlesTrending = new ArrayList<>();
     public List<SearchTerm> popularSearchQueries = new ArrayList<>();

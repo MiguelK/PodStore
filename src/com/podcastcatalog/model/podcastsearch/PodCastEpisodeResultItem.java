@@ -3,17 +3,29 @@ package com.podcastcatalog.model.podcastsearch;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
 
 public class PodCastEpisodeResultItem extends ResultItem {
-   // private final String description;
-    // private final String targetURL;
 
-    private PodCastEpisode podCastEpisode;
+    private final String id;
 
     public PodCastEpisodeResultItem(PodCastEpisode podCastEpisode) {
         super(podCastEpisode.getTitle(), podCastEpisode.getPodCastCollectionId(), podCastEpisode.getArtworkUrl600(), ResultType.EPISODE);
-        this.podCastEpisode = podCastEpisode;
+        this.id = podCastEpisode.getId();
     }
 
-    public PodCastEpisode getPodCastEpisode() {
-        return podCastEpisode;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PodCastEpisodeResultItem that = (PodCastEpisodeResultItem) o;
+
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + id.hashCode();
+        return result;
     }
 }

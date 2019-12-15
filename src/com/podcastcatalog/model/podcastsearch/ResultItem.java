@@ -1,7 +1,6 @@
 package com.podcastcatalog.model.podcastsearch;
 
 import java.io.Serializable;
-import java.util.Comparator;
 
 public abstract class ResultItem implements Serializable {
 
@@ -47,25 +46,5 @@ public abstract class ResultItem implements Serializable {
         return podCastCollectionId.hashCode();
     }
 
-    public static Comparator<ResultItem> SORT_BY_POD_CAST_NAME = new Comparator<ResultItem>() {
-        @Override
-        public int compare(ResultItem o1, ResultItem o2) {
-
-            boolean isPodCastResult1 = o1 instanceof PodCastResultItem;
-            boolean isPodCastResult2 = o2 instanceof PodCastResultItem;
-            if (isPodCastResult1 && isPodCastResult2) {
-                PodCastResultItem podCast1 = (PodCastResultItem) o1;
-                PodCastResultItem podCast2 = (PodCastResultItem) o2;
-                return podCast1.getTitle().compareTo(podCast2.getTitle());
-            }
-
-            if (isPodCastResult1 || isPodCastResult2) {
-                return -1;
-            }
-
-
-            return 0;
-        }
-    };
 
 }

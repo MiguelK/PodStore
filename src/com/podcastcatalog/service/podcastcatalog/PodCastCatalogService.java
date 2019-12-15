@@ -6,6 +6,7 @@ import com.podcastcatalog.model.podcastsearch.PodCastEpisodeResultItem;
 import com.podcastcatalog.model.podcastsearch.PodCastResultItem;
 import com.podcastcatalog.model.podcastsearch.PodCastInfo;
 import com.podcastcatalog.model.podcastsearch.ResultItem;
+import com.podcastcatalog.model.podcastsearch.ResultType;
 import com.podcastcatalog.modelbuilder.BundleBuilder;
 import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
 import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
@@ -134,11 +135,17 @@ public class PodCastCatalogService {
 
             PodCastCatalogMetaData podCastCatalogMetaData = podCastCatalogMetaDataLang.get(podCastCatalogLanguage);
             if (podCastCatalogMetaData != null) {
-                List<ResultItem> result = podCastCatalogMetaData.textSearchIndex.lookup(queryParam);
-                resultItems.addAll(result);
-            }
 
-           // resultItems.sort(ResultItem.SORT_BY_POD_CAST_NAME); //Sorted in App
+                int podCastCount = (int) resultItems.stream().filter(resultItem -> resultItem.getResultType() == ResultType.PODCAST).count();
+                if(podCastCount < 10) {
+                    int maxSize = 10 - podCastCount;
+                    List<ResultItem> podCastEpisodeResults = podCastCatalogMetaData.textSearchIndex.lookupPodCast(queryParam,maxSize);
+                    resultItems.addAll(podCastEpisodeResults);
+                }
+
+                List<ResultItem> podCastResults = podCastCatalogMetaData.textSearchIndex.lookupPodCastEpisodes(queryParam,10);
+                resultItems.addAll(podCastResults);
+            }
 
             return resultItems;
         } finally {
@@ -167,11 +174,9 @@ public class PodCastCatalogService {
 
         @Override
         public void run() {
-            // readLock.lock();
 
             try {
                 PodCastCatalogLanguage podCastCatalogLang = podCastCatalogBuilder.getPodCastCatalogLang();
-                //    try {
                 LOG.info("Start building PodCastCatalog " + podCastCatalogLang + " ...");
                 PodCastCatalog podCastCatalog = buildPodCastCatalog(podCastCatalogBuilder);
                 LOG.info("Done building PodCastCatalog Lang=" + podCastCatalogLang + " Catalog=" + podCastCatalog);
@@ -180,48 +185,55 @@ public class PodCastCatalogService {
                     return;
                 }
                 FtpOneClient.getInstance().upload(podCastCatalog);
-                //   } finally {
-                //       readLock.unlock();
-                //}
 
-                List<PodCastEpisode> podCastEpisodes = new ArrayList<>();
-                TextSearchIndex<ResultItem> newTextSearchIndex = new TextSearchIndex<>();
+                Set<PodCast> podCasts = new HashSet<>();
+                Set<PodCastEpisode> podCastEpisodes = new HashSet<>();
+
+                TextSearchIndex newTextSearchIndex = new TextSearchIndex();
 
                 for (Bundle bundle : podCastCatalog.getBundles()) {
-
-                    List<PodCast> podCasts = new ArrayList<>();
                     if (bundle instanceof PodCastCategoryBundle) {
-                        podCasts = ((PodCastCategoryBundle) bundle).getBundleItems().stream()
+                        List<PodCast> collect = ((PodCastCategoryBundle) bundle).getBundleItems().stream()
                                 .map(PodCastCategory::getPodCasts).flatMap(Collection::stream)
                                 .collect(Collectors.toList());
+                        podCasts.addAll(collect);
                     } else if (bundle instanceof PodCastBundle) {
-                        podCasts = ((PodCastBundle) bundle).getBundleItems();
-                    }
-
-                    for (PodCast podCast : podCasts) {
-                        if (podCast.isVirtualPodCast()) {
-                            continue; //If used wrong podCast image is used
-                        }
-
-                        PodCastResultItem podCastResultItem = new PodCastResultItem(podCast.getCollectionId(),
-                                podCast.getTitle(), podCast.getArtworkUrl600());
-                        String text = podCast.getTitle() + " " + podCast.getDescription();
-                        newTextSearchIndex.addText(text, TextSearchIndex.Prio.HIGHEST, podCastResultItem);
-
-                        List<PodCastEpisode> podCastEpisodesInternal = podCast.getPodCastEpisodesInternal();
-                        podCastEpisodesInternal.forEach(podCastEpisode -> podCastEpisode.setArtworkUrl600(podCast.getArtworkUrl600()));
-
-                        podCastEpisodes.addAll(podCastEpisodesInternal);
+                        List<PodCast> bundleItems = new ArrayList<>(((PodCastBundle) bundle).getBundleItems());
+                        podCasts.addAll(bundleItems);
                     }
                 }
 
-                LOG.info("Start TextSearchIndex podCastEpisodes=" + podCastEpisodes.size());
+                List<PodCast> noVirtualPodCasts = new ArrayList<>();
+                for (PodCast podCast : podCasts) {
+                    if(podCast.isVirtualPodCast()) {
+                        continue;
+                    }
+                    noVirtualPodCasts.add(podCast);
+                }
 
-                for (PodCastEpisode podCastEpisode : podCastEpisodes) {
+                for (PodCast podCast : noVirtualPodCasts) {
+                        List<PodCastEpisode> podCastEpisodesInternal = podCast.getPodCastEpisodesInternal();
+                        podCastEpisodesInternal.forEach(podCastEpisode -> podCastEpisode.setArtworkUrl600(podCast.getArtworkUrl600()));
+                        podCastEpisodes.addAll(podCastEpisodesInternal);
+                }
+
+                for (PodCast podCast : noVirtualPodCasts) {
+                        PodCastResultItem podCastResultItem = new PodCastResultItem(podCast.getCollectionId(),
+                                podCast.getTitle(), podCast.getArtworkUrl600());
+                        String text = podCast.getTitle();// + " " + podCast.getDescription(); //FIXME?
+                        newTextSearchIndex.addText(text, podCastResultItem);
+                    }
+
+
+                LOG.info("Start TextSearchIndex noVirtualPodCasts=" + noVirtualPodCasts.size() + ", podCastEpisodes=" + podCastEpisodes.size());
+
+                List<PodCastEpisode> episodesToIndex = new ArrayList<>(podCastEpisodes);
+
+                for (PodCastEpisode podCastEpisode : episodesToIndex) {
                     PodCastEpisodeResultItem resultItem = new PodCastEpisodeResultItem(podCastEpisode);
                     //// FIXME Need more JVM memory to index?
-                    String text = podCastEpisode.getTitle() + " " + podCastEpisode.getDescription();
-                    newTextSearchIndex.addText(text, TextSearchIndex.Prio.HIGH, resultItem);
+                    String text = podCastEpisode.getTitle();//+ podCastEpisode.getDescription();
+                    newTextSearchIndex.addText(text, resultItem);
                 }
                 newTextSearchIndex.buildIndex();
 

@@ -45,7 +45,7 @@ public class PodCastCatalogUpdater implements Job {
                 }
 
                 if(ServerInfo.isLocalDevMode()) {
-                   podCastCatalogMetaData = null; //Always build at startup time
+            //       podCastCatalogMetaData = null; //Always build at startup time
                 }
 
                 if (podCastCatalogMetaData == null && ServerInfo.isLocalDevMode()) { //Oly update from local memory fix
