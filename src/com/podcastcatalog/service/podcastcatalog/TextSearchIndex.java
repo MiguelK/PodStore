@@ -19,6 +19,9 @@ import java.util.logging.Logger;
 
 public class TextSearchIndex implements Serializable {
 
+    static final long serialVersionUID=42L;
+
+
     private final static Logger LOG = Logger.getLogger(TextSearchIndex.class.getName());
 
     private final Map<String, Node> podCastEpisodeIndex = new ConcurrentSkipListMap<>();
@@ -262,7 +265,9 @@ public class TextSearchIndex implements Serializable {
         return values;
     }
 
-    private static class Node implements Serializable {
+    private class Node implements Serializable {
+     //   static final long serialVersionUID=42L;
+
         private final String term;
         private final Set<ResultItem> relatedPodCastEpisodes = new HashSet<>();
 

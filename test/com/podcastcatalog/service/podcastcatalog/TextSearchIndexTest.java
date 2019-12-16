@@ -235,8 +235,8 @@ public class TextSearchIndexTest {
 
         TextSearchIndex newTextSearchIndex = new TextSearchIndex();
 
-        for (int i = 0; i < 1000; i++) {
-            newTextSearchIndex.addText(i + " Sommar i Stockholm ksdksdjqsd dqjhdsgds dghsa dhsd dgsahgs dshghsgdhsa d gh" + i ,
+        for (int i = 0; i < 1; i++) {
+            newTextSearchIndex.addText(i + ".\uD83D\uDC4D\uD83D\uDE0A \uD83D\uDC6E\uD83C\uDFFF\u200D♀️, 1212-12.ÅÄÖ @-,+0289375*.,äåöööö Sommar i Stockholm ksdksdjqsd dqjhdsgds dghsa dhsd dgsahgs dshghsgdhsa d gh" + i ,
                     new PodCastEpisodeResultItem(PodCastEpisodeTest.createValid().title("UsedInId" + i)
                             .targetURL("https://www.test.se" + i).build()));
         }
@@ -258,8 +258,8 @@ public class TextSearchIndexTest {
         m.textSearchIndex = newTextSearchIndex;
 
 
-        File targetFile = new File(TestUtil.IO_TEMP_DATA_DIRECTORY, "PodCastCatalogMetaDataTestX.dat");
-        IOUtil.saveAsObject(m, targetFile);
+        File targetFile = new File(TestUtil.IO_TEMP_DATA_DIRECTORY, "SE_MetaData.dat");
+        //IOUtil.saveAsObject(m, targetFile);
 
         Thread.sleep(1000);
 
