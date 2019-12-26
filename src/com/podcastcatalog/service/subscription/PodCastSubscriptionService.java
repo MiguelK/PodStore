@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class PodCastSubscriptionService {
@@ -41,6 +42,8 @@ public class PodCastSubscriptionService {
         subscriptionData = FtpOneClient.getInstance().loadSubscribers();
         if(subscriptionData != null) {
             LOG.info("Loaded " + subscriptionData.getSubscriptions().size());
+        } else {
+            LOG.log(Level.SEVERE, "Unable to load  subscriptionData (null)");
         }
     }
 

@@ -13,6 +13,7 @@ public class SubscriptionData implements Serializable {
 
     private final Map<String, Subscription> subscriptionByPodCastId = new HashMap<>();
 
+    static final long serialVersionUID = 1L; //assign a long value
 
     //Subscriber ->* Subscription
 

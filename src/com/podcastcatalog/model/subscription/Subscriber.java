@@ -10,6 +10,9 @@ public class Subscriber implements Serializable{
 
     private String deviceToken;
 
+    static final long serialVersionUID = 1L; //assign a long value
+
+
     //This user Subscriber's subscriptions
     //private final List<Subscription> subscriptions = new ArrayList<>();
 

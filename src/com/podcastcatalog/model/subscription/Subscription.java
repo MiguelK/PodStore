@@ -14,6 +14,9 @@ public class Subscription implements Serializable {
     private String latestPodCastEpisodeId;
     private String podCastId;
 
+    static final long serialVersionUID = 1L; //assign a long value
+
+
     //All user Subscribers for this content
     private final Set<String> subscribers = new HashSet<>();
 
