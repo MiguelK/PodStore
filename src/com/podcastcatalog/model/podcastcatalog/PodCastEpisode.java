@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
 public class PodCastEpisode extends BundleItem implements Serializable {
     private final String id;
@@ -16,6 +17,15 @@ public class PodCastEpisode extends BundleItem implements Serializable {
     private final LocalDateTime createdDate;//publishedDateTime //FIXME Rename?
     private final PodCastEpisodeDuration duration; //Optional can be null
     //private final int stars; //0-5 0==now votes yet //FIXME
+
+    public static class SortCreatedDateLatestFirst implements Comparator<PodCastEpisode> {
+
+        @Override
+        public int compare(PodCastEpisode object1, PodCastEpisode object2) {
+            return object2.createdDate.compareTo(object1.createdDate);
+        }
+    }
+
 
     private final String podCastCollectionId; //PodCast that contains this episode, used when subscribing after direct play
 

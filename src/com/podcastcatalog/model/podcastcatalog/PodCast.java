@@ -196,6 +196,8 @@ public class PodCast extends BundleItem {
                 throw new IllegalArgumentException("Invalid podCastCategories");
             }
 
+            podCastEpisodes.sort(new PodCastEpisode.SortCreatedDateLatestFirst());
+
             return new PodCast(maxEpisodes, collectionId, title, publisher,
                     description, createdDate, feedURL,
                     podCastEpisodes, podCastCategories, artworkUrl600);

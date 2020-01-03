@@ -121,7 +121,7 @@ public class PodCastCatalogService {
         if (encodedQueryParam.length() >= 6) {
             //No attribute=titleTerm
             parameters = "term="
-                    + encodedQueryParam + "&entity=podcast&limit=10&country=" + podCastCatalogLanguage.name();
+                    + encodedQueryParam + "&entity=podcast&limit=12";//&country=" + podCastCatalogLanguage.name();
         } else if (encodedQueryParam.length() >= 12) {
             parameters = "term="
                     + encodedQueryParam + "&entity=podcast&limit=10";
@@ -220,7 +220,7 @@ public class PodCastCatalogService {
                 for (PodCast podCast : noVirtualPodCasts) {
                         PodCastResultItem podCastResultItem = new PodCastResultItem(podCast.getCollectionId(),
                                 podCast.getTitle(), podCast.getArtworkUrl600());
-                        String text = podCast.getTitle();// + " " + podCast.getDescription(); //FIXME?
+                        String text = podCast.getTitle() + " " + podCast.getDescription(); //FIXME?
                         newTextSearchIndex.addText(text, podCastResultItem);
                     }
 
