@@ -12,7 +12,7 @@ public class PodCastCatalogBuilderPT extends PodCastCatalogBuilderBase {
 
         categoryContext.add(PodCastIdCollector.Category.NEWS, "Notícias e Política");
         categoryContext.add(PodCastIdCollector.Category.MUSIC, "Música");
-        categoryContext.add(PodCastIdCollector.Category.ARTS, "Artes");
+        categoryContext.add(PodCastIdCollector.Category.DESIGN, "Artes");
         categoryContext.add(PodCastIdCollector.Category.BUSINESS, "O negócio");
         categoryContext.add(PodCastIdCollector.Category.COMEDY, "Comédia");
         categoryContext.add(PodCastIdCollector.Category.EDUCATION, "Educação");

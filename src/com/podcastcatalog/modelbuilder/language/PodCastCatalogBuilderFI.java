@@ -12,7 +12,7 @@ public class PodCastCatalogBuilderFI extends PodCastCatalogBuilderBase {
 
         categoryContext.add(PodCastIdCollector.Category.NEWS, "Uutiset ja politiikka");
         categoryContext.add(PodCastIdCollector.Category.MUSIC, "Musiikki");
-        categoryContext.add(PodCastIdCollector.Category.ARTS, "Art");
+        categoryContext.add(PodCastIdCollector.Category.DESIGN, "Art");
         categoryContext.add(PodCastIdCollector.Category.BUSINESS, "Business");
         categoryContext.add(PodCastIdCollector.Category.COMEDY, "Komedia");
         categoryContext.add(PodCastIdCollector.Category.EDUCATION, "Koulutus");

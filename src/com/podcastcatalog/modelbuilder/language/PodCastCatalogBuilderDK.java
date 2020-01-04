@@ -11,7 +11,7 @@ public class PodCastCatalogBuilderDK extends PodCastCatalogBuilderBase {
 
         categoryContext.add(PodCastIdCollector.Category.NEWS, "Nyheder & politik");
         categoryContext.add(PodCastIdCollector.Category.MUSIC, "Musik");
-        categoryContext.add(PodCastIdCollector.Category.ARTS, "Kunst");
+        categoryContext.add(PodCastIdCollector.Category.DESIGN, "Kunst");
         categoryContext.add(PodCastIdCollector.Category.BUSINESS, "Forretning");
         categoryContext.add(PodCastIdCollector.Category.COMEDY, "Komedie");
         categoryContext.add(PodCastIdCollector.Category.EDUCATION, "Uddannelse");

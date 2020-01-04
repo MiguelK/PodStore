@@ -12,7 +12,7 @@ public class PodCastCatalogBuilderTH extends PodCastCatalogBuilderBase {
 
         categoryContext.add(PodCastIdCollector.Category.NEWS, "ข่าวและการเมือง");
         categoryContext.add(PodCastIdCollector.Category.MUSIC, "เพลง");
-        categoryContext.add(PodCastIdCollector.Category.ARTS, "ศิลปะ");
+        categoryContext.add(PodCastIdCollector.Category.DESIGN, "ศิลปะ");
         categoryContext.add(PodCastIdCollector.Category.BUSINESS, "ธุรกิจ");
         categoryContext.add(PodCastIdCollector.Category.COMEDY, "ความขบขัน");
         categoryContext.add(PodCastIdCollector.Category.EDUCATION, "การศึกษา");
