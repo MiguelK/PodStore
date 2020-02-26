@@ -1,6 +1,7 @@
 package com.podcastcatalog.model.podcastcatalog;
 
 
+import com.podcastcatalog.util.ServerInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Array;
@@ -227,7 +228,7 @@ public enum PodCastCategoryType {
             }
         }
 
-        if(values.isEmpty()) {
+        if(ServerInfo.isLocalDevMode() && values.isEmpty()) {
             System.out.println(category + ",parsed PodCastCategoryType=" + values);
         }
 
