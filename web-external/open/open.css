@@ -12,7 +12,6 @@ input { width: 100%; display: block; padding: 1em; }
 .result {
     display: block;
     text-decoration: none;
-    flex: 0 1 75%;
     text-align: center;
     font-size: 0.8em;
     position: relative;
@@ -63,3 +62,23 @@ input { width: 100%; display: block; padding: 1em; }
 .track-name { display: block; }
 
 .artist-name { font-style: italic; }
+
+.button {
+    background-color: rgb(255, 56, 108); /* Green */
+    border: none;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 60px;
+    margin: 8px 8px;
+    cursor: pointer;
+    font-weight: 900;
+    height: 150px;
+    width: 700px;
+}
+
+.button4 {
+    border-radius: 90px;
+}
