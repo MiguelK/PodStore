@@ -191,8 +191,6 @@ public class FtpOneClient {
 
     synchronized public void uploadToOneCom(File sourceFile, String serverPath) {
         try {
-            LOG.info("Uploading " + sourceFile.getName() + ", to serverPath=" + serverPath);
-
             FileTask fileTask = new FileTask(sourceFile, serverPath);
 
             executorService.submit(fileTask);
