@@ -36,7 +36,7 @@ public class ItunesSearchAPITest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void serial() {
-        PodCast podCast = ItunesSearchAPI.lookupPodCast("946101591").get();
+        PodCast podCast = ItunesSearchAPI.lookupPodCast("1229449566").get();
         System.out.println(podCast.getTitle());
     }
         @Test(groups = TestUtil.SLOW_TEST)

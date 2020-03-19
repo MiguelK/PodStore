@@ -22,8 +22,6 @@ public class PodCastSubscription {
     public Response subscribe(@PathParam("deviceToken") String deviceToken,
                               @PathParam("podCastId") String podCastId) {
 
-        LOG.info("subscribe= " + deviceToken + ", podCastId=" + podCastId);
-
         PodCastSubscriptionService.getInstance().subscribe(deviceToken, podCastId);
 
         return Response.status(Response.Status.OK).build();
@@ -34,8 +32,6 @@ public class PodCastSubscription {
     @Produces(MediaType.APPLICATION_JSON)
     public Response unSubscribe(@PathParam("deviceToken") String deviceToken,
                                 @PathParam("podCastId") String podCastId) {
-
-        LOG.info("unSubscribe= " + deviceToken + ", podCastId=" + podCastId);
 
         PodCastSubscriptionService.getInstance().unSubscribe(deviceToken, podCastId);
 
