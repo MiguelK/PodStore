@@ -3,6 +3,7 @@ package com.podcastcatalog.model.subscription;
 import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.PodCastCatalogMetaData;
 import com.podcastcatalog.service.subscription.FtpOneClient;
+import com.podcastcatalog.util.IOUtil;
 import org.apache.commons.net.ftp.FTP;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -36,11 +37,11 @@ public class SubscriptionDataTest {
 
         PodCastCatalogMetaData m = new PodCastCatalogMetaData();
 
-        FtpOneClient.getInstance().saveAsObject(m, testFile);
+        IOUtil.saveAsObject(m, testFile);
 
         Thread.sleep(2000);
         System.out.println("Try loadig...");
-        Object object = FtpOneClient.getInstance().getObject(testFile);
+        Object object = IOUtil.getObject(testFile);
         System.out.println(object);
     }
 
@@ -55,13 +56,13 @@ public class SubscriptionDataTest {
         subscriptionData.addSubscription(new Subscription("1111"));
         subscriptionData.addSubscription(new Subscription("3333"));
 
-        FtpOneClient.getInstance().saveAsObject(subscriptionData, testFile);
+        IOUtil.saveAsObject(subscriptionData, testFile);
         FtpOneClient.getInstance().uploadToOneCom(testFile, FtpOneClient.PATH_SUBSCRIPTION);
 
         Subscription subscription = subscriptionData.getSubscription("1111");
         if(subscription != null) {
             subscription.setLatestPodCastEpisodeId("2222");
-            FtpOneClient.getInstance().saveAsObject(subscriptionData, testFile);
+            IOUtil.saveAsObject(subscriptionData, testFile);
             FtpOneClient.getInstance().uploadToOneCom(testFile, FtpOneClient.PATH_SUBSCRIPTION);
 
         }
@@ -90,9 +91,9 @@ public class SubscriptionDataTest {
         Set<String> subscribers = new HashSet<>();
         for (Subscription subscription : subscriptionData.getSubscriptions()) {
 
-            String row = subscription.getPodCastId() + ", " + subscription.getLatestPodCastEpisodeId() + ", " + subscription.getSubscribers().size();
+            String row = "https://pods.one/open?pid=" + subscription.getPodCastId() + " , " + subscription.getLatestPodCastEpisodeId() + ", " + subscription.getSubscribers().size();
 
-            row+= System.lineSeparator() + "{";
+            row += System.lineSeparator() + "{" + System.lineSeparator();
             //System.out.println(subscription.getPodCastId() + ", " + subscription.getLatestPodCastEpisodeId() + ", " + subscription.getSubscribers().size());
 
             for (String subscriber  : subscription.getSubscribers()) {
@@ -106,8 +107,6 @@ public class SubscriptionDataTest {
 
         System.out.println("Subscriptions=" + subscriptionData.getSubscriptions().size());
         System.out.println("Unique Subscribers=" + subscribers.size());
-
-
     }
 
     /*

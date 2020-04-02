@@ -8,12 +8,11 @@ import com.podcastcatalog.model.PodCastCatalogMetaData;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalog;
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
 import com.podcastcatalog.model.subscription.SubscriptionData;
-import com.podcastcatalog.service.appstatistic.AppStatisticData;
 import com.podcastcatalog.service.appstatistic.AppStatisticDataContainer;
 import com.podcastcatalog.service.datastore.LocatorProduction;
+import com.podcastcatalog.util.IOUtil;
 import com.podcastcatalog.util.ServerInfo;
 import com.podcastcatalog.util.ZipFile;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.http.HttpEntity;
@@ -28,8 +27,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -108,7 +105,7 @@ public class FtpOneClient {
         //        + " " + podCastCatalogMetaData);
 
         try {
-            saveAsObject(podCastCatalogMetaData, file);
+            IOUtil.saveAsObject(podCastCatalogMetaData, file);
             FtpOneClient.getInstance().uploadToOneCom(file, PATH_LANGUAGE);
         } catch (IOException e) {
             LOG.info("Failed to upload PodCastCatalogMetaData " + e.getMessage());
@@ -125,10 +122,10 @@ public class FtpOneClient {
 
         File file = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), APP_STATISTICS_FILE_NAME);
         try {
-            saveAsObject(appStatisticData, file);
+            IOUtil.saveAsObject(appStatisticData, file);
             FtpOneClient.getInstance().uploadToOneCom(file, APP_STATISTICS_PATH);
         } catch (IOException e) {
-            LOG.info("Failed push message" + e.getMessage());
+            LOG.info("Failed uploading appStatisticData to " + PODS_ONE_HOST_NAME + APP_STATISTICS_PATH + " message" + e.getMessage());
         }
     }
     public synchronized AppStatisticDataContainer loadAppStatistics()  {
@@ -153,14 +150,14 @@ public class FtpOneClient {
         File file = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), SUBSCRIPTIONS_JSON_FILE);
         try {
             // LOG.info("upload subscriptions=" + subscriptionData.getSubscriptions().size());
-            saveAsObject(subscriptionData, file);
+            IOUtil.saveAsObject(subscriptionData, file);
             FtpOneClient.getInstance().uploadToOneCom(file, PATH_SUBSCRIPTION);
         } catch (IOException e) {
-            LOG.info("Failed push message" + e.getMessage());
+            LOG.info("Failed uploading subscriptionData to " + PODS_ONE_HOST_NAME + PATH_SUBSCRIPTION + " message" + e.getMessage());
         }
     }
 
-    synchronized SubscriptionData loadSubscribers()  {
+    public synchronized SubscriptionData loadSubscribers() {
         File downloadedFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), SUBSCRIPTIONS_JSON_FILE);
 
         try {
@@ -221,51 +218,11 @@ public class FtpOneClient {
                 EntityUtils.consume(entity);
             }
 
-            Object in = getObject(downloadedFile);
+            Object in = IOUtil.getObject(downloadedFile);
             if (in != null) return in;
         }
 
         throw new IOException();
-    }
-
-    public Object getObject(File downloadedFile) {
-        ObjectInputStream in = null;
-        FileInputStream fileIn = null;
-        try {
-            try {
-                fileIn = new FileInputStream(downloadedFile);
-                in = new ObjectInputStream(fileIn);
-                return  in.readObject();
-            } catch (Exception e) {
-                LOG.log(Level.INFO, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
-            }
-
-        } finally {
-            if (in != null) {
-                IOUtils.closeQuietly(in);
-            }
-            if (fileIn != null) {
-                IOUtils.closeQuietly(fileIn);
-            }
-        }
-        return null;
-    }
-
-    public void saveAsObject(Object object, File targetFile) throws IOException {
-        FileOutputStream fileOut = null;
-        ObjectOutputStream out = null;
-        try {
-            fileOut =
-                    new FileOutputStream(targetFile);
-            out = new ObjectOutputStream(fileOut);
-            out.writeObject(object);
-            out.flush();
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            IOUtils.closeQuietly(out);
-            IOUtils.closeQuietly(fileOut);
-        }
     }
 
 
