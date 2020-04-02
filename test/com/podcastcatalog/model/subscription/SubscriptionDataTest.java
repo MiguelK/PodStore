@@ -10,7 +10,9 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static com.podcastcatalog.service.subscription.FtpOneClient.SUBSCRIPTIONS_PATH;
@@ -88,7 +90,8 @@ public class SubscriptionDataTest {
         SubscriptionData subscriptionData = (SubscriptionData) FtpOneClient.getInstance().loadFromServer(testFile, pathOnServer);
 
 
-        Set<String> subscribers = new HashSet<>();
+        // Set<String> subscribers = new HashSet<>();
+        Map<String, Integer> uniqueSubscribers = new HashMap<>();
         for (Subscription subscription : subscriptionData.getSubscriptions()) {
 
             String row = "https://pods.one/open?pid=" + subscription.getPodCastId() + " , " + subscription.getLatestPodCastEpisodeId() + ", " + subscription.getSubscribers().size();
@@ -98,7 +101,15 @@ public class SubscriptionDataTest {
 
             for (String subscriber  : subscription.getSubscribers()) {
                 row+=  subscriber + System.lineSeparator();
-                subscribers.add(subscriber);
+
+                Integer subscriptionCount = uniqueSubscribers.get(subscriber);
+                if (subscriptionCount == null) {
+                    subscriptionCount = 1;
+                } else {
+                    subscriptionCount += 1;
+                }
+
+                uniqueSubscribers.put(subscriber, subscriptionCount);
             }
             row+= "}";
 
@@ -106,7 +117,14 @@ public class SubscriptionDataTest {
         }
 
         System.out.println("Subscriptions=" + subscriptionData.getSubscriptions().size());
-        System.out.println("Unique Subscribers=" + subscribers.size());
+
+        System.out.println("Unique Subscribers=" + uniqueSubscribers.size());
+
+        for (String s : uniqueSubscribers.keySet()) {
+            Integer integer = uniqueSubscribers.get(s);
+            System.out.println(s + " subscriptions=" + integer);
+        }
+
     }
 
     /*
