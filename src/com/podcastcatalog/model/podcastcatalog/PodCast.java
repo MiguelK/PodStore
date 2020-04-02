@@ -167,7 +167,7 @@ public class PodCast extends BundleItem {
         }
 
         public PodCast build() {
-                return build(20);
+            return build(3);
         }
 
             public PodCast build(int maxEpisodes) {
