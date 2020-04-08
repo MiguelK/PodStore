@@ -1,6 +1,16 @@
 package com.podcastcatalog.util;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import java.net.URL;
+import java.util.logging.Logger;
+
 public class PodCastURLParser {
+
+    private final static Logger LOG = Logger.getLogger(PodCastURLParser.class.getName());
 
     public static class Parameters {
 
@@ -19,6 +29,49 @@ public class PodCastURLParser {
 
         public String getPodCastId() {
             return podCastId;
+        }
+    }
+
+    public static URL parseFeedUrl(String url) {
+        String trimToNull = StringUtils.trimToNull(url);
+        if (trimToNull == null) {
+            return null;
+        }
+
+        try {
+            Document doc = Jsoup.parse(new URL(trimToNull), 3000);
+
+            Element contentString = doc.getElementById("shoebox-ember-data-store");
+            if (contentString == null) {
+                return null;
+            }
+
+            String htmlContent = contentString.toString();
+            if (htmlContent == null) {
+                return null;
+            }
+            int feedUrl2 = htmlContent.indexOf("feedUrl");
+            if (feedUrl2 <= 0) {
+                return null;
+            }
+
+            String feedUrlSubstring = htmlContent.substring(feedUrl2);
+            int startIndex = feedUrlSubstring.indexOf(":") + 1;
+            if (startIndex <= 0) {
+                return null;
+            }
+            int endIndex = feedUrlSubstring.indexOf(",");
+            if (endIndex <= 0) {
+                return null;
+            }
+
+            String feedUrl = feedUrlSubstring.substring(startIndex, endIndex);
+            String replace = StringUtils.trimToEmpty(feedUrl).replace("\"", "");
+            return new URL(replace);
+
+        } catch (Exception e) {
+            LOG.info("parseFeedUrl() " + e.getMessage());
+            return null;
         }
     }
 

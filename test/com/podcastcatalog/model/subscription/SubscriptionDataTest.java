@@ -116,15 +116,14 @@ public class SubscriptionDataTest {
             System.out.println(row);
         }
 
-        System.out.println("Subscriptions=" + subscriptionData.getSubscriptions().size());
-
-        System.out.println("Unique Subscribers=" + uniqueSubscribers.size());
 
         for (String s : uniqueSubscribers.keySet()) {
             Integer integer = uniqueSubscribers.get(s);
             System.out.println(s + " subscriptions=" + integer);
         }
 
+        System.out.println("Subscriptions=" + subscriptionData.getSubscriptions().size());
+        System.out.println("Unique Subscribers=" + uniqueSubscribers.size());
     }
 
     /*

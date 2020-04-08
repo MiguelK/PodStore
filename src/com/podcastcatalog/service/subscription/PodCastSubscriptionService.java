@@ -2,6 +2,7 @@ package com.podcastcatalog.service.subscription;
 
 import com.podcastcatalog.model.subscription.Subscription;
 import com.podcastcatalog.model.subscription.SubscriptionData;
+import com.podcastcatalog.util.ServerInfo;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -120,7 +121,9 @@ public class PodCastSubscriptionService {
                 info = subscription.getSubscribers().size() + " subscribers for podCastId=" + podCastId;
             }
 
-            LOG.info("unSubscribe(), " + info);
+            if (ServerInfo.isLocalDevMode()) {
+                LOG.info("unSubscribe(), " + info);
+            }
 
             FtpOneClient.getInstance().upload(subscriptionData);
         } finally {

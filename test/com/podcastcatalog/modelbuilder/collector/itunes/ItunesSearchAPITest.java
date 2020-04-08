@@ -1,12 +1,21 @@
 package com.podcastcatalog.modelbuilder.collector.itunes;
 
+import com.icosillion.podengine.models.Podcast;
 import com.podcastcatalog.TestUtil;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisode;
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.net.URL;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class ItunesSearchAPITest {
 
@@ -27,10 +36,58 @@ public class ItunesSearchAPITest {
         Assert.assertTrue(ItunesSearchAPI.lookupPodCast("895602289").isPresent());
     }
 
+
+    @Test(groups = TestUtil.SLOW_TEST)
+    public void getLatestEpisodeIdForPodCast() {
+        //390164336
+        ItunesSearchAPI.PodCastSmall pod1 = ItunesSearchAPI.getLatestEpisodeIdForPodCast("251955878");
+        System.out.println(pod1);
+        Assert.assertNotNull(pod1);
+    }
+
     @Test(groups = TestUtil.SLOW_TEST)
     public void fetchLatestEpisode() {
-        ItunesSearchAPI.PodCastSmall pod = ItunesSearchAPI.getLatestEpisodeIdForPodCast("989645925");
-        System.out.println(pod);
+        ItunesSearchAPI.PodCastSmall pod = ItunesSearchAPI.getLatestEpisodeIdForPodCast("390164336");
+        // System.out.println(pod);
+
+
+        try {
+            Document doc = Jsoup.parse(new URL("https://podcasts.apple.com/us/podcast/le-cours-de-lhistoire/id390164336?uo=4"), 3000);
+
+            // Element table = doc.getElementById("itunes_result_table");
+            // Elements elements = table.getElementsByAttribute("href");
+            Element elementById = doc.getElementById("shoebox-ember-data-store");
+            //System.out.println("doc " + elementById.toString());
+
+            String htmlContent = elementById.toString();
+            int feedUrl2 = htmlContent.indexOf("feedUrl");
+
+            String substring = htmlContent.substring(feedUrl2);
+            int startIndex = substring.indexOf(":") + 1;
+            int endIndex = substring.indexOf(",");
+
+            String substring1 = substring.substring(startIndex, endIndex);
+            //System.out.println(substring1);
+            String s = StringUtils.trimToNull(substring1);
+            String replace = s;//s.replace("\"", "");
+
+            URL feedURL = new URL(replace);
+            // System.out.println(feedURL);
+
+            Podcast podcast = new Podcast(feedURL);
+
+            System.out.println("podcast=" + podcast.getTitle());
+
+            // htmlContent.sub
+
+            //feedUrl":"https://rss.podplaystudio.com/447.xml",
+
+            //     System.out.println("feedUrl1 " + feedUrl1);
+
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 

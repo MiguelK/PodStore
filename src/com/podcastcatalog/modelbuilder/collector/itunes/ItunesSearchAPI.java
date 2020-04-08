@@ -10,6 +10,7 @@ import com.podcastcatalog.modelbuilder.collector.PodCastCollector;
 import com.podcastcatalog.modelbuilder.collector.PodCastFeedParser;
 import com.podcastcatalog.util.IOUtil;
 import com.podcastcatalog.util.IdGenerator;
+import com.podcastcatalog.util.PodCastURLParser;
 import com.podcastcatalog.util.ServerInfo;
 import org.apache.commons.lang3.StringUtils;
 
@@ -134,14 +135,29 @@ public class ItunesSearchAPI implements PodCastCollector {
 
     public static PodCastSmall getLatestEpisodeIdForPodCast(String pid) {
 
-        ItunesSearchAPI itunesSearchAPI = new ItunesSearchAPI(BASE_URL_LOOKUP + pid);//FIXME
-
-        PodCastSearchResult podCastSearchResult = itunesSearchAPI.performSearch();
-        if (podCastSearchResult.getResults().size() != 1) {
+        String trimmedPid = StringUtils.trimToNull(pid);
+        if (trimmedPid == null) {
             return null;
         }
 
-        URL feedURL = itunesSearchAPI.buildURL(podCastSearchResult.getResults().get(0).feedUrl);
+        ItunesSearchAPI itunesSearchAPI = new ItunesSearchAPI(BASE_URL_LOOKUP + trimmedPid);
+
+        PodCastSearchResult podCastSearchResult = itunesSearchAPI.performSearch();
+        if (podCastSearchResult == null || podCastSearchResult.getResults().size() != 1) {
+            return null;
+        }
+
+        PodCastSearchResult.Row row = podCastSearchResult.getResults().get(0);
+        URL feedURL;
+        if (StringUtils.isEmpty(row.getFeedUrl())) {
+            feedURL = PodCastURLParser.parseFeedUrl(row.getCollectionViewUrl());
+        } else {
+            feedURL = itunesSearchAPI.buildURL(row.getFeedUrl());
+        }
+
+        if (feedURL == null) {
+            return null;
+        }
 
         String podCastTitle;
         String latestPodCastEpisodeId;
@@ -221,7 +237,9 @@ public class ItunesSearchAPI implements PodCastCollector {
         for (PodCastSearchResult.Row podCastRow : podCastSearchResult.getResults()) {
             String feedUrl = podCastRow.getFeedUrl();
             if (feedUrl == null) {
-                LOG.info("feedUrl is null " + podCastRow);
+                if (ServerInfo.isLocalDevMode()) {
+                    LOG.info("feedUrl is null " + podCastRow + ", maxEpisodes=" + maxEpisodes);
+                }
                 continue;
             }
             URL feedURL = toURL(feedUrl);
@@ -281,6 +299,11 @@ public class ItunesSearchAPI implements PodCastCollector {
             private String artworkUrl600;
             private String artworkUrl100;
             private String collectionId;
+            private String collectionViewUrl;
+
+            public String getCollectionViewUrl() {
+                return collectionViewUrl;
+            }
 
             public String getCollectionName() {
                 return collectionName;
@@ -330,7 +353,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         return null;
     }
 
-    URL buildURL(String url) {
+    private URL buildURL(String url) {
         try {
             return new URL(url);
         } catch (Exception e) {
