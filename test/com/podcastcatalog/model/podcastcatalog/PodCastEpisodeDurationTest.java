@@ -45,13 +45,13 @@ public class PodCastEpisodeDurationTest {
         Assert.assertTrue(duration.getSeconds()==12);
     }
 
-    //@Test FIXME
-    public void parse_valid_duration_27() {
-        PodCastEpisodeDuration duration = PodCastEpisodeDuration.parse("29:46:00");
+    @Test
+    public void parse_valid_duration_seconds() {
+        PodCastEpisodeDuration duration = PodCastEpisodeDuration.parse("45:34");
         Assert.assertNotNull(duration);
-        Assert.assertTrue(duration.getHour()==2);
-        Assert.assertTrue(duration.getMinutes()==23);
-        Assert.assertTrue(duration.getSeconds()==12);
+        Assert.assertTrue(duration.getHour() == 0);
+        Assert.assertTrue(duration.getMinutes() == 45);
+        Assert.assertTrue(duration.getSeconds() == 34);
     }
 
     @Test
@@ -67,7 +67,6 @@ public class PodCastEpisodeDurationTest {
     public void invalid_duration_null() {
         Assert.assertNull(PodCastEpisodeDuration.parse("01::15"));
         Assert.assertNull(PodCastEpisodeDuration.parse(" 01::15"));
-        Assert.assertNull(PodCastEpisodeDuration.parse("0:15"));
         Assert.assertNull(PodCastEpisodeDuration.parse(""));
         Assert.assertNull(PodCastEpisodeDuration.parse(null));
     }

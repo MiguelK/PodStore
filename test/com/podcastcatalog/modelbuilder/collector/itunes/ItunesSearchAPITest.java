@@ -20,6 +20,13 @@ import java.util.stream.Collectors;
 public class ItunesSearchAPITest {
 
     @Test(groups = TestUtil.SLOW_TEST)
+    public void lookupPodCast() {
+        Optional<PodCast> podCast = ItunesSearchAPI.lookupPodCast("617416468", 1);
+
+        System.out.println(podCast.get());
+    }
+
+    @Test(groups = TestUtil.SLOW_TEST)
     public void lookup_2() {
         List<PodCast> podCasts =  ItunesSearchAPI.lookupPodCasts(Arrays.asList( 1032687266L));
         Assert.assertTrue(podCasts.size() == 1);
@@ -93,7 +100,7 @@ public class ItunesSearchAPITest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void serial() {
-        PodCast podCast = ItunesSearchAPI.lookupPodCast("1229449566").get();
+        PodCast podCast = ItunesSearchAPI.lookupPodCast("1509518970").get();
         System.out.println(podCast.getTitle());
     }
         @Test(groups = TestUtil.SLOW_TEST)

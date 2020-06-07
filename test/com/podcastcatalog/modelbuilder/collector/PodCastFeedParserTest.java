@@ -67,6 +67,9 @@ public class PodCastFeedParserTest {
     @Test(groups = TestUtil.SLOW_TEST)
     public void validURL() throws MalformedURLException, InvalidFeedException, MalformedFeedException {
 
+        //Important for FeedParser, could cause 403 otherwise.
+        System.setProperty("http.agent", "Chrome");
+
         String rss = "http://scriptnotes.net/rss";
         rss = "http://audioboom.com/channels/4829841.rss";
         rss = "http://rss.art19.com/the-daily";
@@ -79,6 +82,7 @@ public class PodCastFeedParserTest {
         rss = "http://rss.acast.com/sparpodcast";
          rss = "http://rss.acast.com/enmorkhistoria";
         rss = "http://www.ximalaya.com/album/9977848.xml";
+        rss = "http://atp.fm/episodes?format=rss";
         //rss = "http://api.audioteca.rac1.cat/rss/no-ho-se";
         //http://www.ximalaya.com/album/3882669.xmldescription is mandatory
         //http://www.netrevo.net/assets/media/itune/promotion.rssInvalid id null mus be > 0

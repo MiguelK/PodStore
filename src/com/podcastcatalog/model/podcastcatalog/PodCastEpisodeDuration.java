@@ -59,8 +59,20 @@ public class PodCastEpisodeDuration implements Serializable{
     public static Optional<LocalTime> toSeconds(final String input) {
 
         String trimmedInput = StringUtils.trimToEmpty(input);
-        if(trimmedInput.chars().filter(c->c==':').count()!=2){
+
+
+        if (trimmedInput.isEmpty()) {
             return Optional.empty();
+        }
+
+        if (trimmedInput.chars().filter(c -> c == ':').count() == 1) {
+            trimmedInput = "00:" + trimmedInput;
+            return Optional.ofNullable(LocalTime.parse(trimmedInput, DateTimeFormatter.ISO_LOCAL_TIME));
+        }
+
+        if(trimmedInput.chars().filter(c->c==':').count()!=2){
+            //return Optional.empty();
+            return Optional.ofNullable(LocalTime.parse(trimmedInput, DateTimeFormatter.ISO_LOCAL_TIME));
         }
 
         if(trimmedInput.endsWith(":60")){

@@ -188,6 +188,7 @@ public class FtpOneClient {
 
     synchronized public void uploadToOneCom(File sourceFile, String serverPath) {
         try {
+//            sourceFile.setLastModified(System.currentTimeMillis());
             FileTask fileTask = new FileTask(sourceFile, serverPath);
 
             executorService.submit(fileTask);

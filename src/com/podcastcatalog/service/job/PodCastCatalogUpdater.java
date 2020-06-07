@@ -50,6 +50,8 @@ public class PodCastCatalogUpdater implements Job {
 
                 if (podCastCatalogMetaData == null && ServerInfo.isLocalDevMode()) { //Oly update from local memory fix
                     PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language.create());
+                    int fiveMin = 1000 * 60 * 8;
+                    Thread.sleep(fiveMin);
                 } else if (podCastCatalogMetaData != null) {
                     PodCastCatalogService.getInstance().register(language, podCastCatalogMetaData);
                 } else {

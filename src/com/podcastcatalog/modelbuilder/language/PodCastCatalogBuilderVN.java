@@ -16,7 +16,7 @@ public class PodCastCatalogBuilderVN extends PodCastCatalogBuilderBase {
         categoryContext.add(PodCastIdCollector.Category.BUSINESS, "Business");
         categoryContext.add(PodCastIdCollector.Category.COMEDY, "Comedy");
         categoryContext.add(PodCastIdCollector.Category.EDUCATION, "Education");
-        categoryContext.add(PodCastIdCollector.Category.GAMES, "Games");
+        categoryContext.add(PodCastIdCollector.Category.VIDEO_GAMES, "Games");
         categoryContext.add(PodCastIdCollector.Category.GOVERNMENT, "Government & Organizations");
         categoryContext.add(PodCastIdCollector.Category.KIDS_FAMILY, "Kids & Family");
         categoryContext.add(PodCastIdCollector.Category.RELIGION_SPIRITUALITY, "Religion & Spirituality");
