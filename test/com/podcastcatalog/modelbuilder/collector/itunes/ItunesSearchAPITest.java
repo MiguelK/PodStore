@@ -47,7 +47,7 @@ public class ItunesSearchAPITest {
     @Test(groups = TestUtil.SLOW_TEST)
     public void getLatestEpisodeIdForPodCast() {
         //390164336
-        ItunesSearchAPI.PodCastSmall pod1 = ItunesSearchAPI.getLatestEpisodeIdForPodCast("251955878");
+        ItunesSearchAPI.PodCastSmall pod1 = ItunesSearchAPI.getLatestEpisodeIdForPodCast("1389951701");
         System.out.println(pod1);
         Assert.assertNotNull(pod1);
     }

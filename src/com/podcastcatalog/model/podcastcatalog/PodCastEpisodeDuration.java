@@ -70,6 +70,13 @@ public class PodCastEpisodeDuration implements Serializable{
             return Optional.ofNullable(LocalTime.parse(trimmedInput, DateTimeFormatter.ISO_LOCAL_TIME));
         }
 
+        try {
+         int seconds = Integer.parseInt(trimmedInput);
+            return Optional.ofNullable(LocalTime.ofSecondOfDay(seconds));
+        }catch (Exception e) {
+            //Ignore
+        }
+
         if(trimmedInput.chars().filter(c->c==':').count()!=2){
             //return Optional.empty();
             return Optional.ofNullable(LocalTime.parse(trimmedInput, DateTimeFormatter.ISO_LOCAL_TIME));

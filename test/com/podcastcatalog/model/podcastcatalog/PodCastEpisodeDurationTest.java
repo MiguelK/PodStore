@@ -11,11 +11,17 @@ public class PodCastEpisodeDurationTest {
 
     @Test
     public void toJSON() {
-
         PodCastEpisodeDuration s = PodCastEpisodeDuration.parse("1:00:02");
-        String s1 = gson.toJson(s);
+        Assert.assertNotNull(gson.toJson(s));
+    }
 
-
+    @Test
+    public void parse_valid_duration_seconds1() {
+        Assert.assertTrue(PodCastEpisodeDuration.parse("1044").getMinutes()==17);
+        Assert.assertTrue(PodCastEpisodeDuration.parse("185").getMinutes()==3);
+        Assert.assertTrue(PodCastEpisodeDuration.parse("185").getHour()==0);
+        Assert.assertTrue(PodCastEpisodeDuration.parse("185").getSeconds()==5);
+        Assert.assertTrue(PodCastEpisodeDuration.parse("60").getMinutes()==1);
     }
 
     @Test
@@ -61,6 +67,7 @@ public class PodCastEpisodeDurationTest {
         Assert.assertEquals(PodCastEpisodeDuration.parse("01:25:56").getDisplayValue(),"1h 25m");
         Assert.assertEquals(PodCastEpisodeDuration.parse("01:25:60").getDisplayValue(),"1h 25m");
         Assert.assertEquals(PodCastEpisodeDuration.parse(" 00:58:60 ").getDisplayValue(),"58m");
+        Assert.assertEquals(PodCastEpisodeDuration.parse(" 1044 ").getDisplayValue(),"17m");
     }
 
     @Test
