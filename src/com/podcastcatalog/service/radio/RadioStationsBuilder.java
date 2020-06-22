@@ -19,10 +19,10 @@ public class RadioStationsBuilder {
     private final static Logger LOG = Logger.getLogger(RadioStationsBuilder.class.getName());
 
     private static class RadioGuideFMContext {
-        PodCastCatalogLanguage language;
+        String language;
         String languageDomain;
 
-        public RadioGuideFMContext(PodCastCatalogLanguage language, String languageDomain) {
+        public RadioGuideFMContext(String language, String languageDomain) {
             this.language = language;
             this.languageDomain = languageDomain;
         }
@@ -31,19 +31,13 @@ public class RadioStationsBuilder {
     public void parse() {
 
         List<String> radioStations = new ArrayList<>();
-        List<String> c = parsRadioGuideFM();
-
-        for(int i=0; i < 3000; i++) {
-            radioStations.addAll(c);
-        }
-
+        List<String> radioGuideFM = parsRadioGuideFM();
+        radioStations.addAll(radioGuideFM);
 
         RadioStationService.INSTANCE.saveStations(radioStations);
     }
 
     private List<String> parsRadioGuideFM() {
-
-
         List<RadioGuideFMContext> parserContexts = createParserContexts();
 
         List<String> radioStations = new ArrayList<>();
@@ -61,7 +55,7 @@ public class RadioStationsBuilder {
             Elements elements = doc.getElementsByAttribute("href");
             List<Element> collect = elements.stream().filter(element -> {
                 return element.attr("href").contains(languageDomain + "/");
-            }).collect(Collectors.toList()).subList(0,8); //FIXME
+            }).collect(Collectors.toList());//.subList(0,8); //FIXME
 
             for (Element element : collect) {
                 String subPageURL = baseURL + element.attr("href");
@@ -71,17 +65,22 @@ public class RadioStationsBuilder {
                 String name = subPage.getElementsByTag("h1").text();
                 String description = subPage.getElementsByClass("radiostation-content").text();
                 String imageURL = baseURL + "/" + subPage.getElementsByClass("img-responsive").get(1).attr("src");
-                int start = subPage.html().indexOf("stream");
+                int start = subPage.html().indexOf("var stream =");
                 String streamURL = parseURL(subPage.html().substring(start, start + 350));
+
 
                 LOG.info("Radio Station: " + name + ",streamURL=" + streamURL +
                         ", description=" + description + ",imageURL=" + imageURL);
 
-                String row = parserContext.language.name().toLowerCase() +
+                if(StringUtils.isEmpty(streamURL)) {
+                    continue;
+                }
+
+                String row = parserContext.language +
                         ";;" + name + ";;" + imageURL + ";;" + description + ";;" + streamURL + ";#";
                 radioStations.add(row);
 
-                Thread.sleep(3000);
+                Thread.sleep(1000);
             }
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Unable to parse id(s) from " + url, e);
@@ -93,14 +92,15 @@ public class RadioStationsBuilder {
 
 
     private List<RadioGuideFMContext> createParserContexts() {
-
-
-        String languageDomain = "internet-radio-sverige"; //FIXME
-        String baseURL = "https://www.radioguide.fm";
-
         List<RadioGuideFMContext> contexts = new ArrayList<>();
-        contexts.add(new RadioGuideFMContext(PodCastCatalogLanguage.SE, "internet-radio-sverige"));
-        contexts.add(new RadioGuideFMContext(PodCastCatalogLanguage.FR, "internet-radio-france"));
+        //contexts.add(new RadioGuideFMContext(PodCastCatalogLanguage.SE.name().toLowerCase(), "internet-radio-sverige"));
+        //contexts.add(new RadioGuideFMContext(PodCastCatalogLanguage.FR.name().toLowerCase(), "internet-radio-france"));
+        //contexts.add(new RadioGuideFMContext("nl", "internet-radio-nederland"));
+
+       // contexts.add(new RadioGuideFMContext(PodCastCatalogLanguage.DE.name().toLowerCase(), "internet-radio-deutschland"));
+        contexts.add(new RadioGuideFMContext(PodCastCatalogLanguage.IT.name().toLowerCase(), "internet-radio-italia"));
+
+        //FIXME ADD more
 
         return contexts;
     }

@@ -63,6 +63,7 @@ public class FtpOneClient {
     public static final String APP_STATISTICS_FILE_NAME = "AppStatistics.dat";
     public static final String APP_STATISTICS_PATH = "/AppStatistics/";
     public static final String APP_STATISTIC_FILE_URL = PODS_ONE_HOST_NAME + APP_STATISTICS_PATH + APP_STATISTICS_FILE_NAME;
+    public static final String RADIO_STATION_FILE = PODS_ONE_HOST_NAME + "/Radio/radioStations.txt";
 
     private static FtpOneClient INSTANCE = new FtpOneClient();
 

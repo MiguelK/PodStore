@@ -1,12 +1,16 @@
 package com.podcastcatalog.service.radio;
 
 import com.podcastcatalog.model.radio.RadioStation;
+import com.podcastcatalog.service.subscription.FtpOneClient;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -28,41 +32,48 @@ public class RadioStationService {
     private List<RadioStation> radioStations = new ArrayList<>();
 
     public void loadStations() {
-        LOG.info("Loading Radio Stations...");
+        LOG.info("Start loading Radio Stations...");
+        List<RadioStation> newRadioStations = new ArrayList<>();
+
         writeLock.lock();
 
         try {
-            //FIXME
-            File radioStationsFile = new File("/Users/miguelkrantz/Documents/temp/radioStations.txt");
-            Path path = radioStationsFile.toPath();
             try {
-                try (Stream<String> stream = Files.lines(path,Charset.forName("UTF-8"))) {
+                try (InputStream is = new URL(FtpOneClient.RADIO_STATION_FILE).openConnection().getInputStream();
+                     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                     Stream<String> stream = reader.lines()) {
                     for (String line : (Iterable<String>) stream::iterator) {
                         String[] split = line.split(";;");
-                        System.out.println("LINE: " + line + " " + split.length);
                         if(split.length == 5) {
-                            radioStations.add(new RadioStation(split[1], split[2], split[3], split[4]));
+                            newRadioStations.add(new RadioStation(split[0], split[1], split[2], split[3], split[4]));
                         }
                     }
                 }
+
+                LOG.info("Done loading Radio Stations " + newRadioStations.size());
+
+                radioStations = newRadioStations;
+
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, "Failed loading Radio Stations " + e.getMessage());
             }
+
         } finally {
             writeLock.unlock();
         }
     }
 
     public void cleanStationsFile() {
+        //FIXME
         //Remove duplicates
         //sort per lang
         //validate URL's not 404 etc
     }
 
-    public void saveStations(List<String> radioStations) {
+    void saveStations(List<String> radioStations) {
         writeLock.lock();
         try {
-            //FIXME
+            //Save to local , upöoad manually to one.com
             File radioStationsFile = new File("/Users/miguelkrantz/Documents/temp/radioStations.txt");
             Files.write(radioStationsFile.toPath(), radioStations, Charset.forName("UTF-8"));
         } catch (Exception e) {
@@ -74,17 +85,11 @@ public class RadioStationService {
 
     public List<RadioStation> search(String query) {
         readLock.lock();
-
         try {
-
-            List<RadioStation> collect = radioStations.stream().filter(radioStation ->
+            return radioStations.stream().filter(radioStation ->
                     radioStation.getName().toLowerCase().startsWith(query.toLowerCase())).collect(Collectors.toList());
-
-            return collect;
         }finally {
             readLock.unlock();
         }
-
-
     }
 }
