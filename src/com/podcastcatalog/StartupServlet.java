@@ -6,6 +6,7 @@ import com.podcastcatalog.service.job.JobManagerService;
 import com.podcastcatalog.service.job.MemoryDumperJob;
 import com.podcastcatalog.service.job.PodCastCatalogUpdater;
 import com.podcastcatalog.service.job.SubscriptionNotifierJob;
+import com.podcastcatalog.service.radio.RadioStationService;
 import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
 
 import javax.servlet.ServletConfig;
@@ -51,6 +52,7 @@ public class StartupServlet extends HttpServlet {
         LOG.info("Starting PodStore POD_HOME_DIR=" + LocatorProduction.getInstance().getPodDataHomeDirectory().getAbsolutePath());
 
         setupPodCastSubscriptionService(servletConfig);
+        RadioStationService.INSTANCE.loadStations(); //FIXME
 
         //Important for FeedParser, could cause 403 otherwise.
         System.setProperty("http.agent", "Chrome");
