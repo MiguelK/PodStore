@@ -252,17 +252,29 @@ public class TextSearchIndex implements Serializable {
         String term = StringUtils.deleteWhitespace(queryParam).toLowerCase();
         Node node = index.get(term);
 
-        if (node == null) {
+        Set<ResultItem> uniqueResultItems = new HashSet<>();
+        if(node != null) {
+            uniqueResultItems.addAll(node.getValues());
+        }
+            for (String key : index.keySet()) {
+                if(key.startsWith(term)) {
+                    uniqueResultItems.addAll(index.get(key).getValues());
+                    //resultItems.addAll(index.get(key).getValues());
+                }
+            }
+
+        List<ResultItem> resultItems = new ArrayList<>();
+        resultItems.addAll(uniqueResultItems);
+
+        if (resultItems.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<ResultItem> values = node.getValues();
-
-        if (values.size() > maxResultSize) {
-            return values.subList(0, maxResultSize);
+        if (resultItems.size() > maxResultSize) {
+            return resultItems.subList(0, maxResultSize);
         }
 
-        return values;
+        return resultItems;
     }
 
     private class Node implements Serializable {

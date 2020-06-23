@@ -104,7 +104,6 @@ public class PodCastCatalogService {
             return Collections.emptyList();
         }
 
-
         String encodedQueryParam;
         try {
             encodedQueryParam = URLEncoder.encode(queryParam, "UTF-8");
@@ -113,44 +112,42 @@ public class PodCastCatalogService {
             return Collections.emptyList();
         }
 
-        List<ResultItem> resultItems = new ArrayList<>();
+        Set<ResultItem> resultItems = new HashSet<>();
 
+        readLock.lock();
+        try {
+
+            //1# First search in local podCastCatalogMetaDataLang
+            PodCastCatalogMetaData podCastCatalogMetaData = podCastCatalogMetaDataLang.get(podCastCatalogLanguage);
+            if (podCastCatalogMetaData != null) {
+                List<ResultItem> podCastEpisodeResults = podCastCatalogMetaData.textSearchIndex.lookupPodCast(queryParam,10);
+                resultItems.addAll(podCastEpisodeResults);
+
+                List<ResultItem> podCastResults = podCastCatalogMetaData.textSearchIndex.lookupPodCastEpisodes(queryParam,10);
+                resultItems.addAll(podCastResults);
+            }
+        } finally {
+            readLock.unlock();
+        }
+
+        String limit = "limit=" + (resultItems.size() >= 20 ? 6 : 12);
         String parameters = "term="
-                + encodedQueryParam + "&entity=podcast&limit=15&attribute=titleTerm&country=" + podCastCatalogLanguage.name();
+                + encodedQueryParam + "&entity=podcast&" + limit + "&attribute=titleTerm&country=" + podCastCatalogLanguage.name();
 
         if (encodedQueryParam.length() >= 6) {
             //No attribute=titleTerm
             parameters = "term="
-                    + encodedQueryParam + "&entity=podcast&limit=12";//&country=" + podCastCatalogLanguage.name();
+                    + encodedQueryParam + "&entity=podcast&" + limit;
         } else if (encodedQueryParam.length() >= 12) {
             parameters = "term="
-                    + encodedQueryParam + "&entity=podcast&limit=10";
+                    + encodedQueryParam + "&entity=podcast&" + limit;
         }
 
         List<PodCastResultItem> podCasts = ItunesSearchAPI.searchPodCasts(parameters);
         resultItems.addAll(podCasts);
 
-        readLock.lock();
-        try {
 
-            PodCastCatalogMetaData podCastCatalogMetaData = podCastCatalogMetaDataLang.get(podCastCatalogLanguage);
-            if (podCastCatalogMetaData != null) {
-
-                int podCastCount = (int) resultItems.stream().filter(resultItem -> resultItem.getResultType() == ResultType.PODCAST).count();
-                if(podCastCount < 10) {
-                    int maxSize = 10 - podCastCount;
-                    List<ResultItem> podCastEpisodeResults = podCastCatalogMetaData.textSearchIndex.lookupPodCast(queryParam,maxSize);
-                    resultItems.addAll(podCastEpisodeResults);
-                }
-
-                List<ResultItem> podCastResults = podCastCatalogMetaData.textSearchIndex.lookupPodCastEpisodes(queryParam,10);
-                resultItems.addAll(podCastResults);
-            }
-
-            return resultItems;
-        } finally {
-            readLock.unlock();
-        }
+        return new ArrayList<>(resultItems);
     }
 
     public void buildPodCastCatalogsAsync(PodCastCatalogBuilder podCastCatalogBuilder) {
