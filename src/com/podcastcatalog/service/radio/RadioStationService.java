@@ -86,8 +86,12 @@ public class RadioStationService {
     public List<RadioStation> search(String query) {
         readLock.lock();
         try {
-            return radioStations.stream().filter(radioStation ->
+            List<RadioStation> result = radioStations.stream().filter(radioStation ->
                     radioStation.getName().toLowerCase().startsWith(query.toLowerCase())).collect(Collectors.toList());
+            if(result.size() > 20) {
+                return result.subList(0,20);
+            }
+            return result;
         }finally {
             readLock.unlock();
         }

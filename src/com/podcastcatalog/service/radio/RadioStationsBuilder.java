@@ -1,6 +1,7 @@
 package com.podcastcatalog.service.radio;
 
 import com.podcastcatalog.model.podcastcatalog.PodCastCatalogLanguage;
+import com.podcastcatalog.model.radio.RadioStationValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -72,9 +73,10 @@ public class RadioStationsBuilder {
                 LOG.info("Radio Station: " + name + ",streamURL=" + streamURL +
                         ", description=" + description + ",imageURL=" + imageURL);
 
-                if(StringUtils.isEmpty(streamURL)) {
+                if(!RadioStationValidator.isValid(parserContext.language,name,imageURL,description,streamURL)) {
                     continue;
                 }
+
 
                 String row = parserContext.language +
                         ";;" + name + ";;" + imageURL + ";;" + description + ";;" + streamURL + ";#";

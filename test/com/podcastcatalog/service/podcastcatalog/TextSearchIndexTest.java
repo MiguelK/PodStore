@@ -242,13 +242,11 @@ public class TextSearchIndexTest {
         }
 
 
-      /*  for (int i = 0; i < 900; i++) {
+        for (int i = 0; i < 900; i++) {
             newTextSearchIndex.addText("Sommar i Stockholm" + i,
                     new PodCastResultItem("collecvtionId" + i, "Title " + i, "www.dsd.se"));
-        }*/
+        }
 
-      //  MyItem found = new MyItem("Found");
-        //  searchEngine.addText("Sommar i Stockholm", found);
 
         newTextSearchIndex.buildIndex();
         newTextSearchIndex.printPodCastEpisodeIndex();
@@ -259,9 +257,9 @@ public class TextSearchIndexTest {
 
 
         File targetFile = new File(TestUtil.IO_TEMP_DATA_DIRECTORY, "SE_MetaData.dat");
-        //IOUtil.saveAsObject(m, targetFile);
+        IOUtil.saveAsObject(m, targetFile);
 
-        Thread.sleep(1000);
+        Thread.sleep(500);
 
         System.out.println("After load...");
         PodCastCatalogMetaData loadedPodCastCatalogMetaData = (PodCastCatalogMetaData) IOUtil.getObject(targetFile);

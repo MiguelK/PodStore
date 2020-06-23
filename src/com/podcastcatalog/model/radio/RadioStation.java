@@ -1,8 +1,5 @@
 package com.podcastcatalog.model.radio;
 
-/**
- * Created by miguelkrantz on 2020-06-12.
- */
 public class RadioStation {
     private String lang;
     private String name;
@@ -10,7 +7,6 @@ public class RadioStation {
     private String streamURL;
     private String shortDescription;
 
-    // //fr;;NRJ Radio;;https://www.radioguide.fm//uploads/images/radiostation/NRJ-Logo-2014-170-4.png;;NRJ radio, Hit Music Only. radio FM en ligne, NRJ Music Awards, 6-9 ...;;http://cdn.nrjaudio.fm/audio1/fr/30001/mp3_128.mp3?origine=fluxradios;#
     public RadioStation(String lang,
                         String name, String imageURL,
                         String shortDescription, String streamURL) {
