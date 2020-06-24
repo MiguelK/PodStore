@@ -52,7 +52,7 @@ public class StartupServlet extends HttpServlet {
         LOG.info("Starting PodStore POD_HOME_DIR=" + LocatorProduction.getInstance().getPodDataHomeDirectory().getAbsolutePath());
 
         setupPodCastSubscriptionService(servletConfig);
-        RadioStationService.INSTANCE.loadStations(); //FIXME
+        RadioStationService.INSTANCE.loadStations();
 
         //Important for FeedParser, could cause 403 otherwise.
         System.setProperty("http.agent", "Chrome");

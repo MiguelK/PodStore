@@ -29,7 +29,7 @@ public class PodCastCatalog {
         return Response.status(Response.Status.OK).build();
     }
 
-        @GET
+    @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     public Response search(@QueryParam("query") String query,
