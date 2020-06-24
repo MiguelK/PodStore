@@ -36,4 +36,24 @@ public class RadioStation {
     public String getShortDescription() {
         return shortDescription;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RadioStation that = (RadioStation) o;
+
+        if (!name.equals(that.name)) return false;
+        if (!imageURL.equals(that.imageURL)) return false;
+        return streamURL.equals(that.streamURL);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + imageURL.hashCode();
+        result = 31 * result + streamURL.hashCode();
+        return result;
+    }
 }
