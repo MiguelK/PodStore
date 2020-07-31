@@ -42,7 +42,7 @@ public class PodCastEpisodeProcessor extends RecursiveTask<PodCastEpisode> {
         //    stopWatch.start();
 
         PodCastEpisode.Builder episodeBuilder = PodCastEpisode.newBuilder();
-        String description;
+        String description = "";
         try {
              description = episode.getDescription();
         } catch (MalformedFeedException e) {
@@ -50,7 +50,7 @@ public class PodCastEpisodeProcessor extends RecursiveTask<PodCastEpisode> {
             description = "Missing field";
         }
 
-        if(StringUtils.isEmpty(description)) {
+        if(StringUtils.isEmpty(description.trim())) {
             description = "Missing field";
         }
 

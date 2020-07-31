@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -27,7 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class PodCastIdCollector implements PodCastCollector, PodCastCategoryCollector  {
+public class PodCastIdCollector implements PodCastCollector, PodCastCategoryCollector {
 
     private final static Logger LOG = Logger.getLogger(PodCastIdCollector.class.getName());
 
@@ -37,7 +38,7 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
 
     private final PodCastCatalogLanguage language;
     private final int resultSize;
-    private final String url;
+    private final List<String> url; //FIXME List of URL's...?
     private final String categoryTitle;
     private final Category category;
     private static final String DEFAULT_EMPTY_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Color_icon_red.svg/220px-Color_icon_red.svg.png";
@@ -50,7 +51,8 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
 
         //ARTS
         ARTS("https://podcasts.apple.com/{LANGUAGE}/genre/podcaster-konst/id1301"),
-        BOOKS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-arts-books/id1482"),
+        BOOKS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-arts-books/id1482",
+                "https://podcasts.apple.com/{LANGUAGE}/genre/podcaster-konst-böcker/id1482?letter=F"),
         DESIGN("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-arts-design/id1402"),
         FASHION_BEAUTY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-arts-fashion-beauty/id1459"),
         FOOD("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-arts-food/id1306"),
@@ -89,7 +91,8 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
         GOVERNMENT("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-government/id1511"),
 
         //Health-Fitness
-        HEALTH_FITNESS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-health-fitness/id1512"),
+        // HEALTH_FITNESS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-health-fitness/id1512"),
+        HEALTH_FITNESS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-health-fitness-mental-health/id1517"),
         ALTERNATIVE_HEALTH_FITNESS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-health-fitness-alternative-health/id1513"),
         FITNESS("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-health-fitness-fitness/id1514"),
         MEDICINE("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-health-fitness-medicine/id1518"),
@@ -195,10 +198,10 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
         TECHNOLOGY("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-technology/id1318"),
         TRUE_CRIME("https://podcasts.apple.com/{LANGUAGE}/genre/podcasts-true-crime/id1488");
 
-        private final String categoryUrl;
+        private final List<String> categoryUrl;
 
-        Category(String categoryUrl) {
-            this.categoryUrl =  categoryUrl;
+        Category(String... categoryUrl) {
+            this.categoryUrl = Arrays.asList(categoryUrl);
         }
 
 
@@ -216,8 +219,16 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
         this.resultSize = 50;
         this.category = category;
         this.categoryTitle = categoryTitle;
-        this.url = category.categoryUrl.replace("{LANGUAGE}",
-                language.name().toLowerCase()).replace("{RESULT_SIZE}",String.valueOf(resultSize));
+
+
+        List<String> urls = new ArrayList<>();
+        for (String url: category.categoryUrl) {
+            String u = url.replace("{LANGUAGE}",
+                    language.name().toLowerCase()).replace("{RESULT_SIZE}", String.valueOf(resultSize));
+            urls.add(u);
+        }
+
+        this.url = urls;
     }
 
     private PodCastIdCollector(PodCastCatalogLanguage language, Category category) {
@@ -238,6 +249,8 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
 
         //LOG.info("PodCastIdCollector " + podCastIds.size() + " podCast(s), lang=" + language.name() + ", categoryTitle=" + categoryTitle);
 
+        System.out.println("podCastIds " + podCastIds);
+
         return ItunesSearchAPI.lookupPodCasts(podCastIds);
 
     }
@@ -255,7 +268,7 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
             connection = (HttpsURLConnection) request.openConnection();
             String content = IOUtils.toString(connection.getInputStream(), "UTF-8");
 
-           // String content = getResultContent(connection);
+            // String content = getResultContent(connection);
             return GSON.fromJson(content, PodCastToplist.class);
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Unable to get Itunes Search API result using query=" + url, e);
@@ -267,14 +280,15 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
     public static class PodCastToplist {
 
         private Feed feed;
+
         public static class Feed {
             String title;
             String id;
             private final List<PodCastToplist.Row> results = new ArrayList<>();
         }
 
-        List<PodCastToplist.Row> getResults(){
-            if(feed == null){
+        List<PodCastToplist.Row> getResults() {
+            if (feed == null) {
                 return null;
             }
             return feed.results;
@@ -292,19 +306,19 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
 
     public List<Long> getPodCastIds() {
 
-        if(category == Category.TOPLIST_COUNTRY) {
+        if (category == Category.TOPLIST_COUNTRY) {
 
-            PodCastToplist podCastToplist = parseJSON(url);
+            PodCastToplist podCastToplist = parseJSON(url.get(0));
 
-            if(podCastToplist != null) {
+            if (podCastToplist != null) {
 
                 List<Long> collect = podCastToplist.getResults().stream().filter(row -> {
 
-                    if(row.id != null) {
+                    if (row.id != null) {
                         return true;
                     } else {
                         System.out.println(row.name + " ROW=== " + row.artistName + " " + row.id);
-                      return false;
+                        return false;
                     }
 
                 })
@@ -312,36 +326,40 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
                                     return Long.parseLong(value.id);
                                 }
 
-                            ).boxed().collect(Collectors.toList());
-                return  collect;
+                        ).boxed().collect(Collectors.toList());
+                return collect;
             }
             return Collections.emptyList();
         }
 
+        List<Long> podCastIds = new ArrayList<>();
+        for (String s : url) {
+            try {
+                Document doc = Jsoup.parse(toURL(s), TIMEOUT_MILLIS);
 
-        try {
-            Document doc = Jsoup.parse(toURL(url), TIMEOUT_MILLIS);
+                // Element table = doc.getElementById("itunes_result_table");
+                // Elements elements = table.getElementsByAttribute("href");
+                Elements elements = doc.getElementsByAttribute("href");
 
-           // Element table = doc.getElementById("itunes_result_table");
-           // Elements elements = table.getElementsByAttribute("href");
-            Elements elements = doc.getElementsByAttribute("href");
+                List<Long> longList = elements.stream().filter(isValidItunesPodCastURL()).mapToLong((e) -> {
+                            String toString = e.toString();
+                            return parseID(toString);
+                        }
+                ).boxed().collect(Collectors.toList());
 
-           List<Long> longList = elements.stream().filter(isValidItunesPodCastURL()).mapToLong((e) -> {
-                        String toString = e.toString();
-                        return parseID(toString);
-                    }
-            ).boxed().collect(Collectors.toList());
+                podCastIds.addAll(longList);
 
-            if (longList.size() > resultSize) {
-                longList = longList.subList(0, resultSize);
+                if (podCastIds.size() > resultSize) {
+                    podCastIds = podCastIds.subList(0, resultSize);
+                    break;
+                }
+            } catch (Exception e) {
+                LOG.log(Level.SEVERE, "Unable to parse id(s) from " + url, e);
+                return Collections.emptyList();
             }
-
-            return longList;
-
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Unable to parse id(s) from " + url, e);
-            return Collections.emptyList();
-        }}
+        }
+        return podCastIds;
+    }
 
     Long parseID(String value) {
 
@@ -353,7 +371,7 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
         String substring = value.substring(start, end);
 
         try {
-            return Long.parseLong(substring ) ;
+            return Long.parseLong(substring);
         } catch (Exception e) {
             LOG.info(getClass().getSimpleName() + " failed to parse Itunes id=" + value + ", id=" + substring);
             return null;
@@ -387,7 +405,7 @@ public class PodCastIdCollector implements PodCastCollector, PodCastCategoryColl
     public PodCastCategory collectCategories() {
         List<PodCast> podCasts = collectPodCasts();
 
-        String artworkUrl600 = podCasts.isEmpty() ? DEFAULT_EMPTY_IMAGE :  podCasts.get(0).getArtworkUrl600();
+        String artworkUrl600 = podCasts.isEmpty() ? DEFAULT_EMPTY_IMAGE : podCasts.get(0).getArtworkUrl600();
 
         return new PodCastCategory(categoryTitle, "???", artworkUrl600, podCasts, category.toPodCastCategoryType());
     }

@@ -21,7 +21,7 @@ public class ItunesSearchAPITest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void lookupPodCast() {
-        Optional<PodCast> podCast = ItunesSearchAPI.lookupPodCast("617416468", 1);
+        Optional<PodCast> podCast = ItunesSearchAPI.lookupPodCast("534137041", 1);
 
         System.out.println(podCast.get());
     }

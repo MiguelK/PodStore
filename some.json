@@ -1,2 +1,1305 @@
-The first line
-The second line
+{
+  "copyright": "Copyright Sveriges Radio 2020. All rights reserved.",
+  "broadcasts": [
+    {
+      "id": 14385,
+      "name": "P4 Plus",
+      "sport": false,
+      "description": "Test av Musikutbud riktat mot en äldre målgrupp (60+)",
+      "localstarttime": "\/Date(1461049200000+0200)\/",
+      "localstoptime": "\/Date(1743408000000+0200)\/",
+      "publisher": {
+        "id": 33,
+        "name": "Anna-Karin Larsson"
+      },
+      "channel": {
+        "id": 4951,
+        "name": "P4 Plus"
+      },
+      "liveaudio": {
+        "id": 4951,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/4951.rtmp",
+        "statkey": "/app/direkt/p4 plus[k(4951)]"
+      },
+      "mobileliveaudio": {
+        "id": 4951,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/4951.sdp",
+        "statkey": "/app/direkt/p4 plus[k(4951)]"
+      }
+    },
+    {
+      "id": 25185,
+      "name": "Presskonferens Region Norrbotten",
+      "sport": false,
+      "description": "Presskonferens Region Norrbotten",
+      "localstarttime": "\/Date(1593687300000+0200)\/",
+      "localstoptime": "\/Date(1593691200000+0200)\/",
+      "publisher": {
+        "id": 24,
+        "name": "Patrik Boström"
+      },
+      "channel": {
+        "id": 2383,
+        "name": "SR Extra01"
+      },
+      "liveaudio": {
+        "id": 2383,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2383.rtmp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      },
+      "mobileliveaudio": {
+        "id": 2383,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2383.sdp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      }
+    },
+    {
+      "id": 25111,
+      "name": "Fotboll: Örebro - Häcken",
+      "sport": true,
+      "description": "Allsvenskan i fotboll. Radiosporten direkt från Behrn Arena. Kommentator Bosse Magnussson.",
+      "localstarttime": "\/Date(1593708600000+0200)\/",
+      "localstoptime": "\/Date(1593716400000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2386,
+        "name": "SR Extra04"
+      },
+      "liveaudio": {
+        "id": 2386,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2386.rtmp",
+        "statkey": "/app/direkt/sr extra04[k(2386)]"
+      },
+      "mobileliveaudio": {
+        "id": 2386,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2386.sdp",
+        "statkey": "/app/direkt/sr extra04[k(2386)]"
+      }
+    },
+    {
+      "id": 25112,
+      "name": "Fotboll: Helsingborg - Mjällby",
+      "sport": true,
+      "description": "Allsvenskan i fotboll. Radiosporten direkt från Olympia. Kommentator Matthias Åkesson",
+      "localstarttime": "\/Date(1593708900000+0200)\/",
+      "localstoptime": "\/Date(1593716400000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2387,
+        "name": "SR Extra05"
+      },
+      "liveaudio": {
+        "id": 2387,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2387.rtmp",
+        "statkey": "/app/direkt/sr extra05[k(2387)]"
+      },
+      "mobileliveaudio": {
+        "id": 2387,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2387.sdp",
+        "statkey": "/app/direkt/sr extra05[k(2387)]"
+      }
+    },
+    {
+      "id": 25108,
+      "name": "Fotboll: Hammarby - Varberg",
+      "sport": true,
+      "description": "Allsvenskan i fotboll. Radiosporten direkt från Tele2 Arena. Kommentator Bosse Johander.",
+      "localstarttime": "\/Date(1593708900000+0200)\/",
+      "localstoptime": "\/Date(1593716400000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2383,
+        "name": "SR Extra01"
+      },
+      "liveaudio": {
+        "id": 2383,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2383.rtmp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      },
+      "mobileliveaudio": {
+        "id": 2383,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2383.sdp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      }
+    },
+    {
+      "id": 25109,
+      "name": "Fotboll: Göteborg - AIK",
+      "sport": true,
+      "description": "Allsvenskan i fotboll direkt från Gamla Ullevi. Kommentator Tomas Bader.",
+      "localstarttime": "\/Date(1593708900000+0200)\/",
+      "localstoptime": "\/Date(1593716400000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2384,
+        "name": "SR Extra02"
+      },
+      "liveaudio": {
+        "id": 2384,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2384.rtmp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      },
+      "mobileliveaudio": {
+        "id": 2384,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2384.sdp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      }
+    },
+    {
+      "id": 25110,
+      "name": "Fotboll: Falkenberg - Sirius",
+      "sport": true,
+      "description": "Allsvenskan i fotboll. Radiosporten direkt från Falkenberg. Kommentatorer  Ingemar Johanson och Peter Lennartsson",
+      "localstarttime": "\/Date(1593708900000+0200)\/",
+      "localstoptime": "\/Date(1593716400000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2385,
+        "name": "SR Extra03"
+      },
+      "liveaudio": {
+        "id": 2385,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2385.rtmp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      },
+      "mobileliveaudio": {
+        "id": 2385,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2385.sdp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      }
+    },
+    {
+      "id": 25128,
+      "name": "Fotboll: Umeå FC - Öster",
+      "sport": true,
+      "description": "Fotboll: Umeå FC - Öster i superettan. Matchen kommenteras av Rikard Landenmark med Andreas Hermansson som expertkommentator",
+      "localstarttime": "\/Date(1593867300000+0200)\/",
+      "localstoptime": "\/Date(1593875700000+0200)\/",
+      "publisher": {
+        "id": 86,
+        "name": "Matti Lilja"
+      },
+      "channel": {
+        "id": 2384,
+        "name": "SR Extra02"
+      },
+      "liveaudio": {
+        "id": 2384,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2384.rtmp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      },
+      "mobileliveaudio": {
+        "id": 2384,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2384.sdp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      }
+    },
+    {
+      "id": 25130,
+      "name": "Superettan Dalkurd-Degerfors 15.00",
+      "sport": true,
+      "description": "Dalkurd möter Degerfors på Studenternas i Uppsala - Perra Johansson kommenterar",
+      "localstarttime": "\/Date(1593867300000+0200)\/",
+      "localstoptime": "\/Date(1593872940000+0200)\/",
+      "publisher": {
+        "id": 75,
+        "name": "Alisa Bosnic"
+      },
+      "channel": {
+        "id": 2388,
+        "name": "SR Extra06"
+      },
+      "liveaudio": {
+        "id": 2388,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2388.rtmp",
+        "statkey": "/app/direkt/sr extra06[k(2388)]"
+      },
+      "mobileliveaudio": {
+        "id": 2388,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2388.sdp",
+        "statkey": "/app/direkt/sr extra06[k(2388)]"
+      }
+    },
+    {
+      "id": 25066,
+      "name": "Fotboll: Växjö DFF - IK Uppsala Fotboll",
+      "sport": true,
+      "description": "Damallsvenskan. Radiosporten direkt från Växjö. Kommentator: Janne Gunnarsson.",
+      "localstarttime": "\/Date(1593867300000+0200)\/",
+      "localstoptime": "\/Date(1593874800000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2386,
+        "name": "SR Extra04"
+      },
+      "liveaudio": {
+        "id": 2386,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2386.rtmp",
+        "statkey": "/app/direkt/sr extra04[k(2386)]"
+      },
+      "mobileliveaudio": {
+        "id": 2386,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2386.sdp",
+        "statkey": "/app/direkt/sr extra04[k(2386)]"
+      }
+    },
+    {
+      "id": 25068,
+      "name": "Fotboll: Eskilstuna United DFF - Kopparbergs Göteborg FC",
+      "sport": true,
+      "description": "Damallsvenskan. Radiosporten direkt från Eskilstuna. Kommentator: Hans Halvarsson.",
+      "localstarttime": "\/Date(1593867300000+0200)\/",
+      "localstoptime": "\/Date(1593874800000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2385,
+        "name": "SR Extra03"
+      },
+      "liveaudio": {
+        "id": 2385,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2385.rtmp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      },
+      "mobileliveaudio": {
+        "id": 2385,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2385.sdp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      }
+    },
+    {
+      "id": 25076,
+      "name": "Fotboll: Kristianstads DFF - FC Rosengård",
+      "sport": true,
+      "description": "Allsvenskan. Radiosporten direkt från Kristianstad. Kommentator: Peter Ekholm.",
+      "localstarttime": "\/Date(1593870900000+0200)\/",
+      "localstoptime": "\/Date(1593878400000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2387,
+        "name": "SR Extra05"
+      },
+      "liveaudio": {
+        "id": 2387,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2387.rtmp",
+        "statkey": "/app/direkt/sr extra05[k(2387)]"
+      },
+      "mobileliveaudio": {
+        "id": 2387,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2387.sdp",
+        "statkey": "/app/direkt/sr extra05[k(2387)]"
+      }
+    },
+    {
+      "id": 25064,
+      "name": "Fotboll: Djurgårdens IF FF - Umeå IK",
+      "sport": true,
+      "description": "Damallsvenskan. Radiosporten direkt från Stockholm. Kommentator: Otto Marand.",
+      "localstarttime": "\/Date(1593870900000+0200)\/",
+      "localstoptime": "\/Date(1593878400000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2383,
+        "name": "SR Extra01"
+      },
+      "liveaudio": {
+        "id": 2383,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2383.rtmp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      },
+      "mobileliveaudio": {
+        "id": 2383,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2383.sdp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      }
+    },
+    {
+      "id": 25162,
+      "name": "Fotboll: Norrby - Ljungskile",
+      "sport": true,
+      "description": "Matchen i Superettan i fotboll mellan Norrby - Ljungskile direkt från Borås arena. Kommentator Tommy Praetorius,",
+      "localstarttime": "\/Date(1593876300000+0200)\/",
+      "localstoptime": "\/Date(1593885600000+0200)\/",
+      "publisher": {
+        "id": 99,
+        "name": "Mattias Johansson"
+      },
+      "channel": {
+        "id": 2388,
+        "name": "SR Extra06"
+      },
+      "liveaudio": {
+        "id": 2388,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2388.rtmp",
+        "statkey": "/app/direkt/sr extra06[k(2388)]"
+      },
+      "mobileliveaudio": {
+        "id": 2388,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2388.sdp",
+        "statkey": "/app/direkt/sr extra06[k(2388)]"
+      }
+    },
+    {
+      "id": 25170,
+      "name": "Fotboll: Västerås - GAIS",
+      "sport": true,
+      "description": "Sveriges Radio direktsänder från Superettan i fotboll.\r\nVästerås SK möter GAIS.\r\nKommentatorer Gunnar Weiring och Matthias Andreasson.",
+      "localstarttime": "\/Date(1593951900000+0200)\/",
+      "localstoptime": "\/Date(1593960300000+0200)\/",
+      "publisher": {
+        "id": 77,
+        "name": "Lars Eskelind"
+      },
+      "channel": {
+        "id": 2387,
+        "name": "SR Extra05"
+      },
+      "liveaudio": {
+        "id": 2387,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2387.rtmp",
+        "statkey": "/app/direkt/sr extra05[k(2387)]"
+      },
+      "mobileliveaudio": {
+        "id": 2387,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2387.sdp",
+        "statkey": "/app/direkt/sr extra05[k(2387)]"
+      }
+    },
+    {
+      "id": 25113,
+      "name": "Fotboll: Elfsborg - Malmö",
+      "sport": true,
+      "description": "Allsvenskan i fotboll. Radiosporten direkt från Borås Arena. Kommentator Mattias Lindén.",
+      "localstarttime": "\/Date(1593951900000+0200)\/",
+      "localstoptime": "\/Date(1593961200000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2384,
+        "name": "SR Extra02"
+      },
+      "liveaudio": {
+        "id": 2384,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2384.rtmp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      },
+      "mobileliveaudio": {
+        "id": 2384,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2384.sdp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      }
+    },
+    {
+      "id": 25114,
+      "name": "Fotboll: AIK - Falkenberg",
+      "sport": true,
+      "description": "Allsvenskan i fotboll direkt från Friends Arena. Kommentator Casper Nordqvist.",
+      "localstarttime": "\/Date(1593951900000+0200)\/",
+      "localstoptime": "\/Date(1593975600000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2385,
+        "name": "SR Extra03"
+      },
+      "liveaudio": {
+        "id": 2385,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2385.rtmp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      },
+      "mobileliveaudio": {
+        "id": 2385,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2385.sdp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      }
+    },
+    {
+      "id": 25067,
+      "name": "Fotboll: Vittsjö GIK - Linköpings FC",
+      "sport": true,
+      "description": "Damallsvenskan. Radiosporten direkt från Vittsjö. Kommentator: Peter Ekholm.",
+      "localstarttime": "\/Date(1593953700000+0200)\/",
+      "localstoptime": "\/Date(1593961200000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2386,
+        "name": "SR Extra04"
+      },
+      "liveaudio": {
+        "id": 2386,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2386.rtmp",
+        "statkey": "/app/direkt/sr extra04[k(2386)]"
+      },
+      "mobileliveaudio": {
+        "id": 2386,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2386.sdp",
+        "statkey": "/app/direkt/sr extra04[k(2386)]"
+      }
+    },
+    {
+      "id": 25077,
+      "name": "Fotboll: Piteå IF DFF - KIF Örebro DFF",
+      "sport": true,
+      "description": "Damallsvenskan. Radiosporten direkt från Piteå. Kommentator: Urmat Klasson.",
+      "localstarttime": "\/Date(1593957300000+0200)\/",
+      "localstoptime": "\/Date(1593964800000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2383,
+        "name": "SR Extra01"
+      },
+      "liveaudio": {
+        "id": 2383,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2383.rtmp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      },
+      "mobileliveaudio": {
+        "id": 2383,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2383.sdp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      }
+    },
+    {
+      "id": 25115,
+      "name": "Fotboll: Sirius - Örebro",
+      "sport": true,
+      "description": "Allsvenskan i fotboll. Radiosporten direkt från Studenternas. Kommentator",
+      "localstarttime": "\/Date(1593962700000+0200)\/",
+      "localstoptime": "\/Date(1593972000000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2387,
+        "name": "SR Extra05"
+      },
+      "liveaudio": {
+        "id": 2387,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2387.rtmp",
+        "statkey": "/app/direkt/sr extra05[k(2387)]"
+      },
+      "mobileliveaudio": {
+        "id": 2387,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2387.sdp",
+        "statkey": "/app/direkt/sr extra05[k(2387)]"
+      }
+    },
+    {
+      "id": 25116,
+      "name": "Fotboll: Häcken - Hammarby",
+      "sport": true,
+      "description": "Allsvenskan i fotboll. Radiosporten direkt från Bravida Arena. Kommentator Tomas Bader.",
+      "localstarttime": "\/Date(1593962700000+0200)\/",
+      "localstoptime": "\/Date(1593972000000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2388,
+        "name": "SR Extra06"
+      },
+      "liveaudio": {
+        "id": 2388,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2388.rtmp",
+        "statkey": "/app/direkt/sr extra06[k(2388)]"
+      },
+      "mobileliveaudio": {
+        "id": 2388,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2388.sdp",
+        "statkey": "/app/direkt/sr extra06[k(2388)]"
+      }
+    },
+    {
+      "id": 25117,
+      "name": "Fotboll: Djurgården - Helsingborg.",
+      "sport": true,
+      "description": "Allsvenskan i fotboll. Radiosporten direkt från Tele2 Arena. Kommentator Otto Marand.",
+      "localstarttime": "\/Date(1594054500000+0200)\/",
+      "localstoptime": "\/Date(1594062000000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2383,
+        "name": "SR Extra01"
+      },
+      "liveaudio": {
+        "id": 2383,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2383.rtmp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      },
+      "mobileliveaudio": {
+        "id": 2383,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2383.sdp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      }
+    },
+    {
+      "id": 25119,
+      "name": "Fotboll: Varberg - Kalmar",
+      "sport": true,
+      "description": "Allsvenskan i fotboll. Radiosporten direkt från Varberg. Kommentatorer Ingemar Johansson och Peter Lennartsson",
+      "localstarttime": "\/Date(1594054500000+0200)\/",
+      "localstoptime": "\/Date(1594062000000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2385,
+        "name": "SR Extra03"
+      },
+      "liveaudio": {
+        "id": 2385,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2385.rtmp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      },
+      "mobileliveaudio": {
+        "id": 2385,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2385.sdp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      }
+    },
+    {
+      "id": 25131,
+      "name": "Fotboll: Norrköping - Göteborg",
+      "sport": true,
+      "description": "Allsvenskan i fotboll. Radiosporten direkt från Östgötaporten.Kommentator Nicklas Pettersson.",
+      "localstarttime": "\/Date(1594054500000+0200)\/",
+      "localstoptime": "\/Date(1594062000000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2386,
+        "name": "SR Extra04"
+      },
+      "liveaudio": {
+        "id": 2386,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2386.rtmp",
+        "statkey": "/app/direkt/sr extra04[k(2386)]"
+      },
+      "mobileliveaudio": {
+        "id": 2386,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2386.sdp",
+        "statkey": "/app/direkt/sr extra04[k(2386)]"
+      }
+    },
+    {
+      "id": 25079,
+      "name": "Fotboll: Umeå IK FF - KIF Örebro DFF",
+      "sport": true,
+      "description": "Damallsvenskan. Radiosporten direkt från Umeå. Kommentator: Rikard Landenmark.",
+      "localstarttime": "\/Date(1594223700000+0200)\/",
+      "localstoptime": "\/Date(1594231200000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2383,
+        "name": "SR Extra01"
+      },
+      "liveaudio": {
+        "id": 2383,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2383.rtmp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      },
+      "mobileliveaudio": {
+        "id": 2383,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2383.sdp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      }
+    },
+    {
+      "id": 25080,
+      "name": "Fotboll: Kopparbergs/Göteborg FC - Växjö DFF",
+      "sport": true,
+      "description": "Damallsvenskan. Radiosporten direkt från Göteborg. Kommentator Tomas Bader.",
+      "localstarttime": "\/Date(1594396500000+0200)\/",
+      "localstoptime": "\/Date(1594404000000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2384,
+        "name": "SR Extra02"
+      },
+      "liveaudio": {
+        "id": 2384,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2384.rtmp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      },
+      "mobileliveaudio": {
+        "id": 2384,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2384.sdp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      }
+    },
+    {
+      "id": 25069,
+      "name": "Fotboll: FC Rosengård - Eskilstuna United DFF",
+      "sport": true,
+      "description": "Damallsvenskan. Radiosporten direkt från Malmö. Kommentator: Elias Holgersson.",
+      "localstarttime": "\/Date(1594400100000+0200)\/",
+      "localstoptime": "\/Date(1594407600000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2383,
+        "name": "SR Extra01"
+      },
+      "liveaudio": {
+        "id": 2383,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2383.rtmp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      },
+      "mobileliveaudio": {
+        "id": 2383,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2383.sdp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      }
+    },
+    {
+      "id": 25070,
+      "name": "Fotboll: Linköpings FC - Djurgårdens IF FF",
+      "sport": true,
+      "description": "Damallsvenskan. Radiosporten direkt från Linköping. Kommentator: Patrik Wirengård.",
+      "localstarttime": "\/Date(1594472100000+0200)\/",
+      "localstoptime": "\/Date(1594479600000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2384,
+        "name": "SR Extra02"
+      },
+      "liveaudio": {
+        "id": 2384,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2384.rtmp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      },
+      "mobileliveaudio": {
+        "id": 2384,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2384.sdp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      }
+    },
+    {
+      "id": 25072,
+      "name": "Fotboll: IK Uppsala Fotboll - Piteå IF",
+      "sport": true,
+      "description": "Damallsvenskan. Radiosporten direkt från Uppsala. Kommentator: Christer Andersson",
+      "localstarttime": "\/Date(1594472100000+0200)\/",
+      "localstoptime": "\/Date(1594479600000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2383,
+        "name": "SR Extra01"
+      },
+      "liveaudio": {
+        "id": 2383,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2383.rtmp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      },
+      "mobileliveaudio": {
+        "id": 2383,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2383.sdp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      }
+    },
+    {
+      "id": 25078,
+      "name": "Fotboll: Vittsjö GIK - Kristianstad DFF",
+      "sport": true,
+      "description": "Damallsvenskan. Radiosporten direkt från Vittsjö. Kommentator: Peter Ekholm.",
+      "localstarttime": "\/Date(1594472100000+0200)\/",
+      "localstoptime": "\/Date(1594479600000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2385,
+        "name": "SR Extra03"
+      },
+      "liveaudio": {
+        "id": 2385,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2385.rtmp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      },
+      "mobileliveaudio": {
+        "id": 2385,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2385.sdp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      }
+    },
+    {
+      "id": 25129,
+      "name": "Fotboll: Umeå FC - Halmstad",
+      "sport": true,
+      "description": "Fotboll: Umeå FC - Halmstadi superettan. Matchen kommenteras av Rikard Landenmark",
+      "localstarttime": "\/Date(1594556700000+0200)\/",
+      "localstoptime": "\/Date(1594566000000+0200)\/",
+      "publisher": {
+        "id": 86,
+        "name": "Matti Lilja"
+      },
+      "channel": {
+        "id": 2383,
+        "name": "SR Extra01"
+      },
+      "liveaudio": {
+        "id": 2383,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2383.rtmp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      },
+      "mobileliveaudio": {
+        "id": 2383,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2383.sdp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      }
+    },
+    {
+      "id": 25181,
+      "name": "Fotboll: Västerås - Ljungskile",
+      "sport": true,
+      "description": "Sveriges Radios sänder direkt från mötet i fotbollens Superettan mellan Västerås SK och Ljungskile SK.\r\nKommentatorer är Henrik Lundstedt och Matthias Andreasson.",
+      "localstarttime": "\/Date(1594567500000+0200)\/",
+      "localstoptime": "\/Date(1594575900000+0200)\/",
+      "publisher": {
+        "id": 77,
+        "name": "Lars Eskelind"
+      },
+      "channel": {
+        "id": 2384,
+        "name": "SR Extra02"
+      },
+      "liveaudio": {
+        "id": 2384,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2384.rtmp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      },
+      "mobileliveaudio": {
+        "id": 2384,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2384.sdp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      }
+    },
+    {
+      "id": 25132,
+      "name": "Fotboll: Piteå - Linköping",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Piteå. Kommentator Urmat Karlsson.",
+      "localstarttime": "\/Date(1594817700000+0200)\/",
+      "localstoptime": "\/Date(1594825200000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2383,
+        "name": "SR Extra01"
+      },
+      "liveaudio": {
+        "id": 2383,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2383.rtmp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      },
+      "mobileliveaudio": {
+        "id": 2383,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2383.sdp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      }
+    },
+    {
+      "id": 25135,
+      "name": "Fotboll: Eskilstuna-Kristianstad",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Tunavallen. Kommentator Hans Halvarsson",
+      "localstarttime": "\/Date(1594832100000+0200)\/",
+      "localstoptime": "\/Date(1594839600000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2385,
+        "name": "SR Extra03"
+      },
+      "liveaudio": {
+        "id": 2385,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2385.rtmp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      },
+      "mobileliveaudio": {
+        "id": 2385,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2385.sdp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      }
+    },
+    {
+      "id": 25140,
+      "name": "Fotboll: Vittsjö - Piteå",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Vittsjö IP. Kommentator Peter Ekholm.",
+      "localstarttime": "\/Date(1595163300000+0200)\/",
+      "localstoptime": "\/Date(1595170800000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2385,
+        "name": "SR Extra03"
+      },
+      "liveaudio": {
+        "id": 2385,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2385.rtmp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      },
+      "mobileliveaudio": {
+        "id": 2385,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2385.sdp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      }
+    },
+    {
+      "id": 25141,
+      "name": "Fotboll: Kristianstad-Uppsala",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Kristianstad. Kommentator Glenn Göransson.",
+      "localstarttime": "\/Date(1595163300000+0200)\/",
+      "localstoptime": "\/Date(1595170800000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2386,
+        "name": "SR Extra04"
+      },
+      "liveaudio": {
+        "id": 2386,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2386.rtmp",
+        "statkey": "/app/direkt/sr extra04[k(2386)]"
+      },
+      "mobileliveaudio": {
+        "id": 2386,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2386.sdp",
+        "statkey": "/app/direkt/sr extra04[k(2386)]"
+      }
+    },
+    {
+      "id": 25146,
+      "name": "Fotboll: Piteå - Växjö",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Piteå Kommentator Urmat Karlsson.",
+      "localstarttime": "\/Date(1595673600000+0200)\/",
+      "localstoptime": "\/Date(1595682000000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2383,
+        "name": "SR Extra01"
+      },
+      "liveaudio": {
+        "id": 2383,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2383.rtmp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      },
+      "mobileliveaudio": {
+        "id": 2383,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2383.sdp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      }
+    },
+    {
+      "id": 25148,
+      "name": "Fotboll: Eskilstuna-Vittsjö",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Tunavallen. Kommentator Hans Halvarsson.",
+      "localstarttime": "\/Date(1595681700000+0200)\/",
+      "localstoptime": "\/Date(1595689200000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2385,
+        "name": "SR Extra03"
+      },
+      "liveaudio": {
+        "id": 2385,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2385.rtmp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      },
+      "mobileliveaudio": {
+        "id": 2385,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2385.sdp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      }
+    },
+    {
+      "id": 25150,
+      "name": "Fotboll: Kristianstad - Piteå",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Kristianstad. Kommentator Glenn Göransson",
+      "localstarttime": "\/Date(1596038100000+0200)\/",
+      "localstoptime": "\/Date(1596045600000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2383,
+        "name": "SR Extra01"
+      },
+      "liveaudio": {
+        "id": 2383,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2383.rtmp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      },
+      "mobileliveaudio": {
+        "id": 2383,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2383.sdp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      }
+    },
+    {
+      "id": 25151,
+      "name": "Fotboll: Vittsjö-Uppsala",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Vittsjö IP. Kommentator Peter Ekholm.",
+      "localstarttime": "\/Date(1596039900000+0200)\/",
+      "localstoptime": "\/Date(1596043800000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2384,
+        "name": "SR Extra02"
+      },
+      "liveaudio": {
+        "id": 2384,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2384.rtmp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      },
+      "mobileliveaudio": {
+        "id": 2384,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2384.sdp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      }
+    },
+    {
+      "id": 25156,
+      "name": "Fotboll: Kristianstad - Umeå",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Kristianstad. Kommentator Peter Ekholm",
+      "localstarttime": "\/Date(1596365700000+0200)\/",
+      "localstoptime": "\/Date(1596373200000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2383,
+        "name": "SR Extra01"
+      },
+      "liveaudio": {
+        "id": 2383,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2383.rtmp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      },
+      "mobileliveaudio": {
+        "id": 2383,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2383.sdp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      }
+    },
+    {
+      "id": 25161,
+      "name": "Fotboll: Eskilstuna-Uppsala",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Tunavallen. Kommentator Hans Halvarsson.",
+      "localstarttime": "\/Date(1596473700000+0200)\/",
+      "localstoptime": "\/Date(1596481200000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2384,
+        "name": "SR Extra02"
+      },
+      "liveaudio": {
+        "id": 2384,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2384.rtmp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      },
+      "mobileliveaudio": {
+        "id": 2384,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2384.sdp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      }
+    },
+    {
+      "id": 25165,
+      "name": "Fotboll: Piteå-Göteborg",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Piteå. Kommentator Urmas Karlsson.",
+      "localstarttime": "\/Date(1596887700000+0200)\/",
+      "localstoptime": "\/Date(1596895200000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2384,
+        "name": "SR Extra02"
+      },
+      "liveaudio": {
+        "id": 2384,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2384.rtmp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      },
+      "mobileliveaudio": {
+        "id": 2384,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2384.sdp",
+        "statkey": "/app/direkt/sr extra02[k(2384)]"
+      }
+    },
+    {
+      "id": 25166,
+      "name": "Fotboll: Eskilstuna-Växjö",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Tunavallen. Kommentator Hans Halvarsson.",
+      "localstarttime": "\/Date(1596891300000+0200)\/",
+      "localstoptime": "\/Date(1596898800000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2385,
+        "name": "SR Extra03"
+      },
+      "liveaudio": {
+        "id": 2385,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2385.rtmp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      },
+      "mobileliveaudio": {
+        "id": 2385,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2385.sdp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      }
+    },
+    {
+      "id": 25172,
+      "name": "Fotboll: Piteå - Djurgården",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Piteå. Kommentator Urmat Karlsson",
+      "localstarttime": "\/Date(1597251300000+0200)\/",
+      "localstoptime": "\/Date(1597258800000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2385,
+        "name": "SR Extra03"
+      },
+      "liveaudio": {
+        "id": 2385,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2385.rtmp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      },
+      "mobileliveaudio": {
+        "id": 2385,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2385.sdp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      }
+    },
+    {
+      "id": 25174,
+      "name": "Fotboll: Vittsjö-Göteborg",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Vittsjö. Kommentator Peter Ekholm.",
+      "localstarttime": "\/Date(1597251300000+0200)\/",
+      "localstoptime": "\/Date(1597258800000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2387,
+        "name": "SR Extra05"
+      },
+      "liveaudio": {
+        "id": 2387,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2387.rtmp",
+        "statkey": "/app/direkt/sr extra05[k(2387)]"
+      },
+      "mobileliveaudio": {
+        "id": 2387,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2387.sdp",
+        "statkey": "/app/direkt/sr extra05[k(2387)]"
+      }
+    },
+    {
+      "id": 25175,
+      "name": "Fotboll: Kristianstad - Växjö",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Kristianstad. Kommentator Glenn Göransson",
+      "localstarttime": "\/Date(1597251300000+0200)\/",
+      "localstoptime": "\/Date(1597258800000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2388,
+        "name": "SR Extra06"
+      },
+      "liveaudio": {
+        "id": 2388,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2388.rtmp",
+        "statkey": "/app/direkt/sr extra06[k(2388)]"
+      },
+      "mobileliveaudio": {
+        "id": 2388,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2388.sdp",
+        "statkey": "/app/direkt/sr extra06[k(2388)]"
+      }
+    },
+    {
+      "id": 25178,
+      "name": "Fotboll: Eskilstuna-Piteå",
+      "sport": true,
+      "description": "Damallsvenskan i fotboll. Radiosporten direkt från Tunavallen. Kommentator Hans Halvarsson.",
+      "localstarttime": "\/Date(1597584300000+0200)\/",
+      "localstoptime": "\/Date(1597604400000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2385,
+        "name": "SR Extra03"
+      },
+      "liveaudio": {
+        "id": 2385,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2385.rtmp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      },
+      "mobileliveaudio": {
+        "id": 2385,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2385.sdp",
+        "statkey": "/app/direkt/sr extra03[k(2385)]"
+      }
+    },
+    {
+      "id": 24841,
+      "name": "Fotboll: Mjällby AIF - Falkenbergs FF",
+      "sport": true,
+      "description": "Allsvenskan. Radiosporten direkt från Hällevik.",
+      "localstarttime": "\/Date(1619110500000+0200)\/",
+      "localstoptime": "\/Date(1619118000000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2386,
+        "name": "SR Extra04"
+      },
+      "liveaudio": {
+        "id": 2386,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2386.rtmp",
+        "statkey": "/app/direkt/sr extra04[k(2386)]"
+      },
+      "mobileliveaudio": {
+        "id": 2386,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2386.sdp",
+        "statkey": "/app/direkt/sr extra04[k(2386)]"
+      }
+    },
+    {
+      "id": 24892,
+      "name": "Fotboll: Falkenbergs FF - IF Elfsborg",
+      "sport": true,
+      "description": "Allsvenskan. Radiosporten direkt från Falkenberg.",
+      "localstarttime": "\/Date(1619960100000+0200)\/",
+      "localstoptime": "\/Date(1619967600000+0200)\/",
+      "publisher": {
+        "id": 13,
+        "name": "Markus Boger"
+      },
+      "channel": {
+        "id": 2383,
+        "name": "SR Extra01"
+      },
+      "liveaudio": {
+        "id": 2383,
+        "url": "http://sverigesradio.se/topsy/direkt/srapi/2383.rtmp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      },
+      "mobileliveaudio": {
+        "id": 2383,
+        "url": "rtsp://lyssna-mp4.sr.se/live/mobile/2383.sdp",
+        "statkey": "/app/direkt/sr extra01[k(2383)]"
+      }
+    }
+  ]
+}

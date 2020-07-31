@@ -22,11 +22,11 @@ public class PodCastIdCollectorTest {
     @Test(groups = TestUtil.SLOW_TEST)
     public void testCategories() throws Exception {
 
-        List<Long> podCastIds = new PodCastIdCollector(PodCastCatalogLanguage.SE, PodCastIdCollector.Category.ANIMATION_MANGA,
+        List<Long> podCastIds = new PodCastIdCollector(PodCastCatalogLanguage.FR, PodCastIdCollector.Category.VIDEO_GAMES,
                 "").getPodCastIds();
         System.out.println("Start fetch ids from ids=" + podCastIds.size());
 
-        PodCast podCast = ItunesSearchAPI.lookupPodCast(String.valueOf(podCastIds.get(0))).get();
+        PodCast podCast = ItunesSearchAPI.lookupPodCast(String.valueOf(podCastIds.get(3))).get();
         Optional<PodCast> podCast1 = PodCastFeedParser.parse(new URL(podCast.getFeedURL()),
                 artworkUrl600, "4444", 400);
 
@@ -38,27 +38,29 @@ public class PodCastIdCollectorTest {
         @Test(groups = TestUtil.SLOW_TEST)
     public void testParseId() throws Exception {
 
-        for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
+       // for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
 
+
+            PodCastCatalogLanguage language = PodCastCatalogLanguage.FR;
 
             for (PodCastIdCollector.Category category : PodCastIdCollector.Category.values()) {
                 List<Long> podCastIds = new PodCastIdCollector(language, category, "").getPodCastIds();
                 System.out.println("Start fetch ids from " + category.name() + ",lang=" + language.name() + ", ids=" + podCastIds.size());
 
-                PodCast podCast = ItunesSearchAPI.lookupPodCast(String.valueOf(podCastIds.get(0))).get();
-                Optional<PodCast> podCast1 = PodCastFeedParser.parse(new URL(podCast.getFeedURL()),
-                        artworkUrl600, "4444", 400);
-                List<PodCastCategoryType> podCastCategories = podCast1.get().getPodCastCategories();
+//                PodCast podCast = ItunesSearchAPI.lookupPodCast(String.valueOf(podCastIds.get(0))).get();
+//                Optional<PodCast> podCast1 = PodCastFeedParser.parse(new URL(podCast.getFeedURL()),
+                //                      artworkUrl600, "4444", 400);
+                // List<PodCastCategoryType> podCastCategories = podCast1.get().getPodCastCategories();
 
-                System.out.println("podCastCategories=" + podCastCategories);
+               // System.out.println("podCastCategories=" + podCastCategories);
 
                 Assert.assertFalse(podCastIds.isEmpty());
-                Thread.sleep(3000);
+                Thread.sleep(2000);
             }
 
 
           //  Assert.assertFalse(new PodCastIdCollector(language, PodCastIdCollector.Category.HIGHER_EDUCATION, "").getPodCastIds().isEmpty());
-        }
+       // }
 
       //  Assert.assertFalse(new PodCastIdCollector(PodCastCatalogLanguage.SE, PodCastIdCollector.Category.VIDEO_GAMES, "").getPodCastIds().isEmpty());
 
