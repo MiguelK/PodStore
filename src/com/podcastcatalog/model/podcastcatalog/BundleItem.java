@@ -29,11 +29,11 @@ public abstract class BundleItem implements Serializable {
     }
 
     public String getTitle() {
-        return title;
+        return title.replace("|", "");
     }
 
     public String getDescription() {
-        return description;
+        return description.replace("|", "");
     }
 
     public String getArtworkUrl600() {
