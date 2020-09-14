@@ -96,6 +96,39 @@ public class FtpOneClient {
         FtpOneClient.getInstance().uploadToOneCom(jsonZipped, PATH_LANGUAGE);
     }
 
+    public void backup(PodCastCatalogLanguage lang) throws Exception {
+
+        File backupDir = new File(LocatorProduction.getInstance().getPodDataHomeDirectory() +
+                File.separator + "backup");
+        if(!backupDir.exists()) {
+            backupDir.mkdirs();
+        }
+
+        File zippedJSON = new File(backupDir, lang.name() + "_json.zip");
+
+        String requestURL = PODS_ONE_HOST_NAME + PATH_LANGUAGE +  lang.name() + "_json.zip";
+
+        zippedJSON.delete();
+
+        CloseableHttpClient client = HttpClients.createDefault();
+        try (CloseableHttpResponse response = client.execute(new HttpGet(requestURL))) {
+
+            if (response.getStatusLine().getStatusCode() == 404) {
+                LOG.info("No file exist on server requestURL=" + requestURL);
+                throw new IOException();
+            }
+
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                try (FileOutputStream outstream = new FileOutputStream(zippedJSON)) {
+                    entity.writeTo(outstream);
+                }
+
+                EntityUtils.consume(entity);
+            }
+        }
+
+    }
     //Upload metaData dat zip file used by this server when start/restart
     synchronized public void upload(PodCastCatalogMetaData podCastCatalogMetaData, PodCastCatalogLanguage lang)  {
 
@@ -107,8 +140,18 @@ public class FtpOneClient {
 
         try {
             IOUtil.saveAsObject(podCastCatalogMetaData, file);
-            FtpOneClient.getInstance().uploadToOneCom(file, PATH_LANGUAGE);
-        } catch (IOException e) {
+
+            LOG.info("Validate PodCastCatalogMetaData " + lang);
+            Thread.sleep(3000);
+            Object object = IOUtil.getObject(file);
+
+            PodCastCatalogMetaData validatedOK = (PodCastCatalogMetaData)object;
+
+            LOG.info("Validate PodCastCatalogMetaData OK " + validatedOK);
+            Thread.sleep(3000);
+
+            FtpOneClient.getInstance().uploadToOneCom(file, PATH_LANGUAGE); //FIXME
+        } catch (Exception e) {
             LOG.info("Failed to upload PodCastCatalogMetaData " + e.getMessage());
         }
     }
@@ -179,7 +222,8 @@ public class FtpOneClient {
             return (PodCastCatalogMetaData)loadFromServer(downloadedFile, PODS_ONE_HOST_NAME + PATH_LANGUAGE + fileName);
         } catch (Exception e) {
             if(ServerInfo.isLocalDevMode()) {
-                LOG.log(Level.INFO, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
+                e.printStackTrace();
+                LOG.log(Level.WARNING, "Unable to load object=" + downloadedFile.getAbsolutePath(), e.getMessage());
             }
 
             return null;
@@ -198,7 +242,7 @@ public class FtpOneClient {
         }
     }
 
-    public Object loadFromServer(File downloadedFile, String requestURL) throws IOException {
+    public Object loadFromServer(File downloadedFile, String requestURL) throws Exception {
 
 
         downloadedFile.delete();

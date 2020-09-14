@@ -252,6 +252,11 @@ public class TextSearchIndex implements Serializable {
         String term = StringUtils.deleteWhitespace(queryParam).toLowerCase();
         Node node = index.get(term);
 
+
+        if(node == null && term.length() > 5) {
+            node = index.get(term.substring(0, 3));
+        }
+
         Set<ResultItem> uniqueResultItems = new HashSet<>();
         if(node != null) {
             uniqueResultItems.addAll(node.getValues());

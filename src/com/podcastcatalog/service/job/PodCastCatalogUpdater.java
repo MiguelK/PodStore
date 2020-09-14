@@ -28,9 +28,9 @@ public class PodCastCatalogUpdater implements Job {
             for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
 
                 //TEST only 1
-                //if (language != PodCastCatalogLanguage.US) {
-                //      continue;
-                //}
+                if (language == PodCastCatalogLanguage.US) {
+                      continue;
+                }
 
                 /*if(PodCastCatalogService.getInstance().isMetaDataRegistered(language)) {
                     LOG.info("PodCastCatalogMetaData already exist, will update for lang=" + language);
@@ -45,6 +45,7 @@ public class PodCastCatalogUpdater implements Job {
                 }
 
                 if(ServerInfo.isLocalDevMode()) {
+                    FtpOneClient.getInstance().backup(language);
                    podCastCatalogMetaData = null; //Always build at startup time
                 }
 

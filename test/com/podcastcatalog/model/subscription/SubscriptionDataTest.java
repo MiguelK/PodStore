@@ -81,7 +81,7 @@ public class SubscriptionDataTest {
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
-    public void loadFromServer() throws IOException {
+    public void loadFromServer() throws Exception {
         String fileName = "Subscriptions.dat";
         File testFile = new File(TestUtil.IO_TEMP_DATA_DIRECTORY, fileName);
         testFile.createNewFile();
