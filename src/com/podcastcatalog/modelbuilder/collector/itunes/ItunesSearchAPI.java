@@ -13,6 +13,7 @@ import com.podcastcatalog.util.IdGenerator;
 import com.podcastcatalog.util.PodCastURLParser;
 import com.podcastcatalog.util.ServerInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.net.MalformedURLException;
@@ -103,6 +104,10 @@ public class ItunesSearchAPI implements PodCastCollector {
 
     public static Optional<PodCast> lookupPodCast(String id, int maxEpisodes) {
 
+        if(!NumberUtils.isDigits(id)) {
+            return  Optional.empty();
+        }
+
         List<PodCast> podCasts = new ItunesSearchAPI(BASE_URL_LOOKUP + id).collectPodCasts(maxEpisodes);
         if (podCasts.isEmpty()) {
             return Optional.empty();
@@ -112,6 +117,10 @@ public class ItunesSearchAPI implements PodCastCollector {
     }
 
     public static Optional<PodCast> lookupPodCast(String id) {
+
+        if(!NumberUtils.isDigits(id)) {
+            return  Optional.empty();
+        }
 
         List<PodCast> podCasts = new ItunesSearchAPI(BASE_URL_LOOKUP + id).collectPodCasts();
         if (podCasts.isEmpty()) {
@@ -136,9 +145,10 @@ public class ItunesSearchAPI implements PodCastCollector {
     public static PodCastSmall getLatestEpisodeIdForPodCast(String pid) {
 
         String trimmedPid = StringUtils.trimToNull(pid);
-        if (trimmedPid == null) {
+        if (trimmedPid == null || !NumberUtils.isDigits(trimmedPid) ) {
             return null;
         }
+
 
         ItunesSearchAPI itunesSearchAPI = new ItunesSearchAPI(BASE_URL_LOOKUP + trimmedPid);
 

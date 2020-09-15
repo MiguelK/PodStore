@@ -49,7 +49,7 @@ public class SubscriptionNotifierJob implements Job {
         for (Subscription subscription : subscriptions) {
             try {
 
-                Thread.sleep(2000); //Decrease pressure on ItunesSearchAPI
+                Thread.sleep(800); //Decrease pressure on ItunesSearchAPI
                 String podCastId = subscription.getPodCastId();
                 ItunesSearchAPI.PodCastSmall podCastSmall = ItunesSearchAPI.getLatestEpisodeIdForPodCast(podCastId);
 
@@ -67,8 +67,6 @@ public class SubscriptionNotifierJob implements Job {
 
                 boolean isEpisodeUpdated = !podCastSmall.getLatestPodCastEpisodeId().equals(subscription.getLatestPodCastEpisodeId());
                 if (isEpisodeUpdated) {
-                    LOG.info("PUSH: (" + pushSent + ") podCast=" + podCastSmall.getPodCastTitle()
-                            + ",subscribers=" + subscription.getSubscribers().size());
 
                     PodCastSubscriptionService.getInstance().update(podCastId, podCastSmall.getLatestPodCastEpisodeId());
                     PodCastSubscriptionService.getInstance().uploadToOneCom();
@@ -76,6 +74,10 @@ public class SubscriptionNotifierJob implements Job {
                     sendPushMessage(subscription.getSubscribers(), podCastSmall);
 
                     pushSent++;
+
+                    LOG.info("PUSH: (" + pushSent + ") podCast=" + podCastSmall.getPodCastTitle()
+                            + ",subscribers=" + subscription.getSubscribers().size() + ", latest Episode=" + podCastSmall.getLatestPodCastEpisodeId());
+
                 }
             } catch (Exception e) {
                 LOG.info(subscription.getPodCastId() + ": " + subscription.getSubscribers().size() + ": " + subscription.getLatestPodCastEpisodeId()
