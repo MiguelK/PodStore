@@ -28,9 +28,9 @@ public class PodCastCatalogUpdater implements Job {
             for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
 
                 //TEST only 1
-                if (language != PodCastCatalogLanguage.GT) {
-                      continue;
-                }
+               // if (language != PodCastCatalogLanguage.GT) {
+                //       continue;
+                // }
 
                 /*if(PodCastCatalogService.getInstance().isMetaDataRegistered(language)) {
                     LOG.info("PodCastCatalogMetaData already exist, will update for lang=" + language);
