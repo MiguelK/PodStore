@@ -12,6 +12,8 @@ import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderES;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderFI;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderFR;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderGB;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderGT;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderIL;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderIE;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderIN;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderIT;
@@ -60,7 +62,10 @@ China XXXX BUG
     CH("CH",PodCastCatalogBuilderCH.class, false, true, true), //Switzerland
     KR("KR",PodCastCatalogBuilderKR.class, false, true, true), //South Korea
     GB("GB",PodCastCatalogBuilderGB.class, false, true, true), //United Kingdom
-    TH("TH",PodCastCatalogBuilderTH.class, false, true, true); //Thailand
+    TH("TH",PodCastCatalogBuilderTH.class, false, true, true), //Thailand
+
+    IL("IL",PodCastCatalogBuilderIL.class, false, true, true), //HE in appHebrew (Israel) and  il backend
+    GT("GT",PodCastCatalogBuilderGT.class, false, true, true); //Guatemala
 
     private final String lang;
     private final Class catalogBuilder;

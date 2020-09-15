@@ -28,7 +28,7 @@ public class PodCastCatalogUpdater implements Job {
             for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
 
                 //TEST only 1
-                if (language == PodCastCatalogLanguage.US) {
+                if (language != PodCastCatalogLanguage.GT) {
                       continue;
                 }
 

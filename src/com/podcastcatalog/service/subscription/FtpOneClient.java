@@ -96,7 +96,7 @@ public class FtpOneClient {
         FtpOneClient.getInstance().uploadToOneCom(jsonZipped, PATH_LANGUAGE);
     }
 
-    public void backup(PodCastCatalogLanguage lang) throws Exception {
+    public void backup(PodCastCatalogLanguage lang) {
 
         File backupDir = new File(LocatorProduction.getInstance().getPodDataHomeDirectory() +
                 File.separator + "backup");
@@ -111,21 +111,25 @@ public class FtpOneClient {
         zippedJSON.delete();
 
         CloseableHttpClient client = HttpClients.createDefault();
-        try (CloseableHttpResponse response = client.execute(new HttpGet(requestURL))) {
+        try {
+            try (CloseableHttpResponse response = client.execute(new HttpGet(requestURL))) {
 
-            if (response.getStatusLine().getStatusCode() == 404) {
-                LOG.info("No file exist on server requestURL=" + requestURL);
-                throw new IOException();
-            }
-
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                try (FileOutputStream outstream = new FileOutputStream(zippedJSON)) {
-                    entity.writeTo(outstream);
+                if (response.getStatusLine().getStatusCode() == 404) {
+                    LOG.info("No file exist on server requestURL=" + requestURL);
+                    throw new IOException();
                 }
 
-                EntityUtils.consume(entity);
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    try (FileOutputStream outstream = new FileOutputStream(zippedJSON)) {
+                        entity.writeTo(outstream);
+                    }
+
+                    EntityUtils.consume(entity);
+                }
             }
+        } catch (Exception e) {
+           LOG.warning("Unable to backup lang=" + lang + "from one.com" + e.getMessage());
         }
 
     }
