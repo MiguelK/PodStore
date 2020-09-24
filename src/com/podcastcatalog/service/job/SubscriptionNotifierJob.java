@@ -41,7 +41,7 @@ public class SubscriptionNotifierJob implements Job {
 
         if (!subscriptions.isEmpty()) {
             LOG.info(getClass().getSimpleName() +
-                    " SubscriptionNotifierJob doWork(), subscriptions=" + subscriptions.size());
+                    " Start-SubscriptionNotifierJob doWork(), subscriptions=" + subscriptions.size());
         }
 
 

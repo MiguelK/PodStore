@@ -97,7 +97,7 @@ public class PodCastSubscriptionService {
            // subscriber.addSubscription(subscription);
             subscription.addSubscriber(deviceToken);
 
-            LOG.info("subscribe() subscribers= " + subscription.getSubscribers().size() + " https://pods.one/open?pid=" + podCastId);
+           // LOG.info("subscribe() subscribers= " + subscription.getSubscribers().size() + " https://pods.one/open?pid=" + podCastId);
 
             FtpOneClient.getInstance().upload(subscriptionData);
         } finally {

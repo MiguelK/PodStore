@@ -76,7 +76,9 @@ public class PodCastEpisodeProcessor extends RecursiveTask<PodCastEpisode> {
             targetUrl =  episode.getEnclosure().getURL();
         }*/
         if(targetUrl==null){
-            LOG.info("No targetUrl found for Episode=" + episode.getITunesInfo());
+            if(ServerInfo.isLocalDevMode()) {
+                LOG.info("No targetUrl found for Episode=" + episode.getITunesInfo());
+            }
             return null;
         }
 
