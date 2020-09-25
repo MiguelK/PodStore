@@ -74,15 +74,14 @@ public class PushMessageClient {
              .token(token);
 
         FcmResponse fcmResponse = Pushraven.push(raven);
-            if(fcmResponse.getResponseCode() == 200) {
-                LOG.info("Successfully pushed" + title  + " to "+ token);
-            } else {
-                LOG.warning("Pushraven.push() return status=" + fcmResponse.getResponseCode()
-                        + ", errorMessage=" + fcmResponse.getErrorMessage() + ",token=" + token + ",title=" + title);
-
+            if(fcmResponse.getResponseCode() != 200) {
                 if(fcmResponse.getResponseCode() ==  404) {
-                    LOG.info("Unsubscribe due to 404 from Firebase, token=" + token + ",pid=" +pid);
+                    LOG.info("UnSubscribe due to 404 from Firebase, token=" + token + ",pid=" +pid);
                     PodCastSubscriptionService.getInstance().unSubscribe(token, pid);
+                } else {
+                    LOG.warning("Pushraven.push() return status=" + fcmResponse.getResponseCode()
+                            + ", errorMessage=" + fcmResponse.getErrorMessage() + ",token=" + token + ",title=" + title);
+
                 }
             }
         }catch (Exception e) {

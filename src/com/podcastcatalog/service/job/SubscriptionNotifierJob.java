@@ -75,8 +75,10 @@ public class SubscriptionNotifierJob implements Job {
 
                     pushSent++;
 
-                    LOG.info("PUSH: (" + pushSent + ") podCast=" + podCastSmall.getPodCastTitle()
-                            + ",subscribers=" + subscription.getSubscribers().size() + ", latest Episode=" + podCastSmall.getLatestPodCastEpisodeId());
+                    if( pushSent < 5 || (pushSent % 100) == 0) {
+                        LOG.info("PUSH sent: (" + pushSent + ") podCast=" + podCastSmall.getPodCastTitle()
+                                + ",subscribers=" + subscription.getSubscribers().size() + ", latest Episode=" + podCastSmall.getLatestPodCastEpisodeId());
+                    }
 
                 }
             } catch (Exception e) {
