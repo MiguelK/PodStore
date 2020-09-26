@@ -41,7 +41,7 @@ public class SubscriptionNotifierJob implements Job {
 
         if (!subscriptions.isEmpty()) {
             LOG.info(getClass().getSimpleName() +
-                    " Start-SubscriptionNotifierJob doWork(), subscriptions=" + subscriptions.size());
+                    " SubscriptionNotifierJob_start, subscriptions=" + subscriptions.size());
         }
 
 
@@ -49,18 +49,17 @@ public class SubscriptionNotifierJob implements Job {
         for (Subscription subscription : subscriptions) {
             try {
 
-                Thread.sleep(800); //Decrease pressure on ItunesSearchAPI
+                Thread.sleep(500); //Decrease pressure on ItunesSearchAPI
                 String podCastId = subscription.getPodCastId();
                 ItunesSearchAPI.PodCastSmall podCastSmall = ItunesSearchAPI.getLatestEpisodeIdForPodCast(podCastId);
 
                 if (podCastSmall == null) {
-                    LOG.warning("podCast is null for contentId=" + subscription.getPodCastId());
                     continue;
                 }
 
                 //Do not push first time added
                 if (subscription.getLatestPodCastEpisodeId() == null) {
-                    LOG.info("Updating Subscription for first time " + podCastId + ", episode=" + podCastSmall.getLatestPodCastEpisodeId());
+                    LOG.info("SubscriptionNotifierJob_update Subscription for first time " + podCastId + ", episode=" + podCastSmall.getLatestPodCastEpisodeId());
                     PodCastSubscriptionService.getInstance().update(podCastId, podCastSmall.getLatestPodCastEpisodeId());
                     continue;
                 }
@@ -76,7 +75,7 @@ public class SubscriptionNotifierJob implements Job {
                     pushSent++;
 
                     if( pushSent < 5 || (pushSent % 100) == 0) {
-                        LOG.info("PUSH sent: (" + pushSent + ") podCast=" + podCastSmall.getPodCastTitle()
+                        LOG.info("SubscriptionNotifierJob_PUSH sent: (" + pushSent + ") podCast=" + podCastSmall.getPodCastTitle()
                                 + ",subscribers=" + subscription.getSubscribers().size() + ", latest Episode=" + podCastSmall.getLatestPodCastEpisodeId());
                     }
 
@@ -87,7 +86,7 @@ public class SubscriptionNotifierJob implements Job {
             }
         }
 
-        LOG.info("SubscriptionNotifierJob done, Subscription " + subscriptions.size() + " " + pushSent + " push messages sent");
+        LOG.info("SubscriptionNotifierJob_Done, Subscription " + subscriptions.size() + " " + pushSent + " push messages sent");
 
     }
 
