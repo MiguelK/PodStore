@@ -146,7 +146,7 @@ public class ItunesSearchAPI implements PodCastCollector {
 
         String trimmedPid = StringUtils.trimToNull(pid);
         if (trimmedPid == null || !NumberUtils.isDigits(trimmedPid) ) {
-            LOG.warning("getLatestEpisodeIdForPodCast() pid is null pid=" + pid);
+          //  LOG.warning("getLatestEpisodeIdForPodCast() pid is null pid=" + pid);
             return null;
         }
 
@@ -167,7 +167,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         }
 
         if (feedURL == null) {
-            LOG.warning("getLatestEpisodeIdForPodCast() feedURL is null pid=" + pid);
+           // LOG.warning("getLatestEpisodeIdForPodCast() feedURL is null pid=" + pid);
             return null;
         }
 
@@ -193,7 +193,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         }
 
         if(podCastTitle == null) {
-            LOG.warning("getLatestEpisodeIdForPodCast() podCastTitle is null pid=" + pid);
+          //  LOG.warning("getLatestEpisodeIdForPodCast() podCastTitle is null pid=" + pid);
             return null;
         }
 

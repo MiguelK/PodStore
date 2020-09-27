@@ -49,7 +49,7 @@ public class SubscriptionNotifierJob implements Job {
         for (Subscription subscription : subscriptions) {
             try {
 
-                Thread.sleep(500); //Decrease pressure on ItunesSearchAPI
+                Thread.sleep(1000); //Decrease pressure on ItunesSearchAPI
                 String podCastId = subscription.getPodCastId();
                 ItunesSearchAPI.PodCastSmall podCastSmall = ItunesSearchAPI.getLatestEpisodeIdForPodCast(podCastId);
 
@@ -74,7 +74,7 @@ public class SubscriptionNotifierJob implements Job {
 
                     pushSent++;
 
-                    if( pushSent < 5 || (pushSent % 100) == 0) {
+                    if( pushSent < 5 || (pushSent % 50) == 0) {
                         LOG.info("SubscriptionNotifierJob_PUSH sent: (" + pushSent + ") podCast=" + podCastSmall.getPodCastTitle()
                                 + ",subscribers=" + subscription.getSubscribers().size() + ", latest Episode=" + podCastSmall.getLatestPodCastEpisodeId());
                     }
