@@ -46,10 +46,15 @@ public class SubscriptionNotifierJob implements Job {
 
 
         int pushSent = 0;
+        int subscriptionCount = 0;
         for (Subscription subscription : subscriptions) {
             try {
 
-                Thread.sleep(1000); //Decrease pressure on ItunesSearchAPI
+                subscriptionCount++;
+                if((subscriptionCount % 25) == 0) {
+                    LOG.info("subscriptionCount=" + subscriptionCount);
+                }
+                Thread.sleep(300); //Decrease pressure on ItunesSearchAPI
                 String podCastId = subscription.getPodCastId();
                 ItunesSearchAPI.PodCastSmall podCastSmall = ItunesSearchAPI.getLatestEpisodeIdForPodCast(podCastId);
 
