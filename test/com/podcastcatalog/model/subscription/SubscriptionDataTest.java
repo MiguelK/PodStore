@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -55,7 +56,9 @@ public class SubscriptionDataTest {
         testFile.createNewFile();
 
         SubscriptionData subscriptionData = new SubscriptionData();
-        subscriptionData.addSubscription(new Subscription("1111"));
+        Subscription subscription1 = new Subscription("1111");
+        subscription1.setFeedURL(new URL("https://www.aik.se"));
+        subscriptionData.addSubscription(subscription1);
         subscriptionData.addSubscription(new Subscription("3333"));
 
         IOUtil.saveAsObject(subscriptionData, testFile);
@@ -74,6 +77,8 @@ public class SubscriptionDataTest {
         String pathOnServer = SUBSCRIPTIONS_PATH + fileName;
         SubscriptionData subscriptionData1 = (SubscriptionData) FtpOneClient.getInstance().loadFromServer(testFile, pathOnServer);
         System.out.println("From remote: " + subscriptionData1.getSubscriptions().size());
+        System.out.println("From remote feedURL=" + subscriptionData1.getSubscriptions().get(0).getFeedURL());
+        System.out.println("From remote feedURL=" + subscriptionData1.getSubscriptions().get(1).getFeedURL());
 
         Assert.assertEquals(subscriptionData1.getSubscriptions().get(0).getLatestPodCastEpisodeId(), "2222");
         Assert.assertEquals(subscriptionData1.getSubscriptions().get(0).getPodCastId(), "1111");

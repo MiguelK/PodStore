@@ -142,7 +142,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         return itunesSearchAPI.collectPodCasts();
     }
 
-    public static PodCastSmall getLatestEpisodeIdForPodCast(String pid) {
+    public static URL getFeedURLFromPodCast(String pid) {
 
         String trimmedPid = StringUtils.trimToNull(pid);
         if (trimmedPid == null || !NumberUtils.isDigits(trimmedPid) ) {
@@ -171,6 +171,11 @@ public class ItunesSearchAPI implements PodCastCollector {
             return null;
         }
 
+        return feedURL;
+
+    }
+
+    public static PodCastSmall getLatestEpisodeIdFromPodCast(String pid, URL feedURL) {
         String podCastTitle;
         String latestPodCastEpisodeId;
         String podCastEpisodeTitle = "";
@@ -199,7 +204,6 @@ public class ItunesSearchAPI implements PodCastCollector {
 
         return new PodCastSmall(pid, podCastTitle, latestPodCastEpisodeId, podCastEpisodeTitle,
                 podCastEpisodeDescription, podCastEpisodeDuration);
-
     }
 
     public static List<PodCastResultItem> searchPodCasts(String parameters) {

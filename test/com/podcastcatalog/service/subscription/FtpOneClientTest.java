@@ -22,6 +22,7 @@ public class FtpOneClientTest {
         for (Subscription subscription : subscriptionData.getSubscriptions()) {
             for (String s : subscription.getSubscribers()) {
              //   System.out.println("TOKEN: " + s);
+               // System.out.println("FeedURL URL=" + subscription.getFeedURL());
                 if(s.equals(deviceToken)) {
                     System.out.println("SUB: " + subscription.getPodCastId() + ", latestId=" + subscription.getLatestPodCastEpisodeId());
                 }

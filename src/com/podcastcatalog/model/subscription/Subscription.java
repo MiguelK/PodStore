@@ -3,6 +3,7 @@ package com.podcastcatalog.model.subscription;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ public class Subscription implements Serializable {
 
     private String latestPodCastEpisodeId;
     private String podCastId;
+    private URL feedURL;
 
     static final long serialVersionUID = 1L; //assign a long value
 
@@ -25,6 +27,14 @@ public class Subscription implements Serializable {
             throw  new IllegalArgumentException("podCastId is mandatory");
         }
         this.podCastId = StringUtils.trimToNull(podCastId);
+    }
+
+    public URL getFeedURL() {
+        return feedURL;
+    }
+
+    public void setFeedURL(URL feedURL) {
+        this.feedURL = feedURL;
     }
 
     public String getLatestPodCastEpisodeId() {

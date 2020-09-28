@@ -47,16 +47,13 @@ public class ItunesSearchAPITest {
     @Test(groups = TestUtil.SLOW_TEST)
     public void getLatestEpisodeIdForPodCast() {
         //390164336
-        ItunesSearchAPI.PodCastSmall pod1 = ItunesSearchAPI.getLatestEpisodeIdForPodCast("1389951701");
-        System.out.println(pod1);
-        Assert.assertNotNull(pod1);
+        URL feedURLFromPodCast = ItunesSearchAPI.getFeedURLFromPodCast("1389951701");
+        System.out.println(feedURLFromPodCast);
+        Assert.assertNotNull(feedURLFromPodCast);
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void fetchLatestEpisode() {
-        ItunesSearchAPI.PodCastSmall pod = ItunesSearchAPI.getLatestEpisodeIdForPodCast("390164336");
-        // System.out.println(pod);
-
 
         try {
             Document doc = Jsoup.parse(new URL("https://podcasts.apple.com/us/podcast/le-cours-de-lhistoire/id390164336?uo=4"), 3000);
