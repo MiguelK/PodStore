@@ -80,7 +80,7 @@ public class FtpOneClient {
     }
 
     //Upload JSON zip file used by App Client
-    synchronized public void upload(PodCastCatalog podCastCatalog)  {
+     public void upload(PodCastCatalog podCastCatalog)  {
 
         PodCastCatalogLanguage lang = podCastCatalog.getPodCastCatalogLanguage();
         File langJSON = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), lang.name() + ".json");
@@ -134,7 +134,7 @@ public class FtpOneClient {
 
     }
     //Upload metaData dat zip file used by this server when start/restart
-    synchronized public void upload(PodCastCatalogMetaData podCastCatalogMetaData, PodCastCatalogLanguage lang)  {
+     public void upload(PodCastCatalogMetaData podCastCatalogMetaData, PodCastCatalogLanguage lang)  {
 
         String fileName = lang.name() + POD_CAST_CATALOG_META_DATA_FILE;
 
@@ -161,7 +161,7 @@ public class FtpOneClient {
     }
 
 
-    public synchronized void  upload(AppStatisticDataContainer appStatisticData)  {
+    public void  upload(AppStatisticDataContainer appStatisticData)  {
         if(ServerInfo.isLocalDevMode()) {
             LOG.info("DevMode no appStatisticData upload to one.com");
             return;
@@ -176,7 +176,7 @@ public class FtpOneClient {
             LOG.info("Failed uploading appStatisticData to " + PODS_ONE_HOST_NAME + APP_STATISTICS_PATH + " message" + e.getMessage());
         }
     }
-    public synchronized AppStatisticDataContainer loadAppStatistics()  {
+    public  AppStatisticDataContainer loadAppStatistics()  {
         File downloadedFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), APP_STATISTICS_FILE_NAME);
 
         try {
@@ -189,7 +189,7 @@ public class FtpOneClient {
     }
 
     //Upload SubscriptionData dat file used by this server
-    synchronized void  upload(SubscriptionData subscriptionData)  {
+     void  upload(SubscriptionData subscriptionData)  {
         if(ServerInfo.isLocalDevMode()) {
             LOG.info("DevMode no subscriptionData upload to one.com");
             return;
@@ -199,13 +199,13 @@ public class FtpOneClient {
         try {
             // LOG.info("upload subscriptions=" + subscriptionData.getSubscriptions().size());
             IOUtil.saveAsObject(subscriptionData, file);
-            FtpOneClient.getInstance().uploadToOneCom(file, PATH_SUBSCRIPTION);
-        } catch (IOException e) {
+            uploadToOneCom(file, PATH_SUBSCRIPTION);
+        } catch (Exception e) {
             LOG.info("Failed uploading subscriptionData to " + PODS_ONE_HOST_NAME + PATH_SUBSCRIPTION + " message" + e.getMessage());
         }
     }
 
-    public synchronized SubscriptionData loadSubscribers() {
+    public  SubscriptionData loadSubscribers() {
         File downloadedFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), SUBSCRIPTIONS_JSON_FILE);
 
         try {
@@ -218,7 +218,7 @@ public class FtpOneClient {
     }
 
 
-    synchronized public PodCastCatalogMetaData load(PodCastCatalogLanguage lang) throws IOException {
+     public PodCastCatalogMetaData load(PodCastCatalogLanguage lang) throws IOException {
 
         String fileName = lang.name() + POD_CAST_CATALOG_META_DATA_FILE;
         File downloadedFile = new File(LocatorProduction.getInstance().getPodDataHomeDirectory(), fileName);
@@ -235,7 +235,7 @@ public class FtpOneClient {
     }
 
 
-    synchronized public void uploadToOneCom(File sourceFile, String serverPath) {
+     public void uploadToOneCom(File sourceFile, String serverPath) {
         try {
 //            sourceFile.setLastModified(System.currentTimeMillis());
             FileTask fileTask = new FileTask(sourceFile, serverPath);

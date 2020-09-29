@@ -51,7 +51,7 @@ public class SubscriptionNotifierJob implements Job {
             try {
 
                 subscriptionCount++;
-                if ((subscriptionCount % 25) == 0) {
+                if ((subscriptionCount % 30) == 0) {
                     Thread.sleep(2000); //Decrease pressure on ItunesSearchAPI
 
                     LOG.info("subscriptionCount=" + subscriptionCount);
@@ -93,7 +93,7 @@ public class SubscriptionNotifierJob implements Job {
                     if (pushSent < 5 || (pushSent % 40) == 0) {
                         LOG.info("SubscriptionNotifierJob_PUSH sent: (" + pushSent + ") podCast=" + podCastSmall.getPodCastTitle()
                                 + ",subscribers=" + subscription.getSubscribers().size() + ", latest Episode=" + podCastSmall.getLatestPodCastEpisodeId());
-                        PodCastSubscriptionService.getInstance().uploadToOneCom(); //Only sync every 25 push.
+                        //PodCastSubscriptionService.getInstance().uploadToOneCom(); //Only sync every 25 push.
                     }
 
                 }

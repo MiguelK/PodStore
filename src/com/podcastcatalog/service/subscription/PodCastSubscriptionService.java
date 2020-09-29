@@ -57,22 +57,6 @@ public class PodCastSubscriptionService {
         return !isSubscribersLoaded();
     }
 
-    public void recreateIfSubscriptionFileIsDeleted() {
-
-        CloseableHttpClient client = HttpClients.createDefault();
-        try (CloseableHttpResponse response = client.execute(new HttpGet(FtpOneClient.SUBSCRIPTIONS_FILE_URL))) {
-
-            if (response.getStatusLine().getStatusCode() == 404) {
-                LOG.info("No Subscriptions.dat file exist on server" + FtpOneClient.SUBSCRIPTIONS_FILE_URL + " ,Creating new subscriptionData");
-                this.subscriptionData = new SubscriptionData();
-                FtpOneClient.getInstance().upload(subscriptionData);
-            }
-
-        } catch (Exception e) {
-            LOG.info("Check subscription file failed " + e.getMessage());
-        }
-    }
-
     //FIXME do in background?
     public void uploadToOneCom() {
         FtpOneClient.getInstance().upload(subscriptionData);

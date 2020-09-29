@@ -17,9 +17,18 @@ public class FtpOneClientTest {
                 FtpOneClient.getInstance().loadSubscribers();
 
 
+        int countFeeds = 0;
+
         System.out.println("Subscriptions=" + subscriptionData.getSubscriptions().size());
         String deviceToken = "donBlQVnFkYbgQr__SBVUq:APA91bETwGHfPvwP7ZQamaZXdupix_JzfVNFKrJahP5Sj6JFz2dVx2glyXIx5xhFCEsPZ35VkgPJk-epfV0O1LnZpAcKHASpE69C6xItRGWOA9SSF-MOuVO3srFI2fvbfK-hKiZw1LiM";
         for (Subscription subscription : subscriptionData.getSubscriptions()) {
+
+            if(subscription.getFeedURL() != null) {
+                countFeeds++;
+                //System.out.println("FeedURL=" + subscription.getFeedURL() + " contentID=" + subscription.getPodCastId() + " subscribbers=" + subscription.getSubscribers().size());
+            } else {
+                System.out.println(subscription.getFeedURL() + " " + subscription.getPodCastId() + " subs=" + subscription.getSubscribers().size());
+            }
             for (String s : subscription.getSubscribers()) {
              //   System.out.println("TOKEN: " + s);
                // System.out.println("FeedURL URL=" + subscription.getFeedURL());
@@ -29,6 +38,8 @@ public class FtpOneClientTest {
             }
 
         }
+
+        System.out.println("countFeeds=" + countFeeds);
 
 
     }
