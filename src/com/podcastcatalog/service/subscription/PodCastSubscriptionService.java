@@ -83,7 +83,7 @@ public class PodCastSubscriptionService {
 
            // LOG.info("subscribe() subscribers= " + subscription.getSubscribers().size() + " https://pods.one/open?pid=" + podCastId);
 
-            FtpOneClient.getInstance().upload(subscriptionData);
+           // FtpOneClient.getInstance().upload(subscriptionData);
         } finally {
             writeLock.unlock();
         }
@@ -109,7 +109,7 @@ public class PodCastSubscriptionService {
                 LOG.info("unSubscribe(), " + info);
             }
 
-            FtpOneClient.getInstance().upload(subscriptionData);
+            //FtpOneClient.getInstance().upload(subscriptionData);
         } finally {
             writeLock.unlock();
         }

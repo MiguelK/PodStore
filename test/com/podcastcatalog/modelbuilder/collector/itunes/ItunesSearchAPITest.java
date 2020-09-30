@@ -47,7 +47,7 @@ public class ItunesSearchAPITest {
     @Test(groups = TestUtil.SLOW_TEST)
     public void getLatestEpisodeIdForPodCast() {
         //390164336
-        URL feedURLFromPodCast = ItunesSearchAPI.getFeedURLFromPodCast("1389951701");
+        URL feedURLFromPodCast = ItunesSearchAPI.getFeedURLFromPodCast("377218713");
         System.out.println(feedURLFromPodCast);
         Assert.assertNotNull(feedURLFromPodCast);
     }

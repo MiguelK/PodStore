@@ -48,21 +48,21 @@ public class SubscriptionNotifierJob implements Job {
         int pushSent = 0;
         int subscriptionCount = 0;
         for (Subscription subscription : subscriptions)
-            try {
 
+            try {
                 subscriptionCount++;
-                if ((subscriptionCount % 30) == 0) {
-                    Thread.sleep(2000); //Decrease pressure on ItunesSearchAPI
+                if ((subscriptionCount % 40) == 0) {
+                 //   Thread.sleep(2000); //Decrease pressure on ItunesSearchAPI
 
                     LOG.info("subscriptionCount=" + subscriptionCount);
                 }
                 String podCastId = subscription.getPodCastId();
 
                 URL feedURL = subscription.getFeedURL();
-                if (feedURL == null) {
-                    feedURL = ItunesSearchAPI.getFeedURLFromPodCast(podCastId);
-                    subscription.setFeedURL(feedURL); //Save and later upload to one.com as cache
-                }
+                //if (feedURL == null) {
+                //    feedURL = ItunesSearchAPI.getFeedURLFromPodCast(podCastId);
+                //  subscription.setFeedURL(feedURL); //Save and later upload to one.com as cache
+                //}
 
                 if (feedURL == null) {
                     continue;
@@ -76,15 +76,19 @@ public class SubscriptionNotifierJob implements Job {
                 //Do not push first time added
                 if (subscription.getLatestPodCastEpisodeId() == null) {
                     LOG.info("SubscriptionNotifierJob_update Subscription for first time " + podCastId + ", episode=" + podCastSmall.getLatestPodCastEpisodeId());
+
+                    URL podCastFeedURL = ItunesSearchAPI.getFeedURLFromPodCast(podCastId); //Try fetch PodCast feed
+                    LOG.info("SubscriptionNotifierJob_update Subscription for first time " + podCastId + ", podCastFeedURL=" + podCastFeedURL);
+
+                    subscription.setFeedURL(podCastFeedURL); //Save and later upload to one.com as cache
+
                     PodCastSubscriptionService.getInstance().update(podCastId, podCastSmall.getLatestPodCastEpisodeId());
                     continue;
                 }
 
                 boolean isEpisodeUpdated = !podCastSmall.getLatestPodCastEpisodeId().equals(subscription.getLatestPodCastEpisodeId());
                 if (isEpisodeUpdated) {
-
                     PodCastSubscriptionService.getInstance().update(podCastId, podCastSmall.getLatestPodCastEpisodeId());
-                   // PodCastSubscriptionService.getInstance().uploadToOneCom();
 
                     sendPushMessage(subscription.getSubscribers(), podCastSmall);
 
@@ -93,7 +97,7 @@ public class SubscriptionNotifierJob implements Job {
                     if (pushSent < 5 || (pushSent % 40) == 0) {
                         LOG.info("SubscriptionNotifierJob_PUSH sent: (" + pushSent + ") podCast=" + podCastSmall.getPodCastTitle()
                                 + ",subscribers=" + subscription.getSubscribers().size() + ", latest Episode=" + podCastSmall.getLatestPodCastEpisodeId());
-                        //PodCastSubscriptionService.getInstance().uploadToOneCom(); //Only sync every 25 push.
+
                     }
 
                 }
@@ -101,6 +105,8 @@ public class SubscriptionNotifierJob implements Job {
                 LOG.info(subscription.getPodCastId() + ": " + subscription.getSubscribers().size() + ": " + subscription.getLatestPodCastEpisodeId()
                         + " Failed push message" + e.getMessage());
             }
+
+        LOG.info("SubscriptionNotifierJob_Done, Subscription start uploadToOneCom()");
 
         PodCastSubscriptionService.getInstance().uploadToOneCom();
 
