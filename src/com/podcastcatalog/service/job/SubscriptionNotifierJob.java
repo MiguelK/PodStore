@@ -68,6 +68,8 @@ public class SubscriptionNotifierJob implements Job {
                     continue;
                 }
 
+                Thread.sleep(3000);
+
                 ItunesSearchAPI.PodCastSmall podCastSmall = ItunesSearchAPI.getLatestEpisodeIdFromPodCast(podCastId, feedURL);
                 if (podCastSmall == null) {
                     continue;
