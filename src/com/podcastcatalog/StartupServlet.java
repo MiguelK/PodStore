@@ -5,6 +5,7 @@ import com.podcastcatalog.service.datastore.LocatorProduction;
 import com.podcastcatalog.service.job.JobManagerService;
 import com.podcastcatalog.service.job.MemoryDumperJob;
 import com.podcastcatalog.service.job.PodCastCatalogUpdater;
+import com.podcastcatalog.service.job.PushSubscriptionsJob;
 import com.podcastcatalog.service.job.SubscriptionNotifierJob;
 import com.podcastcatalog.service.radio.RadioStationService;
 import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
@@ -61,9 +62,10 @@ public class StartupServlet extends HttpServlet {
 
         AppStatisticService.getInstance().load();
 
-        JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 0, 4, TimeUnit.HOURS);
+        JobManagerService.getInstance().executeOnce(new PushSubscriptionsJob());
+        JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 0, 6, TimeUnit.HOURS);
         //  JobManagerService.getInstance().registerJob(new CreateLinkPages(),20,20, TimeUnit.SECONDS);
-        JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 0,24, TimeUnit.HOURS); //FIXME change time, remove
+       // JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 0,24, TimeUnit.HOURS); //FIXME change time, remove
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 0, 168, TimeUnit.HOURS); //FIXME 1 per week
 
         JobManagerService.getInstance().startAsync();

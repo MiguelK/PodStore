@@ -9,6 +9,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -133,6 +134,21 @@ public class PodCastSubscriptionService {
             Subscription subscription = subscriptionData.getSubscription(podCastId);
             if(subscription != null) {
                 subscription.setLatestPodCastEpisodeId(latestPodCastEpisodeId);
+            }
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    public void updateFeedURL(String podCastId, URL feedURL) {
+        if(isNotLoaded()) {
+            return;
+        }
+        writeLock.lock();
+        try {
+            Subscription subscription = subscriptionData.getSubscription(podCastId);
+            if(subscription != null) {
+                subscription.setFeedURL(feedURL);
             }
         } finally {
             writeLock.unlock();

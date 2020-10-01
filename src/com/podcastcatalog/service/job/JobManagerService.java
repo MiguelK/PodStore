@@ -35,6 +35,11 @@ public class JobManagerService {
         registerdJobs.add(new RegisterdJob(new WorkExecutor(job),initialDelay, period, timeUnit));
     }
 
+    public void executeOnce(Job job) {
+        WorkExecutor workExecutor = new WorkExecutor(job);
+        threadPool.submit(workExecutor);
+    }
+
     public void startAsync() {
         for (RegisterdJob registerdJob : registerdJobs) {
             threadPool.scheduleAtFixedRate(registerdJob.getWorkExecutor(), registerdJob.getInitialDelay(), registerdJob.getPeriod(), registerdJob.getTimeUnit());
