@@ -122,7 +122,7 @@ public class PushSubscriptionsJob implements Job {
             return false;
         }
 
-        if (!PodCastSubscriptionService.getInstance().getSubscriptions().isEmpty()) {
+        if (PodCastSubscriptionService.getInstance().getSubscriptions().isEmpty()) {
             return false;
         }
         return true;
