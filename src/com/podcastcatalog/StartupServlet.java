@@ -63,7 +63,7 @@ public class StartupServlet extends HttpServlet {
         AppStatisticService.getInstance().load();
 
         JobManagerService.getInstance().executeOnce(new PushSubscriptionsJob());
-        JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 0, 6, TimeUnit.HOURS);
+       // JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 0, 6, TimeUnit.HOURS);
         //  JobManagerService.getInstance().registerJob(new CreateLinkPages(),20,20, TimeUnit.SECONDS);
        // JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 0,24, TimeUnit.HOURS); //FIXME change time, remove
         JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 0, 168, TimeUnit.HOURS); //FIXME 1 per week

@@ -19,7 +19,8 @@ public class PushSubscriptionsJob implements Job {
 
     private final static Logger LOG = Logger.getLogger(PushSubscriptionsJob.class.getName());
 
-    //Started once...
+    private static final int ONE_HOUR_IN_MILLI_SECONDS = 1000 * 60 * 60;
+
     public void doWork() {
         if (ServerInfo.isLocalDevMode()) {
             LOG.info("PushSubscriptionsJob: No PUSH Local dev mode...");
@@ -29,7 +30,7 @@ public class PushSubscriptionsJob implements Job {
         try {
             if (!isReady()) {
                 LOG.info("PushSubscriptionsJob is not ready yet...");
-                Thread.sleep(60000);
+                Thread.sleep(60_000);
                 doWork();
             }
 
@@ -40,59 +41,58 @@ public class PushSubscriptionsJob implements Job {
             List<FetchLatestPodCastEpisodeResult> fetchResults = createFetchLatestPodCastEpisodeTasks(subscriptions);
 
             List<FetchLatestPodCastEpisodeResult> newSubscriptions = new ArrayList<>();
-            List<FetchLatestPodCastEpisodeResult> pushToSend = new ArrayList<>();
+            List<FetchLatestPodCastEpisodeResult> pushToSubscribers = new ArrayList<>();
             for (FetchLatestPodCastEpisodeResult feedPayLoad : fetchResults) {
                 if (feedPayLoad.shouldSendPush) {
-                    pushToSend.add(feedPayLoad);
+                    pushToSubscribers.add(feedPayLoad);
                 } else if (feedPayLoad.isNewSubscription) {
                     newSubscriptions.add(feedPayLoad);
                 }
             }
 
             LOG.info("PushSubscriptionsJob 2: newSubscriptions=" + newSubscriptions.size() +
-                    ", pushToSend=" + pushToSend.size());
+                    ", pushToSend=" + pushToSubscribers.size());
 
-            //FIXME Update podCastFeedURL + latestEpisode
+            for (FetchLatestPodCastEpisodeResult result : pushToSubscribers) {
+                sendPushMessage(result.subscribers, result.podCastSmall);
+                PodCastSubscriptionService.getInstance().update(result.podCastId,
+                        result.podCastSmall.getLatestPodCastEpisodeId());
+            }
+            LOG.info("PushSubscriptionsJob 3: Sent =" + pushToSubscribers.size() + " Push messages");
+
+            PodCastSubscriptionService.getInstance().uploadToOneCom();
+
             for (FetchLatestPodCastEpisodeResult newSubscription : newSubscriptions) {
-             /*   URL podCastFeedURL = ItunesSearchAPI.getFeedURLFromPodCast(newSubscription.getPodCastId());
+                Thread.sleep(3000); //Lower pressure on Apple itunes.apple.com/lookup
+                URL podCastFeedURL = ItunesSearchAPI.getFeedURLFromPodCast(newSubscription.podCastId);
                 if (podCastFeedURL != null) {
-                    PodCastSubscriptionService.getInstance().updateFeedURL(newSubscription.getPodCastId(), podCastFeedURL);
+                    PodCastSubscriptionService.getInstance().updateFeedURL(newSubscription.podCastId, podCastFeedURL);
                 }
 
-                PodCastSubscriptionService.getInstance().update(newSubscription.getPodCastId(),
-                        newSubscription.podCastSmall.getLatestPodCastEpisodeId());*/
-             //FIXME
+                PodCastSubscriptionService.getInstance().update(newSubscription.podCastId,
+                        newSubscription.podCastSmall.getLatestPodCastEpisodeId());
             }
 
-            //FIXME Sends PUSH Synch
-            for (FetchLatestPodCastEpisodeResult result : pushToSend) {
-            /*    PodCastSubscriptionService.getInstance().update(result.getPodCastId(),
-                        result.podCastSmall.getLatestPodCastEpisodeId());
-                sendPushMessage(result.getSubscribers(), result.podCastSmall);
-                */
-            //FIXME
-
+            if(!newSubscriptions.isEmpty()) {
+                PodCastSubscriptionService.getInstance().uploadToOneCom();
             }
-
-            //PodCastSubscriptionService.getInstance().uploadToOneCom();
 
             LOG.info("PushSubscriptionsJob 3 done");
 
-            Thread.sleep(60000 * 60); //Rerun after 1h
+            Thread.sleep(1000 * 60 * 10); //Rerun after 10min
             doWork();
         } catch (Exception e) {
-            LOG.warning("Failed: " + e.getMessage());
+            LOG.warning("PushSubscriptionsJob Failed: " + e.getMessage() + ", retry in 1h");
             try {
-                Thread.sleep(60000);
+                Thread.sleep(ONE_HOUR_IN_MILLI_SECONDS);
             } catch (InterruptedException e1) {
                 //Ignore
             }
-          //  doWork(); //FIXME Retry if error
+            doWork(); //FIXME Retry if error
         }
     }
 
-    //fetchLatestPodCastEpisodeTask
-    public List<FetchLatestPodCastEpisodeResult> createFetchLatestPodCastEpisodeTasks(List<Subscription> subscriptions) throws InterruptedException, java.util.concurrent.ExecutionException, java.util.concurrent.TimeoutException {
+    private List<FetchLatestPodCastEpisodeResult> createFetchLatestPodCastEpisodeTasks(List<Subscription> subscriptions) throws InterruptedException, java.util.concurrent.ExecutionException, java.util.concurrent.TimeoutException {
         List<FetchLatestPodCastEpisodeTask> tasks = new ArrayList<>();
         for (Subscription subscription : subscriptions) {
 
@@ -146,7 +146,9 @@ public class PushSubscriptionsJob implements Job {
                                 description, podCastEpisodeInfo, podCastSmall.getPodCastPid(),
                                 podCastSmall.getLatestPodCastEpisodeId(), deviceToken);
             } catch (Exception e) {
-                LOG.info("Failed sendPushMessage" + e.getMessage());
+                LOG.info("Failed sendPushMessage" + e.getMessage() +
+                        ", PodCastPid=" + podCastSmall.getPodCastPid() +
+                        ",subscribers=" + subscribers.size());
             }
         }
     }
@@ -182,40 +184,20 @@ public class PushSubscriptionsJob implements Job {
     }
 
     private class FetchLatestPodCastEpisodeResult {
-        ItunesSearchAPI.PodCastSmall podCastSmall;
-        String podCastId;
-        List<String> subscribers;
-        boolean shouldSendPush;
-        boolean isNewSubscription;
+        private ItunesSearchAPI.PodCastSmall podCastSmall;
+        private String podCastId;
+        private List<String> subscribers;
+        private boolean shouldSendPush;
+        private boolean isNewSubscription;
 
-        public FetchLatestPodCastEpisodeResult(ItunesSearchAPI.PodCastSmall podCastSmall,
-                                               String podCastId, List<String> subscribers,
-                                               boolean shouldSendPush, boolean isNewSubscription) {
+        FetchLatestPodCastEpisodeResult(ItunesSearchAPI.PodCastSmall podCastSmall,
+                                        String podCastId, List<String> subscribers,
+                                        boolean shouldSendPush, boolean isNewSubscription) {
             this.podCastSmall = podCastSmall;
             this.podCastId = podCastId;
             this.subscribers = subscribers;
             this.shouldSendPush = shouldSendPush;
             this.isNewSubscription = isNewSubscription;
-        }
-
-        public ItunesSearchAPI.PodCastSmall getPodCastSmall() {
-            return podCastSmall;
-        }
-
-        public String getPodCastId() {
-            return podCastId;
-        }
-
-        public List<String> getSubscribers() {
-            return subscribers;
-        }
-
-        public boolean isShouldSendPush() {
-            return shouldSendPush;
-        }
-
-        public boolean isNewSubscription() {
-            return isNewSubscription;
         }
     }
 }
