@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 public class PushSubscriptionsJob implements Job {
@@ -92,7 +93,7 @@ public class PushSubscriptionsJob implements Job {
         }
     }
 
-    private List<FetchLatestPodCastEpisodeResult> createFetchLatestPodCastEpisodeTasks(List<Subscription> subscriptions) throws InterruptedException, java.util.concurrent.ExecutionException, java.util.concurrent.TimeoutException {
+    private List<FetchLatestPodCastEpisodeResult> createFetchLatestPodCastEpisodeTasks(List<Subscription> subscriptions) {
         List<FetchLatestPodCastEpisodeTask> tasks = new ArrayList<>();
         for (Subscription subscription : subscriptions) {
 
@@ -106,14 +107,24 @@ public class PushSubscriptionsJob implements Job {
             tasks.add(task);
         }
 
+        LOG.info("PushSubscriptionsJob 1_1 tasks=" + tasks.size());
+
         Collection<FetchLatestPodCastEpisodeTask> parsePodCastFeedTasks = ForkJoinTask.invokeAll(tasks);
+        LOG.info("PushSubscriptionsJob 1_2 tasks invokeAll=" + parsePodCastFeedTasks.size());
         List<FetchLatestPodCastEpisodeResult> payLoads = new ArrayList<>();
         for (FetchLatestPodCastEpisodeTask task : parsePodCastFeedTasks) {
-            FetchLatestPodCastEpisodeResult payLoad = task.get(8, TimeUnit.SECONDS);
+            FetchLatestPodCastEpisodeResult payLoad;
+            try {
+                payLoad = task.get(8, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                continue;
+            }
             if (payLoad != null) {
                 payLoads.add(payLoad);
             }
         }
+        LOG.info("PushSubscriptionsJob 1_3 tasks payLoads=" + payLoads.size());
+
         return payLoads;
     }
 
