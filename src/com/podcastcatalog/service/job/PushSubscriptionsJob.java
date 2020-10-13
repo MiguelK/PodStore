@@ -110,11 +110,6 @@ public class PushSubscriptionsJob implements Job {
         LOG.info("PushSubscriptionsJob 1_1 tasks=" + tasks.size());
 
         for (FetchLatestPodCastEpisodeTask task : tasks) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                //Ignore
-            }
             commonPool.submit(task);
         }
 
@@ -125,6 +120,12 @@ public class PushSubscriptionsJob implements Job {
         int success = 0;
         for (FetchLatestPodCastEpisodeTask task : tasks) {
             FetchLatestPodCastEpisodeResult payLoad;
+
+            try {
+                Thread.sleep(800);
+            } catch (InterruptedException e) {
+                //Ignore
+            }
 
             if(success % 10 == 0) {
                 try {
