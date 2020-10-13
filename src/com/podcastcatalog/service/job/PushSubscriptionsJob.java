@@ -8,17 +8,17 @@ import com.podcastcatalog.util.ServerInfo;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 public class PushSubscriptionsJob implements Job {
 
     private final static Logger LOG = Logger.getLogger(PushSubscriptionsJob.class.getName());
+
+    private static ForkJoinPool commonPool = ForkJoinPool.commonPool();
 
     private static final int ONE_HOUR_IN_MILLI_SECONDS = 1000 * 60 * 60;
 
@@ -109,18 +109,33 @@ public class PushSubscriptionsJob implements Job {
 
         LOG.info("PushSubscriptionsJob 1_1 tasks=" + tasks.size());
 
-        Collection<FetchLatestPodCastEpisodeTask> parsePodCastFeedTasks = ForkJoinTask.invokeAll(tasks);
-        LOG.info("PushSubscriptionsJob 1_2 tasks invokeAll=" + parsePodCastFeedTasks.size());
+        for (FetchLatestPodCastEpisodeTask task : tasks) {
+           commonPool.execute(task);
+        }
+
+
+        LOG.info("PushSubscriptionsJob 1_2 tasks join all=" + tasks.size());
         List<FetchLatestPodCastEpisodeResult> payLoads = new ArrayList<>();
-        for (FetchLatestPodCastEpisodeTask task : parsePodCastFeedTasks) {
+
+        int failCount = 0;
+        int success = 0;
+        for (FetchLatestPodCastEpisodeTask task : tasks) {
             FetchLatestPodCastEpisodeResult payLoad;
             try {
-                payLoad = task.get(8, TimeUnit.SECONDS);
+                payLoad = task.get(5, TimeUnit.SECONDS);
             } catch (Exception e) {
+                failCount++;
+                if(failCount % 20 == 0) {
+                    LOG.info("Failed to get task failCount=" + failCount + ", error=" + e.getMessage());
+                }
                 continue;
             }
             if (payLoad != null) {
+                success++;
                 payLoads.add(payLoad);
+            }
+            if(success % 200 == 0) {
+                LOG.info("success="  + success);
             }
         }
         LOG.info("PushSubscriptionsJob 1_3 tasks payLoads=" + payLoads.size());
