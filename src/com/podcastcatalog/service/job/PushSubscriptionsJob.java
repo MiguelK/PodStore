@@ -122,7 +122,7 @@ public class PushSubscriptionsJob implements Job {
             FetchLatestPodCastEpisodeResult payLoad;
 
             try {
-                Thread.sleep(800);
+                Thread.sleep(2300);
             } catch (InterruptedException e) {
                 //Ignore
             }
