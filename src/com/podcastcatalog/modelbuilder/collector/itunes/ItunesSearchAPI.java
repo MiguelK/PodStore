@@ -293,6 +293,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         HttpsURLConnection connection;
         try {
             connection = (HttpsURLConnection) request.openConnection();
+            connection.setConnectTimeout(3000); //3 sec
             String content = IOUtil.getResultContent(connection);
             return GSON.fromJson(content, PodCastSearchResult.class);
         } catch (Exception e) {
