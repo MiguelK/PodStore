@@ -237,7 +237,7 @@ public class FtpOneClient {
 
      public void uploadToOneCom(File sourceFile, String serverPath) {
         try {
-//            sourceFile.setLastModified(System.currentTimeMillis());
+            boolean b = sourceFile.setLastModified(System.currentTimeMillis());
             FileTask fileTask = new FileTask(sourceFile, serverPath);
 
             executorService.submit(fileTask);
@@ -364,7 +364,7 @@ public class FtpOneClient {
                         ftpClient.logout();
                         ftpClient.disconnect();
                     }
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     LOG.info("Failed close stream " + ex.getMessage());
                 }
             }

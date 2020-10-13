@@ -14,8 +14,6 @@ import java.util.logging.Logger;
 @Path("/podCastSubscription")
 public class PodCastSubscription {
 
-    private final static Logger LOG = Logger.getLogger(PodCastSubscription.class.getName());
-
     @POST
     @Path("{deviceToken}/{podCastId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -23,6 +21,8 @@ public class PodCastSubscription {
                               @PathParam("podCastId") String podCastId) {
 
         PodCastSubscriptionService.getInstance().subscribe(deviceToken, podCastId);
+
+        PodCastSubscriptionService.getInstance().uploadToOneCom();
 
         return Response.status(Response.Status.OK).build();
     }
@@ -34,6 +34,8 @@ public class PodCastSubscription {
                                 @PathParam("podCastId") String podCastId) {
 
         PodCastSubscriptionService.getInstance().unSubscribe(deviceToken, podCastId);
+
+        PodCastSubscriptionService.getInstance().uploadToOneCom();
 
         return Response.status(Response.Status.OK).build();
     }
