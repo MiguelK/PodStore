@@ -110,9 +110,13 @@ public class PushSubscriptionsJob implements Job {
         LOG.info("PushSubscriptionsJob 1_1 tasks=" + tasks.size());
 
         for (FetchLatestPodCastEpisodeTask task : tasks) {
-           commonPool.execute(task);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                //Ignore
+            }
+            commonPool.submit(task);
         }
-
 
         LOG.info("PushSubscriptionsJob 1_2 tasks join all=" + tasks.size());
         List<FetchLatestPodCastEpisodeResult> payLoads = new ArrayList<>();
