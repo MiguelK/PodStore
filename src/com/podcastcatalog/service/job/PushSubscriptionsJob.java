@@ -121,6 +121,15 @@ public class PushSubscriptionsJob implements Job {
         int success = 0;
         for (FetchLatestPodCastEpisodeTask task : tasks) {
             FetchLatestPodCastEpisodeResult payLoad;
+
+            if(success % 10 == 0) {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    //Ignore
+                }
+            }
+
             try {
                 payLoad = task.get(5, TimeUnit.SECONDS);
             } catch (Exception e) {
