@@ -22,8 +22,6 @@ public class PodCastSubscription {
 
         PodCastSubscriptionService.getInstance().subscribe(deviceToken, podCastId);
 
-        PodCastSubscriptionService.getInstance().uploadToOneCom();
-
         return Response.status(Response.Status.OK).build();
     }
 
@@ -34,8 +32,6 @@ public class PodCastSubscription {
                                 @PathParam("podCastId") String podCastId) {
 
         PodCastSubscriptionService.getInstance().unSubscribe(deviceToken, podCastId);
-
-        PodCastSubscriptionService.getInstance().uploadToOneCom();
 
         return Response.status(Response.Status.OK).build();
     }
