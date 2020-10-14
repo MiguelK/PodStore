@@ -9,8 +9,10 @@ import com.podcastcatalog.util.ServerInfo;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -18,7 +20,7 @@ public class PushSubscriptionsJob implements Job {
 
     private final static Logger LOG = Logger.getLogger(PushSubscriptionsJob.class.getName());
 
-    private static ForkJoinPool commonPool = ForkJoinPool.commonPool();
+    private ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
     private static final int ONE_HOUR_IN_MILLI_SECONDS = 1000 * 60 * 60;
 
@@ -109,8 +111,13 @@ public class PushSubscriptionsJob implements Job {
 
         LOG.info("PushSubscriptionsJob 1_1 tasks=" + tasks.size());
 
+        List<Future<FetchLatestPodCastEpisodeResult>> taskFeatures = new ArrayList<>();
         for (FetchLatestPodCastEpisodeTask task : tasks) {
-            commonPool.submit(task);
+            try {
+                taskFeatures.add(threadPool.submit(task));
+            } catch (Exception e) {
+                LOG.info("Failed to submit task " + e.getMessage());
+            }
         }
 
         LOG.info("PushSubscriptionsJob 1_2 tasks join all=" + tasks.size());
@@ -118,16 +125,11 @@ public class PushSubscriptionsJob implements Job {
 
         int failCount = 0;
         int success = 0;
-        for (FetchLatestPodCastEpisodeTask task : tasks) {
+        long start = 0;
+        for (Future<FetchLatestPodCastEpisodeResult> taskFeature : taskFeatures) {
             FetchLatestPodCastEpisodeResult payLoad;
 
-            try {
-                Thread.sleep(2300);
-            } catch (InterruptedException e) {
-                //Ignore
-            }
-
-            if(success % 10 == 0) {
+            if(success % 50 == 0) {
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -136,7 +138,18 @@ public class PushSubscriptionsJob implements Job {
             }
 
             try {
-                payLoad = task.get(5, TimeUnit.SECONDS);
+
+
+                if(success == 0) {
+                    start = System.currentTimeMillis();
+                    LOG.info("Start task.get()="  + success);
+                }
+                payLoad = taskFeature.get(5, TimeUnit.SECONDS);
+                if(success == 0) {
+                    long elapsedTime =  System.currentTimeMillis() - start;
+                    long seconds = TimeUnit.MILLISECONDS.toSeconds(elapsedTime);
+                    LOG.info("End task.get()="  + success + ", elapsedTime in seconds =" + seconds);
+                }
             } catch (Exception e) {
                 failCount++;
                 if(failCount % 20 == 0) {
@@ -149,7 +162,9 @@ public class PushSubscriptionsJob implements Job {
                 payLoads.add(payLoad);
             }
             if(success % 200 == 0) {
-                LOG.info("success="  + success);
+                long elapsedTime =  System.currentTimeMillis() - start;
+                long seconds = TimeUnit.MILLISECONDS.toSeconds(elapsedTime);
+                LOG.info("success="  + success+ ", elapsedTime in seconds =" + seconds);
             }
         }
         LOG.info("PushSubscriptionsJob 1_3 tasks payLoads=" + payLoads.size());
@@ -193,7 +208,7 @@ public class PushSubscriptionsJob implements Job {
         }
     }
 
-    private class FetchLatestPodCastEpisodeTask extends RecursiveTask<FetchLatestPodCastEpisodeResult> {
+    private class FetchLatestPodCastEpisodeTask implements Callable<FetchLatestPodCastEpisodeResult> {
 
         private String podCastId;
         private URL feedURL;
@@ -208,18 +223,24 @@ public class PushSubscriptionsJob implements Job {
         }
 
         @Override
-        protected FetchLatestPodCastEpisodeResult compute() {
+        public FetchLatestPodCastEpisodeResult call()  {
+            try {
+                ItunesSearchAPI.PodCastSmall podCastSmall = ItunesSearchAPI.getLatestEpisodeIdFromPodCast(podCastId, feedURL);
+                if (podCastSmall == null) {
+                    return null;
+                }
 
-            ItunesSearchAPI.PodCastSmall podCastSmall = ItunesSearchAPI.getLatestEpisodeIdFromPodCast(podCastId, feedURL);
-            if (podCastSmall == null) {
-                return null;
+                boolean isNewSubscription = getLatestPodCastEpisodeId == null;
+                boolean isEpisodeUpdated = !podCastSmall.getLatestPodCastEpisodeId().equals(getLatestPodCastEpisodeId);
+
+                return new FetchLatestPodCastEpisodeResult(podCastSmall,
+                        podCastId,subscribers,isEpisodeUpdated,isNewSubscription);
+            } catch (Exception e) {
+                LOG.info("Failed FetchLatestPodCastEpisodeResult" + e.getMessage()
+                        + ", podCastId=" + podCastId + ", feedURL=" + feedURL);
             }
 
-            boolean isNewSubscription = getLatestPodCastEpisodeId == null;
-            boolean isEpisodeUpdated = !podCastSmall.getLatestPodCastEpisodeId().equals(getLatestPodCastEpisodeId);
-
-            return new FetchLatestPodCastEpisodeResult(podCastSmall,
-                    podCastId,subscribers,isEpisodeUpdated,isNewSubscription);
+          return null;
         }
     }
 
