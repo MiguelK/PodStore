@@ -150,6 +150,9 @@ public class FtpOneClient {
             Object object = IOUtil.getObject(file);
 
             PodCastCatalogMetaData validatedOK = (PodCastCatalogMetaData)object;
+            if(validatedOK == null) {
+                throw new IllegalArgumentException("Failed to load/validate PodCastCatalogMetaData " + lang);
+            }
 
             LOG.info("Validate PodCastCatalogMetaData OK " + validatedOK);
             Thread.sleep(3000);

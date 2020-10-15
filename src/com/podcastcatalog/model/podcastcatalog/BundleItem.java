@@ -4,6 +4,8 @@ package com.podcastcatalog.model.podcastcatalog;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 public abstract class BundleItem implements Serializable {
 
@@ -29,11 +31,21 @@ public abstract class BundleItem implements Serializable {
     }
 
     public String getTitle() {
-        return title.replace("|", "");
+        ByteBuffer buffer = StandardCharsets.UTF_8.encode(title);
+
+        String utf8EncodedString = StandardCharsets.UTF_8.decode(buffer).toString();
+
+        return utf8EncodedString; //title.replace("|", "");
     }
 
     public String getDescription() {
-        return description.replace("|", "");
+        ByteBuffer buffer = StandardCharsets.UTF_8.encode(description);
+
+        String utf8EncodedString = StandardCharsets.UTF_8.decode(buffer).toString();
+
+        return utf8EncodedString; //title.replace("|", "");
+
+//        return description.replace("|", "");
     }
 
     public String getArtworkUrl600() {

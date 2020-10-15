@@ -23,7 +23,7 @@ public class FtpOneClientTest {
         int countFeeds = 0;
         Set<String> countSubscribers = new HashSet<>();
 
-        String deviceToken = "cEUOM74SbEMDrw7gL5YXwk:APA91bG7BJ0Wtnh3ebToxZnE3_9nEFeZjI9jLx07AJSs2MwhF3Pf7T93XixPJWZV9B1KxTCzJxx2nGb2ukw3HmOm34IhGRMruxf2RDp_NKR7dP3LF22_2uvhsb6HsPdagOzzht07ITlN";
+        String deviceToken = "eGpkdigS4k79jG6po0ljwm:APA91bHvM6MAzMcrznPmhe9wbMSPI7rtV1MmBbFBapfQHlOsKffWyyWVFLc2hNG6iLwXoNHx26sVJB8EVjDSSCCG9K3nQjsgo71UGQvBJE7hP7tm6igTe1vptUMvrHj-Q2gUrXR2AOjy";
         for (Subscription subscription : subscriptionData.getSubscriptions()) {
 
             if(subscription.getFeedURL() != null) {
@@ -37,7 +37,8 @@ public class FtpOneClientTest {
              //   System.out.println("TOKEN: " + s);
                // System.out.println("FeedURL URL=" + subscription.getFeedURL());
                 if(s.equals(deviceToken)) {
-                    System.out.println("deviceToken found: " + subscription.getPodCastId() + ", latestId=" + subscription.getLatestPodCastEpisodeId());
+                    System.out.println("deviceToken found: " + subscription.getPodCastId() + ", latestId=" + subscription.getLatestPodCastEpisodeId()
+                    + ", feed=" + subscription.getFeedURL());
                 }
             }
 

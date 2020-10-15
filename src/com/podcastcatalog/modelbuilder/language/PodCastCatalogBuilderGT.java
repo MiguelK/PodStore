@@ -16,7 +16,7 @@ public class PodCastCatalogBuilderGT extends PodCastCatalogBuilderBase {
         categoryContext.add(PodCastIdCollector.Category.BUSINESS, "Economía");
         categoryContext.add(PodCastIdCollector.Category.COMEDY, "Comedia");
         categoryContext.add(PodCastIdCollector.Category.EDUCATION, "Educación");
-        categoryContext.add(PodCastIdCollector.Category.GAMES, "Juegos");
+        //categoryContext.add(PodCastIdCollector.Category.GAMES, "Juegos");
         categoryContext.add(PodCastIdCollector.Category.GOVERNMENT, "Gobierno");
         categoryContext.add(PodCastIdCollector.Category.KIDS_FAMILY, " Para toda la familia");
         categoryContext.add(PodCastIdCollector.Category.RELIGION_SPIRITUALITY, "Religion & Spirituality");

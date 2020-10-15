@@ -27,7 +27,7 @@ public class PodCastCatalogMetaDataTest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void testToString() throws Exception {
-        PodCastCatalogMetaData podCastCatalogMetaData = FtpOneClient.getInstance().load(PodCastCatalogLanguage.US);
+        PodCastCatalogMetaData podCastCatalogMetaData = FtpOneClient.getInstance().load(PodCastCatalogLanguage.SE);
         LOG.info("podCastCatalogMetaData=" + podCastCatalogMetaData);
     }
 
