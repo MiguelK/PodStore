@@ -140,11 +140,11 @@ public class PushSubscriptionsJob implements Job {
             try {
 
 
-                if(success == 0) {
+                if(success == 0 && failCount == 0) {
                     start = System.currentTimeMillis();
                     LOG.info("Start task.get()="  + success);
                 }
-                payLoad = taskFeature.get(15, TimeUnit.SECONDS);
+                payLoad = taskFeature.get(20, TimeUnit.SECONDS);
                 if(success == 0 && failCount == 0) {
                     long elapsedTime =  System.currentTimeMillis() - start;
                     long seconds = TimeUnit.MILLISECONDS.toSeconds(elapsedTime);
@@ -152,7 +152,7 @@ public class PushSubscriptionsJob implements Job {
                 }
             } catch (Exception e) {
                 failCount++;
-                if(failCount % 20 == 0) {
+                if(failCount % 100 == 0) {
                     LOG.info("Failed to get task failCount=" + failCount + ", error=" + e.getMessage());
                 }
                 continue;
