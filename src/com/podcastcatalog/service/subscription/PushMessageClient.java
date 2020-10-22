@@ -2,6 +2,7 @@ package com.podcastcatalog.service.subscription;
 
 import com.google.common.collect.Maps;
 import com.podcastcatalog.util.ServerInfo;
+import org.apache.commons.lang3.StringUtils;
 import us.raudi.pushraven.FcmResponse;
 import us.raudi.pushraven.Message;
 import us.raudi.pushraven.Notification;
@@ -45,6 +46,18 @@ public class PushMessageClient {
                 return;
             }
 
+            String trimmedDescription = description;
+            int totalLength = title.length() + body.length() + description.length() +
+                    podCastEpisodeInfo.length() + pid.length() +eid.length();
+            if(totalLength >= 663) {
+                trimmedDescription = StringUtils.substring(description, 0, 40); //Test
+                    int newTotalLength = title.length() + body.length() + description.length() +
+                            podCastEpisodeInfo.length() + pid.length() +eid.length();
+                    LOG.info("PushMessageClient to long text, totalLength=" + totalLength + ", newTotalLength=" + newTotalLength
+                    + ", title=" + title + ", pid=" + pid);
+           }
+
+
         Notification notification = new Notification()
                 .title(title)
                 .body(body);
@@ -60,7 +73,7 @@ public class PushMessageClient {
         alertPayload.addAttribute("pid", pid);
         alertPayload.addAttribute("eid", eid);
         alertPayload.addAttribute("category", "Episode1");
-        alertPayload.addAttribute("podCastEpisodeDescription", description);
+        alertPayload.addAttribute("podCastEpisodeDescription", trimmedDescription);
         alertPayload.addAttribute("podCastEpisodeInfo", podCastEpisodeInfo);
         alertPayload.addAttribute("mutable-content", 1);
         aps.addAttributePayload("aps", alertPayload);

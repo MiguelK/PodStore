@@ -43,6 +43,13 @@ public class PushSubscriptionsJob implements Job {
             LOG.info("PushSubscriptionsJob 1: subscriptions=" + subscriptions.size());
             List<FetchLatestPodCastEpisodeResult> fetchResults = createFetchLatestPodCastEpisodeTasks(subscriptions);
 
+            if(fetchResults.isEmpty()) {
+                LOG.info("PushSubscriptionsJob 1_4 : fetchResults was empty, wait 10min");
+                Thread.sleep(1000 * 60 * 10); //Rerun after 10min
+                doWork();
+                return;
+            }
+
             List<FetchLatestPodCastEpisodeResult> newSubscriptions = new ArrayList<>();
             List<FetchLatestPodCastEpisodeResult> pushToSubscribers = new ArrayList<>();
             for (FetchLatestPodCastEpisodeResult feedPayLoad : fetchResults) {
@@ -138,8 +145,6 @@ public class PushSubscriptionsJob implements Job {
             }
 
             try {
-
-
                 if(success == 0 && failCount == 0) {
                     start = System.currentTimeMillis();
                     LOG.info("Start task.get()="  + success);
@@ -154,6 +159,7 @@ public class PushSubscriptionsJob implements Job {
                 failCount++;
                 if(failCount % 100 == 0) {
                     LOG.info("Failed to get task failCount=" + failCount + ", error=" + e.getMessage());
+                    break;
                 }
                 continue;
             }

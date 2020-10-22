@@ -23,7 +23,10 @@ public class FtpOneClientTest {
         int countFeeds = 0;
         Set<String> countSubscribers = new HashSet<>();
 
-        String deviceToken = "eGpkdigS4k79jG6po0ljwm:APA91bHvM6MAzMcrznPmhe9wbMSPI7rtV1MmBbFBapfQHlOsKffWyyWVFLc2hNG6iLwXoNHx26sVJB8EVjDSSCCG9K3nQjsgo71UGQvBJE7hP7tm6igTe1vptUMvrHj-Q2gUrXR2AOjy";
+
+      //  String deviceToken = "eGpkdigS4k79jG6po0ljwm:APA91bHvM6MAzMcrznPmhe9wbMSPI7rtV1MmBbFBapfQHlOsKffWyyWVFLc2hNG6iLwXoNHx26sVJB8EVjDSSCCG9K3nQjsgo71UGQvBJE7hP7tm6igTe1vptUMvrHj-Q2gUrXR2AOjy";
+        String deviceToken = "clkw6ml-2UieiGcy_BBdiI:APA91bGYkv7iogWg31w48dwRlYRHiU8VpuMrRrJg1_DYjYk3K-V5Qco-oDqr0NFUFfIoWHyOAnlG2MA_mZVPsFGMGLn5-MgtTeqEVXukYlSlesvitwfWkzmz-3m0xth1KgraMpshz1qa";
+
         for (Subscription subscription : subscriptionData.getSubscriptions()) {
 
             if(subscription.getFeedURL() != null) {
