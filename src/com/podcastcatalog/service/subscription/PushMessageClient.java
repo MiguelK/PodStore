@@ -51,7 +51,7 @@ public class PushMessageClient {
                     podCastEpisodeInfo.length() + pid.length() +eid.length();
             if(totalLength >= 663) {
                 trimmedDescription = StringUtils.substring(description, 0, 40); //Test
-                    int newTotalLength = title.length() + body.length() + description.length() +
+                    int newTotalLength = title.length() + body.length() + trimmedDescription.length() +
                             podCastEpisodeInfo.length() + pid.length() +eid.length();
                     LOG.info("PushMessageClient to long text, totalLength=" + totalLength + ", newTotalLength=" + newTotalLength
                     + ", title=" + title + ", pid=" + pid);
