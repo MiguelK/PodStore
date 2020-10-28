@@ -193,9 +193,7 @@ public class ItunesSearchAPI implements PodCastCollector {
             String duration = episode.getITunesInfo().getDuration();
             podCastEpisodeDuration = PodCastEpisodeDuration.parse(duration);
         } catch (Throwable e) {
-            if (ServerInfo.isLocalDevMode()) {
-                LOG.log(Level.SEVERE, "getLatestEpisodeIdForPodCast() pid=" + pid + ", msg=" + e.getMessage());
-            }
+            LOG.log(Level.SEVERE, "getLatestEpisodeIdForPodCast() pid=" + pid + ", msg=" + e.getMessage());
             return null;
         }
 
