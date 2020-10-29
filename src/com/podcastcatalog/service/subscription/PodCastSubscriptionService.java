@@ -9,6 +9,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -167,10 +168,10 @@ public class PodCastSubscriptionService {
         }
     }
 
-    public void pushMessage(String title, String body, String description, String podCastEpisodeInfo, String pid, String eid, String deviceToken) {
-        pushMessagesThreadPool.submit(() -> {
+    public void pushMessage(String title, String body, String description, String podCastEpisodeInfo, String pid, String eid, String deviceToken) throws IOException {
+      //  pushMessagesThreadPool.submit(() -> {
             PushMessageClient.getInstance().pushMessageWithToken(title,
                     body, description, podCastEpisodeInfo, pid, eid, deviceToken);
-        });
+     //   });
     }
 }

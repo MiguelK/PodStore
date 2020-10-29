@@ -25,8 +25,7 @@ public class FtpOneClientTest {
 
 
       //  String deviceToken = "eGpkdigS4k79jG6po0ljwm:APA91bHvM6MAzMcrznPmhe9wbMSPI7rtV1MmBbFBapfQHlOsKffWyyWVFLc2hNG6iLwXoNHx26sVJB8EVjDSSCCG9K3nQjsgo71UGQvBJE7hP7tm6igTe1vptUMvrHj-Q2gUrXR2AOjy";
-        String deviceToken = "clkw6ml-2UieiGcy_BBdiI:APA91bGYkv7iogWg31w48dwRlYRHiU8VpuMrRrJg1_DYjYk3K-V5Qco-oDqr0NFUFfIoWHyOAnlG2MA_mZVPsFGMGLn5-MgtTeqEVXukYlSlesvitwfWkzmz-3m0xth1KgraMpshz1qa";
-
+        String deviceToken = "frB6QusMQ0Gijs_AiEb52F:APA91bEqXsP_hTfvVmNf_PF5SRCOdsP7TRVF1ou2q0uH1Imfrs0CIu9k3tmVNH-KNv_dg-xBqKTm549M6Cf_op17xW5wTxRAKL3JsJEjN52OcrntiiUMUE7LYzRTxK_mcPez9a515dRp";
         for (Subscription subscription : subscriptionData.getSubscriptions()) {
 
             if(subscription.getFeedURL() != null) {

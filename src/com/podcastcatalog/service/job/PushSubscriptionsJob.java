@@ -210,6 +210,11 @@ public class PushSubscriptionsJob implements Job {
                 LOG.info("Failed sendPushMessage" + e.getMessage() +
                         ", PodCastPid=" + podCastSmall.getPodCastPid() +
                         ",subscribers=" + subscribers.size());
+                try {
+                    Thread.sleep(30000); //Wait 30sec try again...
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
             }
         }
     }

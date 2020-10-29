@@ -37,7 +37,7 @@ public class PushMessageClient {
 
     void pushMessageWithToken(String title, String body,
                               String description, String podCastEpisodeInfo, String pid,
-                              String eid, String token) {
+                              String eid, String token) throws IOException {
 
         try {
 
@@ -99,6 +99,7 @@ public class PushMessageClient {
             }
         }catch (Exception e) {
             LOG.log(Level.SEVERE, "Failed send push message ", e);
+            throw new IOException(e);
         }
     }
 
