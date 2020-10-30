@@ -6,6 +6,7 @@ import com.podcastcatalog.modelbuilder.collector.itunes.ItunesSearchAPI;
 import com.podcastcatalog.service.subscription.PodCastSubscriptionService;
 import com.podcastcatalog.util.ServerInfo;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class PushSubscriptionsJob implements Job {
 
     private final static Logger LOG = Logger.getLogger(PushSubscriptionsJob.class.getName());
 
-    private ExecutorService threadPool = Executors.newFixedThreadPool(10);
+    private ExecutorService threadPool = Executors.newFixedThreadPool(15);
 
     private static final int ONE_HOUR_IN_MILLI_SECONDS = 1000 * 60 * 60;
 
@@ -45,7 +46,7 @@ public class PushSubscriptionsJob implements Job {
 
             if(fetchResults.isEmpty()) {
                 LOG.info("PushSubscriptionsJob 1_4 : fetchResults was empty, wait 10min");
-                Thread.sleep(1000 * 60 * 15); //Rerun after 10min
+                Thread.sleep(1000 * 60 * 10); //Rerun after 10min
                 doWork();
                 return;
             }
@@ -89,7 +90,7 @@ public class PushSubscriptionsJob implements Job {
 
             LOG.info("PushSubscriptionsJob 3 done");
 
-            Thread.sleep(1000 * 60 * 15); //Rerun after 15min
+            Thread.sleep(1000 * 60 * 10); //Rerun after 15min
             doWork();
         } catch (Exception e) {
             LOG.warning("PushSubscriptionsJob Failed: " + e.getMessage() + ", retry in 1h");
@@ -98,7 +99,7 @@ public class PushSubscriptionsJob implements Job {
             } catch (InterruptedException e1) {
                 //Ignore
             }
-            doWork(); //FIXME Retry if error
+            doWork(); //FIXME Retry if errorF
         }
     }
 
@@ -136,20 +137,12 @@ public class PushSubscriptionsJob implements Job {
         for (Future<FetchLatestPodCastEpisodeResult> taskFeature : taskFeatures) {
             FetchLatestPodCastEpisodeResult payLoad;
 
-            if(success % 50 == 0 || failCount % 50 == 0) {
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    //Ignore
-                }
-            }
-
             try {
                 if(success == 0 && failCount == 0) {
                     start = System.currentTimeMillis();
                     LOG.info("Start task.get()="  + success);
                 }
-                payLoad = taskFeature.get(40, TimeUnit.SECONDS);
+                payLoad = taskFeature.get(30, TimeUnit.SECONDS);
                 if(success == 0 && failCount == 0) {
                     long elapsedTime =  System.currentTimeMillis() - start;
                     long seconds = TimeUnit.MILLISECONDS.toSeconds(elapsedTime);
@@ -210,7 +203,7 @@ public class PushSubscriptionsJob implements Job {
                         ", PodCastPid=" + podCastSmall.getPodCastPid() +
                         ",subscribers=" + subscribers.size());
                 try {
-                    Thread.sleep(30000); //Wait 30sec try again...
+                    Thread.sleep(5000); //Wait 30sec try again...
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }
@@ -233,7 +226,7 @@ public class PushSubscriptionsJob implements Job {
         }
 
         @Override
-        public FetchLatestPodCastEpisodeResult call()  {
+        public FetchLatestPodCastEpisodeResult call() throws IOException {
             try {
                 ItunesSearchAPI.PodCastSmall podCastSmall = ItunesSearchAPI.getLatestEpisodeIdFromPodCast(podCastId, feedURL);
                 if (podCastSmall == null) {
@@ -248,9 +241,8 @@ public class PushSubscriptionsJob implements Job {
             } catch (Exception e) {
                 LOG.info("Failed FetchLatestPodCastEpisodeResult" + e.getMessage()
                         + ", podCastId=" + podCastId + ", feedURL=" + feedURL);
+                throw new IOException(e);
             }
-
-          return null;
         }
     }
 
