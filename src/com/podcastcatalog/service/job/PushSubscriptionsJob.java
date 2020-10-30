@@ -45,7 +45,7 @@ public class PushSubscriptionsJob implements Job {
 
             if(fetchResults.isEmpty()) {
                 LOG.info("PushSubscriptionsJob 1_4 : fetchResults was empty, wait 10min");
-                Thread.sleep(1000 * 60 * 10); //Rerun after 10min
+                Thread.sleep(1000 * 60 * 15); //Rerun after 10min
                 doWork();
                 return;
             }
@@ -89,7 +89,7 @@ public class PushSubscriptionsJob implements Job {
 
             LOG.info("PushSubscriptionsJob 3 done");
 
-            Thread.sleep(1000 * 60 * 10); //Rerun after 10min
+            Thread.sleep(1000 * 60 * 15); //Rerun after 15min
             doWork();
         } catch (Exception e) {
             LOG.warning("PushSubscriptionsJob Failed: " + e.getMessage() + ", retry in 1h");
@@ -136,9 +136,9 @@ public class PushSubscriptionsJob implements Job {
         for (Future<FetchLatestPodCastEpisodeResult> taskFeature : taskFeatures) {
             FetchLatestPodCastEpisodeResult payLoad;
 
-            if(success % 50 == 0) {
+            if(success % 50 == 0 || failCount % 50 == 0) {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     //Ignore
                 }
@@ -149,7 +149,7 @@ public class PushSubscriptionsJob implements Job {
                     start = System.currentTimeMillis();
                     LOG.info("Start task.get()="  + success);
                 }
-                payLoad = taskFeature.get(20, TimeUnit.SECONDS);
+                payLoad = taskFeature.get(40, TimeUnit.SECONDS);
                 if(success == 0 && failCount == 0) {
                     long elapsedTime =  System.currentTimeMillis() - start;
                     long seconds = TimeUnit.MILLISECONDS.toSeconds(elapsedTime);
@@ -157,9 +157,8 @@ public class PushSubscriptionsJob implements Job {
                 }
             } catch (Exception e) {
                 failCount++;
-                if(failCount % 100 == 0) {
+                if(failCount % 200 == 0) {
                     LOG.info("Failed to get task failCount=" + failCount + ", error=" + e.getMessage());
-                    break;
                 }
                 continue;
             }
