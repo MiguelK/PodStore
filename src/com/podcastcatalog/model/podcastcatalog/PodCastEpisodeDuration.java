@@ -25,10 +25,10 @@ public class PodCastEpisodeDuration implements Serializable{
     private PodCastEpisodeDuration(String duration) {
         Optional<LocalTime> localTime = toSeconds(duration);
 
-        this.hours = localTime.isPresent() ? localTime.get().getHour() : INVALID_VALUE;
-        this.minutes = localTime.isPresent() ? localTime.get().getMinute() : INVALID_VALUE;
-        this.seconds = localTime.isPresent() ? localTime.get().getSecond() : INVALID_VALUE;
-        this.totalSeconds = localTime.isPresent() ? localTime.get().toSecondOfDay() : INVALID_VALUE;
+        this.hours = localTime.map(LocalTime::getHour).orElse(INVALID_VALUE);
+        this.minutes = localTime.map(LocalTime::getMinute).orElse(INVALID_VALUE);
+        this.seconds = localTime.map(LocalTime::getSecond).orElse(INVALID_VALUE);
+        this.totalSeconds = localTime.map(LocalTime::toSecondOfDay).orElse(INVALID_VALUE);
     }
 
     public static PodCastEpisodeDuration parse(String duration) {

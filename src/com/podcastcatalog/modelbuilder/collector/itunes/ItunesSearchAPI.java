@@ -2,6 +2,7 @@ package com.podcastcatalog.modelbuilder.collector.itunes;
 
 import com.google.gson.Gson;
 import com.icosillion.podengine.models.Episode;
+import com.icosillion.podengine.models.ITunesItemInfo;
 import com.icosillion.podengine.models.Podcast;
 import com.podcastcatalog.model.podcastcatalog.PodCast;
 import com.podcastcatalog.model.podcastcatalog.PodCastEpisodeDuration;
@@ -180,7 +181,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         String latestPodCastEpisodeId;
         String podCastEpisodeTitle = "";
         String podCastEpisodeDescription = "";
-        PodCastEpisodeDuration podCastEpisodeDuration;
+        PodCastEpisodeDuration podCastEpisodeDuration = null;
 
         try {
             Podcast podcast = new Podcast(feedURL);
@@ -190,9 +191,13 @@ public class ItunesSearchAPI implements PodCastCollector {
             podCastEpisodeDescription = episode.getDescription();
             latestPodCastEpisodeId = IdGenerator.generate(podCastEpisodeTitle, pid);
 
-            String duration = episode.getITunesInfo().getDuration();
-            podCastEpisodeDuration = PodCastEpisodeDuration.parse(duration);
-        } catch (Throwable e) {
+            ITunesItemInfo iTunesInfo = episode.getITunesInfo();
+            if(iTunesInfo != null) {
+                String duration = iTunesInfo.getDuration();
+                podCastEpisodeDuration = PodCastEpisodeDuration.parse(duration);
+            }
+
+        } catch (Exception e) {
             LOG.log(Level.SEVERE, "getLatestEpisodeIdForPodCast() pid=" + pid + ", msg=" + e.getMessage());
             return null;
         }
