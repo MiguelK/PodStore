@@ -86,6 +86,17 @@ public class PodCastEpisodeDuration implements Serializable{
             trimmedInput = trimmedInput.replace(":60", ":59");
         }
 
+        String[] split = trimmedInput.split(":");
+        if(split.length == 3) {
+            String temp = "";
+           // trimmedInput = "00:4:50";
+            temp += split[0].length() <= 1 ? "0" + split[0] + ":" : split[0] + ":";
+            temp += split[1].length() <= 1 ? "0" + split[1] + ":" : split[1] + ":";
+            temp += split[2].length() <= 1 ? "0" + split[2] : split[2];
+            trimmedInput = temp;
+
+        }
+
         String substring = trimmedInput.substring(0, 2);
 
         if(substring.contains(":")){

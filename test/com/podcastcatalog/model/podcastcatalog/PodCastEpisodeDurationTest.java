@@ -52,6 +52,15 @@ public class PodCastEpisodeDurationTest {
     }
 
     @Test
+    public void parse_valid_duration_4() {
+        PodCastEpisodeDuration duration = PodCastEpisodeDuration.parse("00:4:50");
+        Assert.assertNotNull(duration);
+        Assert.assertTrue(duration.getHour()==0);
+        Assert.assertTrue(duration.getMinutes()==4);
+        Assert.assertTrue(duration.getSeconds()==50);
+    }
+
+    @Test
     public void parse_valid_duration_seconds() {
         PodCastEpisodeDuration duration = PodCastEpisodeDuration.parse("45:34");
         Assert.assertNotNull(duration);

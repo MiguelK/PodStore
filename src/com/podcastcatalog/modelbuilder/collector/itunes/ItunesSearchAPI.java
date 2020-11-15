@@ -13,6 +13,7 @@ import com.podcastcatalog.util.IOUtil;
 import com.podcastcatalog.util.IdGenerator;
 import com.podcastcatalog.util.PodCastURLParser;
 import com.podcastcatalog.util.ServerInfo;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -293,14 +294,18 @@ public class ItunesSearchAPI implements PodCastCollector {
 
     private PodCastSearchResult performSearch() {
 
-        HttpsURLConnection connection;
+        HttpsURLConnection connection = null;
         try {
             connection = (HttpsURLConnection) request.openConnection();
-            connection.setConnectTimeout(3000); //3 sec
+            connection.setConnectTimeout(6000); //6 sec
             String content = IOUtil.getResultContent(connection);
             return GSON.fromJson(content, PodCastSearchResult.class);
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Unable to get Itunes Search API result using query=" + request, e);
+        } finally {
+            if(connection != null) {
+                connection.disconnect();
+            }
         }
 
         return null;
