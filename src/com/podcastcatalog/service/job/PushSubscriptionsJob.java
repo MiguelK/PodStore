@@ -142,7 +142,7 @@ public class PushSubscriptionsJob implements Job {
                     start = System.currentTimeMillis();
                     LOG.info("Start task.get()="  + success);
                 }
-                payLoad = taskFeature.get(30, TimeUnit.SECONDS);
+                payLoad = taskFeature.get(60, TimeUnit.SECONDS);
                 if(success == 0 && failCount == 0) {
                     long elapsedTime =  System.currentTimeMillis() - start;
                     long seconds = TimeUnit.MILLISECONDS.toSeconds(elapsedTime);
