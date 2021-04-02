@@ -1,10 +1,12 @@
 package com.podcastcatalog.model.podcastcatalog;
 
 import com.podcastcatalog.modelbuilder.PodCastCatalogBuilder;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderAT;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderAU;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderBR;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderCA;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderCH;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderCL;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderCN;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderDK;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderDE;
@@ -19,14 +21,20 @@ import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderIN;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderIT;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderJP;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderKR;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderMX;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderMY;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderNL;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderNO;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderPT;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderRU;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSE;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSG;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderSN;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderTH;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderTR;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderUS;
 import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderVN;
+import com.podcastcatalog.modelbuilder.language.PodCastCatalogBuilderZA;
 
 //See http://www.mathguide.de/info/tools/languagecode.html
 //https://www.apple.com/choose-country-region/
@@ -65,7 +73,15 @@ China XXXX BUG
     TH("TH",PodCastCatalogBuilderTH.class, false, true, true), //Thailand
 
     IL("IL",PodCastCatalogBuilderIL.class, false, true, true), //HE in appHebrew (Israel) and  il backend
-    GT("GT",PodCastCatalogBuilderGT.class, false, true, true); //Guatemala
+    GT("GT",PodCastCatalogBuilderGT.class, false, true, true), //Guatemala
+    TR("TR",PodCastCatalogBuilderTR.class, false, true, true), //Turkey
+    ZA("ZA",PodCastCatalogBuilderZA.class, false, true, true), //South Africa
+    AT("AT",PodCastCatalogBuilderAT.class, false, true, true), //Austria Österike
+    SG("SG",PodCastCatalogBuilderSG.class, false, true, true), //Singapore
+    MY("MY",PodCastCatalogBuilderMY.class, false, true, true), //Malaysia
+    MX("MX",PodCastCatalogBuilderMX.class, false, true, true), //Mexico
+    CL("CL",PodCastCatalogBuilderCL.class, false, true, true), //Chile
+    SN("SN",PodCastCatalogBuilderSN.class, false, true, true); //Sénégal
 
     private final String lang;
     private final Class catalogBuilder;

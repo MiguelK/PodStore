@@ -53,7 +53,7 @@ public class StartupServlet extends HttpServlet {
         LOG.info("Starting PodStore POD_HOME_DIR=" + LocatorProduction.getInstance().getPodDataHomeDirectory().getAbsolutePath());
 
         setupPodCastSubscriptionService(servletConfig);
-        RadioStationService.INSTANCE.loadStations();
+        //RadioStationService.INSTANCE.loadStations();
 
         //Important for FeedParser, could cause 403 otherwise.
         System.setProperty("http.agent", "Chrome");
@@ -66,7 +66,7 @@ public class StartupServlet extends HttpServlet {
        // JobManagerService.getInstance().registerJob(new SubscriptionNotifierJob(), 0, 6, TimeUnit.HOURS);
         //  JobManagerService.getInstance().registerJob(new CreateLinkPages(),20,20, TimeUnit.SECONDS);
        // JobManagerService.getInstance().registerJob(new MemoryDumperJob(), 0,24, TimeUnit.HOURS); //FIXME change time, remove
-        JobManagerService.getInstance().registerJob(new PodCastCatalogUpdater(), 0, 168, TimeUnit.HOURS); //FIXME 1 per week
+        JobManagerService.getInstance().executeOnce(new PodCastCatalogUpdater());
 
         JobManagerService.getInstance().startAsync();
     }
