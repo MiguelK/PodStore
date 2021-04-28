@@ -8,8 +8,12 @@ public class PodCastCatalogBuilderSE extends PodCastCatalogBuilderBase {
 
     @Override
     void addCategoryNames(CategoryContext categoryContext) {
-        categoryContext.add(PodCastIdCollector.Category.VIDEO_GAMES, "Videospel");
+
+        categoryContext.add(PodCastIdCollector.Category.TRUE_CRIME, "True Crime");
         categoryContext.add(PodCastIdCollector.Category.NEWS, "Nyheter & politik");
+        categoryContext.add(PodCastIdCollector.Category.TECHNOLOGY, "Teknologi");
+        categoryContext.add(PodCastIdCollector.Category.SPORTS, "Sport & fritid");
+
         categoryContext.add(PodCastIdCollector.Category.MUSIC, "Musik");
         categoryContext.add(PodCastIdCollector.Category.DESIGN, "Konst"); //DESIGN better then ARTS
         categoryContext.add(PodCastIdCollector.Category.HEALTH_FITNESS, "Hälsa");
@@ -22,10 +26,13 @@ public class PodCastCatalogBuilderSE extends PodCastCatalogBuilderBase {
         categoryContext.add(PodCastIdCollector.Category.RELIGION_SPIRITUALITY, "Religion & andlighet");
         categoryContext.add(PodCastIdCollector.Category.SCIENCE, "Vetenskap & medicin");
         categoryContext.add(PodCastIdCollector.Category.SOCIETY_CULTURE, "Samhälle & kultur");
-        categoryContext.add(PodCastIdCollector.Category.SPORTS, "Sport & fritid");
-        categoryContext.add(PodCastIdCollector.Category.TECHNOLOGY, "Teknologi");
         categoryContext.add(PodCastIdCollector.Category.TV_FILM, "TV & film");
-        categoryContext.add(PodCastIdCollector.Category.TRUE_CRIME, "True Crime");
+        categoryContext.add(PodCastIdCollector.Category.VIDEO_GAMES, "Videospel");
+
+        categoryContext.add(PodCastIdCollector.Category.SOCCER, "Fotboll");
+        categoryContext.add(PodCastIdCollector.Category.RUNNING, "Löpning");
+        categoryContext.add(PodCastIdCollector.Category.DAILY_NEWS, "Dagliga nyheter");
+        categoryContext.add(PodCastIdCollector.Category.TECH_NEWS, "Tech nyheter");
     }
 
     @Override

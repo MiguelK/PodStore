@@ -26,6 +26,11 @@ public class PodCastCatalogBuilderTR extends PodCastCatalogBuilderBase {
         categoryContext.add (PodCastIdCollector.Category.TECHNOLOGY, "Teknoloji");
         categoryContext.add (PodCastIdCollector.Category.TV_FILM, "TV ve Film");
         categoryContext.add (PodCastIdCollector.Category.TRUE_CRIME, "Gerçek Suç");
+
+        categoryContext.add (PodCastIdCollector.Category.SOCCER, "Football");
+        categoryContext.add (PodCastIdCollector.Category.RUNNING, "Running");
+        categoryContext.add (PodCastIdCollector.Category.DAILY_NEWS, "Daily News");
+        categoryContext.add (PodCastIdCollector.Category.TECH_NEWS, "Tech News");
     }
 
     @Override

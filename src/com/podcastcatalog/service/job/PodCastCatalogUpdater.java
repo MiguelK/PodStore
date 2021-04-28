@@ -28,9 +28,9 @@ public class PodCastCatalogUpdater implements Job {
             for (PodCastCatalogLanguage language : PodCastCatalogLanguage.values()) {
 
                 //TEST only 1
-               // if (language != PodCastCatalogLanguage.GT) {
-                //       continue;
-                // }
+               if ( language != PodCastCatalogLanguage.US) {
+                   continue;
+                 }
 
                 /*if(PodCastCatalogService.getInstance().isMetaDataRegistered(language)) {
                     LOG.info("PodCastCatalogMetaData already exist, will update for lang=" + language);
@@ -51,7 +51,7 @@ public class PodCastCatalogUpdater implements Job {
 
                 if (podCastCatalogMetaData == null && ServerInfo.isLocalDevMode()) { //Oly update from local memory fix
                     PodCastCatalogService.getInstance().buildPodCastCatalogsAsync(language.create());
-                    int fiveMin = 1000 * 60 * 8;
+                    int fiveMin = 1000 * 60;
                     Thread.sleep(fiveMin);
                 } else if (podCastCatalogMetaData != null) {
                     PodCastCatalogService.getInstance().register(language, podCastCatalogMetaData);

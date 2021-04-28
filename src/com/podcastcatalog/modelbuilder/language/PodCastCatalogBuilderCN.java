@@ -24,6 +24,11 @@ public class PodCastCatalogBuilderCN  extends PodCastCatalogBuilderBase {
       // categoryContext.add(PodCastIdCollector.Category.SPORTS, "運動與休閒");
         // categoryContext.add(PodCastIdCollector.Category.TECHNOLOGY, "技術");
         //  categoryContext.add(PodCastIdCollector.Category.TV_FILM, "電視和電影");
+
+        categoryContext.add (PodCastIdCollector.Category.SOCCER, "Football");
+        categoryContext.add (PodCastIdCollector.Category.RUNNING, "Running");
+        categoryContext.add (PodCastIdCollector.Category.DAILY_NEWS, "Daily News");
+        categoryContext.add (PodCastIdCollector.Category.TECH_NEWS, "Tech News");
     }
 
     @Override
