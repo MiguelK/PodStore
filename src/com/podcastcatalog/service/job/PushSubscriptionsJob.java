@@ -21,9 +21,7 @@ public class PushSubscriptionsJob implements Job {
 
     private final static Logger LOG = Logger.getLogger(PushSubscriptionsJob.class.getName());
 
-    private ExecutorService threadPool = Executors.newFixedThreadPool(15);
-
-    private static final int ONE_HOUR_IN_MILLI_SECONDS = 1000 * 60 * 60;
+    private ExecutorService threadPool = Executors.newFixedThreadPool(20);
 
     public void doWork() {
         if (ServerInfo.isLocalDevMode()) {
@@ -74,7 +72,7 @@ public class PushSubscriptionsJob implements Job {
             PodCastSubscriptionService.getInstance().uploadToOneCom();
 
             for (FetchLatestPodCastEpisodeResult newSubscription : newSubscriptions) {
-                Thread.sleep(3000); //Lower pressure on Apple itunes.apple.com/lookup
+                Thread.sleep(5000); //Lower pressure on Apple itunes.apple.com/lookup
                 URL podCastFeedURL = ItunesSearchAPI.getFeedURLFromPodCast(newSubscription.podCastId);
                 if (podCastFeedURL != null) {
                     PodCastSubscriptionService.getInstance().updateFeedURL(newSubscription.podCastId, podCastFeedURL);
@@ -90,12 +88,12 @@ public class PushSubscriptionsJob implements Job {
 
             LOG.info("PushSubscriptionsJob 3 done");
 
-            Thread.sleep(1000 * 60 * 10); //Rerun after 15min
+            Thread.sleep(1000 * 60 * 30); //Rerun after 15min
             doWork();
         } catch (Exception e) {
             LOG.warning("PushSubscriptionsJob Failed: " + e.getMessage() + ", retry in 1h");
             try {
-                Thread.sleep(ONE_HOUR_IN_MILLI_SECONDS);
+                Thread.sleep(1000 * 60 * 10); //Rerun after 10min
             } catch (InterruptedException e1) {
                 //Ignore
             }
