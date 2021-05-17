@@ -12,7 +12,7 @@ import java.util.List;
 public class TagIndexTest {
 
 
-    @Test(groups = TestUtil.SLOW_TEST)
+    //@Test(groups = TestUtil.SLOW_TEST)
     public void basicAPI_Test_trueCrime() throws Exception {
 
         TagManager.getInstance().configure(TagManager.Lang.SWE);

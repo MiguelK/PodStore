@@ -37,7 +37,7 @@ public class PodCastFeedParser {
             LocalDateTime createdDate = DateUtil.parse(podcast.getPubDate()).orElse(LocalDateTime.now());
 
             String webMaster = podcast.getManagingEditor();
-            if(webMaster==null){
+            if(StringUtils.isEmpty(webMaster)){
                 webMaster = "Unknown";
             }
 

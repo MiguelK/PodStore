@@ -82,7 +82,7 @@ public class PodCastFeedParserTest {
         rss = "http://rss.acast.com/sparpodcast";
          rss = "http://rss.acast.com/enmorkhistoria";
         rss = "http://www.ximalaya.com/album/9977848.xml";
-        rss = "http://atp.fm/episodes?format=rss";
+        //rss = "http://atp.fm/episodes?format=rss";
         //rss = "http://api.audioteca.rac1.cat/rss/no-ho-se";
         //http://www.ximalaya.com/album/3882669.xmldescription is mandatory
         //http://www.netrevo.net/assets/media/itune/promotion.rssInvalid id null mus be > 0

@@ -40,7 +40,7 @@ public class PodCastCatalogMetaDataTest {
             try {
                 podCastCatalogMetaData = FtpOneClient.getInstance().load(language);
                 //System.out.printf("podCastCatalogMetaData=" + podCastCatalogMetaData);
-                LOG.info("podCastCatalogMetaData=" + podCastCatalogMetaData);
+                LOG.info("(" + language +") PodCastCatalogMetaData=" + podCastCatalogMetaData);
 
                 Thread.sleep(3000);
             } catch (Exception e) {

@@ -21,9 +21,9 @@ public class ItunesSearchAPITest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void lookupPodCast() {
-        Optional<PodCast> podCast = ItunesSearchAPI.lookupPodCast("534137041", 1);
 
-        System.out.println(podCast.get());
+        Assert.assertNotNull(ItunesSearchAPI.lookupPodCast("534137041", 1).get());
+        Assert.assertNotNull(ItunesSearchAPI.lookupPodCast("1477956385", 1).get());
     }
 
     @Test(groups = TestUtil.SLOW_TEST)
@@ -46,10 +46,9 @@ public class ItunesSearchAPITest {
 
     @Test(groups = TestUtil.SLOW_TEST)
     public void getLatestEpisodeIdForPodCast() {
-        //390164336
-        URL feedURLFromPodCast = ItunesSearchAPI.getFeedURLFromPodCast("377218713");
-        System.out.println(feedURLFromPodCast);
-        Assert.assertNotNull(feedURLFromPodCast);
+        Assert.assertNotNull(ItunesSearchAPI.getFeedURLFromPodCast("377218713"));
+        Assert.assertNotNull(ItunesSearchAPI.getFeedURLFromPodCast("1477956385"));
+        Assert.assertNotNull(ItunesSearchAPI.getFeedURLFromPodCast("676144099"));
     }
 
     @Test(groups = TestUtil.SLOW_TEST)

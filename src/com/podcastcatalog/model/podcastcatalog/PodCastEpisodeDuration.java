@@ -2,7 +2,9 @@ package com.podcastcatalog.model.podcastcatalog;
 
 
 import com.podcastcatalog.util.DateUtil;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -57,56 +59,64 @@ public class PodCastEpisodeDuration implements Serializable{
     }
 
     public static Optional<LocalTime> toSeconds(final String input) {
-
         String trimmedInput = StringUtils.trimToEmpty(input);
-
 
         if (trimmedInput.isEmpty()) {
             return Optional.empty();
         }
 
-        if (trimmedInput.chars().filter(c -> c == ':').count() == 1) {
-            trimmedInput = "00:" + trimmedInput;
-            return Optional.ofNullable(LocalTime.parse(trimmedInput, DateTimeFormatter.ISO_LOCAL_TIME));
+        String[] split1 = trimmedInput.split(":");
+        String filledValues = "";
+
+        //sec
+        if(split1.length == 1) {
+            String hours = "00";
+            String minuteFields = "";
+            String secondsFields = "";
+            int seconds = NumberUtils.toInt(split1[0]);
+
+            if(seconds >= 60) {
+                int minInt = seconds / 60;
+                int secondsInt = seconds % 60; // 5 in this case.
+                secondsFields = secondsInt < 10 ? "0" + secondsInt : "" + secondsInt;
+                minuteFields = minInt < 10 ? "0" + minInt : "" + minInt;
+            } else {
+                minuteFields = seconds < 10 ? "0" + seconds + ":" : seconds + ":";
+            }
+            filledValues += hours + ":";
+            filledValues += minuteFields + ":";
+            filledValues += secondsFields;
         }
 
-        try {
-         int seconds = Integer.parseInt(trimmedInput);
-            return Optional.ofNullable(LocalTime.ofSecondOfDay(seconds));
-        }catch (Exception e) {
-            //Ignore
+        //100:34 //min:sec
+        if(split1.length == 2) {
+            String hours = "00";
+            String minuteFields = "";
+            int min = NumberUtils.toInt(split1[0]);
+
+            if(min >= 60) {
+                int hoursInt = min / 60;
+                int minutes = min % 60;
+                hours = hoursInt < 10 ? "0" + hoursInt : "" + hoursInt;
+                minuteFields = minutes < 10 ? "0" + minutes + ":" : minutes + ":";
+            } else {
+                minuteFields = min < 10 ? "0" + min + ":" : min + ":";
+            }
+            filledValues += hours + ":";
+            filledValues += minuteFields;
+            filledValues += split1[1].length() <= 1 ? "0" + split1[1] + ":" : split1[1] + ":";
         }
 
-        if(trimmedInput.chars().filter(c->c==':').count()!=2){
-            //return Optional.empty();
-            return Optional.ofNullable(LocalTime.parse(trimmedInput, DateTimeFormatter.ISO_LOCAL_TIME));
+        if(split1.length == 3) {
+            filledValues += split1[0].length() <= 1 ? "0" + split1[0] + ":" : split1[0] + ":";
+            filledValues += split1[1].length() <= 1 ? "0" + split1[1] + ":" : split1[1] + ":";
+            filledValues += split1[2].length() <= 1 ? "59:" : split1[2] + ":";
         }
-
-        if(trimmedInput.endsWith(":60")){
-            trimmedInput = trimmedInput.replace(":60", ":59");
-        }
-
-        String[] split = trimmedInput.split(":");
-        if(split.length == 3) {
-            String temp = "";
-           // trimmedInput = "00:4:50";
-            temp += split[0].length() <= 1 ? "0" + split[0] + ":" : split[0] + ":";
-            temp += split[1].length() <= 1 ? "0" + split[1] + ":" : split[1] + ":";
-            temp += split[2].length() <= 1 ? "0" + split[2] : split[2];
-            trimmedInput = temp;
-
-        }
-
-        String substring = trimmedInput.substring(0, 2);
-
-        if(substring.contains(":")){
-            trimmedInput = "0" + trimmedInput;
-        }
+        filledValues = StringUtils.removeEnd(filledValues, ":");
 
         LocalTime date;
         try {
-
-            date = LocalTime.parse(trimmedInput, DateTimeFormatter.ISO_LOCAL_TIME);
+            date = LocalTime.parse(filledValues, DateTimeFormatter.ISO_LOCAL_TIME);
         }
         catch (DateTimeParseException e) {
             Optional<LocalDateTime> parse =
