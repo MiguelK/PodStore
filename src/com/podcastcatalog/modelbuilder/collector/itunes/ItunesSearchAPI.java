@@ -185,6 +185,7 @@ public class ItunesSearchAPI implements PodCastCollector {
         PodCastEpisodeDuration podCastEpisodeDuration = null;
 
         try {
+
             Podcast podcast = new Podcast(feedURL);
             podCastTitle = podcast.getTitle();
             Episode episode = podcast.getEpisodes().get(0);
@@ -199,7 +200,8 @@ public class ItunesSearchAPI implements PodCastCollector {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "getLatestEpisodeIdForPodCast() pid=" + pid + ", msg=" + e.getMessage());
+            LOG.log(Level.SEVERE, "getLatestEpisodeIdForPodCast() pid=" + pid + ", msg=" + e.getMessage()
+            + "feedURL=" + feedURL);
             return null;
         }
 

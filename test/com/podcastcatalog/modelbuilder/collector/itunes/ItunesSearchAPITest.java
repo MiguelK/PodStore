@@ -101,12 +101,20 @@ public class ItunesSearchAPITest {
     }
         @Test(groups = TestUtil.SLOW_TEST)
     public void lookup_check_episodes() {
-        PodCast podCast = ItunesSearchAPI.lookupPodCast("1435150323").get();
+        PodCast podCast = ItunesSearchAPI.lookupPodCast("270572701").get();
 
         //308339623-shakenbabyskandalen
         PodCastEpisode latestPodCastEpisode = podCast.getLatestPodCastEpisode();
         System.out.println(podCast.getTitle() + " episodes=" + podCast.getPodCastEpisodesInternal().size());
         System.out.println("latestPodCastEpisode=" + latestPodCastEpisode.getTitle() + ", id=" + latestPodCastEpisode.getId());
+    }
+
+
+    @Test
+    public void testPodCastSmall() throws Exception {
+        ItunesSearchAPI.PodCastSmall podCastSmall = ItunesSearchAPI.getLatestEpisodeIdFromPodCast("270572701", new URL("https://www.spanishpod101.com/wp-feed-audio-video.php"));
+
+        System.out.println(podCastSmall);
     }
 
     @Test

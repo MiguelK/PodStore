@@ -8,6 +8,9 @@ import com.podcastcatalog.util.ServerInfo;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -23,6 +26,8 @@ public class PushSubscriptionsJob implements Job {
 
     private ExecutorService threadPool = Executors.newFixedThreadPool(20);
 
+    private LocalDateTime created = LocalDateTime.now();
+
     public void doWork() {
         if (ServerInfo.isLocalDevMode()) {
             LOG.info("PushSubscriptionsJob: No PUSH Local dev mode...");
@@ -36,6 +41,18 @@ public class PushSubscriptionsJob implements Job {
                 doWork();
             }
 
+            Duration duration = Duration.between(created, LocalDateTime.now());
+            long diffHours = Math.abs(duration.toHours());
+
+            if(diffHours >= 24) {
+                LocalTime timeNow = LocalTime.now();
+                if (timeNow.isAfter(LocalTime.of(01, 00)) && (timeNow.isBefore(LocalTime.of(05, 00))))
+                {
+                    //System.out.println("Checking after 2AM, before 4AM!");
+                    LOG.info("Restarting Pods Server...");
+                    System.exit(0);
+                }
+            }
             //Copy FIXME
             List<Subscription> subscriptions = new ArrayList<>(PodCastSubscriptionService.getInstance().getSubscriptions());
 
@@ -88,7 +105,7 @@ public class PushSubscriptionsJob implements Job {
 
             LOG.info("PushSubscriptionsJob 3 done");
 
-            Thread.sleep(1000 * 60 * 30); //Rerun after 15min
+            Thread.sleep(1000 * 60 * 30); //Rerun after 30min
             doWork();
         } catch (Exception e) {
             LOG.warning("PushSubscriptionsJob Failed: " + e.getMessage() + ", retry in 1h");
