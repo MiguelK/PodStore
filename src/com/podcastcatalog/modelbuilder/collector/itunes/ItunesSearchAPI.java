@@ -190,6 +190,7 @@ public class ItunesSearchAPI implements PodCastCollector {
             podCastTitle = podcast.getTitle();
             Episode episode = podcast.getEpisodes().get(0);
             podCastEpisodeTitle = episode.getTitle();
+
             podCastEpisodeDescription = episode.getDescription();
             latestPodCastEpisodeId = IdGenerator.generate(podCastEpisodeTitle, pid);
 
@@ -200,7 +201,7 @@ public class ItunesSearchAPI implements PodCastCollector {
             }
 
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "getLatestEpisodeIdForPodCast() pid=" + pid + ", msg=" + e.getMessage()
+            LOG.log(Level.SEVERE, "getLatestEpisodeIdFromPodCast() pid=" + pid + ", msg=" + e.getMessage()
             + "feedURL=" + feedURL);
             return null;
         }

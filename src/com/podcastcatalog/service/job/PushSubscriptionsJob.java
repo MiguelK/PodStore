@@ -41,18 +41,7 @@ public class PushSubscriptionsJob implements Job {
                 doWork();
             }
 
-            Duration duration = Duration.between(created, LocalDateTime.now());
-            long diffHours = Math.abs(duration.toHours());
 
-            if(diffHours >= 24) {
-                LocalTime timeNow = LocalTime.now();
-                if (timeNow.isAfter(LocalTime.of(01, 00)) && (timeNow.isBefore(LocalTime.of(05, 00))))
-                {
-                    //System.out.println("Checking after 2AM, before 4AM!");
-                    LOG.info("Restarting Pods Server...");
-                    System.exit(0);
-                }
-            }
             //Copy FIXME
             List<Subscription> subscriptions = new ArrayList<>(PodCastSubscriptionService.getInstance().getSubscriptions());
 
@@ -168,6 +157,20 @@ public class PushSubscriptionsJob implements Job {
                 if(failCount % 200 == 0) {
                     LOG.info("Failed to get task failCount=" + failCount + ", error=" + e.getMessage());
                 }
+
+                //Crash restart if needed
+                if(failCount >= 200) {
+                    long diffHours = Math.abs(Duration.between(created, LocalDateTime.now()).toHours());
+                    if(diffHours >= 24) {
+                        LocalTime timeNow = LocalTime.now();
+                        if (timeNow.isAfter(LocalTime.of(0, 1)) && (timeNow.isBefore(LocalTime.of(6, 30))))
+                        {
+                            LOG.info("Crash Restarting Pods Server...");
+                            System.exit(0);
+                        }
+                    }
+                }
+
                 continue;
             }
             if (payLoad != null) {
